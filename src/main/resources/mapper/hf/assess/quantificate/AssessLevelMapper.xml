@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netmatch.mapper.console.AssessLevelMapper">
+    
+    <delete id="removeAssessLevelOfTemplate" parameterType="string">
+		DELETE FROM assess_level WHERE template_id = #{_parameter}
+	</delete>
+	
+	<select id="searchTemplateIdByCycleId" parameterType="String" resultType="String">
+	    SELECT DISTINCT( template_id ) from assess_cycle_template WHERE cycle_id = #{cycleId};
+	</select>
+</mapper>

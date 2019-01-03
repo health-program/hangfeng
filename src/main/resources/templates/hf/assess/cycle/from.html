@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+<div class="container">
+    <section class="content">
+                <div class="box box-primary">
+                    <input type="hidden" id="formType" class="tonto-form-type" th:value="${formType}" />
+                    <div class="box-header with-border" th:switch="${formType}">
+                        <div class="pull-right">
+                             <!-- 修改了返回按钮的返回路径 -->
+                            <a href="/console/asscyc/index" class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
+                        </div>
+                        <h3 th:case="'ADD'" class="box-title">添加考评周期信息</h3>
+                        <h3 th:case="'VIEW'" class="box-title">查看考评周期详情</h3>
+                        <h3 th:case="'EDIT'" class="box-title">修改考评周期信息</h3>
+                    </div>
+                    <div class="box-body">
+                        <form class="form-horizontal tonto-form-validate" callback-url="/console/asscyc/index" action="/console/asscyc/save" method="post" th:object="${assessCycle}">
+                            <input type="hidden" th:field="*{id}" />
+                            <div class="form-group">
+                                <label for="unitId" class="col-sm-2 control-label">机构单位</label>
+                                <div class="col-sm-4">
+			                        <input type="text" th:if="${agencyId} == null" class="form-control tonto-select-agency"  name="unitId" th:attr="unitid=${assessCycle.unitId}" placeholder="请选择机构"></input>
+			                        <input type="text" th:if="${agencyId} != null" class="form-control" readonly="readonly"  th:value="${agencyName}"></input> 
+			                        <input type="hidden" th:if="${agencyId} != null" class="form-control" name="unitId" th:value="${agencyId}"></input>                         
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cycleName" class="col-sm-2 control-label">周期名称</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" required="required" th:field="*{cycleName}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cycleDescribe" class="col-sm-2 control-label">周期描述</label>
+                                <div class="col-sm-8">
+                                    <textarea type="text" class="form-control" rows="3" maxlength="200" required="required" placeholder="请输入周期描述" th:field="*{cycleDescribe}"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="assessType">考评类型</label>
+                                <div class="col-sm-4">
+                                    <select name="assessType" class="form-control" required="required">
+                                        <option th:selected="${#strings.equals(assessCycle.assessType, 1)}" value="1">年中测评</option>
+                                        <option th:selected="${#strings.equals(assessCycle.assessType, 2)}" value="2">年度考评</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cycleStartTime" class="col-sm-2 control-label">周期起止时间</label>
+                                <div class="col-sm-3">
+                                    <input type="text" th:field="*{cycleStartTime}" class="form-control tonto-datepicker-date"  required="required" placeholder="请输入时间"/>
+                                </div>
+                                <label for="cycleEndTime" style="width:15px" class="col-sm-1 control-label">至</label>
+                                <div class="col-sm-3">
+                                    <input type="text" th:field="*{cycleEndTime}" class="form-control tonto-datepicker-date" data-type="cycleEnd" required="required" placeholder="请输入时间"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="assessStartTime" class="col-sm-2 control-label">考评起止时间:</label>
+                                <div class="col-sm-3">
+                                    <input type="text" th:field="*{assessStartTime}" class="form-control tonto-datepicker-date" required="required" placeholder="请输入时间"/>
+                                </div>
+                                <label for="assessEndTime" style="width:15px" class="col-sm-1 control-label">至</label>
+                                <div class="col-sm-3">
+                                    <input type="text" th:field="*{assessEndTime}" class="form-control tonto-datepicker-date" data-type="assessEnd" required="required" placeholder="请输入时间"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-primary js-ajax-submit">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    </section>
+    </div>
+    <div th:include="console/footer"></div>
+</body>
+<script type="text/javascript">
+/*<![CDATA[*/
+$(function() {
+    var cycleStart = $("[name='cycleStartTime']");
+    var assessStart = $("[name='assessStartTime']");
+
+    $.validator.addMethod("cycleEnd", function(value, element) {
+        var cs = cycleStart.val();
+        if (cs) {
+            return this.optional(element) || cs <= value;
+        }
+        return true;
+    }, "考评周期结束时间必须大于开始时间");
+
+
+    $.validator.addMethod("assessEnd", function(value, element) {
+        var as = assessStart.val();
+        if (as) {
+            return this.optional(element) || as <= value;
+        }
+        return true;
+    }, "考评结束时间必须大于开始时间");
+
+});
+/*]]>*/
+</script>
+
+</html>

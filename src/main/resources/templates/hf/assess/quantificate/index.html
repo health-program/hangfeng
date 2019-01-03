@@ -1,0 +1,463 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content">
+        <div class="row">
+            <div class="container">
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active"><a href="#item" data-toggle="tab">项目</a></li>
+                    <li><a href="#extra" data-toggle="tab">附加</a></li>
+                    <div style="text-align:right"><a href="/console/temp/index" class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a></div>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="row tab-pane fade in active" id="item" style="padding:20px">
+                        <div class="col-md-4">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">项目列表</h4>
+                                </div>
+                                <div class="box-body" id="itemTree" style="height:600px;overflow:auto;padding-bottom:10px">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8" id="itemEditor">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">项目编辑</h4>
+                                </div>
+                                <div class="box-body" style="height:600px">
+                                    <ol class="breadcrumb" id="itemBreadcrumb">
+                                    </ol>
+                                    <form class="form-horizontal tonto-form-validate" id="itemForm" action="/console/assess/item/save" method="post">
+                                        <input type="hidden" name="templateId" />
+                                        <input type="hidden" name="id" id="itemId" />
+                                        <input type="hidden" name="parentItemId" />
+                                        <div class="form-group">
+                                            <label for="itemName" class="col-sm-2 control-label">项目名称</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" required="required" name="itemName" placeholder="请输入项目名称"></input>
+                                            </div>
+                                            <label for="basicScore" class="col-sm-2 control-label">基础得分</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" required="required" name="basicScore" data-type="bisicScore treeScore" placeholder="请输入基础得分"></input>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="itemDescription" class="col-sm-2 control-label">项目描述</label>
+                                            <div class="col-sm-10">
+                                                <textarea type="text" name="itemDescription" class="form-control" rows="3" maxlength="200" th:inline="text" placeholder="请输入模板描述"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-1 col-sm-6">
+                                                <a onclick="addSubItem()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加子项</a>
+                                                <a onclick="removeItem()" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除项目</a>
+                                            </div>
+                                            <div class="col-sm-5" style="text-align:right">
+                                                <button type="submit" class="btn btn-primary">保存</button>
+                                                <a onclick="resetItem()" class="btn btn-default">重置</a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row tab-pane fade" id="extra" style="padding:20px">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">附加项目</h4>
+                            </div>
+                            <div class="box-body" style="min-height:600px">
+                                <div id="extraTableDiv">
+                                    <section class="content table-content">
+                                        <table id="extraDataGrid"></table>
+                                    </section>
+                                    <div id="toolbar">
+                                        <a onclick="addExtraItem()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加附加项目</a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <form class="form-horizontal tonto-form-validate" id="extraItemForm" action="/console/assess/item/extra/save" method="post" style="display:none">
+                                        <input type="hidden" name="templateId" />
+                                        <input type="hidden" name="id" id="itemExtraId" />
+                                        <div class="form-group">
+                                            <label for="extraType" class="col-sm-2 control-label">附加类型</label>
+                                            <div class="col-sm-3">
+                                                <select name="extraType" id="extraTypeSelect" class="form-control tonto-select-constant" enumcode="extra-item-type"></select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="extraDescription" class="col-sm-2 control-label">附加描述</label>
+                                            <div class="col-sm-8">
+                                                <textarea type="text" name="extraDescription" required="required" class="form-control" rows="3" maxlength="200" th:inline="text" placeholder="请输入附加描述"></textarea>
+                                            </div>
+                                        </div>
+                                        <div id="extraToggleDiv">
+                                            <div class="form-group">
+                                                <label for="alterUpper" class="col-sm-2 control-label">加扣分上限</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" required="required" name="alterUpper" data-type="score" large-than="#alterLower" placeholder="请输入加扣分上限"></input>
+                                                </div>
+                                                <label for="alterLower" class="col-sm-2 control-label">加扣分下限</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" id="alterLower" required="required" name="alterLower" data-type="score" placeholder="请输入加扣分下限"></input>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="accumulateUpper" class="col-sm-2 control-label">累计上限</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" data-type="score" large-than="#alterUpper" name="accumulateUpper" placeholder="请输入累计上限"></input>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-3">
+                                                <button type="submit" class="btn btn-primary">保存</button>
+                                                <button type="reset" class="btn btn-default">重置</button>
+                                            </div>
+                                            <div class="col-sm-5" style="text-align:right">
+                                                <a onclick="toTableExtra()" alt="返回" class="btn btn-warning" style="width:40px"><i class="  glyphicon glyphicon-share-alt"></i></a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:include="console/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    var templateId;
+
+    $(function() {
+        templateId = $.getUrlVariable("id");
+        if (!templateId) {
+            $.failMessage("请选择一个模板进行配置 ");
+            return;
+        }
+
+        $("[name='templateId']").val(templateId);
+
+        $.validator.addMethod("score", function(value, element) { return this.optional(element) || (/^\d+(\.5)?$/.test(value)); }, "分数必须为正整数，或者带0.5的小数");
+
+        initItem();
+        initItemExtra();
+    });
+
+    //-------------- 项目部分 -----------------
+
+    function initItem() {
+        $("#itemForm")[0].submitHandler = function() {
+            layer.msg("保存成功", { icon: 1 });
+            checkItem(null);
+            initItemTree();
+        }
+        initItemTree();
+
+        $.validator.addMethod("bisicScore", function(value, element) { return this.optional(element) || (/^([1-9]\d*(\.5)?)$|^0\.5$/.test(value)); }, "基础得分必须为大于0整数，或者带0.5的小数");
+
+        $.validator.addMethod("treeScore",
+            function(value, element) {
+                if (checkedItem) {
+                    var parent = checkedItem;
+
+                    var nodes = parent.nodes;  
+                    
+	                var total =isAddSubItem ? parent.data.basicScore : value * 1;
+	                var s = isAddSubItem ? value * 1: 0;               
+                
+                    if (nodes) {
+                        for (var j = 0; j < nodes.length; j++) {
+                            s += (nodes[j].data.basicScore * 1);
+                        }
+                    }
+
+                    if (s > total)
+                        return this.optional(element) || false;
+                    
+                    if(!isAddSubItem){
+                    	var p = tree.getNode(parent.parentId);
+                    	if(p){
+                    		var x = 0;
+                    		for (var j = 0; j < p.nodes.length; j++) {
+                    			var pd =  p.nodes[j].data;
+                    			if(pd.id == parent.data.id) {
+                    				x+= value *1;
+                    			}else {
+                                    x += (pd.basicScore * 1);
+                    			}
+                            }
+                    		
+                    		if (x > p.data.basicScore)
+                                return this.optional(element) || false;
+                    	}
+                    	
+                    }
+                    
+                }
+
+                return this.optional(element) || true;
+            }, "子考评项的基础得分之和必须小于上级考评项的基础得分");
+    }
+
+    var g = function(nodeItems, data) {
+        var nodes = [];
+
+        if ($.isArray(nodeItems)) {
+            nodeItems.forEach(function(item) {
+                var node = {
+                    text: item.itemName,
+                    data: item                
+                };
+
+                var children = $.grep(data, function(row, index) {
+                    return item.id == row.parentItemId;
+                });
+
+                if (children && children.length > 0) {
+                    node.nodes = g(children, data);
+                }
+
+                nodes.push(node);
+            })
+        }
+        return nodes;
+    }
+
+    var $tree = $("#itemTree");
+    var checkedItem;
+    var isAddSubItem = false;
+    var tree;
+    
+    function initItemTree() {
+
+        $.getAjax("/console/assess/item/template?id=" + templateId, function(data) {
+            var roots = $.grep(data, function(row, index) {
+                return row.parentItemId == null;
+            });
+
+            var treedata = g(roots, data);
+
+            $tree.treeview({
+                data: treedata,
+                levels: 2
+            });
+
+            $tree.on('nodeSelected', function(event, data) {
+                checkItem(data);
+            });
+            
+            tree = $tree.treeview(true);
+        });
+
+    }
+
+    function checkItem(data) {
+
+        checkedItem = data;
+        isAddSubItem = false;
+
+        var $bb = $("#itemBreadcrumb");
+        $bb.empty();
+
+        if (!data) {
+            setItem(null);
+            return;
+        }
+
+        setItem(data.data);
+
+        var list = [];
+        do {
+            list.push('<li class="active">' + data.data.itemName + '</li>');
+            data = $tree.treeview('getParent', data);
+        } while (data && !(data instanceof jQuery));
+
+
+        var i = list.length - 1;
+        for (; i >= 0; i--) {
+            $bb.append(list[i]);
+        }
+    }
+
+    function setItem(item) {
+        if (item) {
+            $("#itemId").val(item.id);
+            $("[name='itemName']").val(item.itemName);
+            $("[name='basicScore']").val(item.basicScore);
+            $("[name='itemDescription']").val(item.itemDescription);
+            $("[name='parentItemId']").val(item.parentItemId || "");
+
+        } else {
+            $("#itemId").val("");
+            $("[name='itemName']").val("");
+            $("[name='basicScore']").val("");
+            $("[name='itemDescription']").val("");
+            $("[name='parentItemId']").val("");
+        }
+    }
+
+    function resetItem() {
+        checkItem(null);
+    }
+
+    function removeItem() {
+        if (checkedItem) {
+            layer.confirm('确定删除吗?', function() {
+                $.getAjax('/console/assess/item/delete?id=' + checkedItem.data.id, function() {
+                    $.successMessage("删除成功");
+                    checkItem(null);
+                    initItemTree();
+                });
+            });
+        } else {
+            $.failMessage("请先选择一个考评项目");
+        }
+    }
+
+    function addSubItem() {
+        if (isAddSubItem)
+            return;
+        isAddSubItem = true;
+        setItem(null);
+        if (checkedItem) {
+            $("[name='parentItemId']").val(checkedItem.data.id);
+            $("#itemBreadcrumb").append('<li class="active"></li>');
+        }
+    }
+
+    //-------------- 附加部分 -----------------
+    var table;
+
+    function initItemExtra() {
+        $("#extraItemForm")[0].submitHandler = function() {
+            layer.msg("保存成功", { icon: 1 });
+            toTableExtra();
+            table.refresh();
+        }
+        $.getConstantEnum(["extra-item-type"], initItemExtraTable);
+
+        $("#extraTypeSelect").change(extraTypeChange);
+
+    }
+
+    function initItemExtraTable(enumMap) {
+
+
+        table = $.createTable("#extraDataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { title: "附加类型", field: "extraType", formatter: $.getEnumColumnFormatter(enumMap, "extra-item-type") },
+                    { title: "附加描述", field: "extraDescription" },
+                    { title: "加扣分上限", field: "alterUpper" },
+                    { title: "加扣分下限", field: "alterLower" },
+                    { title: "累计上限", field: "accumulateUpper" },
+                    {
+                        title: "修改",
+                        width: "60px",
+                        align: 'center',
+                        events: {
+                            'click .edit': function(e, value, row, index) {
+                                editExtra(row);
+                            }
+                        },
+                        formatter: $.editColumnFormatter()
+                    },
+                    {
+                        title: "删除",
+                        width: "60px",
+                        align: 'center',
+                        events: {
+                            'click .remove': function(e, value, row, index) {
+                                removeExtra(row);
+                            }
+                        },
+                        formatter: $.removeColumnFormatter()
+                    }
+                ]
+            ],
+            url: '/console/assess/item/extra/template?id=' + templateId,
+            pagination: true,
+            toolbar: "#toolbar",
+            showRefresh: true,
+        });
+    }
+
+    function extraTypeChange() {
+        var value = $("#extraTypeSelect").val();
+        var $div = $("#extraToggleDiv");
+        if (value == 3) {
+            $div.hide();
+            $div.find("input").attr("disabled", true);
+        } else {
+            $div.show();
+            $div.find("input").attr("disabled", false);
+        }
+    }
+
+    function setItemExtra(item) {
+
+        if (item) {
+            $("#itemExtraId").val(item.id);
+            $("[name='extraType']").val(item.extraType);
+            $("[name='extraDescription']").val(item.extraDescription);
+            $("[name='alterUpper']").val(item.alterUpper || "");
+            $("[name='alterLower']").val(item.alterLower || "");
+            $("[name='accumulateUpper']").val(item.accumulateUpper || "");
+        } else {
+            $("#itemExtraId").val("");
+            $("[name='extraDescription']").val("");
+            $("[name='alterUpper']").val("");
+            $("[name='alterLower']").val("");
+            $("[name='accumulateUpper']").val("");
+        }
+
+        extraTypeChange();
+    }
+
+    function toEditExtra() {
+        $("#extraItemForm").show();
+        $("#extraTableDiv").hide();
+    }
+
+    function toTableExtra() {
+        $("#extraItemForm").hide();
+        $("#extraTableDiv").show();
+    }
+
+    function addExtraItem() {
+        setItemExtra(null);
+        toEditExtra();
+    }
+
+    function editExtra(row) {
+        setItemExtra(row);
+        toEditExtra();
+    }
+
+    function removeExtra(row) {
+        layer.confirm('确定删除吗?', function() {
+            $.getAjax('/console/assess/item/extra/delete?id=' + row.id, function() {
+                $.successMessage("删除成功");
+                toTableExtra();
+                table.refresh();
+
+            });
+        });
+    }
+    
+    /*]]>*/
+    </script>
+</body>
+
+</html>

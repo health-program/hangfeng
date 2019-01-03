@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="console/header">
+</head>
+<body>
+	<section class="content-header">
+		<h1>科室维护管理</h1>
+		<small>科室列表</small>
+
+		<div style="border: 1px #ddd solid;" class="box-body">
+			
+				<div class="form-group">
+					<label style="line-height: 36px;" for="depType"
+						class="col-sm-1 control-label">科室类别</label>
+					<div style="width: 13.666667%" class="col-sm-2">
+						<select id="dict_id" name="dict_id" class="form-control">
+							<option value="0">请选择</option>
+							<option th:each="dic,dictsStat:${dicts}"
+								th:text="${dic.dictName}" th:value="${dic.id}"></option>
+						</select>
+					</div>
+					<label style="line-height: 36px" for="depName"
+						class="col-sm-1 control-label">科室名称</label>
+					<div style="width: 13.666667%" class="col-sm-2">
+						<input type="text" name="depName" class="form-control"
+							id="depName"  />
+					</div>
+					<div class="col-sm-1">
+						<button type="submit" class="btn btn-primary js-ajax-submit">查询</button>
+					</div>
+				</div>
+		</div>
+	</section>
+
+	<div th:include="console/footer"></div>
+
+</body>
+</html>

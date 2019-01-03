@@ -1,0 +1,315 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+
+<head th:include="console/header">
+</head>
+
+<body>
+
+
+	<div class="container">
+		<section class="content">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="panel panel-default" style="margin-bottom: 0px">
+						<div class="panel-heading">
+							<h4 class="panel-title">人员列表</h4>
+						</div>
+					</div>
+					<div id="userTree" style="height: 600px; overflow: auto;"></div>
+				</div>
+				<div class="col-md-8" id="itemEditor">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">编辑</h4>
+						</div>
+						<div class="panel-body" style="padding-top: 20px; height: 600px">
+							<!-- <ol class="breadcrumb" id="itemBreadcrumb">
+                            </ol> -->
+							<form class="form-horizontal tonto-form-validate" id="userForm"
+								action="/system/admin/user/save" method="post">
+								<input type="hidden" name="id" />
+								<div class="form-group">
+									<label for="itemName" class="col-sm-2 control-label">账号</label>
+									<div class="col-sm-4">
+										<input type="text" class="form-control" required="required"
+											name="account" placeholder="请输入账号"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="basicScore" class="col-sm-2 control-label">姓名</label>
+									<div class="col-sm-4">
+										<input type="text" class="form-control" required="required"
+											name="name" placeholder="请输入姓名"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="itemDescription" class="col-sm-2 control-label">用户描述</label>
+									<div class="col-sm-8">
+										<textarea type="text" name="description" class="form-control"
+											rows="3" maxlength="200" th:inline="text"
+											placeholder="请输入用户描述"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="itemName" class="col-sm-2 control-label">所属机构</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" readonly="readonly"
+											id="unitName"></input> <input type="hidden" name="unitId"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="itemName" class="col-sm-2 control-label">业务角色</label>
+									<div class="col-sm-8">
+										<select id="roleSelect" multiple="multiple">
+											<option th:each="role : ${roles}" th:value="${role.id}"
+												th:text="${role.roleName}"></option>
+										</select> <input type="hidden" name="roles" id="roles"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-6 col-sm-offset-2">
+										<button type="submit" class="btn btn-primary">保存</button>
+										<a onclick="resetItem()" class="btn btn-default">重置</a>
+									</div>
+									<div class="col-sm-4" style="align: right">
+										<a onclick="resetPassword()" class="btn btn-warning">密码还原</a>
+										<a onclick="removeUser()" class="btn btn-default">删除人员</a>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<div th:include="console/footer"></div>
+	<script type="text/javascript"
+		src="/static/assets/bootstrap-3.3.5/js/bootstrap-multiselect.js"></script>
+	<script type="text/javascript">
+    /*<![CDATA[*/
+    var userTree;
+    var roleHidden;
+
+    $(function() {
+
+        userTree = $("#userTree");
+        roleHidden = $("#roles");
+		
+        initRoleSelect();
+        initTree();
+
+        $("#userForm")[0].submitHandler = function(){
+            $.successMessage("保存成功");
+            initTree();
+        }
+
+    });
+    
+    function resetPassword(){
+       var userId =  $('[name="id"]').val();
+		if(userId) {
+			layer.confirm('<span style="color:red;">（还原后的密码为：000000），确定还原密码吗？</span>', function() {
+				$.postAjax("/system/admin/user/reset/password",{userId:userId},function(){
+					layer.msg("重置密码成功", { icon: 1 });
+				});
+			});
+		} else {
+			layer.msg("请选择一个用户", { icon: 5 });
+		}  
+    }
+
+    function initTree() {
+
+        $.getAjax("/system/admin/user/list", function(data) {
+
+            if (data.agencys) {
+
+                var agencys = data.agencys;
+                var users = data.users;
+
+                agencys.forEach(function(agency) {
+
+                    agency.text = agency.name;
+                    agency.isAgency = true;
+
+                    if (users) {
+                        agency.nodes = $.grep(users, function(n, i) {
+                            return agency.id == n.unitId;
+                        });
+
+                        if (agency.nodes) {
+
+                            if (agency.nodes.length == 0) {
+                                agency.nodes = null;
+                            } else {
+                                agency.nodes.forEach(function(n) {
+                                    n.text = n.name;
+                                    n.agencyName = agency.name;
+                                });
+
+                            }
+                        }
+                    }
+                });
+
+                userTree.treeview({
+                    data: agencys,
+                    levels: 1
+                });
+
+                userTree.on('nodeSelected', function(event, data) {
+                    selectItem(data);
+                });
+            }
+        });
+    }
+
+    var selectedItem;
+
+    function setUser(user) {
+
+        if (user) {
+
+            $('[name="id"]').val(user.id);
+            $('[name="account"]').val(user.account);
+            $('[name="name"]').val(user.name);
+            $('[name="description"]').val(user.description);
+            $('[name="unitId"]').val(user.unitId);
+            $('[name="roles"]').val(user.roles);
+
+            $('#unitName').val(user.agencyName);
+            $('[name="roles"]').val(user.roles);
+
+            $('[name="account"]').attr("readonly","readonly");
+
+        } else {
+
+            $('[name="id"]').val("");
+            $('[name="account"]').val("");
+            $('[name="name"]').val("");
+            $('[name="description"]').val("");
+            $('[name="unitId"]').val("");
+            $('[name="roles"]').val("");
+
+            $('#unitName').val("");
+            $('[name="roles"]').val("");
+
+            $('[name="account"]').removeAttr("readonly");
+        }
+
+        initRoleSelect();
+    }
+
+    function setUnit(agency) {
+        setUser(null);
+        if (agency) {
+            $('[name="unitId"]').val(agency.id);
+            $('#unitName').val(agency.name);
+        } else {
+            $('[name="unitId"]').val("");
+            $('#unitName').val("");
+        }
+    }
+
+    function selectItem(data) {
+
+        selectedItem = data;
+        	
+        if (data && data.isAgency) {
+            setUnit(data);
+        } else {
+            setUser(data);
+        }
+
+/*         var $bb = $("#itemBreadcrumb");
+        $bb.empty();
+
+        if (data) {
+            if (data.isAgency) {
+                $bb.append('<li class="active">' + data.name + '</li>');
+            } else {
+                $bb.append('<li>' + data.agencyName + '</li>');
+                $bb.append('<li class="active">' + data.name + '</li>');
+            }
+        } else {
+            $bb.append('<li class="active">/</li>');
+        } */
+    }
+
+
+    function resetItem() {
+    	selectItem(null);
+    }
+    
+    function removeUser(){
+    	if (selectedItem && !selectedItem.isAgency) {           
+    		layer.confirm('确定删除吗?', function() {
+                $.getAjax('/system/admin/user/delete?id=' + selectedItem.id, function() {
+                    $.successMessage("删除成功");
+                    initTree();
+                });
+            });
+        } else {
+        	$.errorMessage("请先选择一个人员进行删除");
+        }
+    }
+	
+    var isFirst = true;
+
+    function initRoleSelect() {
+
+        var roles = $("#roles").val();
+        var select = $('#roleSelect');
+
+        select.find("option").attr("selected", false);
+        
+        if (roles) {
+            var rs = roles.split(",");
+                        
+            rs.forEach(function(r) {
+                select.find("option[value='" + r + "']").attr("selected", true);
+            });
+        } 
+        
+        if(isFirst){
+        	select.multiselect({
+                buttonClass: 'btn',
+                buttonWidth: 'auto',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        roleHidden.val("");
+                        return '请选择业务角色';
+
+                    } else {
+                        var selected = '';
+                        var selectedIds = '';
+                        options.each(function() {
+                            selected += $(this).text() + ',';
+                            selectedIds += $(this).attr("value") + ',';
+                        });
+                        roleHidden.val(selectedIds);
+                        return selected.substr(0, selected.length - 1);
+                    }
+                },
+            });
+        	
+        	isFirst = false;
+        } else {
+        	
+        	select.multiselect("rebuild");
+        }
+        
+        
+    }
+    
+
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

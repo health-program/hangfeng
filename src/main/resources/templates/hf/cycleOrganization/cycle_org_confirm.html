@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+<div class="container">
+	<section class="content">
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<div class="pull-right">
+	                        <a href="/cycle/org/index?cached=1" class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
+	                    </div>
+						  <h1 class="box-title">周期考评-机构</h1>
+					</div>
+					<div class="box-body">
+						<div class="row" style="padding:15px;padding-top:0px">
+							<form class="form-horizontal" th:object="${user}">
+							<fieldset>
+							     <legend>个人基本信息</legend>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">姓名</label>
+									<div class="col-sm-3">
+										<p class="form-control-static" th:text="*{name}" />
+									</div>
+									<label class="col-sm-2 control-label">性别</label>
+									<div class="col-sm-3">
+										<p class="form-control-static" id="sex"
+											th:attr="enum-code-value=${user.sex}" />
+									</div>
+								</div>
+
+								<div>
+									<label class="col-sm-2 control-label">出生日期</label>
+									<div class="col-sm-3">
+										<p class="form-control-static" th:text="*{birthday}" />
+									</div>
+									<label class="col-sm-2 control-label">职务</label>
+									<div class="col-sm-3">
+										<p class="form-control-static" id="jobDuties"
+											th:attr="enum-code-value=${user.jobDuties}" />
+									</div>
+								</div>
+								</fieldset>
+							</form>
+						</div>
+
+						<div>
+							<form class="form-horizontal tonto-form-validate" id="unitForm"
+								action="/cycle/org/save" callback-url="/cycle/org/index?cached=1"
+								method="post" th:object="${perCycAss}">
+								<input type="hidden" name="id" th:field="*{id}" />
+                                <input type="hidden" name="fuserId" th:value="${user.id}"/>
+                                <input type="hidden" name="fcycleId" th:value="${assessCycle.id}"/>
+								<fieldset id="fieldset1">
+									<legend>考评周期</legend>
+									<div class="form-group">
+										<label for="cycleName" class="col-sm-2 control-label">考评周期</label>
+										<div class="col-sm-3">
+											<input type="text" required="required" class="form-control"
+												th:value="${assessCycle.cycleName}" placeholder="请选择周期" />
+										</div>
+										<span onclick="quantitativeScores()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>&nbsp;&nbsp;个人量化总分</span>
+									</div>
+								</fieldset>
+
+								<fieldset id="fieldset2">
+									<legend>本年度医德医风工作总结</legend>
+									<div class="form-group">
+										<label for="workSummary" class="col-sm-2 control-label">工作总结</label>
+										<div class="col-sm-8">
+											<textarea type="text" name="workSummary" required="required"
+												class="form-control" id="workSummary" rows="6"
+												maxlength="5000" th:inline="text" th:field="*{workSummary}"
+												placeholder="请输入医德医风工作总结"></textarea>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset id="fieldset3">
+									<legend>自评意见</legend>
+									<div class="form-group">
+										<label for="selfAssOpinion" class="col-sm-2 control-label">自评意见</label>
+										<div class="col-sm-8">
+											<textarea type="text" name="selfAssOpinion"
+												required="required" class="form-control" id="selfAssOpinion"
+												rows="3" maxlength="1000" th:inline="text"
+												th:field="*{selfAssOpinion}" placeholder="请输入自评意见"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="selfAssGrade" class="col-sm-2 control-label">自评等次</label>
+										<div class="col-sm-3">
+											<select name="selfAssGrade" id="selfAssGrade" required="required"
+												class="form-control tonto-select-constant"
+												enumcode="ass-grades"
+												th:attr="selectedvalue=${perCycAss.selfAssGrade}">
+											</select>
+										</div>
+
+
+										<label for="assessedSign" class="col-sm-2 control-label">自评签字</label>
+										<div class="col-sm-3">
+											<input type="text" name="assessedSign" class="form-control"
+												required="required" maxlength="20"
+												th:field="*{assessedSign}" placeholder="请输入签名" />
+										</div>
+
+									</div>
+									<div class="form-group">
+										<label for="selfAssTime" class="col-sm-2 control-label">自评时间</label>
+										<div class="col-sm-3">
+											<input type="text" name="selfAssTime" required="required"
+												class="form-control tonto-datepicker-date" id="selfAssTime"
+												maxlength="20" th:field="*{selfAssTime}" placeholder="请选择时间" />
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset id="fieldset4">
+									<legend>科室（病区）意见</legend>
+									<div class="form-group">
+										<label for="departOpinion" class="col-sm-2 control-label">科室（病区）意见</label>
+										<div class="col-sm-8">
+											<textarea type="text" name="departOpinion" required="required"
+												class="form-control" id="departOpinion" rows="3"
+												maxlength="1000" th:inline="text" th:field="*{departOpinion}"
+												placeholder="请输入科室（病区）意见"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="departGrade" class="col-sm-2 control-label">考评等次</label>
+										<div class="col-sm-3">
+											<select name="departGrade" id="departGrade" required="required"
+												class="form-control tonto-select-constant"
+												enumcode="ass-grades"
+												th:attr="selectedvalue=${perCycAss.departGrade}">
+												<option value="">请选择</option>
+											</select>
+										</div>
+										<label for="depAssessorSign" class="col-sm-2 control-label">科室签字</label>
+										<div class="col-sm-3">
+											<input type="text" name="depAssessorSign" required="required"
+												class="form-control" id="depAssessorSign" maxlength="20"
+												th:field="*{depAssessorSign}" placeholder="请输入签名" />
+										</div>
+
+									</div>
+									<div class="form-group">
+										<label for="departAssTime" class="col-sm-2 control-label">考评时间</label>
+										<div class="col-sm-3">
+											<input type="text" name="departAssTime" required="required"
+												class="form-control tonto-datepicker-date"
+												id="departAssTime" maxlength="20"
+												th:field="*{departAssTime}" placeholder="请选择时间" />
+										</div>
+									</div>
+
+								</fieldset>
+
+								<fieldset id="fieldset5">
+									<legend>考评领导小组评价意见</legend>
+									<div class="form-group">
+										<label for="unitGroupOpinion" class="col-sm-2 control-label">考评领导小组评价意见</label>
+										<div class="col-sm-8">
+											<textarea type="text" name="unitGroupOpinion" required="required"
+												class="form-control" id="unitGroupOpinion" rows="3"
+												maxlength="1000" th:inline="text"
+												th:field="*{unitGroupOpinion}" placeholder="请输入评价意见"></textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="unitAssGrade" class="col-sm-2 control-label">考评等次</label>
+										<div class="col-sm-3">
+											<select name="unitAssGrade" id="unitAssGrade" required="required"
+												class="form-control tonto-select-constant"
+												enumcode="ass-grades"
+												th:attr="selectedvalue=${perCycAss.unitAssGrade}">
+												<option value="">请选择</option>
+											</select>
+										</div>
+										<label for="unitAssessorSign" class="col-sm-2 control-label">小组签字</label>
+										<div class="col-sm-3">
+											<input type="text" name="unitAssessorSign" required="required"
+												class="form-control" id="unitAssessorSign" maxlength="20"
+												th:value="${loginName}" placeholder="请输入签名" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="unitAssTime" class="col-sm-2 control-label">考评时间</label>
+										<div class="col-sm-3">
+											<input type="text" name="unitAssTime" required="required"
+												class="form-control tonto-datepicker-date" id="unitAssTime"
+												maxlength="20" th:field="*{unitAssTime}" placeholder="请选择时间" />
+										</div>
+
+									</div>
+								</fieldset>
+
+								<fieldset id="fieldset6">
+									<legend>被考核人对考评等次的确认</legend>
+									<div class="form-group">
+										<label for="confirmedResult" class="col-sm-2 control-label">被考核人对考评等次的确认</label>
+										<div class="col-sm-3">
+											<div class="radio">
+                                            <label>
+                                                <input type="radio" name="confirmedResult" value="0"/>不同意
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="confirmedResult" value="1"/>同意
+                                            </label>
+                                        </div>
+										</div>
+										<input type="hidden" th:field="*{confirmedResult}"
+											id="confirmedResult" /> <label for="assessedConfirmSign"
+											class="col-sm-2 control-label">自评确认签字</label>
+										<div class="col-sm-3">
+											<input type="text" class="form-control" required="required"
+												id="assessedConfirmSign" maxlength="20"
+												th:field="*{assessedConfirmSign}" placeholder="请输入签名" />
+										</div>
+
+									</div>
+
+									<div class="form-group">
+										<label for="confirmedTime" class="col-sm-2 control-label">确认时间</label>
+										<div class="col-sm-3">
+											<input type="text" name="confirmedTime" required="required"
+												class="form-control tonto-datepicker-date"
+												id="confirmedTime" maxlength="20"
+												th:field="*{confirmedTime}" placeholder="请选择时间" />
+										</div>
+									</div>
+
+	                                <div class="form-group">
+	                                    <div class="col-sm-2 col-sm-offset-2">
+	                                        <button type="submit" class="btn btn-success" style="width: 100px" id="saved" name="status" value="1">暂存</button>
+	                                    </div>
+	                                    <div class="col-sm-2">
+	                                        <button type="submit" class="btn btn-info"  id="btnSubmit" style="display:none; width: 100px" name="status" value="2">提交</button>
+	                                        <button type="button" style="width: 100px" onclick="assessSubmit()" class="btn btn-info"  name="status" value="2">提交</button>
+	                                    </div>
+	                               </div>
+								</fieldset>
+
+							</form>
+						</div>
+					</div>
+				</div>
+	</section>
+	</div>
+	<div th:include="console/footer"></div>
+
+	<script type="text/javascript">
+	/*<![CDATA[*/
+		$(function() {
+
+			$.getConstantEnum([ {
+				code : "sex-type",
+				type : 'p',
+				target : '#sex'
+			}, {
+				code : "job-duties-type",
+				type : 'p',
+				target : '#jobDuties'
+			} ]);
+
+			var crval = $("#confirmedResult").val();
+			$("#confirmedResult").attr("name", "");
+			if (crval) {
+				$("input[name='confirmedResult'][value=" + crval + "]").attr(
+						"checked", true);
+			}
+
+			/*------判断radio是否有选中，获取选中的值--------*/
+
+			/*   $(function(){
+			 $("#btnSubmit").click(function(){
+			 var val=$('input:radio[name="confirmedResult"]:checked').val();
+			 if(val==null){
+			 $.failMessage("考评等次还没确认!")
+			 return false;
+			 }
+			 return true;
+			 });
+			 }) */
+
+			$("#fieldset1").find("input,select,textarea").attr({
+				disabled : true,
+				readonly : true
+			});
+			$("#fieldset2").find("input,select,textarea").attr({
+				disabled : true,
+				readonly : true
+			});
+
+			$("#fieldset3").find("input,select,textarea").attr({
+				disabled : true,
+				readonly : true
+			});
+			$("#fieldset3").find(".tonto-datepicker-date").css("background",
+					"#eee");
+
+			$("#fieldset4").find("input,select,textarea").attr({
+				disabled : true,
+				readonly : true
+			});
+			$("#fieldset4").find(".tonto-datepicker-date").css("background",
+					"#eee");
+
+			$("#fieldset6").find("input,select,textarea").attr({
+				disabled : true,
+				readonly : true
+			});
+			$("#fieldset6").find(".tonto-datepicker-date").css("background",
+					"#eee");
+
+		});
+		
+	    function assessSubmit() {
+	        layer.confirm('<span style="color:red;">提交后该记录会抄送到下一级，无法修改，确定提交吗？</span>',function (){
+	            $('#btnSubmit').click();
+	        })
+	    };
+		
+		 function quantitativeScores() {
+		        var nuserId = $('input[name="fuserId"]').val();
+		        var ncycleId = $('input[name=fcycleId]').val();
+		        layer.open({
+		                type : 2,
+		                title : '等级配置',
+		                maxmin : true,
+		                area : $.getOpenLayerSize(900,450),
+		                content : "/console/assess/level/searchTemplateIdByCycleId?cycleId=" + ncycleId + "&buserId=" + nuserId
+		        });
+		    }
+		/*]]>*/
+	</script>
+
+</body>
+</html>

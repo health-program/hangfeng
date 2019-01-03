@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org" 
+>
+<head th:include="console/header">
+</head>
+<style>
+body {
+	backrgound-size:cover;
+}
+
+</style>
+<body style="background:url(/static/image/notice_bg2.jpg);background-size:cover;background-repeat:no-repeat;">
+	<div class="container">
+		<section class="content" style="margin-top: 80px;">
+			<a onclick="javascript :history.back(-1);"
+				style="float: right; margin-bottom: 11px; border-radius: 10px;"
+				class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
+			<div
+				style="border: 1px #ddd solid; border-radius: 10px; background-color: white; box-shadow: 10px 10px 5px #8888887a;"
+				class="col-sm-12">
+				<div class="page-header" style="text-align: center; color: red;">
+					<h3 style="font-family: 微软雅黑;" th:text="${info.title}"></h3>
+				</div>
+				<div
+					style="padding: 20px 37px 37px 37px; text-indent: 25px; height: 373px; white-space: pre-wrap; word-wrap: break-word; word-break: break-all; 
+					font-family: 微软雅黑; font-size: 16px; line-height: 25px; OVERFLOW: auto;"
+					th:text="${info.content}"></div>
+				<div style="padding: 10px 37px 10px 37px">
+					<span th:if="${info.accessory} != ''">附件:</span><a id="files" style="cursor: pointer;"
+						th:text="${info.accessory}"></a>
+				</div>
+				<div style="text-align: right; color: #999; margin-bottom: 9px;">昆山市卫生和计划生育委员会2018.3.1</div>
+				<input type="hidden" id="id" th:value="${info.id}" />
+			</div>
+		</section>
+	</div>
+	<div th:include="console/footer"></div>
+	<script type="text/javascript">
+//<![CDATA[
+$("#files").click(function(){
+	var download= $("#files").text();
+	var id= $("#id").val();
+	window.location.href="/console/infore/download?name="+download+"&id="+id;
+}) 
+//]]>
+</script>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head th:include="console/header">
+<title>Insert title here</title>
+
+<style type="text/css">
+
+tr{
+    min-height: 50px
+}
+
+  fieldset { min-width: -webkit-min-content; }
+  fieldset { min-width: inherit; }
+ fieldset {
+  display: block;
+  margin-left: 2px;
+  margin-right: 2px;
+  padding: 0.35em 0.625em 0.75em;
+  border: 2px groove ThreeDFace;
+}
+*|*::-moz-fieldset-content {
+  display: block;
+  unicode-bidi: inherit;
+  text-overflow: inherit;
+  height: 100%;   
+}
+pre { white-space: pre!important; border:none!important;}
+
+</style>
+</head>
+<body>
+	<div class="container">
+		<section class="content">
+			<div class="box-body" align="center"
+				style="margin: 0cm 0cm 0pt; text-align: left">
+				<div>
+					<a onclick="doPrint()" class="btn btn-default"><i
+						class="glyphicon glyphicon-edit"></i>打印</a>
+				</div>
+				<!--startprint-->
+				<!--注意要加上html里star和end的这两个标记-->
+				<h4 class="box-title"
+					style="margin-left: 140px; margin-bottom: 30px">
+					<font size="3px"> <strong> 昆山市医务人员医德医风考评登记表（试行）
+							（&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+							&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;年） </strong>
+					</font>
+				</h4>
+				<table class="table table-bordered" th:object="${perCycAss}" >
+				    <tr>
+						<td
+							style="vertical-align: middle; text-align: center;">机构名称</td>
+						<td colspan="5" th:text="*{unitName}" style="text-align: left;vertical-align: middle;"></td>
+					</tr>
+					<tr>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">姓名</td>
+						<td th:text="*{userName}"></td>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">性
+							别</td>
+						<td id="sex" th:text="${perCycAss.sex}==0?'女':'男'"></td>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">出生年月</td>
+						<td th:text="*{birthday}"></td>
+					</tr>
+					<tr>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">
+							政治面貌</td>
+						<td>
+							<p type="text" class="form-control-static" id="partisan"
+								th:attr="enum-code-value=${perCycAss.partisan}" />
+						</td>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">文化程度</td>
+						<td>
+							<p type="text" class="form-control-static" id="oeducation"
+								th:attr="enum-code-value=${perCycAss.oeducation}" />
+						</td>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">现聘岗位</td>
+						<td id="jobDuties"
+							th:attr="enum-code-value=${perCycAss.jobDuties}"
+							style="vertical-align: middle;"></td>
+					</tr>
+					<tr>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">聘用时间</td>
+						<td th:text="*{comeUnitTime}" style="vertical-align: middle;"></td>
+						<td
+							style="vertical-align: middle; text-align: center; width: 100px">从事工作</td>
+						<td colspan="3">
+							<p type="text" class="form-control-static" id="userProperty"
+								th:attr="enum-code-value=${perCycAss.userProperty}" />
+						</td>
+					</tr>
+                    <tr>
+                        <td style="vertical-align: middle; text-align: center;" >
+                            <div style="text-align: center; margin: 0 auto; width: 23px">本年度医德医风工作总结</div>
+                        </td>
+                        <td colspan="5">
+                        <fieldset style="width:700px;border:none;padding:0px;">
+                          <pre style="white-space: pre-wrap;border:none;background:white;font-family: Microsoft YaHei;padding:0px;"  th:text="*{workSummary}"></pre>
+                          </fieldset>
+                        </td>
+                    </tr>
+                    
+                    
+                    
+             
+					<tr >
+						<td style="vertical-align: middle; text-align: center;"
+							rowspan="2">自评意见</td>
+						<td colspan="5" th:text="*{selfAssOpinion}"></td>
+					</tr>
+					
+					<tr style="border-top: 6px solid white;">
+						<td colspan="5" style="height: 80px">
+							<p style="margin-left: 300px">签名:</p>
+							<br/><br/>
+							<p style="margin-left: 300px">年&nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								月&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; 日</p>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: middle; text-align: center;"
+							rowspan="2">科室（病区）意见</td>
+						<td colspan="5" th:text="*{departOpinion}"></td>
+					</tr>
+					<tr style="border-top: 6px solid white;">
+						<td colspan="5" style="height: 80px">
+							<p style="margin-left: 300px">负责人签名:</p>
+							<br/><br/>
+							<p style="margin-left: 300px">年&nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								月&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; 日</p>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: middle; text-align: center;"
+							rowspan="2">考评领导小组评价意见</td>
+						<td colspan="5" th:text="*{unitGroupOpinion}"></td>
+					</tr>
+					<tr style="border-top: 6px solid white;">
+						<td colspan="5" style="height: 80px">
+							<p style="margin-left: 300px">单位盖章:</p>
+							<br/><br/>
+							<p style="margin-left: 300px">年&nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								月&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; 日</p>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: middle; text-align: center;">确认等次</td>
+						<td style="vertical-align: middle;" colspan="5" id="unitAssGrade"
+							th:attr="enum-code-value=${perCycAss.unitAssGrade}"></td>
+					</tr>
+					<tr style="height: 40px">
+						<td style="vertical-align: middle; text-align: center;"
+							rowspan="2">被考核人对考评等次的确认（同意或不同意）</td>
+						<td colspan="5"></td>
+					</tr>
+					<tr style="border-top: 6px solid white;">
+						<td colspan="5" style="height: 80px">
+							<p style="margin-left: 300px">签名:</p>
+							<br/><br/>
+							<p style="margin-left: 300px">年&nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								月&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;&nbsp;&nbsp;&nbsp; 日</p>
+						</td>
+					</tr>
+				</table>
+				<p style="margin-left: 30px">备注：此表由被考核人、所在科室、考评机构填写</p>
+			</div>
+		</section>
+	</div>
+	<div th:include="console/footer"></div>
+	<script type="text/javascript">
+/*<![CDATA[*/
+    var userId;
+    $(function() {
+
+        userId = $('[name="userId"]').val();
+
+        var enums = [
+            { code: "sex-type", type: 'p', target: '#sex' },
+            { code: "nation-type", type: 'p', target: '#nation' },
+            { code: "partisan-type", type: 'p', target: '#partisan' },
+            { code: "job-rank-type", type: 'p', target: '#jobRank' },
+            { code: "job-duties-type", type: 'p', target: '#jobDuties' },
+            { code: "oeducation-type", type: 'p', target: '#oeducation' },
+            { code: "boolean-type", type: 'p', target: '#isAssessor' },
+            { code: "ass-grades", type: 'p', target: '#unitAssGrade' },
+            { code: "event_type", type: 'select', target: '[name="eventType"]' },
+            { code: "user_property_type", type: 'p', target: '#userProperty' },
+            { code: "job_level", type: 'p', target: '#jobLevel' }
+        ]
+
+        $.getConstantEnum(enums);
+          
+    });
+    
+    function doPrint() {   
+        bdhtml=window.document.body.innerHTML;   
+        sprnstr="<!--startprint-->";   
+        eprnstr="<!--endprint-->";   
+        prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17);   
+        prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));   
+        window.document.body.innerHTML=prnhtml;  
+        
+       window.print();   
+    } 
+    
+
+    
+    /*]]>*/
+</script>
+</body>
+</html>

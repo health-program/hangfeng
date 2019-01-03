@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org" 
+xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="console/header">
+</head>
+<body>
+
+<section class="content-header">
+    <h1>单位信息管理</h1>
+    <small style="font-size: 16px;">单位列表</small>
+</section>
+<section class="content-header">
+<div style="border: 1px #ddd solid;" class="box-body">
+<div class="form-group">
+<form action="">
+     <label style="line-height: 36px;"  for="unitName" class="col-sm-1 control-label">单位名称:</label>
+     <div style="width: 13.666667%" class="col-sm-2">
+    	<input type="text" name="unitName" class="form-control" id="unitName"/>
+    </div>
+   	 <label style="line-height: 36px" for="dict_id" class="col-sm-1 control-label">单位类型:</label>
+     <div style="width: 13.666667%" class="col-sm-2">
+      <select id="dict_id" name="dict_id" class="form-control">
+           <option value="0">请选择</option>
+           <option th:each="dic,dictsStat:${dicts}"  th:text="${dic.dictName}" th:value="${dic.id}"></option>
+      </select>
+    </div>
+    <label style="line-height: 36px" for="unitContacts" class="col-sm-1 control-label">联系人:</label>
+     <div style="width: 13.666667%" class="col-sm-2">
+    	<input type="text" name="unitContacts" class="form-control" id="unitContacts"/>
+    </div>
+    <label style="line-height: 36px" for="unitPhone" class="col-sm-1 control-label">联系方式:</label>
+    <div style="width: 13.666667%;" class="col-sm-2">
+    	<input type="text" name="unitPhone" class="form-control" id="unitPhone"/>
+    </div>
+    <div style="padding: 0 0 0 0; width:10.666667%; " class="col-sm-1">
+    <a onclick="query()" class="btn btn-primary">查询</a>
+    <button type="reset" class="btn btn-primary js-ajax-submit">重置</button>
+    </div>
+    </form>
+ </div>
+</div>
+</section>
+<section class="content table-content">
+    <table id="dataGrid"></table>
+</section>
+<div id="toolbar">
+    <a shiro:hasPermission="unit:save" href="/console/unit/from" class="btn btn-primary">新增单位信息</a>
+</div>
+<div id='info' style = "display : none">       
+<ul id="info2" class="list-group"></ul>
+</div>
+<div  th:include="console/footer"></div>
+<script type="text/javascript">
+		$table = $("#dataGrid");
+		$(function () {
+		    initDataGrid();
+		});
+		function query(){
+			$("#dataGrid").bootstrapTable('destroy');
+			initDataGrid();
+		}
+		//查询单位信息
+		function initDataGrid(){
+		    $table.bootstrapTable({
+		        height : tableModel.getHeight(),
+		        idField : "unitinfo_id",
+		        columns : [[
+		            {title: "单位名称", field: "unit_name" },
+		            {title: "单位类型", field: "dict_name" },
+		            {title: "联系人", field: "unit_contacts" },
+		            {title: "联系方式", field: "unit_phone" },
+		            {title: "操作", field: "operate",events: operateEvents, formatter: operateFormatter}
+		        ]],
+		        url : '/console/unit/list',
+		        queryParams: function(params){
+		        	         var params = {
+		        			unitName: $("#unitName").val(),
+		        			dict_id: $("#dict_id").val(),
+		        			unitContacts: $("#unitContacts").val(),
+		        			unitPhone: $("#unitPhone").val(),
+		        			sort:params.sort,
+		        			order:params.order,
+		        			limit: params.limit,
+		        			offset:params.offset,
+		        	    };       
+		            return params;
+		        },
+		        responseHandler : function (res) {
+		            return {
+		                rows : res.result.pageInfo.list,
+		                total : res.result.pageInfo.total
+		            }
+		        },
+		        search : false,
+		        sortName : 'create_time',
+		        sortOrder : 'asc',
+		        pagination : true,
+		        sidePagination : 'server',
+		        pageSize: 5,
+		        pageList : [5,10, 20],
+		        toolbar : "#toolbar",
+		        showRefresh : true,
+		        showToggle : true
+		    });
+		}
+		
+		function operateFormatter(value, row, index) {
+		    return [
+				'<a shiro:hasPermission="unit:info" class="grant" href="javascript:void(0);">',
+				'<i class="glyphicon glyphicon-edit"></i>查看详情',
+				'</a>  ',
+		        '<a shiro:hasPermission="unit:save" href="/console/unit/from?unitinfoId='+row.unitinfo_id+'" >',
+		        '<i class="glyphicon glyphicon-edit"></i>修改',
+		        '</a>  ',
+		        '<a shiro:hasPermission="unit:delete" class="remove" href="javascript:void(0);">',
+		        '<i class="glyphicon glyphicon-remove"></i>删除',
+		        '</a>'
+		    ].join('');
+		}
+		
+		//删除单位信息
+	    window.operateEvents = {
+	            'click .remove': function (e, value, row, index) {
+	                operaModel.delRow(row.unitinfo_id, '/console/unit/delete?unitinfo_id='+row.unitinfo_id, 'unitinfo_id');
+	            },
+	            'click .grant' : function (e, value, row, index) {
+	            	$.get('/console/unit/info', {'unitinfoId':row.unitinfo_id}, function(str){
+	            		 $("#info2").html(
+	            				'<li class="list-group-item"><strong>单位类型:</strong>'+str.result.info.dict_name+'</li>'+
+	            				'<li class="list-group-item"><strong>单位名称:</strong>'+str.result.info.unit_name+'</li>'+
+	            				'<li class="list-group-item"><strong>联  系  人:</strong>'+str.result.info.unit_contacts+'</li>'+
+	            				'<li class="list-group-item"><strong>联系方式:</strong>'+str.result.info.unit_phone+'</li>'+
+	            				'<li class="list-group-item"><strong>地址:</strong>'+str.result.info.unit_address+'</li>'); 
+	            		  layer.open({
+	            		    type: 1,
+	            		    title: '单位信息详情',
+	            		    shadeClose: true,
+		                    shade: false,
+		                    area: $.getOpenLayerSize(700, 300),
+	            		    content:$("#info").html()
+	            		  });
+	            		});
+	            }
+	        };
+				
+</script>
+</body>
+</html>

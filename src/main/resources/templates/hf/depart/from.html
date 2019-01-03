@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+<section class="content">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title" th:text="'科室'+${#strings.isEmpty(depart.id)?'添加':'修改'}"></h3>
+                </div>
+                <div class="box-body">
+                    <form class="form-horizontal js-ajax-form" action="/console/depart/save" method="post">
+                        <input type="hidden" name="id" th:value="${depart.id}" />
+                        <input type="hidden" name="createId" th:value="${depart.createId}" />
+                        <input type="hidden" name="createTime" th:value="${depart.createTime}" />
+                        <div class="form-group">
+                        	<label class="col-sm-2 control-label">科室类型</label>
+                       <div class="col-sm-10">
+                                <select name="depTypeId" class="form-control">
+                               		<option value="">请选择</option>
+                                     <option th:each="dic,dictsStat:${dicts}" th:selected="${#strings.equals(dic.id, depart.depTypeId)}"  th:text="${dic.dictName}" th:value="${dic.id}"></option>
+                                </select>
+                        	</div>
+                        </div>	
+                        <div class="form-group">
+                            <label for="depName" class="col-sm-2 control-label">科室名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="depName" class="form-control" id="depName"  th:value="${depart.depName}" />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contacts" class="col-sm-2 control-label">联系人</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="contacts" class="form-control" id="contacts" th:value="${depart.contacts}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contPhone" class="col-sm-2 control-label">联系方式</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="contPhone" class="form-control" id="contPhone"  th:value="${depart.contPhone}"  />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary js-ajax-submit">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:include="console/footer"></div>
+
+</body>
+</html>

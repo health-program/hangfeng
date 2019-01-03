@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+<section class="content">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="box box-primary">
+            	<input type="hidden" id="formType" class="tonto-form-type" th:value="${formType}" />
+                <div class="box-header with-border" th:switch="${formType}">
+                      <h3 th:case="'ADD'" class="box-title">添加角色信息</h3>
+					  <h3 th:case="'VIEW'" class="box-title">查看角色详情</h3>
+					  <h3 th:case="'EDIT'" class="box-title">修改角色信息</h3>
+                </div>
+                <div class="box-body">
+                    <form class="form-horizontal tonto-form-validate" id="unitForm" action="/org/role/save" method="post" th:object="${role}">
+                    
+                        <input type="hidden" name="id" id="id" th:field="*{id}" />                      
+                       
+                        <div class="form-group">
+                            <label for="roleName" class="col-sm-2 control-label">角色名称</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"  required="true" maxlength="30" th:field="*{roleName}" placeholder="请输入角色名称" />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="roleLevel" class="col-sm-2 control-label">角色等级</label>
+                            <div class="col-sm-8">
+                                <select name="roleLevel" class="form-control tonto-select-constant" enumcode="role-level-type" th:attr="selectedvalue=${role.roleLevel}">
+                        		</select>     
+                            </div>
+                        </div>
+                         
+                        <div class="form-group">
+                            <label for="roleDesc" class="col-sm-2 control-label">角色描述</label>
+                            <div class="col-sm-8">
+                                <textarea type="text" class="form-control" rows="3" maxlength="200" placeholder="请输入单位描述" th:field="*{roleDesc}"></textarea>
+                            </div>
+                        </div>                                             
+                                                   
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-2">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:include="console/footer"></div>
+
+</body>
+</html>

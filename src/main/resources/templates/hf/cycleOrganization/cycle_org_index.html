@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content-header">
+        <h1>周期考评-机构</h1>
+    </section>
+    <section class="content-header">
+        <fieldset>
+        <legend>查询条件</legend>
+        <form id="searchbar" class="form-horizontal">
+                <div class="form-group">
+                    <label style="width: 110px" for="unitId"
+                        class="col-sm-2 control-label">被考评科室</label>
+                    <div  class="col-sm-2">
+                        <input type="text" class="form-control tonto-select-unit"
+                            name="unitId" th:attr="unitid=${query?.unitId}" placeholder="请选择单位"></input>
+                    </div>
+                    <label style="width: 95px" for="assessCycleId"
+                        class="col-sm-2 control-label">考评周期</label>
+                    <div  class="col-sm-2">
+                        <input type="text" class="form-control tonto-select-assess-cycle-assess" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}"  name="assessCycleId" placeholder="请选择周期"></input>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label style="width: 110px" for="operateStateDe"
+                        class="col-sm-2 control-label">考评状态</label>
+                    <div  class="col-sm-2">
+                        <select class="form-control" id="operteStates"
+                            name="operateState">
+                            <option value="">全部</option>
+                            <option value="3">待考评</option>
+                            <option value="4">暂存</option>
+                            <option value="5">考评完毕</option>
+                        </select>
+                    </div>
+                    <label style="width: 95px" for="userName"
+                        class="col-sm-2 control-label">姓名</label>
+                    <div  class="col-sm-2">
+                        <input type="text" class="form-control" th:value="${query?.userName}" name="userName" />
+                    </div>
+                    <div style="text-align: right" class="col-sm-6">
+                        <a onclick="query()" class="btn btn-primary">查询</a>
+                        <button type="button" class="btn tonto-reset-button">重置</button>
+                    </div>
+                    
+                </div>
+        </form>
+        <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+        <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+        <input type="hidden" id="operateStateChecked" th:value="${query?.operateState}" />
+</fieldset>
+    </section>
+    <section class="content table-content">
+        <table id="dataGrid"></table>
+    </section>
+
+    <div id="toolbar">
+	    <div class="btn-group">
+	        <a onclick="viewCycleOrg()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看</a>
+	        <a onclick="comfirmCycleOrg()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>人员周期考评</a>
+	        <a onclick="backwardCycleOrg()" class="btn btn-default"><i class="glyphicon glyphicon-backward"></i>退回</a>
+	        <a onclick="noAssessment()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>未考评</a>
+	    </div>
+    </div>
+    
+    <div th:include="console/footer"></div>
+
+    <script type="text/javascript">
+        /*<![CDATA[*/
+        var table;
+        var unitTypeMap;
+        $(function() {
+        	var checked = $("#operateStateChecked").val();
+        	if(checked) {
+            	$("#operteStates").val(checked);
+        	}
+        	
+            $.getConstantEnum([ "ass-grades", "operateState" ], initDataGrid);
+        });
+
+        function initDataGrid(enumMap) {
+        	var limit = $("#pageLimit").val();
+            var offset = $("#pageOffset").val();
+            var page = (limit && offset) ? offset / limit + 1 : 1;
+        	
+            table = $.createTable("#dataGrid", {
+                idField : "id",
+                columns : [ [ 
+                              {radio:true},
+                              {
+                    title : "单位名称",
+                    field : "agencyName"
+                }, {
+                    title : "被考评科室",
+                    field : "departmentName"
+                }, {
+                    title : "姓名",
+                    field : "userName"
+                }, {
+                    title : "考评周期",
+                    field : "assessCycName"
+                }, {
+                    title : "自评等级",
+                    field : "selfAssGrade",
+                    formatter : $.getEnumColumnFormatter(enumMap, "ass-grades")
+                }, {
+                    title : "科室考评等级",
+                    field : "departGrade",
+                    formatter : $.getEnumColumnFormatter(enumMap, "ass-grades")
+                }, {
+                    title : "医院考评等级",
+                    field : "unitAssGrade",
+                    formatter : $.getEnumColumnFormatter(enumMap, "ass-grades")
+                }, {
+                    title : "被考评人状态",
+                    field : "operateState",
+                    formatter : function(value, row, index) {
+                    	if (value == 6) {
+							return "被评人已确认"
+						}else if (value >= 1)
+                            return "自评完毕";
+                        else
+                          return  "暂存";
+                    }
+                }, {
+                    title : "科室考评状态",
+                    field : "operateState",
+                    formatter : function(value, row, index) {
+                        if (value >= 3)
+                            return "科室考评完毕";
+                    }
+                }, {
+                    title : "考评小组操作状态",
+                    field : "operateState",
+                    formatter : function(value, row, index) {
+                        if (value >= 5)
+                            return "考评小组考评完毕";
+                        else if (value <= 3)
+                            return "未考评";
+                        else
+                            return "考评小组暂存"
+
+                    }
+                } ] ],
+                url : '/cycle/org/find/list',
+                searchbar : '#searchbar',
+                toolbar: "#toolbar",
+                sortOrder : 'asc',
+                pageSize: limit || undefined,
+                pageNumber: page || 1,
+                pagination : true,
+                showRefresh : true,
+                pageSize : 10,
+                clickToSelect:true,
+                showColumns:true
+            });
+        }
+
+        function viewCycleOrg() {
+        	var row = getSelectRow();
+        	//var userId = row.orgUserId;
+        	if (row) {
+        		window.location = '/cycle/org/view?id=' + row.id + '&userId=' + row.orgUserId;
+			} else {
+			    $.errorMessage("请选中一条业务数据！");
+			}     
+            
+        }
+
+        function comfirmCycleOrg() {
+        	var row = getSelectRow();
+        	if (row) {
+        		if (row.operateState > "4") {//考评小组考评完毕
+                    layer.alert("该数据已提交！")
+                    return false;
+                }
+               window.location='/cycle/org/edit?id=' + row.id;
+			} else {
+				$.errorMessage("请选中一条业务数据！");
+			}
+            
+        }
+        
+        function backwardCycleOrg() {
+        	var row = getSelectRow();
+        	if (row) {
+        		if (row.operateState > "4") {
+                    layer.alert("该数据已提交！")
+                    return false;
+                }
+                layer.confirm('退回后该条记录被评人的状态为暂存，需重新提交，确定退回吗？',function() {
+                    $.getJSON('/person/cyc/backward?id=' + row.id);
+                    var index = layer.index  
+                    layer.close(index);  
+                    table.refresh();
+                })
+			} else {
+				$.errorMessage("请选中一条业务数据！");
+			}
+		}
+        
+        //未考评
+        function noAssessment() {
+          	var assessCycleId = $("input[name=assessCycleId]").val();
+        	$.openUrlLayerOrLocate('/cycle/org/to/no/assessment?assessCycleId=' + assessCycleId,{title:"未完成考评人员列表"}); 
+        }
+        
+        function query() {
+            table.refresh();
+        }
+        
+        function getSelectRow() {
+            var rows = table.getSelections();
+            return rows.length>0?rows[0]:null;
+        }
+        
+     // 关键词搜索框添加绑定回车函数
+        $('body').bind('keypress', function(event) {
+            if (event.keyCode == "13") {
+                query();
+            }
+        });
+        
+        /*]]>*/
+    </script>
+</body>
+
+</html>

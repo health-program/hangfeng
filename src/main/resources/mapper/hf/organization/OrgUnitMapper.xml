@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netmatch.mapper.organization.OrgUnitMapper">
+    
+   <delete id="deleteNoChildUnit" parameterType="string">
+		DELETE
+		FROM org_unit
+		WHERE uid IN
+		    (SELECT uid
+		     FROM
+		       (SELECT uid
+		        FROM org_unit
+		        WHERE uid = #{_parameter}
+		          AND NOT EXISTS
+		            (SELECT 1
+		             FROM org_unit
+		             WHERE parent_unit_id = #{_parameter}  AND is_delete = 0)) a)
+	</delete>
+	
+	<update id="removeNoChildUnit">
+		UPDATE org_unit SET is_delete = 1
+		WHERE uid IN
+		    (SELECT uid
+		     FROM
+		       (SELECT uid
+		        FROM org_unit
+		        WHERE uid = #{_parameter}
+		          AND NOT EXISTS
+		            (SELECT 1
+		             FROM org_unit
+		             WHERE parent_unit_id = #{_parameter}  AND is_delete = 0)) a)
+	</update>
+	
+	<select id="countUserOfUnit" resultType="int">
+		SELECT COUNT(1) FROM org_user WHERE is_delete = 0 AND org_unit_id = #{unitId}
+	</select>
+	
+</mapper>

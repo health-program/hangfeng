@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="console/header">
+</head>
+<body>
+
+	<section class="content-header">
+		<h1>政策文件管理</h1>
+		<small style="font-size: 16px;">政策文件信息列表</small>
+	</section>
+	<section class="content-header">
+		<div style="border: 1px #ddd solid;" class="box-body">
+			<div class="form-group">
+				<form action="">
+					<input type="hidden" name="id" id="id" value="1" /> <label
+						style="line-height: 36px;" for="isRelease"
+						class="col-sm-1 control-label">是否发布:</label>
+					<div style="width: 10.666667%" class="col-sm-2">
+						<select id="isRelease" name="isRelease" class="form-control">
+							<option value="">请选择</option>
+							<option value="0">发布</option>
+							<option value="1">待发布</option>
+							<option value="99">取消发布</option>
+						</select>
+					</div>
+					<label style="line-height: 36px" for="importance"
+						class="col-sm-1 control-label">重要程度:</label>
+					<div style="width: 10.666667%" class="col-sm-2">
+						<select id="importance" name="importance" class="form-control">
+							<option value="">请选择</option>
+							<option value="0">一般</option>
+							<option value="1">重要</option>
+						</select>
+					</div>
+					<label style="line-height: 36px; width: 5.66666%" for="dict_id"
+						class="col-sm-1 control-label">标题:</label>
+					<div style="width: 10.666667%" class="col-sm-2">
+						<input type="text" name="title" class="form-control" id="title" />
+					</div>
+					<label style="line-height: 36px; width: 6.66666%" for="filingTime"
+						class="col-sm-1 control-label">发布时间:</label>
+					<div style="width: 10.666667%;" class="col-sm-2">
+						<input type="text" id="datepicker1" name="releaseTime"
+							class="form-control" readonly="readonly" placeholder="请选择日期" />
+					</div>
+					<label style="line-height: 36px; width: 0%" for="filingTime"
+						class="col-sm-1 control-label">至:</label>
+					<div style="width: 10.666667%;" class="col-sm-2">
+						<input type="text" id="datepicker2" name="endreleaseTime"
+							class="form-control" readonly="readonly" placeholder="请选择日期" />
+					</div>
+					<div style="padding: 0 0 0 0; width: 10.666667%;" class="col-sm-1">
+						<a onclick="query()" class="btn btn-primary">查询</a>
+						<button type="reset" class="btn btn-primary js-ajax-submit">重置</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+	<section class="content table-content">
+		<table id="dataGrid"></table>
+	</section>
+	<div id="toolbar">
+		<a shiro:hasPermission="infore:save" href="/console/polic/from"
+			class="btn btn-primary">新增政策文件</a>
+	</div>
+	<div id='info' style="display: none">
+		<ul id="info2" class="list-group"></ul>
+	</div>
+	<div th:include="console/footer"></div>
+	<script type="text/javascript">
+		$table = $("#dataGrid");
+		$(function () {
+		    initDataGrid();
+		    $("#datepicker1").datepicker({
+		        language: "zh-CN",
+		        autoclose: true,//选中之后自动隐藏日期选择框
+		        clearBtn: true,//清除按钮
+		       //todayBtn: true,//今日按钮
+		        format: "yyyy-mm-dd"//日期格式，详见 http://bootstrap-datepicker.readthedocs.org/en/release/options.html#format
+		    });
+		    
+		    $("#datepicker2").datepicker({
+		        language: "zh-CN",
+		        autoclose: true,//选中之后自动隐藏日期选择框
+		        clearBtn: true,//清除按钮
+		       //todayBtn: true,//今日按钮
+		        format: "yyyy-mm-dd"//日期格式，详见 http://bootstrap-datepicker.readthedocs.org/en/release/options.html#format
+		    });
+		});
+		function query(){
+			$("#dataGrid").bootstrapTable('destroy');
+			initDataGrid();
+		}
+		//查询单位信息
+		function initDataGrid(){
+		    $table.bootstrapTable({
+		        height : tableModel.getHeight(),
+		        idField : "id",
+		        columns : [[
+		            {title: "标题", field: "title" },
+		            {title: "是否发布", field: "isRelease",formatter : getisRelease },
+		            {title: "重要程度", field: "importance",formatter : geimportance },
+		            {title: "发布时间", field: "releaseTime",sortable: true },
+		            {title: "操作", field: "operate",events: operateEvents, formatter: operateFormatter}
+		        ]],
+		        url : '/console/infore/list',
+		        queryParams: function(params){
+		        	         var params = {
+		        	        		 id:$("#id").val(),
+		        	        		 title: $("#title").val(),
+		        	        		 isRelease: $("#isRelease").val(),
+		        	        		 importance: $("#importance").val(),
+		        	        		 releaseTime: $("#datepicker1").val(),
+		        	        		 endreleaseTime: $("#datepicker2").val(),
+		        			sort:params.sort,
+		        			order:params.order,
+		        			limit: params.limit,
+		        			offset:params.offset,
+		        	    };       
+		            return params;
+		        },
+		        responseHandler : function (res) {
+		            return {
+		                rows : res.result.pageInfo.list,
+		                total : res.result.pageInfo.total
+		            }
+		        },
+		        search : false,
+		        sortName : 'release_time',
+		        sortOrder : 'desc',
+		        pagination : true,
+		        sidePagination : 'server',
+		        pageSize: 5,
+		        pageList : [5,10, 20],
+		        toolbar : "#toolbar",
+		        showRefresh : true,
+		        showToggle : true
+		    });
+		}
+		
+		function operateFormatter(value, row, index) {
+		    return [
+				'<a shiro:hasPermission="infore:info" class="grant" href="javascript:void(0);">',
+				'<i class="glyphicon glyphicon-zoom-in"></i>查看详情',
+				'</a>  ',
+		        '<a shiro:hasPermission="infore:save" href="/console/polic/from?id='+row.id+'" >',
+		        '<i class="glyphicon glyphicon-edit"></i>修改',
+		        '</a>  ',
+		        '<a shiro:hasPermission="infore:delete" class="remove" href="javascript:void(0);">',
+		        '<i class="glyphicon glyphicon-remove"></i>删除',
+		        '</a>'
+		    ].join('');
+		}
+		
+		//删除单位信息
+	    window.operateEvents = {
+	            'click .remove': function (e, value, row, index) {
+	                operaModel.delRow(row.id, '/console/polic/delete?id='+row.id, 'id');
+	            },
+	            
+	            'click .grant' : function (e, value, row, index) {
+	                layer.open({
+	                    type: 2,
+	                    title: '通知公告详情',
+	                    shadeClose: true,
+	                    shade: false,
+	                    maxmin: true, //开启最大化最小化按钮
+	                    area: $.getOpenLayerSize(750, 700),
+	                    content: '/console/polic/infoid/?id=' + row.id
+	                });
+	            }
+	        };
+		
+	    function getisRelease(value,row,index) {
+	        if(row.isRelease == 0){
+	            return "发布"
+	        }else if(row.isRelease == 1){
+	            return "待发布"
+	        }else if(row.isRelease== 99){
+	        	return "取消发布"
+	        }else{
+	        	return "--"
+	        }
+	    }
+	    
+	    function geimportance(value,row,index) {
+	        if(row.importance == 1){
+	            return "重要"
+	        }else if(row.importance == 0){
+	            return "一般"
+	        }else{
+	        	return "--"
+	        }
+	    }
+				
+</script>
+</body>
+</html>

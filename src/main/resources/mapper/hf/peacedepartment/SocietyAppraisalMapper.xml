@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netmatch.mapper.peacedepartment.SocietyAppraisalMapper">
+  <resultMap id="BaseResultMap" type="com.netmatch.model.peacedepartment.SocietyAppraisal">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="org_unit_id" jdbcType="VARCHAR" property="orgUnitId" />
+    <result column="org_ks_id" jdbcType="VARCHAR" property="orgKsId" />
+    <result column="org_user_id" jdbcType="VARCHAR" property="orgUserId" />
+    <result column="kp_grade" jdbcType="VARCHAR" property="kpGrade" />
+    <result column="evaluate_time" jdbcType="DATE" property="evaluateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+   <resultMap type="com.netmatch.model.peacedepartment.SocietyAppraisalVo" id="SocMap" extends="BaseResultMap">
+  		<result column="name" jdbcType="VARCHAR" property="userName"/>
+  </resultMap>
+  
+  <select id="societyAppraisalsAll" resultMap="SocMap">
+  SELECT soc.*,us.name FROM `society_appraisal` AS soc LEFT JOIN `org_user` AS us ON(soc.org_user_id=us.id) where 1=1
+  
+  <if test="orgKsId !=null and orgKsId !='' ">
+    and org_ks_id=#{orgKsId} 
+  </if>
+   
+  <if test="societyName != null and societyName !='' ">
+  	and name like concat('%',#{societyName},'%') 
+  </if>
+  
+  <if test="checkCycle !=null ">
+   and evaluate_time =#{checkCycle} 
+  </if>
+  
+  <if test="startRecordCreateTime !=null ">
+  	and  date(evaluate_time) <![CDATA[>=]]> date(#{startRecordCreateTime,jdbcType=TIMESTAMP})  
+  </if>
+  
+   <if test="endRecordCreateTime !=null  ">
+  	and  date(evaluate_time) <![CDATA[>=]]> date(#{endRecordCreateTime,jdbcType=TIMESTAMP}) 
+  </if>
+
+  </select>
+  
+</mapper>

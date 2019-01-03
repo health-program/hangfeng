@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+	<section class="content">
+		<div class="box-body">
+			<input type="hidden" name="id" id="id" th:value="${id}" />
+			<div class="form-group">
+				<label class="col-sm-2 control-label">标题</label>
+				<div class="col-sm-10">
+					<input type="text" style="background-color: white;" name="title"
+						class="form-control" id="title" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="unitName" class="col-sm-2 control-label">内容</label>
+				<div class="col-sm-10">
+					<textarea id="content" name="content" class="form-control" rows="8"
+						style="resize: none; background-color: white;" readonly="readonly"></textarea>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="unitContacts" class="col-sm-2 control-label">是否发布</label>
+				<div class="col-sm-10">
+					<input type="text" style="background-color: white;"
+						name="isRelease" class="form-control" id="isRelease"
+						readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="unitPhone" class="col-sm-2 control-label">重要程度</label>
+				<div class="col-sm-10">
+					<input type="text" style="background-color: white;"
+						name="importance" class="form-control" id="importance"
+						readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="unitAddress" class="col-sm-2 control-label">发布时间</label>
+				<div class="col-sm-10">
+					<input type="text" style="background-color: white;" id="datepicker"
+						name="releaseTime" class="form-control" readonly="readonly"
+						placeholder="请选择日期" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="unitAddress" class="col-sm-2 control-label">附件</label>
+				<div class="col-sm-10">
+					<!--  <input  type="file"  name="accessory" class="form-control"/> -->
+					<a href="javascript:void(0)" id="accessory"></a>
+				</div>
+			</div>
+		</div>
+	</section>
+	<div th:include="console/footer"></div>
+
+	<script type="text/javascript">
+
+	$(function(){
+		$("#accessory").click(function(){
+			var download= $("#accessory").text();
+			window.location.href="/console/infore/download?name="+download;
+		})
+		
+		$.get('/console/infore/info', {'id':$("#id").val()}, function(str){
+			$("#title").val(str.result.info.title);
+			$("#content").val(str.result.info.content);
+			 if(str.result.info.isRelease == 0){
+				 $("#isRelease").val("发布");
+		        }else if(str.result.info.isRelease == 1){
+		        	$("#isRelease").val("待发布");
+		        }else if(str.result.info.isRelease == 99){
+		        	$("#isRelease").val("取消发布"); 
+		        }else{
+		        	return "--"
+		        }
+			 if(str.result.info.importance == 0){
+				 $("#importance").val("一般");
+		        }else if(str.result.info.importance == 1){
+		        	$("#importance").val("重要");
+		        }else{
+		        	return "--"
+		        }
+			$("#datepicker").val(str.result.info.releaseTime);
+			$("#accessory").text(str.result.info.accessory); 
+		});
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head th:include="console/header">
+<title>Insert title here</title>
+
+</head>
+<body>
+	<div class="box-header with-border">
+		<div class="pull-right" style="margin-top: -5px; margin-right: 5px">
+			<a th:href="${backurl}" class="btn btn-warning"><i
+				class="glyphicon glyphicon-share-alt"></i>返回</a>
+		</div>
+		<h3 class="box-title" style="margin-left: 5px; margin-top: 5px">本年度考评列表</h3>
+	</div>
+
+	
+<section class="content-header">
+<form id="searchbar" class="form-horizontal">
+<input type="hidden" th:value="${bUserId}" name="orgUserId" />
+<div class="form-group">
+                    <label style="width:75px" 
+                        class="col-sm-2 control-label">年份</label>
+                    <div class="col-sm-1">
+                        <select class="form-control" name="myYear" id="iMyYear"></select>
+                    </div>
+                   
+                    <div  class="col-sm-1">
+                        <a onclick="query()" class="btn btn-primary">查询</a>
+                      
+                    </div>
+
+                </div>
+                </form>
+	</section>
+	<div class="tab-pane">
+		<section class="content table-content">
+			<table id="dataGrid1">
+			</table>
+		</section>
+	</div>
+
+	<div th:include="console/footer"></div>
+	<script type="text/javascript">
+/*<![CDATA[*/
+           
+var userId = $('[name="userId"]').val();
+
+$(function() {
+	
+    //设置年份的选择 
+    var myDate= new Date(); 
+    var startYear=myDate.getFullYear()-20;//起始年份 
+    var endYear=myDate.getFullYear();//结束年份 
+    var obj=document.getElementById('iMyYear') 
+    
+    for (var i=endYear;i>=startYear;i--){ 
+        obj.options.add(new Option(i,i)); 
+    } 
+    obj.options[0].selected=1; 
+
+   
+    
+    var enums = [
+        "ass-grades",
+        "operateState"
+    ]
+    $.getConstantEnum(enums, init);
+});
+           
+function init(enumMap) {
+    initTab2(enumMap);
+}
+
+var table1;
+
+function initTab2(enumMap) {
+    table1 = $.createTable("#dataGrid1", {
+        idField: "id",
+        columns: [
+            [
+                { title: "考评周期", field: "assessCycName" },
+                { title: "自评等级", field: "selfAssGrade", formatter: $.getEnumColumnFormatter(enumMap, "ass-grades") },
+                { title: "科室考评等级", field: "departGrade", formatter: $.getEnumColumnFormatter(enumMap, "ass-grades") },
+                { title: "医院考评等级", field: "unitAssGrade", formatter: $.getEnumColumnFormatter(enumMap, "ass-grades") },
+                { title: "操作状态", field: "operateState", formatter: $.getEnumColumnFormatter(enumMap, "operateState") },
+                {
+                    title: "查看",
+                    width: "60px",
+                    align: 'center',
+                    events: {
+                        'click .view': function(e, value, row, index) {
+                            viewAssess(row);
+                        }
+                    },
+                    formatter: $.viewColumnFormatter()
+                }
+            ]
+        ],
+        url: '/org/user/find/this/year/list',
+        searchbar : '#searchbar',
+        pagination: true,
+        showRefresh: true,
+        showToggle: true
+    });
+}
+
+function query() {
+	table1.refresh();
+}
+
+function viewAssess(row) {
+	 layer.open({
+         type : 2,
+         title : '',
+         maxmin : true, //开启最大化最小化按钮
+         area : $.getOpenLayerSize(900, 900),
+         content : '/org/user/assess/registration/form?assessCycleId=' + row.assessCycleId + '&orgUserId=' + row.orgUserId
+     });
+    };
+    
+  
+    
+    
+/*]]>*/
+</script>
+</body>
+</html>

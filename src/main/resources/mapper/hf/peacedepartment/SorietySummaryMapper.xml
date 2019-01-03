@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netmatch.mapper.peacedepartment.SorietySummaryMapper">
+  <resultMap id="BaseResultMap" type="com.netmatch.model.peacedepartment.SocietyAppraisal">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="org_unit_id" jdbcType="VARCHAR" property="orgUnitId" />
+    <result column="org_ks_id" jdbcType="VARCHAR" property="orgKsId" />
+    <result column="org_user_id" jdbcType="VARCHAR" property="orgUserId" />
+    <result column="kp_grade" jdbcType="VARCHAR" property="kpGrade" />
+    <result column="evaluate_time" jdbcType="DATE" property="evaluateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+   <resultMap type="com.netmatch.model.peacedepartment.SorietySummaryVo" id="sumMap" extends="BaseResultMap">
+  		<result column="YS" jdbcType="VARCHAR" property="ys"/>
+  		<result column="LH" jdbcType="VARCHAR" property="lh"/>
+  		<result column="YB" jdbcType="VARCHAR" property="yb"/>
+  		<result column="JC" jdbcType="VARCHAR" property="jc"/>
+  </resultMap>
+  
+ <select id="sorietySummaryAll" resultMap="sumMap">
+  SELECT org_ks_id ,
+ COUNT(kp_grade=1 OR NULL)YS, 
+ COUNT(kp_grade=2 OR NULL)LH,
+ COUNT(kp_grade=3 OR NULL)YB,
+ COUNT(kp_grade=4 OR NULL)JC
+ FROM society_appraisal WHERE org_ks_id=#{orgKsId}  GROUP BY org_ks_id 
+ </select>
+
+</mapper>

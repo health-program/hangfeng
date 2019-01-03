@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel panel-default">
+                    <input type="hidden" id="formType" class="tonto-form-type" th:value="${formType}" />                   
+                    <div class="panel-heading" th:switch="${formType}">                            
+                    	<div class="pull-right">
+                    		<!-- 修改了返回按钮的大小背景色 -->
+                    	    <a href="/org/user/index?cached=1" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
+                    	</div> 
+                        <h3 th:case="'ADD'" class="panel-title">添加人员信息</h3>
+                        <h3 th:case="'VIEW'" class="panel-title">查看人员详情</h3>
+                        <h3 th:case="'EDIT'" class="panel-title">修改人员信息</h3>	 
+                          
+                    </div>
+                 
+                    <div class="panel-body">                
+                        <form class="form-horizontal tonto-form-validate" id="userForm" action="/org/user/save" callback-url="/org/user/index?cached=1"  method="post" th:object="${user}">
+                            <input type="hidden" name="id" id="id" th:field="*{id}" />
+                                                    
+                            <div class="form-group">
+                                <label for="account" class="col-sm-2 control-label">系统帐号</label>
+                                <div class="col-sm-4">
+                                    <input type="text" required="required" data-type="account" class="form-control tonto-edit-unable"  th:field="*{account}" id="account"  placeholder="请输入账号，5~30位数字，字母或下划线"/>                                   
+                                </div>
+                                <div class="col-sm-2">
+                                	<button type="button" onclick="validateAccount()" class="btn btn-default">检测账号</button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="recordCreateTime" class="col-sm-2 control-label">建档时间</label>
+                                <div class="col-sm-3">
+                                    <input  type="text" required="required" name="recordCreateTime" class="form-control tonto-datepicker-date"  th:field="*{recordCreateTime}" placeholder="请选择日期"/>
+                                </div>
+                                <label for="orgUnitId" class="col-sm-2 control-label">所属科室</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control tonto-select-department" required="required" name="orgUnitId" th:attr="unitid=${user.orgUnitId}" placeholder="请选择科室"></input>
+                                </div>
+                            </div>
+            
+                            <div class="form-group">
+                                <label for="name" class="col-sm-2 control-label">姓名</label>
+                                <div class="col-sm-3">
+                                    <input  type="text" required="required" class="form-control" id="name" th:field="*{name}" placeholder="请输入姓名"/>
+                                </div>
+                                <label for="sex" class="col-sm-2 control-label">性别</label>
+                                <div class="col-sm-3">
+                                    <select name="sex" class="form-control tonto-select-constant" enumcode="sex-type" th:attr="selectedvalue=${user.sex}"></select>
+                                </div>                               
+                            </div>
+                            
+                             <div class="form-group">
+                                <label for="nation" class="col-sm-2 control-label">民族</label>
+                                <div class="col-sm-3">
+                                    <select name="nation" class="form-control tonto-select-constant" enumcode="nation-type" th:attr="selectedvalue=${user.nation}"><option value="">无</option></select>
+                                </div>
+                                <label for="partisan" class="col-sm-2 control-label">党派</label>
+                                <div class="col-sm-3">
+                                    <select name="partisan" class="form-control tonto-select-constant" enumcode="partisan-type" th:attr="selectedvalue=${user.partisan}"><option value="">无</option></select>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                               <label for="birthday" class="col-sm-2 control-label">出生年月</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control tonto-datepicker-date" th:field="*{birthday}" placeholder="请选择日期" />
+                                </div>
+                                <label for="jobRank" class="col-sm-2 control-label">职称</label>
+                                <div class="col-sm-3">
+                                    <select name="jobRank" class="form-control tonto-select-constant" enumcode="job-rank-type" th:attr="selectedvalue=${user.jobRank}"><option value="">无</option></select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="jobDuties" class="col-sm-2 control-label">职务</label>
+                                <div class="col-sm-3">
+                                    <select name="jobDuties" class="form-control tonto-select-constant" enumcode="job-duties-type" th:attr="selectedvalue=${user.jobDuties}"><option value="">无</option></select>
+                                </div>
+                                <label for="oeducation" class="col-sm-2 control-label">学历</label>
+                                <div class="col-sm-3">
+                                    <select name="oeducation" class="form-control tonto-select-constant" enumcode="oeducation-type" th:attr="selectedvalue=${user.oeducation}"><option value="">无</option></select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="startWorkTime" class="col-sm-2 control-label">参加工作时间</label>
+                                <div class="col-sm-3">
+                                    <input type="text" name="startWorkTime" class="form-control tonto-datepicker-date" th:field="*{startWorkTime}" placeholder="请选择日期" />
+                                </div>
+                                <label for="comeUnitTime" class="col-sm-2 control-label">进现单位工作时间</label>
+                                <div class="col-sm-3">
+                                    <input type="text" name="comeUnitTime" class="form-control tonto-datepicker-date" th:field="*{comeUnitTime}" placeholder="请选择日期" />
+                                </div>
+                            </div>
+                          
+                            
+                            <div class="form-group">
+                                <label for="isAssessor" class="col-sm-2 control-label">是否考评人员</label>
+                                <div class="col-sm-3">
+                                    <select id="isAssessor" name="isAssessor" class="form-control tonto-select-constant" required="required" onchange="isAssessorChange()" th:attr="selectedvalue=${user.isAssessor}">
+                                    	<option value="0">否</option>
+                                    	<option value="1">是</option>
+                                    </select>
+                                </div>
+                                <label for="assessUnitId" class="col-sm-2 control-label">考评科室</label>
+                                <div class="col-sm-3">
+                                     <input type="text" class="form-control tonto-select-unit" id="assessUnitId" required="required" name="assessUnitId" placeholder="请选择科室" th:attr="unitid=${user.assessUnitId}"></input>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                            <label for="userProperty" class="col-sm-2 control-label">人员属性</label>
+                                <div class="col-sm-3">
+                                    <select name="userProperty" class="form-control tonto-select-constant" enumcode="user_property_type" th:attr="selectedvalue=${user.userProperty}"><option value="">无</option></select>
+                                </div>
+                                
+                                <label for="jobLevel" class="col-sm-2 control-label">职级</label>
+                                <div class="col-sm-3">
+                                    <select name="jobLevel" class="form-control tonto-select-constant" enumcode="job_level" th:attr="selectedvalue=${user.jobLevel}"><option value="">无</option></select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                    <label for="certificateType" class="col-sm-2 control-label">证件类型</label>
+                                    <div class="col-sm-3">
+                                       <select name="certificateType" class="form-control tonto-select-constant" enumcode="certificate_type" th:attr="selectedvalue=${user.certificateType}"></select>
+                                    </div>
+	                                <label for="identification" class="col-sm-2 control-label">证件号</label>
+	                                <div class="col-sm-3">
+	                                    <input type="text" data-type="identity" required="required" class="form-control" th:field="*{identification}" placeholder="请输入证件号" />
+	                                </div>
+                            </div>
+                       
+                            <div class="form-group">
+                                <label for="resume" class="col-sm-2 control-label">个人简历</label>
+                                <div class="col-sm-8">
+                                    <textarea name="resume" class="form-control" rows="4" style="resize: none;" th:field="*{resume}"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="reward" class="col-sm-2 control-label">历年奖励情况</label>
+                                <div class="col-sm-8">
+                                    <textarea name="reward" class="form-control" rows="4" style="resize: none;" th:field="*{reward}"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="punish" class="col-sm-2 control-label">历年受惩情况</label>
+                                <div class="col-sm-8">
+                                    <textarea name="punish" class="form-control" rows="4" style="resize: none;" th:field="*{punish}"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-2">
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                </div>
+                                <div class="col-sm-6">
+									                               
+                            	</div>
+                                
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:include="console/footer"></div>
+</body>
+<script type="text/javascript">
+	function validateAccount(){		
+		if($("#userForm").validateElement("#account"))
+		{
+			var account = $("#account").val();
+			$.getAjax("/org/user/validate/account?account="+account,function(result){
+				if(result == 1)
+					layer.msg("账号可用", { icon: 1 });
+				else
+					layer.msg("账号不可用", { icon: 2 });
+			});
+		}
+	}
+	
+	function isAssessorChange(){
+		var val=$("#isAssessor").val();
+		var x = $("#assessUnitId");
+		var com = x.getUnitComponment();
+		
+		if(val == '1'){
+			
+			x.addRequiredStyle();
+			x.css("background","#fff");
+			com.setEnabled(true);
+			
+		} else {
+
+			x.removeRequiredStyle();
+			x.css("background","#eee");
+			com.setCurrent(null);
+			com.setEnabled(false);
+		}
+	}
+	
+	$(function() {
+		var isAssessor = $("#isAssessor").attr("selectedvalue");
+		if(isAssessor){			
+			$("#isAssessor").val(isAssessor);			
+		}
+		
+		isAssessorChange();
+    });
+	
+	
+</script>
+</html>

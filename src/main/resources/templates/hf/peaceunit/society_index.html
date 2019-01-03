@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content-header">
+        <h1>社会考评管理</h1>
+        <small>人员评价信息列表</small>
+    </section>
+    <section class="content-header">
+		<div style="border: 1px #ddd solid;" class="box-body">
+		<form id="searchbar" class="form-horizontal">
+		<div class="form-group">
+		      <label style="width:110px" class="col-sm-2 control-label"  for="societyName" >姓名:</label>
+		     <div class="col-sm-2">
+		   		<input type="text" name="societyName" class="form-control" />
+		    </div>
+		    <label style="width:110px" class="col-sm-2 control-label" for="operationState" >考评周期:</label>
+		     <div  class="col-sm-2">
+		    	<select id="operationState" name="checkCycle" class="form-control" >
+		    	 <table id="dataGrid"></table>
+		      </select>
+		    </div>
+		    </div>
+		    <div class="form-group"> 
+		    <label style="width:110px" class="col-sm-2 control-label" for="startRecordCreateTime" >发生时间:</label>
+		    <div  class="col-sm-2">
+		    	<input type="text"  name="startRecordCreateTime" class="form-control tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
+		    </div>
+		    <label style="width:110px" class="col-sm-2 control-label" for="endRecordCreateTime" >至:</label>
+		    <div  class="col-sm-2">
+		    	<input type="text" name="endRecordCreateTime" class="form-control tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
+		    </div>
+		    <div  class="col-sm-2" style="text-align:right">
+		    <a onclick="query()" class="btn btn-primary">查询</a>
+		    <button type="reset" class="btn js-ajax-submit">重置</button>
+		    </div>
+		    
+		 </div>
+		 </form>
+		</div>
+		</section>
+	<div id="toolbar">
+        <a onclick="addSociettyr()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加评价信息</a>
+    </div>
+    <section class="content table-content">
+        <table id="dataGrid"></table>
+    </section>
+
+    <div th:include="console/footer"></div>
+    <script type="text/javascript">
+    var table;
+    $(function() {
+    	
+        $.getConstantEnum(["ass-grades"], initDataGrid);
+    });
+
+    function initDataGrid(enumMap) {
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { title: "机构名称", field: "unitRootName" },
+                    { title: "被考评科室", field: "unitName" },
+                    { title: "姓名", field: "userName" },
+                    { title: "考评等次", field: "kpGrade" , formatter: $.getEnumColumnFormatter(enumMap, "ass-grades")},
+                    { title: "评价时间", field: "evaluateTime",sortable: true },
+                    {
+                        title: "查看",
+                        width: "70px",
+                        align: 'center',
+                        events: {
+                            'click .view': function(e, value, row, index) {
+                            	alert(row.id);
+                                viewUser(row.id);
+                            }
+                        },
+                        formatter: $.viewColumnFormatter()
+                    },
+                    {
+                        title: "修改",
+                        width: "70px",
+                        align: 'center',
+                        events: {
+                            'click .edit': function(e, value, row, index) {
+                                editSociety(row.id);
+                            }
+                        },
+                        formatter: $.editColumnFormatter()
+                    },
+                    {
+                        title: "删除",
+                        width: "70px",
+                        align: 'center',
+                        events: {
+                            'click .remove': function(e, value, row, index) {
+                            	removeSociety(row.id);
+                            }
+                        },
+                        formatter: $.removeColumnFormatter()
+                    }
+                ]
+            ],
+            url: '/console/socunit/search/all',
+            searchbar: '#searchbar',
+            sortName: 'create_time',
+            sortOrder: 'desc',
+            pagination: true,
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pageSize:10
+        });
+    }
+
+    function addSociettyr() {
+        layer.open({
+            type: 2,
+            title: ' ',
+            maxmin: true, //开启最大化最小化按钮
+            content: '/console/peacedunit/unit/add/input',
+			area: $.getOpenLayerSize(660, 660),
+            success: function(layero, index) {
+                $.setLayerSubmitHandler(layero, index, function() {
+                    layer.close(index);
+                    table.refresh();
+                }, "保存成功");
+            }
+        });
+    }
+
+    function editSociety(id) {
+        layer.open({
+            type: 2,
+            title: ' ',
+            maxmin: true, //开启最大化最小化按钮
+			area: $.getOpenLayerSize(660, 660),
+            content: '/console/society/edit/input?id=' + id,
+            success: function(layero, index) {
+                $.setLayerSubmitHandler(layero, index, function() {
+                    layer.close(index);
+                    table.refresh();
+                }, "修改成功");
+            }
+        });
+    }
+
+    function removeSociety(id) {
+        layer.confirm('确定删除吗?', function() {
+            $.getAjax('/console/society/delete?id=' + id, function() {
+                $.successMessage("删除成功");
+                table.refresh();
+            });
+        });
+    }
+
+    function viewUser(id) {
+        layer.open({
+            type: 2,
+            title: ' ',
+            maxmin: true, //开启最大化最小化按钮
+			area: $.getOpenLayerSize(660, 660),
+            content: '/console/society/view?id=' + id
+        });
+    }
+
+    function query() {
+        table.refresh();
+    }
+    </script>
+</body>
+
+</html>

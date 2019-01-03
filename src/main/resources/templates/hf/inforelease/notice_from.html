@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+	<section class="content">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="box box-primary">
+					<input type="hidden" id="formType" class="tonto-form-type"
+						th:value="${formType}" />
+					<div class="box-header with-border" th:switch="${formType}">
+						<h3 th:case="'ADD'" class="box-title">通知公告管理添加</h3>
+						<h3 th:case="'VIEW'" class="box-title">通知公告管理详情</h3>
+						<h3 th:case="'EDIT'" class="box-title">通知公告管理修改</h3>
+					</div>
+					<div class="box-body">
+						<form class="form-horizontal tonto-form-validate"
+							action="/console/infore/save" method="post">
+							<input type="hidden" name="id" id="id" th:value="${info.id}" />
+							<input type="hidden" name="types" th:value="${info.types}" />
+							<div class="form-group">
+								<label class="col-sm-2 control-label">标题</label>
+								<div class="col-sm-10">
+									<input required="required" type="text" name="title"
+										class="form-control" id="title" th:value="${info.title}" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitName" class="col-sm-2 control-label">内容</label>
+								<div class="col-sm-10">
+									<textarea name="content" class="form-control" rows="8"
+										style="resize: none;" th:text="${info.content}"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitContacts" class="col-sm-2 control-label">是否发布</label>
+								<div class="col-sm-10">
+									<select required="required" id="isRelease" name="isRelease"
+										class="form-control">
+										<!-- <option value="">请选择</option> -->
+										<option th:selected="${#strings.equals(info.isRelease, 0)}"
+											value="0">发布</option>
+										<option th:selected="${#strings.equals(info.isRelease, 1)}"
+											value="1">待发布</option>
+										<option th:selected="${#strings.equals(info.isRelease, 99)}"
+											value="99">取消发布</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitPhone" class="col-sm-2 control-label">重要程度</label>
+								<div class="col-sm-5">
+									<select required="required" id="importance" name="importance"
+										class="form-control">
+										<option th:selected="${#strings.equals(info.importance, 0)}"
+											value="0">一般</option>
+										<option th:selected="${#strings.equals(info.importance, 1)}"
+											value="1">重要</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitId" class="col-sm-2 control-label">被通知科室</label>
+								<div class="col-sm-4">
+									<input type="text"
+										class="form-control tonto-select-unit" name="orgUnitId"
+										th:attr="unitid=${bOrgUnitId}" placeholder="请选择科室"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitAddress" class="col-sm-2 control-label">发布时间</label>
+								<div class="col-sm-5">
+									<input required="required" type="text" id="datepicker"
+										name="releaseTime" class="form-control tonto-datepicker-date"
+										th:value="${info.releaseTime}" readonly="readonly"
+										placeholder="请选择日期" />
+								</div>
+							</div>
+							<div class="form-group" style="margin-bottom: 0px;">
+								<label for="unitAddress" class="col-sm-2 control-label">附件</label>
+								<div class="col-sm-10">
+									<input type="file" id="test" name="test" class="form-control" />
+								</div>
+								<label for="unitAddress" class="col-sm-2 control-label"></label>
+								<div class="col-sm-8">
+									<input id="file2" style="display: none;" name="file"
+										th:value="${info.accessory}" /> <a id="files"
+										style="cursor: pointer;" th:text="${info.accessory}"></a> <i
+										style="color: red; cursor: pointer;" id="remove"
+										class="glyphicon glyphicon-remove"></i>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-primary js-ajax-submit">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<div th:include="console/footer"></div>
+
+	<script type="text/javascript">
+$(function(){
+			chack();
+			if($("#formType").val() =='ADD'){
+				FormatDate(new Date());
+			}
+			
+		/* 	if($("#formType").val() =='VIEW'){
+				 $("#files").click(function(){
+						var download= $("#files").text();
+						window.location.href="/console/infore/download?name="+download;
+					}) 
+			} */
+			
+			$("#remove").click(function(){
+				layer.confirm('确定是删除此附件吗?', {
+					  btn: ['确定','取消']
+					}, function(){
+						$("#files").text("");
+						$("#file2").attr("value","");
+						$("#remove").hide();
+					  layer.msg('删除成功', {icon: 1});
+					});
+			});
+		});
+		
+	function chack() {
+		var file = $("#files").text();
+		if ($("#formType").val() == 'VIEW') {
+			document.getElementById("test").disabled = "disabled";
+			document.getElementById("files").style.display = "";
+		}
+		if (file == "" || file == null || $("#formType").val() == 'VIEW') {
+			document.getElementById("remove").remove();
+		} else {
+			document.getElementById("remove").style.display = "inline";
+		}
+	}
+
+	//时间文本框默认当前时间
+	function FormatDate(strTime) {
+		var date = new Date(strTime);
+		var date2 = date.getFullYear() + "-" + (date.getMonth() + 1) + "-"
+				+ date.getDate();
+		$("#datepicker").val(date2);
+	}
+</script>
+</body>
+</html>

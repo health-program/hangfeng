@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netmatch.mapper.console.sys.RegionsMapper" >
+  <resultMap id="BaseResultMap" type="com.netmatch.model.console.sys.Regions" >
+    <id column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="p_region_id" property="pRegionId" jdbcType="INTEGER" />
+    <result column="region_path" property="regionPath" jdbcType="VARCHAR" />
+    <result column="region_grade" property="regionGrade" jdbcType="INTEGER" />
+    <result column="local_name" property="localName" jdbcType="VARCHAR" />
+    <result column="zipcode" property="zipcode" jdbcType="VARCHAR" />
+    <result column="cod" property="cod" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectRegionId" parameterType="Integer" resultMap="BaseResultMap">
+  		select * from regions WHERE region_id=#{value}
+  </select>
+  
+  <!-- <insert id="insertWithKey" parameterType="com.netmatch.model.console.sys.Regions" useGeneratedKeys="true" keyProperty="regionId"> -->
+  <insert id="insertWithKey" parameterType="com.netmatch.model.console.sys.Regions">
+	insert into regions (region_id, p_region_id, region_path, region_grade, local_name, zipcode, cod)
+	values (#{regionId,jdbcType=INTEGER}, #{pRegionId,jdbcType=INTEGER}, #{regionPath,jdbcType=VARCHAR},
+	#{regionGrade,jdbcType=INTEGER}, #{localName,jdbcType=VARCHAR}, #{zipcode,jdbcType=VARCHAR}, #{cod,jdbcType=VARCHAR})
+ </insert>
+  
+  <select id="countByParentId" resultType="Integer">
+  		SELECT count(*) from regions where p_region_id=#{value}
+  </select>
+  
+</mapper>

@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content-header">
+        <h1>考评结果查看</h1>
+    </section>
+    <section class="content-header">
+        <fieldset>
+            <legend>查询条件</legend>
+            <form id="searchbar" class="form-horizontal">
+                <div class="form-group">
+                    <label for="unitId" style="width:130px" class="col-sm-2 control-label">被考评机构</label>
+                    <div class="col-sm-3">
+                        <input type="text" id="unitCom" class="form-control tonto-select-agency" name="unitId" placeholder="请选择机构"></input>
+                    </div>
+                    <label for="name" style="width:130px;" class="col-sm-1 control-label">考评周期</label>
+                    <div class="col-sm-3">
+                        <input type="text" id="assessCycleCom" name="assessCycleId" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" placeholder="请选择周期" />
+                    </div>
+                    <div class="col-sm-3" style="text-align:right">
+                        <a onclick="query()" class="btn btn-primary">查询</a>
+                        <button type="button" onclick="clearInput()" class="btn">重置</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </section>
+    <div id="toolbar">
+        <div class="btn-group">
+            <!-- <a id="viewPeacet" onclick="viewUser()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看</a> -->
+            <a id="viewPeacet" onclick="evaluationInfo()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看下属科室</a>
+        </div>
+    </div>
+    <section class="content table-content">
+        <table id="dataGrid"></table>
+    </section>
+    <div th:include="console/footer"></div>
+    <script type="text/javascript">
+    //<![CDATA[
+
+    var unitCom = $("#unitCom")[0].unitComponment;
+    var assessCycleCom = $("#assessCycleCom")[0].cycleComponment;
+    unitCom.addUnitChangedListener(function(val) {
+        assessCycleCom.setCurrent(null);
+        assessCycleCom.unitId = val ? val.id : null;
+    });
+
+    function clearInput(){
+        $("#searchbar").find("input").val("");
+        assessCycleCom.setCurrent(null);
+        unitCom.setCurrent(null);
+        assessCycleCom.unitId = null;
+    }
+
+    var table;
+    $(function() {
+
+        $.getConstantEnum(["ass-grades", "operateState"], initDataGrid);
+    });
+
+        function initDataGrid(enumMap) {
+            table = $.createTable("#dataGrid", {
+                idField: "id",
+                columns: [
+                          [
+          					{ radio:true },
+          					{ title: "所属机构", field: "agencyName" },
+                              { title: "已考评", field: "unitAssGradeCOUNT" },
+                              { title: "未考评", field: "notUnitAssGradeCOUNT" },
+                              { title: "总人数", field: "total", },
+                          ]
+                      ],
+                url: '/console/result/search/all',
+                searchbar: '#searchbar',
+                sortName: 'unitAssGrade',
+                sortOrder: 'asc',
+                pagination: true,
+                toolbar: "#toolbar",
+                showRefresh: true,
+                pageSize:10,
+                clickToSelect:true,
+                showColumns:true
+            });
+        }
+
+    function state(value, row, index) {
+        if (row.unitAssGrade == null) {
+            return '未完成考评';
+        } else if (row.unitAssGrade == '1') {
+            return '优秀';
+        } else if (row.unitAssGrade == '2') {
+            return '良好';
+        } else if (row.unitAssGrade == '3') {
+            return '合格';
+        } else if (row.unitAssGrade == '4') {
+            return '不合格';
+        } else if (row.unitAssGrade == '5') {
+            return '不定等次';
+        }
+    }
+
+
+    function states(value, row, index) {
+        if (row.operateState == '5') {
+            return '考评小组考评完毕';
+        } else if (row.operateState == '6') {
+            return '被考评人已确认';
+        } else {
+            return '未自评';
+        }
+    }
+
+    function viewUser() {
+        var row = getSelectRow();
+        if (row) {
+            window.location = '/org/user/viewResult?id=' + row.id;
+        } else {
+            $.errorMessage("请选中一条业务数据");
+        }
+    }
+
+    function query() {
+        table.refresh();
+    }
+
+    function getSelectRow() {
+        var rows = table.getSelections();
+        return rows.length > 0 ? rows[0] : null;
+    }
+
+/*     function exprot() {
+        var unit = $("#unitId").val();
+        var cycleId = $("[name='assessCycleId']").val();
+        var url = "/console/result/export?cycleId=" + cycleId;
+        if (unit) {
+            url += "&unitId=" + unit;
+        }
+        window.open(url);
+    } */
+
+    // 关键词搜索框添加绑定回车函数
+    $('body').bind('keypress', function(event) {
+        if (event.keyCode == "13") {
+            query();
+        }
+    });
+    
+    function evaluationInfo() {
+    	var row = getSelectRow();
+    	var assessCycleId=$("input[name=assessCycleId]").val();
+    	if(row){
+    		/* var index = layer.open({
+                type: 2,
+                title: '下属科室',
+                maxmin: true, //开启最大化最小化按钮unitId='+row.unitId+
+                area: $.getOpenLayerSize(1000, 700),
+                content: '/console/result/evaluation/count?unitId='+row.agencyId+"&assessCycleId="+assessCycleId,
+            }); */
+            window.location.href='/console/result/evaluation/count?unitId='+row.agencyId+"&assessCycleId="+assessCycleId
+    	}else{
+    		$.errorMessage("请选中一条业务数据");
+    	}
+    	
+    }
+    
+    //]]>
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content-header">
+        <h1>周期考评自评</h1>
+    </section>
+    <section class="content-header">
+            <fieldset>
+            <legend>查询条件</legend>
+            <form id="searchbar" class="form-horizontal">
+                <div class="form-group">
+                    <label style="width: 100px" for="unitId" class="col-sm-1 control-label">单位名称</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" th:value="${unitName}" readonly="readonly"></input>
+                    </div>
+                    <label style="width: 100px" for="assessCycleId" class="col-sm-1 control-label">考评周期</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control tonto-select-assess-cycle-self" required="required"  name="assessCycleId" placeholder="请选择周期"></input>
+                    </div>
+                    <div class="col-sm-6" style="text-align:right">
+                        <a href="javascript:table.refresh()" class="btn btn-primary">查询</a>
+                        <button type="reset" class="btn">重置</button>
+                    </div>
+                </div>
+            </form>
+            </fieldset>
+       
+    </section>
+    <section class="content table-content">
+        <table id="dataGrid"></table>
+    </section>
+    <div id="toolbar">
+        <div class="btn-group">
+        <a onclick="viewPersCyc()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看</a>
+        <a onclick="addPersCyc()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>新增</a>
+        <a onclick="editPersCyc()" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i>修改</a>
+        <a onclick="removePersCyc()" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i>删除</a>
+        <a onclick="comfirmPersCyc()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>确认考评</a>
+        </div>
+    </div>
+    <div th:include="console/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    var table;
+    var unitTypeMap;
+    $(function() {
+        $.getConstantEnum(["ass-grades", "operateState"], initDataGrid);
+    });
+    
+    function initDataGrid(enumMap) {
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    {radio:true },
+                    { title: "单位名称", field: "agencyName" },
+                    { title: "被考评科室", field: "departmentName" },
+                    { title: "姓名", field: "userName" },
+                    { title: "考评周期", field: "assessCycName" },
+                    { title: "自评等级", field: "selfAssGrade", formatter: $.getEnumColumnFormatter(enumMap, "ass-grades") },
+                    { title: "科室考评等级", field: "departGrade", formatter: $.getEnumColumnFormatter(enumMap, "ass-grades") },
+                    { title: "医院考评等级", field: "unitAssGrade", formatter: $.getEnumColumnFormatter(enumMap, "ass-grades") },
+                    { title: "操作状态", field: "operateState", formatter: $.getEnumColumnFormatter(enumMap, "operateState") }
+                ]
+            ],
+            url: '/person/cyc/search/list',
+            searchbar: '#searchbar',
+            sortName: 'createTime',
+            sortOrder: 'asc',
+            pagination: true,
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pageSize: 10,
+            clickToSelect:true,
+            showColumns:true
+        });
+    }
+
+    function addPersCyc() {
+        window.location = "/person/cyc/add";
+    }
+
+    function editPersCyc() {
+    	var row = getSelectRow();
+    	if (row) {
+    		if (row.operateState != "0" && row.operateState != "7" ) {
+                layer.alert("该数据已提交！")
+                return false;
+            }else {
+            	window.location = '/person/cyc/edit?id=' + row.id;	
+			}
+		}else{
+			$.errorMessage("请选中一条业务数据！");
+		}
+    }
+
+    function removePersCyc() {
+    	var row = getSelectRow();
+    	if (row) {
+    		if (row.operateState != "0" && row.operateState != "7" ) {
+                layer.alert("该数据已提交！")
+                return false;
+            }else{
+            	layer.confirm('确定删除吗?', function() {
+                    $.getAjax('/person/cyc/delete?id=' + row.id, function() {
+                        $.successMessage("删除成功");
+                        table.refresh();
+                    });
+                });
+            }
+		}else{
+			$.errorMessage("请选中一条业务数据！")
+		}
+    }
+
+    function viewPersCyc() {
+    	var row = getSelectRow();
+    	if (row) {
+    		window.location = '/person/cyc/view?id=' + row.id;
+		}else {
+			$.errorMessage("请选中一条业务数据！");
+		}     
+    }
+    
+    
+
+    function comfirmPersCyc() {
+    	var row = getSelectRow();
+    	if (row) {
+    		if (row.operateState == 6) {
+    			layer.alert("您已确认考评！")
+    			return false;
+			}
+    		if (row.operateState < "5") {
+                layer.alert("考评小组还没考评！")
+                return false;
+            }else {
+            	window.location='/person/cyc/to/confirm?id=' + row.id;
+			}
+		}else {
+			$.errorMessage("请选中一条业务数据！")
+		}
+    	
+        
+    }
+    
+    function getSelectRow() {
+        var rows = table.getSelections();
+        return rows.length>0?rows[0]:null;
+    } 
+    
+ // 查询按钮绑定回车键
+    $('body').bind('keypress',function(event) {
+		if(event.keyCode == '13'){
+			table.refresh();
+		}
+	});
+    
+    /*]]>*/
+    </script>
+</body>
+
+</html>

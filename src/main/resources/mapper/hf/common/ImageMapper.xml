@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netmatch.mapper.common.ImageMapper">
+  <resultMap id="BaseResultMap" type="com.netmatch.model.common.Images">
+    <id column="img_id" jdbcType="VARCHAR" property="imgId" />
+    <id column="prize_id" jdbcType="VARCHAR" property="prizeId" />
+    <result column="img_name" jdbcType="VARCHAR" property="imgName" />
+    <result column="img_file_name" jdbcType="VARCHAR" property="imgFileName" />
+    <result column="img_suffix" jdbcType="VARCHAR" property="imgSuffix" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+     <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    
+  </resultMap>
+  <select id="imagesId" resultMap="BaseResultMap">
+  SELECT * FROM images WHERE prize_id=#{prizeId}
+  </select>
+  
+  <delete id="deleteImage">
+  DELETE FROM images WHERE prize_id = #{prizeId};
+  </delete>
+</mapper>

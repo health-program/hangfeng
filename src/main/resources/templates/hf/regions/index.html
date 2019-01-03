@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="console/header">
+</head>
+<body>
+<section class="content-header">
+    <h1>区域管理</h1>
+    <small style="font-size:16px">区域列表</small>
+</section>
+<section class="content table-content">
+    <a shiro:hasPermission="regions:save" href="/console/regions/from"
+			class="btn btn-primary" style="margin-bottom:10px;margin-top:10px;">添加地区</a>	
+   <table title="区域管理" class="easyui-treegrid" id="rediondata"
+		data-options="url:'/console/regions/list2',animate:false,fitColumns:'true',idField: 'regionId',treeField: 'localName',toolbar:'#tb'">
+		<thead>
+				<tr>
+					<th data-options="field:'regionId',width:80">ID</th>
+					<th data-options="field:'localName',width:200">名称</th>
+					<th data-options="field:'add',width:25,align:'center'" formatter="operateAdd">添加子</th>
+					<th data-options="field:'edit',width:25,align:'center'" formatter="operateEdit">编辑</th>
+					<th data-options="field:'delete',width:25,align:'center'" formatter="operateDelete" >删除</th>
+				</tr>
+		</thead>
+	</table>  
+</section>
+<div th:include="console/footer"></div>
+<link rel="stylesheet" type="text/css" href="/static/js/plugins/jquery-easyui-1.5.3/themes/bootstrap/easyui.css"/>    
+<link rel="stylesheet" type="text/css" href="/static/js/plugins/jquery-easyui-1.5.3/themes/icon.css"/>  
+<script type="text/javascript" src="/static/js/plugins/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/static/js/plugins/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+
+	function operateAdd(value, row, index) {
+		if (row.regionGrade == 3) {
+			return '';
+		} else {
+			return ['<a shiro:hasPermission="regions:save" href="/console/regions/from?pRegionId='
+							+ row.regionId + '" >',
+					'<i class="glyphicon glyphicon-edit"></i>添加子', '</a>  ' ]
+					.join('');
+		}
+	}
+	function operateEdit(value, row, index) {
+		return [
+				'<a shiro:hasPermission="regions:save"  href="/console/regions/from?regionId='
+						+ row.regionId + '" >',
+				'<i class="glyphicon glyphicon-add"></i>修改', '</a>  ' ]
+				.join('');
+	}
+	function operateDelete(value, row, index) {
+		return [
+				'<a shiro:hasPermission="regions:delete" href="javascript:void(0);" onclick="remove('
+						+ row.regionId + ')" >',
+				'<i class="glyphicon glyphicon-remove"></i>删除', '</a>  ' ]
+				.join('');
+	}
+
+	//删除处理
+	function remove(id) {
+		layer.confirm('确定删除吗?', function() {
+			$.getJSON('/console/regions/delete', {
+				regionId : id
+			}, function(ret) {
+				if (ret.result > 0) {
+					layer.alert("有" + ret.result + "个下级地区，不能删除！");
+				} else {
+					if (ret.status) {
+						layer.msg(ret.msg, {
+							icon : 1
+						}, function() {
+							$('#rediondata').treegrid('reload');
+						});
+					} else {
+						layer.msg(ret.msg, {
+							icon : 2
+						});
+					}
+				}
+			});
+		});
+	}
+</script>
+
+</body>
+</html>

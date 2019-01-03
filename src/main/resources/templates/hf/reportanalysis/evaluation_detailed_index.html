@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content-header">
+        <h1>考评结果明细查询</h1>
+    </section>
+   <section class="content-header">
+               <fieldset> 	
+		<legend>查询条件</legend>
+            <form id="searchbar" class="form-horizontal">
+                <div class="form-group">
+                    <label for="unitId" style="width:130px" class="col-sm-2 control-label">医疗机构</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control tonto-select-agency" name="unitId" placeholder="请选择"></input>
+                    </div>
+                     <label for="name" style="width:130px;" class="col-sm-1 control-label">考评周期</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="assessCycleId" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" placeholder="请选择周期" />
+                    </div>
+                    <label for="unitId" style="width:130px" class="col-sm-2 control-label">考评等次</label>
+                    <div class="col-sm-2">
+                        <select name="assGrade" class="form-control tonto-select-constant" enumcode="ass-grades">
+			             <option value="">请选择</option>
+			         	 </select>
+                    </div>
+                    <div  class="col-sm-2" style="text-align:right">
+                        <a onclick="query()" class="btn btn-primary">查询</a>
+                        <button type="reset" class="btn">重置</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </section>
+        <div id="toolbar">       
+        <div class="btn-group">
+		    <a id="viewPeacet" onclick="viewUser()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看</a>
+		</div>
+    </div>
+	<section class="content table-content">
+        <table id="dataGrid"></table>
+    </section>
+	<div th:include="console/footer"></div>
+    <script type="text/javascript">
+    var table;
+    $(function() {
+    	
+        $.getConstantEnum(["ass-grades","operateState"], initDataGrid);
+    });
+
+    function initDataGrid(enumMap) {
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+					{ radio:true },
+                    { title: "医疗机构", field: "unitRootName" },
+                    { title: "被考评科室", field: "unitName" },
+                    { title: "姓名", field: "name" },
+                    { title: "考评等级", field: "unitassGrade" , formatter: $.getEnumColumnFormatter(enumMap, "ass-grades")},
+                    { title: "操作状态", field: "operateState",formatter: $.getEnumColumnFormatter(enumMap, "operateState") }
+                ]
+            ],
+            url: '/console/situa/search/all',
+            searchbar: '#searchbar',
+            sortName: '',
+            sortOrder: 'desc',
+            pagination: true,
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pageSize:10,
+            clickToSelect:true,
+            showColumns:true
+        });
+    }
+
+
+    function viewUser() {
+    	var row = getSelectRow();
+    	if(row){
+    		window.location =  '/org/user/view2?id=' + row.orgUserId;
+    	}else{
+    		$.errorMessage("请选中一条业务数据");
+    	}
+    	
+    }
+
+    function query() {
+        table.refresh();
+    }
+    
+	function getSelectRow(){
+    	var rows = table.getSelections();
+		return rows.length>0?rows[0]:null;
+    }
+	
+	$('body').bind('keypress',function (event){
+        if(event.keyCode == '13'){
+            query();
+        }
+    });
+	
+    </script>
+</body>
+
+</html>

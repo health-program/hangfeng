@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content-header">
+        <h1>考评情况查看</h1>
+    </section>
+   <section class="content-header">
+                <fieldset> 	
+		<legend>查询条件</legend>
+            <form id="searchbar" class="form-horizontal">
+                <div class="form-group">
+                    <label for="unitId" style="width:130px" class="col-sm-2 control-label">医疗机构</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control tonto-select-agency" name="unitId" placeholder="请选择"></input>
+                    </div>
+                     <label for="name" style="width:130px;" class="col-sm-1 control-label">考评周期</label>
+                    <div class="col-sm-3">
+                        <input type="text" name="assessCycleId" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" placeholder="请选择周期" />
+                    </div>
+                    <div class="col-sm-2" style="text-align:left">
+                        <a onclick="query()" class="btn btn-primary">查询</a>
+                       
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </section>
+		<section class="content-header">
+			<div class="panel panel-default">
+			    <div class="panel-body">
+			    	<div class="row">
+				<div id="dataGrid" style="width: 50%; height:631px;overflow:auto;margin: 10px auto;">
+				<table class='table table-bordered table-hover table-condensed'>
+				<thead>
+				<tr class='active'>
+				<th>机构名称</th>
+				<th>总人数</th>
+				<th>已考评人数</th>
+				<th>未考评人数</th>
+				<th>优秀</th>
+				<th>良好</th>
+				<th>合格</th>
+				<th>不合格</th>
+				<th>不定等次</th>
+				</tr>
+				</thead>
+				<tbody id="evaluation">
+				</tbody>
+				</table>
+				</div>
+				</div>
+			    </div>
+			</div>
+		</section>
+	<div th:include="console/footer"></div>
+    <script type="text/javascript">
+	//<![CDATA[
+    var table;
+    $(function() {
+       index();
+    });
+   
+    function index(){
+    	var unitId=$("#unitId").val();
+    	var assessCycleId=$('input[name="assessCycleId"]').val();
+        $.post("/console/evalua/search/all",{unitId:unitId,assessCycleId:assessCycleId},function(res){
+        	$("#evaluation").html(res.result);
+        	var list=document.getElementsByClassName("kprs")
+        	for(var i=0;i<list.length;i++){
+        	if(list[i].innerHTML>0){
+        		list[i].parentNode.setAttribute("class","success");
+        	}
+        	}
+         });
+    }
+    
+    function query() {
+    	index();
+    }
+    //]]>  
+
+
+    $('body').bind('keypress',function (event){
+        if(event.keyCode == '13'){
+            query();
+        }
+    });
+    
+
+    
+
+    </script>
+</body>
+
+</html>

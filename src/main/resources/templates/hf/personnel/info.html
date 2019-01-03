@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+<section class="content">
+    <div class="box-body">
+    <input type="hidden" name="id"  value="" class="form-control" id="id" th:value="${id}" />
+     <div class="form-group">
+          <label style="text-align: right;" for="perSystemId" class="col-sm-2 control-label">系统帐号:</label>
+          <div  style="margin-bottom: 1px;" class="col-sm-10">
+              <input type="text" style="background-color: white;" name="perSystemId" readonly="readonly" value="" class="form-control" id="perSystemId"  /> 
+          </div>
+      </div>
+      <div class="form-group">
+             <label style="text-align: right;" for="perName" class="col-sm-2 control-label" >姓名:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                 <input type="text" style="background-color: white;" name="perName"  class="form-control" id="perName" readonly="readonly" />
+             </div>
+             <label style="text-align: right;" for="nation" class="col-sm-2 control-label" >民族:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                 <input type="text" style="background-color: white;" name="nation"  value="" class="form-control" id="nation" readonly="readonly" /> 
+             </div>
+             <label style="text-align: right;" for="dateBirth" class="col-sm-2 control-label" >出生年月:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+             <input type="text" style="background-color: white;" id="datepicker" name="dateBirth" class="form-control" readonly="readonly" />
+             </div>
+         </div>
+         <div class="form-group">
+             <label style="text-align: right;" for="dictArtment" class="col-sm-2 control-label">所在科室:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                 <input type="text" style="background-color: white;" name="dictArtment"  value="" class="form-control" id="dictArtment" readonly="readonly" /> 
+             </div>
+             <label style="text-align: right;" for="isExaminer" class="col-sm-2 control-label">是否考评人员:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                  <input type="text" style="background-color: white;" name="isExaminer"  value="" class="form-control" id="isExaminer" readonly="readonly" /> 
+             </div>
+             <label style="text-align: right;" for="dictParty" class="col-sm-2 control-label">政治面貌:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                 <input type="text" style="background-color: white;" name="dictParty"  value="" class="form-control" id="dictParty" readonly="readonly" /> 
+             </div>
+         </div>
+         <div class="form-group">
+             <label style="text-align: right;" for="dictDiploma" class="col-sm-2 control-label">学历:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                 <input type="text" style="background-color: white;" name="dictDiploma"  value="" class="form-control" id="dictDiploma" readonly="readonly" /> 
+             </div>
+             <label style="text-align: right;" for="dictDuties" class="col-sm-2 control-label">职务:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                 <input type="text" style="background-color: white;" name="dictDuties"  value="" class="form-control" id="dictDuties" readonly="readonly" /> 
+             </div>
+             <label style="text-align: right;" for="dictRank" class="col-sm-2 control-label">职级:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-2">
+                  <input type="text" style="background-color: white;" name="dictRank"  value="" class="form-control" id="dictRank" readonly="readonly" /> 
+             </div>
+         </div>
+         <div class="form-group">
+             <label style="text-align: right;" for="perCard" class="col-sm-2 control-label">身份证号码:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-10">
+                 <input type="text"  style="background-color: white;" name="perCard" class="form-control" id="perCard" readonly="readonly" />
+             </div>
+         </div>
+         <div class="form-group">
+             <label style="text-align: right;" for="unit" class="col-sm-2 control-label">所在单位:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-10">
+                 <input type="text" style="background-color: white;" name="unit" class="form-control" id="unit" readonly="readonly"/>
+             </div>
+         </div>
+         <div class="form-group">
+             <label style="text-align: right;" for="perPhone" class="col-sm-2 control-label">手机号码:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-4">
+                 <input type="text" style="background-color: white;" name="perPhone" class="form-control" id="perPhone" readonly="readonly" />
+             </div>
+             <label style="text-align: right;" for="perSex" class="col-sm-2 control-label">性别:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-4">
+                  <input type="text" style="background-color: white;" name="perSex"  value="" class="form-control" id="perSex" readonly="readonly" /> 
+             </div>
+         </div>
+         <div class="form-group">
+               <label style="text-align: right;" for="userLevel" class="col-sm-2 control-label">用户级别:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-4">
+                 <input type="text" style="background-color: white;" name="userLevle"  value="" class="form-control" id="userLevle" readonly="readonly" /> 
+             </div>
+              <label style="text-align: right;" for="dictAtt" class="col-sm-2 control-label">人员属性:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-4">
+                 <input type="text" style="background-color: white;" name="dictAtt"  value="" class="form-control" id="dictAtt" readonly="readonly" /> 
+             </div>
+         </div>
+         <div class="form-group">
+             <label style="text-align: right;" for="joinworkTime" class="col-sm-2 control-label" >参加工作时间:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-4">
+             <input type="text" style="background-color: white;" id="datepicker2" name="joinworkTime"  class="form-control" readonly="readonly" />
+             </div>
+             <label style="text-align: right;" for="startworkTime" class="col-sm-2 control-label" >进单位工作时间:</label>
+             <div style="margin-bottom: 1px;" class="col-sm-4">
+             <input type="text" style="background-color: white;" id="datepicker3" name="startworkTime" class="form-control" readonly="readonly" />
+             </div>
+         </div>
+                <div class="form-group">
+                <label style="text-align: right;" for="resume" class="col-sm-2 control-label" >个人简历:</label>
+                <div style="margin-bottom: 1px;" class="col-sm-10">
+			    <textarea name="resume"  id="resume" class="form-control" rows="4" style="resize: none; background-color: white;" readonly="readonly" ></textarea>
+			    </div>
+			  	</div>
+                   <div style="margin-bottom: 1px;" class="form-group">
+                   <label style="text-align: right;" for="perReward" class="col-sm-2 control-label" >历年奖励情况:</label>
+                   <div class="col-sm-10">
+				    <textarea id="perReward"  name="perReward" class="form-control" rows="4" style="resize: none; background-color: white;" readonly="readonly" ></textarea>
+				    </div>
+				  </div>
+                   <div style="margin-bottom: 1px;" class="form-group">
+                   <label style="text-align: right;" for="perHandlle" class="col-sm-2 control-label" >历年受惩情况:</label>
+                   <div style="margin-top: 1px;" class="col-sm-10">
+	    			<textarea id="perHandlle"  name="perHandlle" class="form-control" rows="4" style="resize: none; background-color: white;" readonly="readonly"></textarea>
+	    </div>
+	  </div>
+</div>
+</section>
+<div th:include="console/footer"></div>
+<script type="text/javascript">
+$(function(){
+	$.get('/console/per/info', {'id':$("#id").val()}, function(str){
+		$("#perSystemId").val(str.result.info.per_system_id);
+		$("#perName").val(str.result.info.per_name);
+		$("#nation").val(str.result.info.nation);
+		$("#perPhone").val(str.result.info.per_phone);
+		$("#datepicker").val(str.result.info.date_birth);
+		$("#dictArtment").val(str.result.info.dict_artment);
+		if(str.result.info.is_examiner=='0'){
+			$("#isExaminer").val("否");
+		}else if(str.result.info.is_examiner=='1'){
+			$("#isExaminer").val("是");
+		}else{
+			$("#isExaminer").val("--");
+		}
+		$("#dictParty").val(str.result.info.dict_diploma);
+		$("#dictDiploma").val(str.result.info.dict_diploma);
+		$("#dictDuties").val(str.result.info.dict_duties);
+		$("#dictRank").val(str.result.info.dict_rank);
+		$("#perCard").val(str.result.info.per_card);
+		$("#unit").val(str.result.info.unit);
+		if(str.result.info.per_sex=='0'){
+			$("#perSex").val("女");
+		}else if(str.result.info.per_sex=='1'){
+			$("#perSex").val("男");
+		}else{
+			$("#perSex").val("不详");
+		}
+		$("#userLevle").val(str.result.info.role_level);
+		$("#dictAtt").val(str.result.info.dict_att);
+		$("#datepicker2").val(str.result.info.joinwork_time);
+		$("#datepicker3").val(str.result.info.startwork_time);
+		$("#resume").val(str.result.info.resume);
+		$("#perReward").val(str.result.info.per_reward);
+		$("#perHandlle").val(str.result.info.per_handlle);
+	});
+});
+</script>
+</body>
+</html>

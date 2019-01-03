@@ -1,0 +1,352 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 ">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <div class="pull-right">
+                        </div>
+                        <h4 class="box-title">事件基本信息</h4>
+                    </div>
+                    <div class="box-body" style="padding-bottom:10px">
+                        <form class="form-horizontal" th:object="${prizepunish}">
+                            <input type="hidden" id="prizepunishId" th:field="*{id}" />
+                            <input type="hidden" id="userId" th:value="${userId}" />
+                            <input type="hidden" id="cycleId" th:value="${cycleId}" />
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">事件类型：</label>
+                                <div class="col-sm-3">
+                                    <p class="form-control-static" id="dictCode" th:attr="enum-code-value=${prizepunish.dictCode}" />
+                                </div>
+                                <label class="col-sm-2 control-label">发生时间：</label>
+                                <div class="col-sm-3">
+                                    <p class="form-control-static" th:text="*{happenTime}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">主要内容：</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static" th:text="*{content}" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h4 class="box-title">奖惩信息列表</h4>
+                    </div>
+                    <div class="box-body" style="min-height:600px;padding-bottom:10px">
+                        <table id="dataGrid"></table>
+                    </div>
+                    <div id="toolbar">
+                        <a href="javascript:add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                        <a href="javascript:back()" class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:include="console/footer"></div>
+    </section>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    var table;
+    var userId;
+    var cycleId;
+    var prizePunishId;
+    $(function() {
+        userId = $("#userId").val();
+        cycleId = $("#cycleId").val();
+        prizePunishId = $("#prizepunishId").val();
+
+        $.getConstantEnum(["extra-item-type", { code: "event_type", type: 'p', target: '#dictCode' }], initDataGrid);
+    });
+
+    function initDataGrid(enumMap) {
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { title: "奖惩类型", field: "extraType", formatter: $.getEnumColumnFormatter(enumMap, "extra-item-type") },
+                    { title: "奖惩名称", field: "extraDescription" },
+                    { title: "分值", field: "score" },
+                    {
+                        title: "修改",
+                        width: "60px",
+                        align: 'center',
+                        events: {
+                            'click .edit': function(e, value, row, index) {
+                                edit(row);
+                            }
+                        },
+                        formatter: $.editColumnFormatter()
+                    },
+                    {
+                        title: "删除",
+                        width: "60px",
+                        align: 'center',
+                        events: {
+                            'click .remove': function(e, value, row, index) {
+                                remove(row);
+                            }
+                        },
+                        formatter: $.removeColumnFormatter()
+                    }
+                ]
+            ],
+            url: '/console/assess/quantitative/user/score/list',
+            queryParams: function() {
+                return { userId: userId, cycleId: cycleId, prizePunishId: prizePunishId }
+            },
+            pagination: false,
+            toolbar: "#toolbar",
+            showRefresh: true,
+            showToggle: true
+        });
+    }
+
+    function back() {
+        window.location = "/console/assess/quantitative/agency/user/index?userId=" + userId + "&cycleId=" + cycleId;
+    }
+
+    function remove(row) {
+        layer.confirm('确定删除吗?', function() {
+            $.getAjax('/console/assess/quantitative/user/score/delete?id=' + row.assessQuantitativeId, function() {
+                $.successMessage("删除成功");
+                table.refresh();
+            });
+        });
+    }
+
+    function add() {
+        edit();
+    }
+
+    function edit(row) {
+
+        $.getAjax("/console/assess/item/extra/cycle?id=" + cycleId + "&userId=" + userId, function(data) {
+
+            extraItems = data;
+
+            var content = '<section class="content">' +
+                '<div class="row">' +
+                '<div class="col-md-12">' +
+                '<div class="box box-primary">' +
+                '     <div class="box-header with-border">' +
+                '         <h4 class="box-title">评分信息</h3>' +
+                '     </div>' +
+                '     <div class="box-body">' +
+                '         <form class="form-horizontal">' +
+                '             <div class="form-group">' +
+                '                 <label for="extraType" class="col-sm-2 control-label">奖惩类型</label>' +
+                '                 <div class="col-sm-8">' +
+                '                     <select name="extraType" id="extraTypeSelect" class="form-control">' +
+                '                         <option value="1">加分</option>' +
+                '                         <option value="2">扣分</option>' +
+                '                         <option value="3">一票否决</option>' +
+                '                     </select>' +
+                '                 </div> ' +
+                '             </div>' +
+                '             <div class="form-group">' +
+                '                 <label for="extraItem" class="col-sm-2 control-label">奖惩名称</label>' +
+                '                 <div class="col-sm-8">' +
+                '                     <select name="extraItem" id="extraItemSelect" class="form-control"></select>' +
+                '                 </div>' +
+                '             </div>' +
+                '             <div class="form-group" id="scoreLimitDiv">' +
+                '                 <label for="" class="col-sm-2 col-sm-offset-2 control-label">加·扣分上限</label>' +
+                '                 <div class="col-sm-2">' +
+                '                     <input type="text" id="alterUpper" class="form-control" readonly="readonly"/>' +
+                '                 </div>' +
+                '                 <label for="" class="col-sm-2 control-label" >加·扣分下限</label>' +
+                '                 <div class="col-sm-2">' +
+                '                     <input type="text" id="alterLower" class="form-control" readonly="readonly"/>' +
+                '                 </div>' +
+                '             </div>  ' +
+                '             <div class="form-group">' +
+                '                 <label for="" class="col-sm-2 control-label">分值</label>' +
+                '                 <div class="col-sm-8">' +
+                '                     <input type="text" class="form-control"  id="scoreInput"/>' +
+                '                 </div>' +
+                '             </div>  ' +
+                '             <div class="form-group">' +
+                '                 <div class="col-sm-offset-2 col-sm-10">' +
+                '                     <button type="button" id="submitBtn" class="btn btn-primary">提交</button>' +
+                '                     <button type="button" id="cancelBtn" class="btn btn-default">取消</button>' +
+                '                 </div>' +
+                '             </div>' +
+                '         </form>' +
+                '     </div>' +
+                ' </div>' +
+                ' </div>' +
+                ' </div>' +
+                ' </section>';
+
+
+            layer.open({
+                type: 1,
+                title: ' ',
+                maxmin: true, //开启最大化最小化按钮
+                area: $.getOpenLayerSize(700, 450),
+                content: content,
+                success: function(layero, index) {
+                    initSelect(layero, index, row);
+                }
+            });
+        });
+    }
+
+    var extraItems;
+    var currentExtraType;
+    var currentExtraItems;
+    var currentExtraItem;
+
+    function initSelect(layero, index, row) {
+        $("#extraTypeSelect").change(extraTypeSelectChange);
+        $("#extraItemSelect").change(extraItemSelectChange);
+
+        var select;
+
+        if (row) {
+            for (var i = 0; i < extraItems.length; i++) {
+                if (extraItems[i].id == row.extraId) {
+                    select = extraItems[i];
+                    break;
+                }
+            }
+
+            $("#scoreInput").val(row.score);
+
+        }
+
+        if (select) {
+            extraTypeSelectChange(null, select);
+            extraItemSelectChange();
+        } else {
+            extraTypeSelectChange();
+            extraItemSelectChange();
+        }
+
+        $("#cancelBtn").click(function() {
+            layer.close(index);
+        })
+
+        $("#submitBtn").click(function() {
+
+            var params = {
+                userId: userId,
+                cycleId: cycleId,
+                prizePunishId: prizePunishId
+            };
+
+            if (row) {
+                params.id = row.assessQuantitativeId;
+            }
+
+            if (currentExtraItem) {
+                params.assessItemExtraId = currentExtraItem.id;
+            } else {
+                $.errorMessage("请选择奖惩名称");
+                return;
+            }
+
+            var score = $("#scoreInput").val();
+            if (score && (/^\d+(\.5)?$/.test(score))) {
+
+                score = score * 1;
+                if (score >= currentExtraItem.alterLower && score <= currentExtraItem.alterUpper) {
+                    params.score = score;
+                } else {
+                    $.errorMessage("分数必须满足加·扣分上下限");
+                    return;
+                }
+            } else {
+                $.errorMessage("请输入有效的分数");
+                return;
+            }
+
+            $.postAjax("/console/assess/quantitative/user/score/save", params, function() {
+                $.successMessage("保存成功");
+                layer.close(index);
+                table.refresh();
+            });
+        })
+    }
+
+
+    function extraTypeSelectChange(event, select) {
+    	
+    	if(select){
+            currentExtraType = select.extraType;
+            $("#extraTypeSelect").val(currentExtraType);
+        }
+    	
+    	
+        currentExtraType = $("#extraTypeSelect").val();
+        currentExtraItems = $.grep(extraItems, function(n, i) {
+            return n.extraType == currentExtraType;
+        });
+
+        var html = "";
+        var itemSelect = $("#extraItemSelect");
+
+        itemSelect.empty();
+        for (var i = 0; i < currentExtraItems.length; i++) {
+            var a = currentExtraItems[i];
+
+            if (select && select.id == a.id) {
+                itemSelect.append($('<option value="' + a.id + '" selected="selected">' + a.extraDescription + '</option>'));
+            } else {
+                itemSelect.append($('<option value="' + a.id + '">' + a.extraDescription + '</option>'));
+            }
+
+        }
+
+        if (currentExtraType == "3") {
+            $("#scoreLimitDiv").hide();
+        } else {
+            $("#scoreLimitDiv").show();
+        }
+        extraItemSelectChange();
+    }
+
+
+    function extraItemSelectChange() {
+        if (currentExtraType == "3") {
+            return;
+        }
+
+        var selectId = $("#extraItemSelect").val();
+
+        for (var i = 0; i < currentExtraItems.length; i++) {
+            var a = currentExtraItems[i];
+            if (a.id == selectId) {
+                currentExtraItem = a;
+                break;
+            }
+        }
+
+        if (currentExtraItem) {
+            $("#alterLower").val(currentExtraItem.alterLower);
+            $("#alterUpper").val(currentExtraItem.alterUpper);
+        } else {
+            $("#alterLower").val("");
+            $("#alterUpper").val("");
+        }
+    }
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

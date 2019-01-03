@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="console/header">
+</head>
+
+<body>
+    <section class="content-header">
+        <h1>考评模板管理</h1>
+    </section>
+    <section class="content-header">
+        <fieldset>
+            <legend>查询条件</legend>
+            <form id="searchbar" class="form-horizontal">
+                <div class="form-group">
+                    <label for="templateName" style="width: 100px" class="col-sm-1 control-label">模板名称</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="templateName" class="form-control" id="templateName" placeholder="请填写模板名称"/>
+                    </div>
+                    <label for="enableState" style="width: 100px" class="col-sm-1 control-label">启用状态</label>
+                    <div class="col-sm-2">
+                        <select id="enableState" name="enableState" class="form-control">
+                            <option value="">请选择</option>
+                            <option value="1">启用</option>
+                            <option value="2">暂存</option>
+                            <option value="3">停用</option>
+                        </select>
+                    </div>
+                    <label for="unitId" style="width: 100px" class="col-sm-1 control-label">机构名称</label>
+                    <div class="col-sm-2">
+                        <input type="text" th:if="${agencyId} == null" class="form-control tonto-select-agency" name="unitId" placeholder="请选择机构"></input>
+                        <input type="text" th:if="${agencyId} != null" class="form-control" readonly="readonly" th:value="${agencyName}"></input> 
+                        <input type="hidden" th:if="${agencyId} != null" class="form-control" name="unitId" th:value="${agencyId}"></input> 
+                        
+                    </div>
+                    <div class="col-sm-3" style="text-align:right">
+                        <a onclick="query()" class="btn btn-primary">查询</a>
+                        <button type="reset" class="btn btn-default">重置</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </section>
+    <section class="content table-content">
+        <table id="dataGrid"></table>
+    </section>
+    <div id="toolbar">
+        <div class="btn-group">
+	        <a onclick="levelConfig()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>等级配置</a>
+	        <a onclick="projectConfig()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>项目配置</a>
+	        <a onclick="start()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>启用</a>
+	        <a onclick="copy()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>复制</a>
+	        <a onclick="view()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看</a>
+	       	<a onclick="add()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>新增</a>	        	        
+	        <a onclick="edit()" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i>修改</a>
+	        <a onclick="remove()" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i>删除</a>
+	        <a onclick="stop()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>停用</a>
+        </div>
+    </div>
+    <div th:include="console/footer"></div>
+    <script type="text/javascript">
+    var table;
+    $(function() {
+        initDataGrid();
+    });
+
+    function query() {
+        table.refresh();
+    }
+
+    function initDataGrid() {
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    {radio:true},
+                    { title: "单位名称", field: "unitName", sortName:"orgUnitId", sortable: true},
+                    { title: "模板名称", field: "templateName", sortable: true},
+                    { title: "模板描述", field: "templateDescribe" },
+                    { title: "启用状态", field: "enableState", sortable: true, align: 'center', formatter: showEnableState },
+                    { title: "操作时间", field: "updateTime", align: 'center', formatter: "date", sortable: true}
+                ]
+            ],
+            url: '/console/temp/search/all',
+            searchbar: '#searchbar',
+            sortName: 'orgUnitId',
+            sortOrder: 'asc',
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pagination: true, //分页请设置为false
+            clickToSelect:true,
+            showColumns:true
+        });
+    }
+    
+    //等级配置
+    function levelConfig() {
+    	 var row = getSelectRow();
+    	if (row) {
+    		if (row.enableState == "1" || row.enableState == "3") { //1:启用;3:停用
+                layer.open({
+                    type: 2,
+                    title: '等级配置 ',
+                    maxmin: true, //开启最大化最小化按钮
+                    area: $.getOpenLayerSize(900, 450),
+                    content: ' /console/assess/level/view?id=' + row.id,
+                });
+            }else{
+                layer.open({
+                    type: 2,
+                    title: '等级配置 ',
+                    maxmin: true, //开启最大化最小化按钮
+                    area: $.getOpenLayerSize(900, 450),
+                    content: ' /console/assess/level/index?id=' + row.id,
+                    success: function(layero, index) {
+                        $.setLayerSubmitHandler(layero, index, function() {
+                            layer.close(index);
+                        }, "保存成功");
+                    }
+                });
+            }
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		} 
+    }
+
+    //项目配置
+    function projectConfig() {
+    	var row = getSelectRow();
+    	if (row) {
+    		if (row.enableState == "1") { //1:启用;3:停用
+                layer.alert("该模板已启用！");
+                return false;
+            }else if(row.enableState == "3"){
+                layer.alert("该模板已归档！");
+                return false;
+            }
+            window.location = "/console/assess/item/index?id=" + row.id;
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		}
+    }
+
+    function start() {
+    	var row = getSelectRow();
+    	if (row) {
+    		$.getAjax('/console/temp/level?id=' + row.id, function(res) {
+                if(res>0){
+                    $.getAjax('/console/temp/item?id=' + row.id, function(rest) {
+                        if(rest>0){
+                              if (row.enableState == "1") {
+                                   layer.alert("该模板已启用！");
+                                   return false;
+                               }
+                               layer.confirm('确定启用吗?', function() {
+                                   $.getAjax('/console/temp/start?id=' + row.id, function() {
+                                       $.successMessage("启用成功");
+                                       table.refresh();
+                                   });
+                               });
+                        }else{
+                            $.errorMessage("请先项目配置再启用");
+                        }
+                    });
+                }else{
+                    $.errorMessage("请先等级配置再启用");
+                }
+            });
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		}
+    }
+
+    function copy() {
+    	var row = getSelectRow();
+    	if (row) {
+    		layer.open({
+                type: 2,
+                title: ' ',
+                maxmin: true, //开启最大化最小化按钮
+                content: "/console/temp/copy?id=" + row.id,
+                area: $.getOpenLayerSize(600, 750),
+                success: function(layero, index) {
+                    $.setLayerSubmitHandler(layero, index, function() {
+                        layer.close(index);
+                        table.refresh();
+                    }, "保存成功");
+                }
+            });
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		}
+    }
+
+    function view() {
+    	var row = getSelectRow();
+    	if (row) {
+    		window.location = '/console/temp/view?id=' + row.id;
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		}
+    }
+
+    function add() {
+        layer.open({
+            type: 2,
+            title: ' ',
+            maxmin: true, //开启最大化最小化按钮
+            content: '/console/temp/add/input',
+            area: $.getOpenLayerSize(967, 658),
+            success: function(layero, index) {
+                $.setLayerSubmitHandler(layero, index, function() {
+                    layer.close(index);
+                    table.refresh();
+                }, "保存成功");
+            }
+        });
+    }
+
+    function remove() {
+    	var row = getSelectRow();
+    	if (row) {
+    		if (row.enableState == "1" || row.enableState == "3") { //1:启用;3:停用
+                layer.alert("该数据已提交！");
+                return false;
+            }
+            layer.confirm('确定删除吗?', function() {
+                $.getAjax('/console/temp/delete?id=' + row.id, function() {
+                    $.successMessage("删除成功");
+                    table.refresh();
+                });
+            });
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		}
+        
+    }
+
+    function edit() {
+    	var row = getSelectRow();
+    	if (row) {
+    		if (row.enableState == "1" || row.enableState == "3") {
+                layer.alert("该数据已提交！");
+                return false;
+            }
+            layer.open({
+                type: 2,
+                title: ' ',
+                maxmin: true, //开启最大化最小化按钮
+                area: $.getOpenLayerSize(600, 750),
+                content: "/console/temp/edit/input?id=" + row.id,
+                success: function(layero, index) {
+                    $.setLayerSubmitHandler(layero, index, function() {
+                        layer.close(index);
+                        table.refresh();
+                    }, "修改成功");
+                }
+            });
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		}
+    	
+        
+    }
+
+    function stop() {
+    	var row = getSelectRow();
+    	if (row) {
+    		 if (row.enableState == "3") {
+    	            layer.alert("模板已停用！");
+    	            return false;
+    	        }
+    	        $.getAjax('/console/temp/is/stop?id=' + row.id,function(res){
+    	            if(res>0){
+    	                layer.alert("该模板已经被其他考评周期引用!");
+    	            }else{
+    	                layer.confirm('确定停用吗?', function() {
+    	                $.getAjax('/console/temp/stop?id=' + row.id, function() {
+    	                    $.successMessage("停用成功");
+    	                    table.refresh();
+    	                });
+    	            });
+    	            }
+    	        })
+		} else {
+			$.errorMessage("请选中一条业务数据！");
+		}
+    }
+
+    //考评模板列表中启用状态的判断
+    function showEnableState(value, row, index) {
+        if (row.enableState == "1") {
+            return "启用";
+        }
+        if (row.enableState == "2") {
+            return "暂存";
+        }
+        if (row.enableState == "3") {
+            return "停用";
+        }
+    }
+    
+    function getSelectRow() {
+        var rows = table.getSelections();
+        return rows.length>0?rows[0]:null;
+    } 
+    
+    $('body').bind('keypress',function (event){
+        if(event.keyCode == '13'){
+            query();
+        }
+    });
+    
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netmatch.mapper.organization.OrgUserMapper">
+
+	<!-- 物理删除账号 -->
+	<delete id="wipeByPrimaryKey">
+		DELETE from sys_user WHERE user_id=#{id}
+	</delete>
+	
+	<update id="updateUsersUnit">
+		UPDATE org_user SET is_assessor=0,assess_role=1,assess_unit_id= null,org_agency_id = #{agencyId},org_unit_id = #{unitId},org_assess_team_id = #{teamId} WHERE id IN 
+		<foreach collection="userIds" index="index" item="userId" open="(" separator="," close=")">#{userId}</foreach>
+	</update>
+	
+	<update id="updateUserUnit">
+		UPDATE org_user SET is_assessor=0,assess_role=1,assess_unit_id= null,org_agency_id = #{agencyId},org_unit_id = #{unitId},org_assess_team_id = #{teamId} WHERE id = #{userId}
+	</update>
+	
+	<update id="updateUnitForTransferAsk">
+		UPDATE org_user SET transfer_status=2, is_assessor=0,assess_role=1,assess_unit_id= null,org_agency_id = #{agencyId},org_unit_id = #{unitId},org_assess_team_id = #{teamId} WHERE id = #{userId}
+	</update>
+	
+	<update id="rejectTransferAsk">
+		UPDATE org_user SET transfer_status = 3  WHERE transfer_status = 1 AND id IN 
+		<foreach collection="userIds" index="index" item="userId" open="(" separator="," close=")">#{userId}</foreach>
+	</update>
+	
+	<update id="removeTransferAsk">
+		UPDATE org_user SET transfer_agency_id = null, transfer_unit_id = null, transfer_status = null  WHERE (transfer_status = 1 OR transfer_status = 3) AND id IN 
+		<foreach collection="userIds" index="index" item="userId" open="(" separator="," close=")">#{userId}</foreach>
+	</update>
+	
+	<select id="countElseUserByIdentification" resultType="int">
+		SELECT COUNT(1) FROM org_user WHERE identification = #{identification} AND is_delete = 0 AND id != #{userId}
+	</select>
+	
+	<select id="countUserByIdentification" resultType="int">
+		SELECT COUNT(1) FROM org_user WHERE identification = #{identification} AND is_delete = 0
+	</select>
+	
+</mapper>

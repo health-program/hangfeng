@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+<title>行风监管系统</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport" />
+<link rel="stylesheet"
+	href="/static/assets/bootstrap-3.3.5/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="/static/assets/font-awesome-4.7.0/css/font-awesome.min.css" />
+<link rel="stylesheet"
+	href="/static/assets/ionicons-2.0.1/css/ionicons.min.css" />
+<link rel="stylesheet"
+	href="/static/assets/adminlte-2.3.7/css/AdminLTE.min.css" />
+<link rel="stylesheet"
+	href="/static/assets/adminlte-2.3.7/css/skins/skin-blue.min.css" />
+<link rel="stylesheet" href="/static/css/app.css" />
+<link rel="stylesheet"
+	href="/static/assets/layer-3.0.1/theme/default/layer.css" />
+<link rel="stylesheet" href="/static/css/iconfont.css" />
+<link rel="stylesheet" href="/static/css/iconfontt.css" />
+<style type="text/css">
+body {
+	font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-tap-highlight-color: transparent;
+	font-family: "微软雅黑";
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+html, body {
+	min-height: 100%;
+}
+
+body {
+	-webkit-touch-callout: none;
+	-webkit-text-size-adjust: none;
+	-webkit-user-select: none;
+	-webkit-font-smoothing: antialiased;
+}
+
+ol, ul, dl, dt, li {
+	list-style: none;
+}
+
+img {
+	border: none;
+}
+
+input {
+	outline: none;
+	border: none;
+	font-size: 1rem;
+}
+
+select {
+	font-size: 1rem;
+}
+
+input:focus, select:focus, button:focus, option:focus, textarea:focus {
+	background-color: none;
+	outline: none !important;
+}
+
+/* a{
+color:#ffffff}
+a:visited{ 
+
+text-decoration:none;
+} */
+header {
+	height: 50px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: #ccc;
+}
+
+.aside {
+	width: 230px;
+	min-height: 100vh;
+	background: url("static/image/asidebg.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	color: #fff;
+	z-index: 1000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	padding-top: 50px;
+}
+
+.article {
+	z-index: -2000;
+	width: 100%;
+	top: 0;
+	padding-left: 230px;
+	position: absolute;
+	padding-top: 50px;
+	left: 0;
+	height: 100vh;
+}
+
+.aside_img {
+	width: 73px;
+	height: 73px;
+	border-radius: 73px;
+	background-color: #fff;
+	margin: 0 auto;
+	margin-top: 30px;
+}
+
+.aside_img img {
+	width: 73px;
+	height: 73px;
+}
+
+.aside_name {
+	color: #fff;
+	font-size: 14px;
+	text-align: center;
+	margin-top: 10px;
+}
+
+.aside_icon {
+	text-align: center;
+}
+
+.aside_icon .icon {
+	font-size: 50px;
+}
+
+.aside_zi {
+	text-align: center;
+}
+
+.aside_div {
+	display: block;
+	margin: 38px 0;
+	height: 80px;
+	text-decoration: none;
+}
+
+.aside_ul a {
+	color: #ffffff;
+}
+</style>
+<!--[if lt IE 9]>
+    <script src=/static/js/html5shiv.min.js"></script>
+    <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="skin-blue fixed sidebar-mini">
+	<div class="wapper">
+		<!-- style="background: url('/static/image/top.png') no-repeat center;" -->
+		<header class="main-header">
+			<a href="javascript:void(0)" class="logo" style="background: none">
+				<span class="logo-mini"><b>行风</b></span> <span class="logo-lg"><b>行风监管</b></span>
+			</a>
+			<nav
+				style="background: url('/static/image/top.png'); background-size: cover; height: 50px">
+				<div class="navbar-custom-menu">
+					<ul class="nav navbar-nav">
+						<a href="javascript:see()" style="line-height: 50px; color: #fff">
+							<i class="reset-password-icon"></i> <span class="hidden-xs">修改密码</span>
+						</a>
+						<a href="/logout"
+							style="line-height: 50px; color: #fff; margin-left: 30px; margin-right: 20px">
+							<i class="logout-icon"></i> <span class="hidden-xs">退出</span>
+						</a>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<aside class="aside">
+			<div>
+				<div class="aside_img">
+					<img src="/static/image/role_be_assessed.png"
+						style="background: #fff;" class="img-circle" alt="User Image" />
+				</div>
+				<div class="aside_name">
+					<p th:text="${user.name}"></p>
+					<small th:text="${user.agency}"></small>
+				</div>
+			</div>
+			<div class="aside_ul">
+				<li><a class="aside_div" style="color: #00c0ef"
+					href='/console/main/right' target="mainFrame">
+						<div class="aside_icon">
+							<i class="icon iconfont icon-shouye"></i>
+						</div>
+						<div class="aside_zi">首页</div>
+				</a></li>
+
+				<li><a class="aside_div" target="mainFrame"
+					href='/console/peacet/index'>
+						<div class="aside_icon">
+							<i class="icon iconfont icon-04gerenfill"></i>
+						</div>
+						<div class="aside_zi">个人平时考评</div>
+				</a></li>
+
+				<li><a class="aside_div" target="mainFrame"
+					href='/person/cyc/index'>
+						<div class="aside_icon">
+							<i class="icon iconfont icon-yejiguanli"></i>
+						</div>
+						<div class="aside_zi">个人周期考评</div>
+				</a></li>
+
+				<li><a class="aside_div" target="mainFrame"
+					href='/org/user/self/index'>
+						<div class="aside_icon">
+							<i class="icon iconfont icon-danganshuju"></i>
+						</div>
+						<div class="aside_zi">个人医德医风档案</div>
+				</a></li>
+			</div>
+		</aside>
+		<div class="content-wrapper">
+			<div id="updatePsd" style="display: none">
+				<input type="hidden" name="id" class="form-control" id="id"
+					th:value="${user.id}" />
+				<div class="form-group"
+					style="height: 32px; display: block; margin-top: 10px;">
+					<label for="username" class="col-sm-2 control-label"
+						style="height: 34px; display: inline-block; line-height: 34px;">用户名</label>
+					<div class="col-sm-10">
+						<input type="text" name="username" class="form-control"
+							id="username" th:readonly="${!#strings.equals(user.id,null)}"
+							th:value="${user.name}" />
+					</div>
+				</div>
+				<div class="form-group" style="height: 32px; display: block;">
+					<label for="oldPassword" class="col-sm-2 control-label"
+						style="height: 34px; display: inline-block; line-height: 34px;">原始密码</label>
+					<div class="col-sm-10">
+						<input type="text" name="oldPassword" class="form-control"
+							id="oldPassword" />
+					</div>
+				</div>
+				<div class="form-group" style="height: 32px; display: block;">
+					<label for="newPassword" class="col-sm-2 control-label"
+						style="height: 34px; display: inline-block; line-height: 34px;">新密码</label>
+					<div class="col-sm-10">
+						<input type="text" name="newPassword" class="form-control"
+							id="newPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
+					</div>
+				</div>
+				
+				<div class="form-group" style="height: 32px; display: block;">
+                    <label for="confirmNewPassword" class="col-sm-2 control-label"
+                        style="height: 34px; display: inline-block; line-height: 34px;">确认新密码</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="confirmNewPassword" class="form-control"
+                            id="iConfirmNewPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
+                    </div>
+                </div>
+                
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<span type="button" class="btn btn-default" id="submitted">提交</span>
+					</div>
+				</div>
+			</div>
+			<iframe name="mainFrame" id="mainFrame" src="/console/main/right"
+				frameborder="false" scrolling="auto" style="border: none;"
+				width="100%" height="auto" allowtransparency="true"></iframe>
+			<input type="hidden" id="isFirstLogin" th:value="${isFirst}" />
+		</div>
+		<footer class="main-footer navbar-fixed-bottom">
+			<div class="pull-right hidden-xs">
+				<b>Version</b> 1.0.0
+			</div>
+			<strong>Copyright &copy; 2017 <a style="color: #3c8dbc"
+				href="http://www.netintech.cn">网进科技</a>.
+			</strong> All rights reserved.
+		</footer>
+	</div>
+	<script type="text/javascript"
+		src="/static/assets/adminlte-2.3.7/plugins/jQuery/jquery-2.2.4.min.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/adminlte-2.3.7/plugins/jQuery/jquery-migrate-1.4.1.min.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/adminlte-2.3.7/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/adminlte-2.3.7/js/app.min.js"></script>
+	<script type="text/javascript" src="/static/js/index.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/layer-3.0.1/layer.min.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/jquery-validation/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="/static/js/common.js"></script>
+	<script type="text/javascript">
+    /*<![CDATA[*/
+    //定义一个全局api，这样操作起来比较灵活 
+    var api, boundx, boundy, $preview = $('#preview-pane'),
+        $pcnt = $('#preview-pane .preview-container'),
+        $pimg = $('#preview-pane .preview-container img'),
+
+        xsize = $pcnt.width(),
+        ysize = $pcnt.height();
+    console.log('init', [xsize, ysize]);
+
+    function readURL(obj) {
+        if (api) {
+            api.destroy();
+        }
+        if (obj.files[0]) {
+            var reader = new FileReader();
+            reader.readAsDataURL(obj.files[0]);
+            reader.onload = function(e) {
+                var data = e.target.result;
+                $('#cutImg').removeAttr('src');
+                $pimg.removeAttr('src');
+                $('#cutImg').attr('src', data);
+                $pimg.attr('src', data);
+                $pimg.css('display', "block");
+                $('#cutImg').Jcrop({
+                    onChange: updatePreview,
+                    onSelect: updatePreview,
+                    aspectRatio: xsize / ysize
+                }, function() {
+                    // Use the API to get the real image size
+
+                    var bounds = this.getBounds();
+                    boundx = bounds[0];
+                    boundy = bounds[1];
+                    // Store the API in the jcrop_api variable
+
+                    api = this;
+
+                    // 在原图上显示预览图片
+                    $preview.appendTo(api.ui.holder);
+                });
+            };
+
+        }
+
+        function updatePreview(c) {
+            if (parseInt(c.w) > 0) {
+                var rx = xsize / c.w;
+                var ry = xsize / c.h;
+                $pimg.css({
+
+                    width: Math.round(rx * boundx) + 'px',
+                    height: Math.round(ry * boundy) + 'px',
+                    marginLeft: '-' + Math.round(rx * c.x) + 'px',
+                    marginTop: '-' + Math.round(ry * c.y) + 'px'
+
+                });
+                $("#w").val(c.w);
+                $("#h").val(c.h);
+                $("#x").val(c.x);
+                $("#y").val(c.y);
+            }
+        };
+
+    }
+    </script>
+	<script>
+    //修改密码弹框
+    function see(fun) {
+        layer.open({
+            type: 1,
+            title: '修改密码',
+            shadeClose: false,
+            shade: false,
+            area: ['700px', '300px'],
+            content: $("#updatePsd")
+        });
+    };
+
+    $(function() {
+        $('#myModal').modal('hide');
+        //首次登录强制修改默认密码
+        var isFirstLogin = $("#isFirstLogin").val();
+        if (isFirstLogin == 1) {
+            layer.open({
+                type: 1,
+                title: '为了您的账号安全，请先修改密码',
+                shadeClose: false,
+                //shade: false,
+                area: ['700px', '253px'],
+                content: $("#updatePsd"),
+                closeBtn: 0
+            });
+        }
+
+        //密码修改后提交
+        $("#submitted").click(
+            function() {
+                var oldPassword = $.trim(window.parent.document
+                    .getElementById('oldPassword').value);
+                var newPassword = $.trim(window.parent.document
+                    .getElementById('newPassword').value);
+                var confirmNewPassword = $.trim(window.parent.document
+                        .getElementById('iConfirmNewPassword').value);
+
+                if (oldPassword == '' || oldPassword == 'null') {
+                    layer.msg('原始密码不能为空!');
+                } else if (newPassword == '' || newPassword == 'null') {
+                    layer.msg('新密码不能为空!');
+                } else if (newPassword == oldPassword) {
+                    layer.msg('新密码不能和原始密码一样!');
+                } else if (newPassword.length < 6 || newPassword.length > 20) {
+                    layer.msg('新密码长度应该在6-20');
+                } else if (confirmNewPassword == '' || confirmNewPassword == 'null') {
+                    layer.msg('确认新密码不能为空！');
+                } else if (confirmNewPassword.length < 6 || confirmNewPassword.length > 20) {
+                    layer.msg('确认新密码长度应该在6-20');
+                } else if (confirmNewPassword != newPassword) {
+					layer.msg('两次新密码输入不一致！');
+				} else {
+                    $.postAjax("/update/password", {
+                        'oldPassword': oldPassword,
+                        'newPassword': newPassword
+                    }, function() {
+
+                        layer.alert("修改成功", function() {
+                            window.location = "/logout";
+                        })
+
+                    });
+                }
+            })
+    });
+    
+    
+    <!--  点击变色   -->
+
+    $('.aside_ul li').on('click','a',function(){  
+        $(".aside_ul a").css("color","#ffffff");
+        $(this).css("color","#00c0ef");  
+    }); 
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

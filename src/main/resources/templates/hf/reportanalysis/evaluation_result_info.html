@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+ <section class="content-header" style="padding: 15px 15px 15px 15px;">
+        <h1>科室结果查看</h1>
+        <div>
+	 		<div style="margin-top: -28px;" class="pull-right">
+				<a href="/console/result/index" class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
+	 		</div>  
+	  	</div> 
+    </section>
+	<section class="content table-content">
+		<input type="hidden" id="assessCycleId" th:value="${assessCycleId}" />
+		<input type="hidden" id="unitId" th:value="${unitId}" />
+		<table id="dataGrid"></table>
+	</section>
+	<div id="toolbar">
+        <div class="btn-group">
+		    <a id="viewPeacet" onclick="viewUser()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看下属人员</a>
+		     <a onclick="exprot()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>导出</a>	
+		</div>
+    </div>
+	<div th:include="console/footer"></div>
+	<script type="text/javascript">
+		//<![CDATA[
+		var table;
+		$(function() {
+			initDataGrid()
+			//$.getConstantEnum(initDataGrid);
+		});
+		
+		 function initDataGrid() {
+				var unitId=$("#unitId").val();
+				var assessCycleId=$("#assessCycleId").val();
+		        table = $.createTable("#dataGrid", {
+		            idField: "id",
+		             columns: [
+		                [
+							{ radio:true },
+							{ title: "所属机构", field: "agencyName" },
+		                    { title: "被考评科室", field: "unitName" },
+		                    { title: "已考评", field: "unitAssGradeCOUNT" },
+                          	{ title: "未考评", field: "notUnitAssGradeCOUNT" },
+                          	{ title: "总人数", field: "total" },
+		                ]
+		            ],
+		            url: '/console/result/evaluation/info?unitId='+unitId+"&assessCycleId="+assessCycleId,
+		            sortName: 'unitAssGrade',
+		            sortOrder: 'asc',
+		            pagination: true,
+		            toolbar: "#toolbar",
+		            showRefresh: true,
+		            pageSize:10,
+		            clickToSelect:true,
+		            showColumns:true
+		        });
+		    }
+		 
+		  function state(value,row,index){
+		    	 if(row.unitAssGrade==null){
+		    		 return '未完成考评';
+		     }else if(row.unitAssGrade=='1'){
+		    	 return '优秀';
+		     }
+		     else if(row.unitAssGrade=='2'){
+		    	 return '良好';
+		     }
+		     else if(row.unitAssGrade=='3'){
+		    	 return '合格';
+		     }
+		     else if(row.unitAssGrade=='4'){
+		    	 return '不合格';
+		     }
+		     else if(row.unitAssGrade=='5'){
+		    	 return '不定等次';
+		     }
+		     }
+		     
+		     
+		     function states(value,row,index){
+		    	  if(row.operateState=='5'){
+					   return '考评小组考评完毕';
+				   }else if(row.operateState=='6'){
+					   return '被考评人已确认';
+				   }else{
+					   return '未自评';	
+				   }
+		     }
+		     
+		     
+		     var table2;
+		     var unitId;
+		     var assessCycleId;
+		     function viewUser() {
+		     	var row = getSelectRow();
+		     	unitId=row.unitId;
+		     	assessCycleId=row.assessCycleId;
+		     	if(row){
+		     		 var content = '<section class="tonto-layer-div content table-content">' +
+		     		   ' <div id="toolbar2"> '+
+		               '<div class="btn-group">'+
+		               ' <a onclick="exportPeople()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>导出</a>'+
+		               '</div>'+
+		       		 '</div>'+ 
+		     		 '    <table id="dataGrid2" class="table table-hover"></table>' +
+		             '    <div style="width:400px" >' +
+		             '    </div>' +
+		             '</section>';
+		     		layer.open({
+		                type: 1,
+		                title: '科室下属人员',
+		                closeBtn:1,
+		                maxmin: true, //开启最大化最小化按钮unitId='+row.unitId+
+		                area: $.getOpenLayerSize(1000, 650),
+		                maxmin: true, //开启最大化最小化按钮
+		                content:content,
+		                success: function(layero, index) {
+		                     table2 = $.createTable("#dataGrid2", {
+		    		            idField: "id",
+		    		             columns: [
+		    		                [
+		    							{ title: "所属机构", field: "agencyName" },
+		    		                    { title: "被考评科室", field: "unitName" },
+		    		                  	{ title: "姓名", field: "name"},
+		    		                    { title: "考评等级", field: "unitAssGrade" , formatter: state},
+		    		                    { title: "操作状态", field: "operateState",formatter: states} 
+		    		                ]
+		    		            ],
+		    		            url: '/console/result/evaluation/people?unitId='+row.unitId+"&assessCycleId="+row.assessCycleId,
+		    		            sortName: 'unitAssGrade',
+		    		            sortOrder: 'asc',
+		    		            pagination: true,
+		    		            toolbar: "#toolbar2",
+		    		            showRefresh: true,
+		    		            pageSize:10,
+		    		            clickToSelect:true,
+		    		            showColumns:true
+		    		        }); 
+		                }
+		            });
+		     		
+		     	}else{
+		     		$.errorMessage("请选中一条业务数据");
+		     	}
+		     }
+		      
+		     function getSelectRow(){
+		     	var rows = table.getSelections();
+		 		return rows.length>0?rows[0]:null;
+		     }
+		     
+		     function query() {
+		         table2.refresh();
+		     }
+		     
+		 	function exprot(){exportPeople
+				var unit = $("#unitId").val();
+				var assessCycleId = $("#assessCycleId").val();
+				var url = "/console/result/export?assessCycleId="+assessCycleId;
+				if(unit) {
+					url += "&unitId="+unit;
+				}
+				window.open(url);
+			}
+		 	
+			function exportPeople(){
+				var url = "/console/result/exportPeople?assessCycleId="+assessCycleId;
+				if(unitId) {
+					url += "&unitId="+unitId;
+				}
+				window.open(url);
+			}
+		//]]>
+	</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netmatch.mapper.reportanalysis.EvaluationResultMapper">
+  
+  <select id="userAll" resultType="com.netmatch.controller.reportanalysis.pojo.EvaluationResultVo">
+	SELECT ou.`id` AS id,
+       ou.`name` ,
+       ou.org_agency_id AS agencyId,
+       ou.org_unit_id AS unitId,
+       cy.self_ass_grade AS selfAssGrade,
+       cy.self_ass_time AS selfAssTime,
+       cy.depart_grade AS departAssGrade,
+       cy.depart_ass_time AS departAssTime,
+       cy.unit_ass_grade AS unitAssGrade,
+       cy.unit_ass_time AS unitAssTime,
+       cy.confirmed_result AS confirmedResult,
+       cy.confirmed_time AS confirmedTime,
+       cy.operate_state AS operateState,
+       cy.assess_cycle_id AS assessCycleId,
+       COUNT(cy.unit_ass_grade IS NOT NULL OR NULL) AS unitAssGradeCOUNT,
+  		COUNT(cy.unit_ass_grade IS  NULL OR NULL) AS notUnitAssGradeCOUNT,
+  		COUNT(ou.`org_unit_id`) AS total
+	FROM org_user ou 
+	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{param.assessCycleId}
+	WHERE ou.is_delete=0 AND ou.is_admin=0 
+    <if test="unitParam.unitId!=null">
+		        and ou.org_unit_id=#{unitParam.unitId}
+    </if>
+    <if test="unitParam.assessTeamId!=null">
+		        and ou.org_assess_team_id=#{unitParam.assessTeamId}
+	    </if>
+	<if test="unitParam.unitIds!=null">
+           and ou.org_unit_id in 
+           <foreach collection="unitParam.unitIds" index="index" item="item" open="(" separator="," close=")">  
+               #{item}  
+           </foreach> 
+       </if>
+       
+       <if test="unitParam.agencyId!=null">
+	        and ou.org_agency_id=#{unitParam.agencyId}
+    </if>
+	<if test="unitParam.agencyIds!=null">
+           and ou.org_agency_id in 
+           <foreach collection="unitParam.agencyIds" index="index" item="item" open="(" separator="," close=")">  
+               #{item}  
+           </foreach> 
+     </if>
+     <if test="param.selfAssGrade!=null">
+     	AND cy.self_ass_grade = #{param.selfAssGrade}
+     </if>
+     <if test="param.departAssGrade!=null">
+     	AND cy.depart_grade = #{param.departAssGrade}
+     </if>
+     <if test="param.unitAssGrade!=null">
+     	AND cy.unit_ass_grade = #{param.unitAssGrade}
+     </if>
+       GROUP BY ou.`org_agency_id` 
+     ORDER BY ou.org_agency_id desc 
+  </select>
+
+<select id="evaluationInfo" resultType="com.netmatch.controller.reportanalysis.pojo.EvaluationResultVo">
+     	SELECT ou.`id` AS id,
+       ou.`name` ,
+       ou.org_agency_id AS agencyId,
+       ou.org_unit_id AS unitId,
+       cy.self_ass_grade AS selfAssGrade,
+       cy.self_ass_time AS selfAssTime,
+       cy.depart_grade AS departAssGrade,
+       cy.depart_ass_time AS departAssTime,
+       cy.unit_ass_grade AS unitAssGrade,
+       cy.unit_ass_time AS unitAssTime,
+       cy.confirmed_result AS confirmedResult,
+       cy.confirmed_time AS confirmedTime,
+       cy.operate_state AS operateState,
+       cy.assess_cycle_id AS assessCycleId,
+       COUNT(cy.unit_ass_grade IS NOT NULL OR NULL) AS unitAssGradeCOUNT,
+  		COUNT(cy.unit_ass_grade IS  NULL OR NULL) AS notUnitAssGradeCOUNT,
+  		COUNT(ou.`org_unit_id`) AS total
+	FROM org_user ou 
+	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{param.assessCycleId}
+	WHERE ou.is_delete=0 AND ou.is_admin=0 
+    <if test="unitParam.unitId!=null">
+		        and ou.org_unit_id=#{unitParam.unitId}
+    </if>
+    <if test="unitParam.assessTeamId!=null">
+		        and ou.org_assess_team_id=#{unitParam.assessTeamId}
+	    </if>
+	<if test="unitParam.unitIds!=null">
+           and ou.org_unit_id in 
+           <foreach collection="unitParam.unitIds" index="index" item="item" open="(" separator="," close=")">  
+               #{item}  
+           </foreach> 
+       </if>
+       
+       <if test="unitParam.agencyId!=null">
+	        and ou.org_agency_id=#{unitParam.agencyId}
+    </if>
+	<if test="unitParam.agencyIds!=null">
+           and ou.org_agency_id in 
+           <foreach collection="unitParam.agencyIds" index="index" item="item" open="(" separator="," close=")">  
+               #{item}  
+           </foreach> 
+     </if>
+     <if test="param.selfAssGrade!=null">
+     	AND cy.self_ass_grade = #{param.selfAssGrade}
+     </if>
+     <if test="param.departAssGrade!=null">
+     	AND cy.depart_grade = #{param.departAssGrade}
+     </if>
+     <if test="param.unitAssGrade!=null">
+     	AND cy.unit_ass_grade = #{param.unitAssGrade}
+     </if>
+       GROUP BY ou.`org_unit_id` 
+     ORDER BY ou.org_agency_id desc 
+  </select>
+
+<select id="evaluationPeople"  resultType="com.netmatch.controller.reportanalysis.pojo.EvaluationResultVo">
+ SELECT ou.`id` AS id,
+       ou.`name` ,
+       ou.org_agency_id AS agencyId,
+       ou.org_unit_id AS unitId,
+       cy.self_ass_grade AS selfAssGrade,
+       cy.self_ass_time AS selfAssTime,
+       cy.depart_grade AS departAssGrade,
+       cy.depart_ass_time AS departAssTime,
+       cy.unit_ass_grade AS unitAssGrade,
+       cy.unit_ass_time AS unitAssTime,
+       cy.confirmed_result AS confirmedResult,
+       cy.confirmed_time AS confirmedTime,
+       cy.operate_state AS operateState,
+       cy.assess_cycle_id AS assessCycleId
+	FROM org_user ou 
+	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{assessCycleId}
+	WHERE ou.is_delete=0 AND ou.is_admin=0 AND  ou.org_unit_id=#{unitId}
+    <if test="name !=null and name !='' ">
+    AND ou.`name` like concat('%',#{name},'%') 
+    </if>
+     ORDER BY cy.unit_ass_grade 
+</select>
+
+
+
+<select id="excelPeople"  resultType="com.netmatch.controller.reportanalysis.pojo.EvaluationResultExcel">
+ SELECT ou.`id` AS id,
+       ou.`name` ,
+       ou.org_agency_id AS agencyId,
+       ou.org_unit_id AS unitId,
+       cy.self_ass_grade AS selfAssGrade,
+       cy.self_ass_time AS selfAssTime,
+       cy.depart_grade AS departAssGrade,
+       cy.depart_ass_time AS departAssTime,
+       cy.unit_ass_grade AS unitAssGrade,
+       cy.unit_ass_time AS unitAssTime,
+       cy.confirmed_result AS confirmedResult,
+       cy.confirmed_time AS confirmedTime,
+       cy.operate_state AS operateState,
+       cy.assess_cycle_id AS assessCycleId
+	FROM org_user ou 
+	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{assessCycleId}
+	WHERE ou.is_delete=0 AND ou.is_admin=0 AND  ou.org_unit_id=#{unitId}
+    <if test="name !=null and name !='' ">
+    AND ou.`name` like concat('%',#{name},'%') 
+    </if>
+     ORDER BY cy.unit_ass_grade 
+</select>
+
+
+</mapper>

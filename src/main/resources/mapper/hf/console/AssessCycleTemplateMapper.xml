@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netmatch.mapper.console.AssessCycleTemplateMapper">
+  
+	
+	<delete id="removeByCycle" parameterType="string">
+		DELETE FROM assess_cycle_template WHERE cycle_id = #{_parameter}
+	</delete>
+	
+	<select id="findRelationByCycle" parameterType="String" resultType="com.netmatch.model.console.AssessCycleTemplate">
+    SELECT
+	    a.create_time AS createTime,
+	    a.create_user_id AS createUserId,
+	    a.update_time AS updateTime,
+	    a.update_user_id AS updateUserId,
+	    a.id AS id,
+	    a.template_id AS templateId ,
+	    a.cycle_id AS cycleId,
+	    a.unit_id AS unitId
+	FROM
+	    assess_cycle_template a 
+	LEFT JOIN org_unit b 
+	ON  a.unit_id = b.uid 
+	WHERE a.cycle_id = #{cycleId} AND b.is_delete = 0
+	ORDER BY
+	    a.create_time DESC;
+	</select>
+	
+</mapper>

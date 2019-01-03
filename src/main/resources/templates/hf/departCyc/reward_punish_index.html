@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="console/header">
+</head>
+<script type="text/javascript" src="/static/js/peacepeople.js"></script>
+<body>
+
+	<section class="content-header">
+	   <form action="">
+		<div style="border: 1px #ddd solid;" class="box-body">
+		
+			<div class="form-group">
+				
+					<input type="hidden" name="orgUserId" id="orgUserId"
+						th:value="${orgUserId}" />
+						 <label style="line-height: 36px;width: 90px"
+						for="dictCode" class="col-sm-1 control-label">事件类型</label>
+					<div class="col-sm-3">
+						<select id="dictCode" name="dictCode"
+							class="form-control tonto-select-constant" enumcode="event_type">
+							<option value="">请选择</option>
+						</select>
+					</div>
+					
+					
+					<label style="line-height: 36px;width: 90px" for="happenTime"
+						class="col-sm-1 control-label">发生时间</label>
+					<div class="col-sm-2">
+						<input type="text" id="datepicker1" name="happenTime"
+							class="form-control tonto-datepicker-date" 
+							placeholder="请选择日期" />
+					</div>
+					
+					<label style="line-height: 36px;width: 30px" for="endhappenTime"
+						class="col-sm-1 control-label">至</label>
+					<div class="col-sm-2">
+						<input type="text" id="datepicker2" name="endhappenTime"
+							class="form-control tonto-datepicker-date" 
+							placeholder="请选择日期" />
+					</div>
+					
+					    <div style="padding: 0 0 0 0;" class="col-sm-2">
+                        <a onclick="query()" class="btn btn-primary">查询</a>
+                        <button type="reset" class="btn js-ajax-submit">重置</button>
+                    </div>
+			</div>
+			   </div>          
+			</form>
+		
+	</section>
+	<section class="content table-content">
+		<table id="dataGrid"></table>
+	</section>
+	<div th:include="console/footer"></div>
+	<script type="text/javascript">
+		$table = $("#dataGrid");
+
+		function query() {
+			$("#dataGrid").bootstrapTable('destroy');
+			$.getConstantEnum([ "examine", "operation", "event_type" ],
+					initDataGrid);
+		}
+
+		$(function() {
+
+			$.getConstantEnum([ "examine", "operation", "event_type" ],
+					initDataGrid);
+
+		});
+
+		function initDataGrid(enumMap) {
+			$table.bootstrapTable({
+				height : tableModel.getHeight(),
+				idField : "id",
+				columns : [ [ {
+					title : "事件类型",
+					field : "dict_code",
+					formatter : $.getEnumColumnFormatter(enumMap, "event_type")
+				}, {
+					title : "发生时间",
+					field : "happen_time",
+					sortable : true
+				}, {
+					title : "核定部门(人)",
+					field : "check_people"
+				}, {
+					title : "操作状态",
+					field : "operation_state",
+					formatter : $.getEnumColumnFormatter(enumMap, "operation")
+				}, {
+					title : "审核状态",
+					field : "examine_state",
+					formatter : $.getEnumColumnFormatter(enumMap, "examine")
+				}, {
+					title : "审核人",
+					field : "examine_people"
+				}, {
+					title : "操作",
+					field : "operate",
+					width : "100px",
+					align : 'center',
+					events : operateEvents,
+					formatter : operateFormatter
+				} ] ],
+				url : '/console/peacet/prize/view2',
+				queryParams : function(params) {
+					var params = {
+						state : $("#state").val(),
+						stateUnit : $("#stateUnit").val(),
+						orgUserId : $("#orgUserId").val(),
+						dictCode : $("#dictCode").val(),
+						happenTime : $("#datepicker1").val(),
+						endhappenTime : $("#datepicker2").val(),
+						operationState : $("#operationState").val(),
+						examineState : $("#examineState").val(),
+						sort : params.sort,
+						order : params.order,
+						limit : params.limit,
+						offset : params.offset,
+					};
+					return params;
+				},
+				responseHandler : function(res) {
+					return {
+						rows : res.result.pageInfo.list,
+						total : res.result.pageInfo.total
+					}
+				},
+				search : false,
+				sortName : 'create_time',
+				sortOrder : 'desc',
+				pagination : true,
+				sidePagination : 'server',
+				pageSize : 5,
+				pageList : [ 5, 10, 20 ],
+				//toolbar : "#toolbar",
+				showRefresh : false,
+				showToggle : false,
+				height:300
+			});
+		}
+
+		function operateFormatter(value, row, index) {
+
+			return [
+					'<a class="view label label-info" href="javascript:void(0);">',
+					'<i class="glyphicon glyphicon-zoom-in"></i>查看', '</a> ' ]
+					.join('');
+
+		}
+
+		var operateEvents = {
+			'click .view' : function(e, value, row, index) {
+				viewPeacet(row.id);
+			}
+		};
+
+		function viewPeacet(id) {
+			layer.open({
+				type : 2,
+				title : ' ',
+				maxmin : true, //开启最大化最小化按钮
+	            area: $.getOpenLayerSize(800, 700),
+				content : '/console/peacet/view?id=' + id
+			});
+		}
+	</script>
+</body>
+</html>

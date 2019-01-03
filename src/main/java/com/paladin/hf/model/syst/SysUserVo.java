@@ -52,7 +52,7 @@ public class SysUserVo
     
     public String getUnitRootName() {
         try {
-            return UnitConatiner.getRootUnitName(orgAgencyId);
+            return UnitContainer.getRootUnitName(orgAgencyId);
         }catch(BusinessException e) {
             return "";          
         }
@@ -60,7 +60,7 @@ public class SysUserVo
     
     public String getUnitName() {
         try {
-            return UnitConatiner.getUnitName(orgUnitId);
+            return UnitContainer.getUnitName(orgUnitId);
         }catch(BusinessException e) {
             return "";
         }

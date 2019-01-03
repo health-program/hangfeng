@@ -1,8 +1,16 @@
 package com.paladin.hf.core;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.paladin.common.core.permission.PermissionContainer;
+import com.paladin.common.core.permission.Role;
+import com.paladin.hf.model.org.OrgUser;
+import com.paladin.hf.model.syst.AdminUser;
+import com.paladin.hf.model.syst.SysUser;
+import com.paladin.hf.service.org.OrgUserService;
+import com.paladin.hf.service.syst.AdminUserService;
 
 @Component
 public class HfUserSessionFactory {
@@ -11,50 +19,66 @@ public class HfUserSessionFactory {
 	private OrgUserService orgUserService;
 
 	@Autowired
-	private OrgRoleService orgRoleService;
+	private AdminUserService adminUserService;
 
-	public HfUserSession create(OrgUser user, SysUser sysUser) {
-		String account = sysUser.getAccount();
-		String roleId = user.getAssessRole();
-		Role role = RoleContainer.getRole(roleId);
-		HfUserSession session = new HfUserSession(user.getId(), user.getName(), SysUser.TYPE_ORG_USER);
-		
-		session.account = account;
-		
-		session.unitId = user.getOrgUnitId();
-		session.agencyId = user.getOrgAgencyId();
+	public HfUserSession createOrgUser(OrgUser user, SysUser sysUser) {
+		HfUserSession session = new HfUserSession(user.getId(), user.getName(), sysUser.getAccount(), SysUser.TYPE_ORG_USER);
 
-		session.roleIds = new String[] { roleId };
-		session.roleLevel = role.getOrgRole().getRoleLevel();
+		session.setUnitId(user.getOrgUnitId());
+		session.setRoleId(user.getAssessRole());
+		session.setOwnUnitId(user.getAssessUnitId());
 
-		session.ownUnitId = user.getAssessUnitId();
-				
 		return session;
-		
 	}
 
-	public HfUserSession create(AdminUser user, SysUser sysUser) {
-		String account = sysUser.getAccount();
-
-		HfUserSession session = new HfUserSession(user.getId(), user.getName(), SysUser.TYPE_ADMIN_USER);
-		session.roleIds = user.getRoles().split(",");
-		session.roleLevel = RoleContainer.getRoleLevel(session.roleIds);
-
+	public HfUserSession createAdminUser(AdminUser user, SysUser sysUser) {
+		HfUserSession session = new HfUserSession(user.getId(), user.getName(), sysUser.getAccount(), SysUser.TYPE_ADMIN_USER);
 		String unitId = user.getUnitId();
-		session.account = account;
 
-		session.unitId = unitId;
-		session.agencyId = unitId;
-		session.ownUnitId = unitId;
-				
-		return session;
-	}
-
-	public HfUserSession createAdmin(SysUser sysUser) {
-		HfUserSession session = new HfUserSession(sysUser.getId(), "管理员", SysUser.TYPE_ADMIN);
-		session.account = sysUser.getAccount();
+		session.setUnitId(unitId);
+		session.setRoleId(user.getRoles().split(","));
+		session.setOwnUnitId(unitId);
 
 		return session;
 	}
 
+	public HfUserSession createSystemAdmin(SysUser sysUser) {
+		HfUserSession session = new HfUserSession(sysUser.getId(), "管理员", sysUser.getAccount(), SysUser.TYPE_ADMIN);
+		return session;
+	}
+
+	public HfUserSession create(SysUser sysUser) {
+		int type = sysUser.getType();
+
+		if (type == SysUser.TYPE_ADMIN) {
+			return createSystemAdmin(sysUser);
+		} else if (type == SysUser.TYPE_ORG_USER) {
+
+			String orgUserId = sysUser.getUserId();
+			if (orgUserId == null || orgUserId.length() == 0)
+				throw new AuthenticationException("该账号没有关联的用户");
+
+			OrgUser orgUser = orgUserService.get(orgUserId);
+			if (orgUser == null)
+				throw new AuthenticationException("该账号没有关联的用户");
+
+			return createOrgUser(orgUser, sysUser);
+
+		} else if (type == SysUser.TYPE_ADMIN_USER) {
+
+			String userId = sysUser.getUserId();
+			if (userId == null || userId.length() == 0)
+				throw new AuthenticationException("该账号没有关联的用户");
+
+			AdminUser user = adminUserService.get(userId);
+
+			if (user == null)
+				throw new AuthenticationException("该账号没有关联的用户");
+
+			return createAdminUser(user, sysUser);
+		} else {
+			throw new AuthenticationException("该账号异常");
+		}
+
+	}
 }

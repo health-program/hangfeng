@@ -2,14 +2,18 @@ package com.paladin.hf.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 
 import org.apache.shiro.SecurityUtils;
 
-import com.paladin.model.system.SysUser;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.paladin.common.core.permission.MenuPermission;
+import com.paladin.common.core.permission.PermissionContainer;
+import com.paladin.common.core.permission.Role;
+import com.paladin.framework.core.UserSession;
+import com.paladin.hf.core.UnitContainer.Unit;
+import com.paladin.hf.model.syst.SysUser;
 
 /**
  * 用户会话信息
@@ -17,7 +21,7 @@ import com.paladin.model.system.SysUser;
  * @author TontoZhou
  * @since 2018年1月29日
  */
-public class HfUserSession implements Serializable {
+public class HfUserSession extends UserSession implements Serializable {
 
 	/**
 	 * 
@@ -59,36 +63,31 @@ public class HfUserSession implements Serializable {
 	 * 可操作考评机构以及机构下的数据角色
 	 */
 	public final static int ASSESS_ROLE_LEVEL_AGENCY_ADMIN = 5;
-	
+
 	/**
 	 * 可操作所有机构的数据角色
 	 */
 	public final static int ASSESS_ROLE_LEVEL_ADMIN = 6;
 
 	// 基础信息
-	boolean isSystemAdmin;
-	boolean isAdminUser;
-	boolean isOrgUser;
+	private boolean isSystemAdmin;
+	private boolean isAdminUser;
+	private boolean isOrgUser;
 
-	String account;
-	String id;
-	String name;
+	private String unitId;
+	private String agencyId;
 
-	String unitId;
-	String agencyId;
+	private String[] roleIds;
+	private int roleLevel;
 
-	String[] roleIds;
-	Integer roleLevel;
+	private String ownUnitId;
 
-	String ownUnitId;
-	
-	HfUserSession(String id, String name, int type) {
-
-		this.id = id;
-		this.name = name;
+	public HfUserSession(String userId, String userName, String account, int type) {
+		super(userId, userName, account);
 
 		if (type == SysUser.TYPE_ADMIN) {
 			isSystemAdmin = true;
+			roleLevel = ASSESS_ROLE_LEVEL_ADMIN;
 		} else if (type == SysUser.TYPE_ORG_USER) {
 			isOrgUser = true;
 		} else if (type == SysUser.TYPE_ADMIN_USER) {
@@ -106,30 +105,71 @@ public class HfUserSession implements Serializable {
 	}
 
 	/**
+	 * 设置所属单位
+	 * 
+	 * @param unitId
+	 */
+	public void setUnitId(String unitId) {
+		Unit unit = UnitContainer.getUnit(unitId);
+		if (unit == null) {
+			throw new RuntimeException("不存在单位[id:" + unitId + "]");
+		}
+
+		this.unitId = unitId;
+		this.agencyId = unit.getAgency().getId();
+	}
+
+	/**
+	 * 设置角色ID
+	 * 
+	 * @param roleIds
+	 */
+	public void setRoleId(String... roleIds) {
+		int roleLevel = 0;
+		for (int i = 0; i < roleIds.length; i++) {
+			Role role = PermissionContainer.getInstance().getRole(roleIds[i]);
+			roleIds[i] = role.getId();
+			roleLevel = Math.max(roleLevel, role.getRoleLevel());
+		}
+		this.roleLevel = roleLevel;
+		this.roleIds = roleIds;
+	}
+
+	/**
+	 * 设置考评单位
+	 * 
+	 * @param ownUnitId
+	 */
+	public void setOwnUnitId(String ownUnitId) {
+		this.ownUnitId = ownUnitId;
+	}
+
+	/**
 	 * 是否系统管理员
 	 * 
 	 * @return
 	 */
-	public boolean isAdmin() {
-		return isSystemAdmin || roleLevel == ASSESS_ROLE_LEVEL_ADMIN;
+	public boolean isSystemAdmin() {
+		return isSystemAdmin;
 	}
-	
+
 	/**
 	 * 是否管理人员
+	 * 
 	 * @return
 	 */
 	public boolean isAdminUser() {
 		return isAdminUser;
 	}
-	
+
 	/**
 	 * 是否档案人员
+	 * 
 	 * @return
 	 */
 	public boolean isOrgUser() {
 		return isOrgUser;
 	}
-	
 
 	/**
 	 * 是否考评小组角色
@@ -166,31 +206,14 @@ public class HfUserSession implements Serializable {
 	public boolean isAssessedRole() {
 		return isOrgUser && DEFAULT_ROLE_SELF_ID.equals(roleIds[0]);
 	}
-	
+
 	/**
 	 * 获取角色拥有的数据等级
+	 * 
 	 * @return
 	 */
-	public Integer getRoleLevel() {
+	public int getRoleLevel() {
 		return roleLevel;
-	}
-
-	/**
-	 * 获取人员ID
-	 * 
-	 * @return
-	 */
-	public String getUserId() {
-		return id;
-	}
-
-	/**
-	 * 获取用户姓名
-	 * 
-	 * @return
-	 */
-	public String getUserName() {
-		return name;
 	}
 
 	/**
@@ -198,10 +221,11 @@ public class HfUserSession implements Serializable {
 	 * 
 	 * @return
 	 */
+	@JsonIgnore
 	public Unit getUserAgency() {
 		if (agencyId == null)
 			return null;
-		return UnitConatiner.getUnit(agencyId);
+		return UnitContainer.getUnit(agencyId);
 	}
 
 	/**
@@ -218,10 +242,11 @@ public class HfUserSession implements Serializable {
 	 * 
 	 * @return
 	 */
+	@JsonIgnore
 	public Unit getUserUnit() {
 		if (unitId == null)
 			return null;
-		return UnitConatiner.getUnit(unitId);
+		return UnitContainer.getUnit(unitId);
 	}
 
 	/**
@@ -238,13 +263,14 @@ public class HfUserSession implements Serializable {
 	 * 
 	 * @return
 	 */
+	@JsonIgnore
 	public Unit getOwnUnit() {
 		if (ownUnitId == null) {
 			return null;
 		}
-		return UnitConatiner.getUnit(ownUnitId);
+		return UnitContainer.getUnit(ownUnitId);
 	}
-	
+
 	/**
 	 * 获取考评单位
 	 * 
@@ -255,244 +281,32 @@ public class HfUserSession implements Serializable {
 	}
 
 	/**
-	 * 获取用户可操作的机构
-	 * 
-	 * @return
-	 */
-	public List<Unit> getOwnAgency() {
-
-		if (isAdmin()) {
-			return UnitConatiner.getRoots();
-		}
-
-		if (isAdminUser || roleLevel == ASSESS_ROLE_LEVEL_AGENCY_ADMIN) {
-			return Arrays.asList(getOwnUnit());
-		}
-
-		return new ArrayList<>();
-	}
-
-	/**
-	 * 获取用户可操作的机构ID数组
-	 * 
-	 * @return
-	 */
-	public List<String> getOwnAgencyId() {
-		List<Unit> units = getOwnAgency();
-		List<String> result = new ArrayList<>(units.size());
-		for (Unit unit : units)
-			result.add(unit.getId());
-		return result;
-	}
-
-	/**
-	 * 获取用户可操作的科室部门
-	 * 
-	 * @return
-	 */
-	public List<Unit> getOwnDepartment() {
-
-		List<Unit> units = new ArrayList<>();
-
-		if (isAdmin() || ASSESS_ROLE_LEVEL_AGENCY_ADMIN == roleLevel) {
-			// 所有拥有机构及其子部门的权限
-			for (Unit agency : getOwnAgency()) {
-				getOwnDepartment(agency, units);
-			}
-
-		} else if (ASSESS_ROLE_LEVEL_AGENCY == roleLevel) {
-			// 该角色不会拥有机构操作权限，但是以下科室的权限都有
-			for (Unit agency : getOwnAgency()) {
-				for (Unit child : agency.getChildren()) {
-					getOwnDepartment(child, units);
-				}
-			}
-
-		} else if (ASSESS_ROLE_LEVEL_DEPARTMENT_ADMIN == roleLevel) {
-			// 拥有该科室以及科室下的权限
-			getOwnDepartment(getOwnUnit(), units);
-
-		} else if (ASSESS_ROLE_LEVEL_DEPARTMENT == roleLevel) {
-			// 拥有该科室下的权限
-			for (Unit child : getOwnUnit().getChildren()) {
-				getOwnDepartment(child, units);
-			}
-		}
-
-		return units;
-	}
-
-	private void getOwnDepartment(Unit unit, Collection<Unit> units) {
-		units.add(unit);
-		for (Unit child : unit.getChildren()) {
-			getOwnDepartment(child, units);
-		}
-	}
-
-	/**
-	 * 获取用户可操作的科室部门ID
-	 * 
-	 * @return
-	 */
-	public List<String> getOwnDepartmentId() {
-		List<Unit> units = getOwnDepartment();
-		List<String> ids = new ArrayList<>(units.size());
-		for (Unit unit : units)
-			ids.add(unit.getId());
-		return ids;
-	}
-
-	/**
-	 * 是否拥有操作该机构权限
-	 * 
-	 * @param unitId
-	 * @return
-	 */
-	public boolean ownAgency(String unitId) {
-
-		if (unitId == null) {
-			throw new BusinessException("不存在该部门");
-		}
-
-		Unit unit = UnitConatiner.getUnit(unitId);
-		if (unit == null) {
-			throw new BusinessException("不存在该部门");
-		}
-
-		if (unit.isAgency()) {
-			if (isAdmin())
-				return true;
-			return getOwnAgency().contains(unit);
-		} else {
-			throw new BusinessException("该单位为部门科室");
-		}
-	}
-
-	/**
-	 * 是否拥有操作该科室权限
-	 * 
-	 * @param unitId
-	 * @return
-	 */
-	public boolean ownDepartment(String unitId) {
-
-		if (unitId == null) {
-			throw new BusinessException("不存在该部门");
-		}
-
-		Unit unit = UnitConatiner.getUnit(unitId);
-		if (unit == null) {
-			throw new BusinessException("不存在该部门");
-		}
-
-		if (unit.isAgency()) {
-			throw new BusinessException("该单位为机构");
-		} else {
-
-			if (isAdmin())
-				return true;
-
-			if (ASSESS_ROLE_LEVEL_AGENCY_ADMIN == roleLevel || ASSESS_ROLE_LEVEL_AGENCY == roleLevel) {
-				return ownUnitId.equals(UnitConatiner.getRootUnit(unit).getId());
-			} else {
-
-				if (isAssessTeamRole()) {
-					Unit team = unit.getAssessTeam();
-					if (team != null) {
-						return team.getId().equals(ownUnitId);
-					} else {
-						return false;
-					}
-				} else {
-					return getOwnDepartment().contains(unit);
-				}
-			}
-		}
-	}
-
-	/**
-	 * 是否拥有该单位
-	 * 
-	 * @param unitId
-	 * @return
-	 */
-	public boolean ownUnit(String unitId) {
-
-		if (unitId == null) {
-			throw new BusinessException("不存在该部门");
-		}
-
-		Unit unit = UnitConatiner.getUnit(unitId);
-		if (unit == null) {
-			throw new BusinessException("不存在该部门");
-		}
-
-		if (isAdmin())
-			return true;
-
-		if (unit.isAgency()) {
-			return unitId.equals(ownUnitId);
-		} else {
-			if (ASSESS_ROLE_LEVEL_AGENCY_ADMIN == roleLevel || ASSESS_ROLE_LEVEL_AGENCY == roleLevel) {
-				return ownUnitId.equals(UnitConatiner.getRootUnit(unit).getId());
-			} else {
-
-				if (isAssessTeamRole()) {
-					Unit team = unit.getAssessTeam();
-					if (team != null) {
-						return team.getId().equals(ownUnitId);
-					} else {
-						return false;
-					}
-				} else {
-					return getOwnDepartment().contains(unit);
-				}
-			}
-		}
-	}
-
-	/**
-	 * 权限code
-	 * 
-	 * @return
-	 */
-	public Collection<String> getPermissionCodes() {
-		if (isSystemAdmin)
-			return RoleContainer.getAdminPermissionCodes();
-
-		if (isOrgUser)
-			return RoleContainer.getRolePermissionCodes(roleIds[0]);
-
-		if (isAdminUser)
-			return RoleContainer.getRolePermissionCodes(roleIds);
-
-		return new ArrayList<String>();
-
-	}
-
-	/**
 	 * 菜单资源
 	 * 
 	 * @return
 	 */
-	public List<MenuResource> getMenuResources() {
-		if (isSystemAdmin)
-			return RoleContainer.getAdminMenuResources();
+	public Collection<MenuPermission> getMenuResources() {
+		PermissionContainer container = PermissionContainer.getInstance();
+		if (isSystemAdmin) {
+			container.getMenuPermissionCollection();
+		}
 
-		if (isOrgUser)
-			return RoleContainer.getRoleMenuResource(roleIds[0]);
+		if (isOrgUser) {
+			return container.getRole(roleIds[0]).getMenuPermissions();
+		}
 
-		if (isAdminUser)
-			return RoleContainer.getRoleMenuResource(roleIds);
+		if (isAdminUser) {
+			HashSet<MenuPermission> coll = new HashSet<>();
+			for (String rid : roleIds) {
+				Role role = container.getRole(rid);
+				if (role != null) {
+					coll.addAll(role.getMenuPermissions());
+				}
+			}
+			return coll;
+		}
 
-		return new ArrayList<MenuResource>();
+		return new ArrayList<MenuPermission>();
 	}
-
-	public String getAccount() {
-		return account;
-	}
-
-
-
 
 }

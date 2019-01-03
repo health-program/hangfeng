@@ -20,7 +20,7 @@ public class MenuPermission {
 	private boolean isAdmin;
 	// 是否拥有
 	private boolean owned;
-	
+
 	public MenuPermission(OrgPermission orgPermission, boolean owned) {
 		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
 			this.id = orgPermission.getId();
@@ -69,6 +69,20 @@ public class MenuPermission {
 
 	public void setOwned(boolean owned) {
 		this.owned = owned;
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof MenuPermission) {
+			MenuPermission mp = (MenuPermission) obj;
+			return id.equals(mp.id);
+		}
+		return false;
 	}
 
 }

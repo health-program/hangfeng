@@ -1,8 +1,11 @@
 package com.paladin.common.core.permission;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import com.paladin.common.model.org.OrgRolePermission;
 import com.paladin.common.service.org.OrgPermissionService;
 import com.paladin.common.service.org.OrgRolePermissionService;
 import com.paladin.common.service.org.OrgRoleService;
+import com.paladin.framework.common.BaseModel;
 import com.paladin.framework.core.VersionContainer;
 
 @Component
@@ -34,6 +38,8 @@ public class PermissionContainer implements VersionContainer {
 	private volatile Map<String, Role> roleMap;
 
 	private volatile Map<String, OrgPermission> permissionMap;
+	
+	private volatile Collection<MenuPermission> menuPermissionCollection;
 
 	/**
 	 * 初始化权限
@@ -69,9 +75,41 @@ public class PermissionContainer implements VersionContainer {
 			Role role = roleMap.get(orgRolePermission.getRoleId());
 			role.addPermission(permission, permissionMap);
 		}
-
+		
+		Map<String, MenuPermission> menuPermissionMap = new HashMap<>();
+		for(OrgPermission orgPermission: permissionMap.values()) {
+			addMenuPermission(menuPermissionMap, orgPermission, permissionMap);
+		}
+				
+		this.menuPermissionCollection = Collections.unmodifiableCollection(menuPermissionMap.values());
 		this.roleMap = roleMap;
 		logger.info("------------初始化权限结束------------");
+	}
+	
+	private void addMenuPermission(Map<String, MenuPermission> menuPermissionMap, OrgPermission orgPermission, Map<String, OrgPermission> allPermissionMap) {
+		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
+			String id = orgPermission.getId();
+			MenuPermission menuPermission = menuPermissionMap.get(id);
+			if (menuPermission == null) {
+				menuPermissionMap.put(id, new MenuPermission(orgPermission, true));
+			} else {
+				menuPermission.setOwned(true);
+			}
+
+			String parentId = orgPermission.getParentId();
+			while (parentId != null && parentId.length() > 0) {
+				menuPermission = menuPermissionMap.get(parentId);
+				if (menuPermission == null) {
+					orgPermission = allPermissionMap.get(parentId);
+					if (orgPermission != null) {
+						menuPermissionMap.put(parentId, new MenuPermission(orgPermission, false));
+						parentId = orgPermission.getParentId();
+						continue;
+					}
+				}
+				break;
+			}
+		}
 	}
 
 	/**
@@ -83,15 +121,30 @@ public class PermissionContainer implements VersionContainer {
 		return roleMap.get(id);
 	}
 	
+	/**
+	 * 获取菜单权限集合
+	 * @return
+	 */
+	public Collection<MenuPermission> getMenuPermissionCollection() {
+		return menuPermissionCollection;
+	}
+
 	
 	@Override
 	public String getId() {
 		return "permission_container";
 	}
 
+	private static PermissionContainer container;
+	
+	public static PermissionContainer getInstance() {
+		return container;
+	}
+	
 	@Override
 	public boolean versionChangedHandle(long version) {
 		initPermission();
+		container = this;
 		return true;
 	}
 

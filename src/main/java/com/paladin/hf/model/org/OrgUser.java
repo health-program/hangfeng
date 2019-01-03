@@ -8,12 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.paladin.framework.common.UnDeleteModel;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
 public class OrgUser extends UnDeleteModel implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -229307096210558949L;
 
 	public static final String COLUMN_ORG_UNIT_ID = "orgUnitId";
@@ -23,12 +22,10 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public static final String COLUMN_TRANSFER_ORIGIN_AGENCY_ID = "transferOriginAgencyId";
 	public static final String COLUMN_TRANSFER_ORIGIN_TEAM_ID = "transferOriginTeamId";
 	public static final String COLUMN_TRANSFER_ORIGIN_UNIT_ID = "transferOriginUnitId";
-	
+
 	public static final int TRANSFER_STATUS_ASK = 1;
 	public static final int TRANSFER_STATUS_SUCCESS = 2;
 	public static final int TRANSFER_STATUS_FAIL = 3;
-	
-	
 
 	@Id
 	@Column(name = "id")
@@ -88,7 +85,7 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	private String transferOriginUnitId;
 
 	private String transferOriginTeamId;
-	
+
 	private String transferOriginAgencyId;
 
 	private String transferUnitId;
@@ -96,7 +93,7 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	private String transferAgencyId;
 
 	private Integer transferStatus;
-	
+
 	private String certificateType;
 
 	public String getIdentification() {
@@ -346,7 +343,7 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public void setTransferOriginAgencyId(String transferOriginAgencyId) {
 		this.transferOriginAgencyId = transferOriginAgencyId;
 	}
-	
+
 	public String getTransferOriginTeamId() {
 		return transferOriginTeamId;
 	}
@@ -355,34 +352,33 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.transferOriginTeamId = transferOriginTeamId;
 	}
 
-
 	/*
 	 * 扩展显示用字段
 	 */
 
 	public String getUnitName() {
 		try {
-			return UnitConatiner.getUnitName(orgUnitId);
-		}catch(BusinessException e) {
-    		return "";
-    	}
+			return UnitContainer.getUnitName(orgUnitId);
+		} catch (BusinessException e) {
+			return "";
+		}
 	}
 
 	public String getUnitRootName() {
 		try {
-			return UnitConatiner.getRootUnitName(orgUnitId);
-		}catch(BusinessException e) {
-			return "";			
+			return UnitContainer.getRootUnitName(orgUnitId);
+		} catch (BusinessException e) {
+			return "";
 		}
 	}
 
 	public String getAssessUnitName() {
-		if (assessUnitId != null && assessUnitId.length() != 0) {			
+		if (assessUnitId != null && assessUnitId.length() != 0) {
 			try {
-				return UnitConatiner.getUnitName(assessUnitId);	    	
-			}catch(BusinessException e) {
-	    		return "";
-	    	}
+				return UnitContainer.getUnitName(assessUnitId);
+			} catch (BusinessException e) {
+				return "";
+			}
 		}
 		return null;
 	}
@@ -390,8 +386,8 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public String getTransferOriginUnitName() {
 		if (transferStatus != null) {
 			try {
-				return UnitConatiner.getUnit(transferOriginUnitId).toString();
-			}catch(BusinessException e) {
+				return UnitContainer.getUnit(transferOriginUnitId).toString();
+			} catch (BusinessException e) {
 				return "";
 			}
 		}
@@ -401,22 +397,20 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public String getTransferUnitName() {
 		if (transferStatus != null) {
 			try {
-				return UnitConatiner.getUnit(transferUnitId).toString();
-			}catch(BusinessException e) {
+				return UnitContainer.getUnit(transferUnitId).toString();
+			} catch (BusinessException e) {
 				return "";
 			}
 		}
 		return null;
 	}
 
-      public String getCertificateType() {
-            return certificateType;
-      }
+	public String getCertificateType() {
+		return certificateType;
+	}
 
-      public void setCertificateType(String certificateType) {
-            this.certificateType = certificateType;
-      }
+	public void setCertificateType(String certificateType) {
+		this.certificateType = certificateType;
+	}
 
-
-	
 }

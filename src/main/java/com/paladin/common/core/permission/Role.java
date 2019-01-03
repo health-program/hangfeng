@@ -51,7 +51,7 @@ public class Role {
 			permissionCodeSet.add(code);
 		}
 
-		if (orgPermission.getIsAdmin() == BaseModel.BOOLEAN_YES) {
+		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
 			String id = orgPermission.getId();
 			MenuPermission menuPermission = menuPermissionMap.get(id);
 			if (menuPermission == null) {

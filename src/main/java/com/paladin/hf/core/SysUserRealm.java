@@ -17,10 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.paladin.service.organization.OrgUserService;
-import com.paladin.service.system.AdminUserService;
-import com.paladin.service.system.SysUserService;
-
+import com.paladin.framework.common.GeneralCriteriaBuilder;
+import com.paladin.framework.common.QueryType;
+import com.paladin.hf.model.org.OrgUser;
+import com.paladin.hf.model.syst.SysUser;
+import com.paladin.hf.service.org.OrgUserService;
+import com.paladin.hf.service.syst.AdminUserService;
+import com.paladin.hf.service.syst.LoginLogService;
+import com.paladin.hf.service.syst.SysUserService;
 
 public class SysUserRealm extends AuthorizingRealm {
 
@@ -30,14 +34,11 @@ public class SysUserRealm extends AuthorizingRealm {
 	private SysUserService sysUserService;
 
 	@Autowired
-	private AdminUserService adminUserService;
-
-	@Autowired
 	private OrgUserService orgUserService;
 
 	@Autowired
-	private UserSessionFactory userSessionFactory;
-	
+	private HfUserSessionFactory userSessionFactory;
+
 	@Autowired
 	private LoginLogService loginLogService;
 
@@ -52,23 +53,20 @@ public class SysUserRealm extends AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 
 		logger.debug("后台登录：SysUserRealm.doGetAuthenticationInfo()");
-		
+
 		SysUser sysUser = null;
 		// 获取用户的输入的账号或身份证号.
 		String username = (String) token.getPrincipal();
 		// 身份证号登录
-		if (username.length() == 18 || username.length() == 15) {
-			List<OrgUser> orgUsers = orgUserService.searchAll(new GeneralCriteriaBuilder.Condition("identification", QueryType.EQUAL, username, null));
+		List<OrgUser> orgUsers = orgUserService.findUserByIdentification(username);
 
-			if (orgUsers != null && orgUsers.size() > 0) {
-
-				if (orgUsers.size() > 1) {
-					throw new UnknownAccountException("存在多个相同身份证号码用户");
-				}
-
-				String account = orgUsers.get(0).getAccount();
-				sysUser = sysUserService.getUser(account);
+		if (orgUsers != null && orgUsers.size() > 0) {
+			if (orgUsers.size() > 1) {
+				throw new UnknownAccountException("存在多个相同身份证号码用户");
 			}
+
+			String account = orgUsers.get(0).getAccount();
+			sysUser = sysUserService.getUser(account);
 		}
 
 		// 实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
@@ -88,52 +86,20 @@ public class SysUserRealm extends AuthorizingRealm {
 		 * 获取权限信息:这里没有进行实现， 请自行根据UserInfo,Role,Permission进行实现； 获取之后可以在前端for循环显示所有链接;
 		 */
 
-		UserSession userSession;
+		HfUserSession userSession = userSessionFactory.create(sysUser);
 
-		int type = sysUser.getType();
-
-		if (type == SysUser.TYPE_ADMIN) {
-			userSession = userSessionFactory.createAdmin(sysUser);
-		} else if (type == SysUser.TYPE_ORG_USER) {
-
-			String orgUserId = sysUser.getUserId();
-			if (orgUserId == null || orgUserId.length() == 0)
-				throw new AuthenticationException("该账号没有关联的用户");
-
-			OrgUser orgUser = orgUserService.get(orgUserId);
-			if (orgUser == null)
-				throw new AuthenticationException("该账号没有关联的用户");
-
-			userSession = userSessionFactory.create(orgUser, sysUser);
-
-		} else if (type == SysUser.TYPE_ADMIN_USER) {
-
-			String userId = sysUser.getUserId();
-			if (userId == null || userId.length() == 0)
-				throw new AuthenticationException("该账号没有关联的用户");
-
-			AdminUser user = adminUserService.get(userId);
-
-			if (user == null)
-				throw new AuthenticationException("该账号没有关联的用户");
-
-			userSession = userSessionFactory.create(user, sysUser);
-		} else {
-			throw new AuthenticationException("该账号异常");
-		}
-		
 		SimpleAuthenticationInfo authenticationInfo = null;
 
-		if(token instanceof IdentificationToken) {				
+		if (token instanceof IdentificationToken) {
 			// 加密方式;
 			// 交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以自定义实现
 			authenticationInfo = new SimpleAuthenticationInfo(userSession, IdentificationToken.default_password, // 密码
 					ByteSource.Util.bytes(IdentificationToken.default_salt), // salt
 					sysUser.getAccount() // realm name
-			);	
-			
+			);
+
 		} else {
-			
+
 			// 加密方式;
 			// 交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以自定义实现
 			authenticationInfo = new SimpleAuthenticationInfo(userSession, sysUser.getPassword(), // 密码
@@ -141,13 +107,13 @@ public class SysUserRealm extends AuthorizingRealm {
 					sysUser.getAccount() // realm name
 			);
 		}
-		
+
 		logger.info("===>用户[" + sysUser.getAccount() + ":" + userSession.getUserName() + "]登录系统<===");
-		
+
 		// 登录日志与更新最近登录时间
-		loginLogService.addLoginLog(userSession.getUserName(),userSession.getUserId(), type,"","");	        
+		loginLogService.addLoginLog(userSession.getUserName(), userSession.getUserId(), sysUser.getType(), "", "");
 		sysUserService.UpdatesysUserLastTime(userSession.getAccount());
-		
+
 		return authenticationInfo;
 	}
 
@@ -168,14 +134,15 @@ public class SysUserRealm extends AuthorizingRealm {
 		 * 当没有使用缓存的时候，不断刷新页面的话，这个代码会不断执行， 当其实没有必要每次都重新设置权限信息，所以我们需要放到缓存中进行管理；
 		 * 当放到缓存中时，这样的话，doGetAuthorizationInfo就只会执行一次了， 缓存过期之后会再次执行。
 		 */
-		logger.debug("后台权限校验-->AdminShiroRealm.doGetAuthorizationInfo()");
+		// logger.debug("后台权限校验-->AdminShiroRealm.doGetAuthorizationInfo()");
 
-		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+		// SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
 
-		UserSession user = (UserSession) principals.getPrimaryPrincipal();
-
-		authorizationInfo.addStringPermissions(user.getPermissionCodes());
-		return authorizationInfo;
+		// UserSession user = (UserSession) principals.getPrimaryPrincipal();
+		//
+		// authorizationInfo.addStringPermissions(user.getPermissionCodes());
+		// return authorizationInfo;
+		return null;
 
 	}
 

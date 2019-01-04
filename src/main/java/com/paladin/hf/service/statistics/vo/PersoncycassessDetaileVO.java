@@ -1,6 +1,7 @@
 package com.paladin.hf.service.statistics.vo;
 
 import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
 
 
@@ -86,7 +87,7 @@ public class PersoncycassessDetaileVO
     
     public String getUnitName() {
         try {
-            return UnitConatiner.getUnitName(unitId);
+            return UnitContainer.getUnitName(unitId);
 		}catch(BusinessException e) {
 			return "";			
 		}
@@ -94,7 +95,7 @@ public class PersoncycassessDetaileVO
     
     public String getUnitRootName() {
         try {
-            return UnitConatiner.getRootUnitName(unitId);
+            return UnitContainer.getRootUnitName(unitId);
 		}catch(BusinessException e) {
 			return "";			
 		}

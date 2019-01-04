@@ -34,3 +34,5 @@ target/
 logs/
 pom.properties
 .classpath
+.classpath
+.project

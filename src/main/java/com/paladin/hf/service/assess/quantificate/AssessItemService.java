@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.hf.mapper.assess.quantificate.AssessItemMapper;
@@ -19,7 +20,7 @@ public class AssessItemService extends ServiceSupport<AssessItem>{
 	AssessItemMapper assessItemMapper;
 	
 	public List<AssessItem> findTemplateAssessItem(String templateId) {
-		return searchAll(new Condition(AssessItem.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId, null));
+		return searchAll(new Condition(AssessItem.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId));
 	}
 
 	public int removeTemplateItem(String templateId) {

@@ -1,8 +1,8 @@
 package com.paladin.hf.service.assess.quantificate.pojo;
 
-import com.netmatch.tonto.framework.service.QueryCondition;
-import com.netmatch.tonto.framework.service.QueryType;
-import com.netmatch.tonto.framework.web.controller.OffsetPage;
+import com.paladin.framework.common.OffsetPage;
+import com.paladin.framework.common.QueryCondition;
+import com.paladin.framework.common.QueryType;
 
 public class TemplateQuery extends OffsetPage {
 

@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.common.PageResult;
+import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.web.response.CommonResponse;
+import com.paladin.hf.controller.util.FormType;
+import com.paladin.hf.core.DataPermissionUtil;
+import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.model.assess.quantificate.AssessItem;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
@@ -65,15 +69,15 @@ public class TemplateController extends ControllerSupport {
 	}
 	
 	private void wrapAgency(Model model) {
-		UserSession session = UserSession.getCurrentUserSession();
+	    HfUserSession session = HfUserSession.getCurrentUserSession();
 
 		Unit agency = null;
 
-		if (!session.isAdmin()) {
+		if (!session.isAdminRoleLevel()) {
 			if (session.isAssessTeamRole()) {
 				agency = session.getOwnUnit().getAgency();
 			} else {
-				List<Unit> agencys = session.getOwnAgency();
+				List<Unit> agencys = DataPermissionUtil.getOwnAgency();
 				int size = agencys.size();
 				if (size == 1) {
 					agency = agencys.get(0);
@@ -100,7 +104,7 @@ public class TemplateController extends ControllerSupport {
 	@ResponseBody
 	@RequestMapping(value = "/search/all")
 	public Object list(TemplateQuery query) {
-		return CommonResponse.getSuccessResponse(new PageResult(templateService.searchPage(query)));
+		return CommonResponse.getSuccessResponse(templateService.searchPage(query));
 	}
 
 	@RequestMapping("/view")

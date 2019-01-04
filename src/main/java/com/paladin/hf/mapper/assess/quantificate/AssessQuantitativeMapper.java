@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.model.assess.quantificate.AssessEventScore;
 import com.paladin.hf.model.org.OrgUserAssess;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;

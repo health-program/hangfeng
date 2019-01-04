@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ControllerSupport;
+import com.paladin.framework.utils.StringUtil;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.assess.quantificate.AssessEventScore;
@@ -22,6 +23,7 @@ import com.paladin.hf.model.assess.quantificate.AssessItem;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
 import com.paladin.hf.model.assess.quantificate.AssessQuantitative;
 import com.paladin.hf.model.assess.quantificate.AssessQuantitativeResult;
+import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.quantificate.AssessCycleTemplateService;
@@ -31,6 +33,7 @@ import com.paladin.hf.service.assess.quantificate.AssessQuantitativeResultServic
 import com.paladin.hf.service.assess.quantificate.AssessQuantitativeService;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserDetailQuery;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;
+import com.paladin.hf.service.ordinary.PrizepunishService;
 import com.paladin.hf.service.org.OrgUserService;
 
 @Controller
@@ -188,7 +191,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 	@RequestMapping(value = "/user/detail")
 	public Object quantitativeDetail(AssessQuantitativeUserDetailQuery query) {
 
-		if (StringUtils.isEmpty(query.getCycleId())) {
+		if (StringUtil.isEmpty(query.getCycleId())) {
 			return CommonResponse.getSuccessResponse();
 		}
 

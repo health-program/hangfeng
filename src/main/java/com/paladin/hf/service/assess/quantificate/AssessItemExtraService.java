@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.hf.mapper.assess.quantificate.AssessItemExtraMapper;
@@ -18,7 +19,7 @@ public class AssessItemExtraService extends ServiceSupport<AssessItemExtra> {
 	AssessItemExtraMapper assessItemExtraMapper;
 
 	public List<AssessItemExtra> findTemplateAssessExtraItem(String templateId) {
-		return searchAll(new Condition(AssessItemExtra.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId, null));
+		return searchAll(new Condition(AssessItemExtra.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId));
 	}
 
 	public int removeTemplateItemExtra(String templateId) {
@@ -28,8 +29,8 @@ public class AssessItemExtraService extends ServiceSupport<AssessItemExtra> {
 	public List<AssessItemExtra> findTemplateAssessExtraItem(String templateId, String extraType) {
 		return searchAll(
 				new Condition[] { 
-						new Condition(AssessItemExtra.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId, null),
-						new Condition(AssessItemExtra.COLUMN_EXTRA_TYPE, QueryType.EQUAL, extraType, null) 
+						new Condition(AssessItemExtra.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId),
+						new Condition(AssessItemExtra.COLUMN_EXTRA_TYPE, QueryType.EQUAL, extraType) 
 				}
 		);
 	}

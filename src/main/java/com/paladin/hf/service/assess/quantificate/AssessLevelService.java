@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.framework.utils.StringUtil;
 import com.paladin.hf.mapper.assess.quantificate.AssessLevelMapper;
 import com.paladin.hf.model.assess.quantificate.AssessLevel;
 
@@ -20,7 +22,7 @@ public class AssessLevelService extends ServiceSupport<AssessLevel> {
 	AssessLevelMapper assessLevelMapper;
 
 	public List<AssessLevel> findTemplateAssessLevel(String templateId) {
-		return searchAll(new Condition(AssessLevel.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId, null));
+		return searchAll(new Condition(AssessLevel.COLUMN_TEMPLATE_ID, QueryType.EQUAL, templateId));
 	}
 
 	@Transactional
@@ -33,7 +35,7 @@ public class AssessLevelService extends ServiceSupport<AssessLevel> {
 		String templateId = null;
 		for (AssessLevel assessLevel : assessLevels) {
 			String tid = assessLevel.getTemplateId();
-			if (StringUtils.isEmpty(tid)) {
+			if (StringUtil.isEmpty(tid)) {
 				throw new BusinessException("等级配置必须针对一个模板");
 			} else {
 				if (templateId == null) {

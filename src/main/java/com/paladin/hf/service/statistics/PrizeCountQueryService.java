@@ -3,8 +3,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.paladin.framework.core.ServiceSupport;
+import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.mapper.statistics.PrizeCountQueryMapper;
 import com.paladin.hf.service.statistics.dto.PrizepunishQueryDTO;
 import com.paladin.hf.service.statistics.vo.PrizepunishCountVO;
@@ -21,6 +20,6 @@ public class PrizeCountQueryService
     PrizeCountQueryMapper countQueryMapper;
     
   public  List<PrizepunishCountVO> prizeCountQueryAll(PrizepunishQueryDTO query){
-        return countQueryMapper.prizeCountQueryAll(query, ServiceSupport.getUnitQueryDouble(query.getUnitId()));
+        return countQueryMapper.prizeCountQueryAll(query, DataPermissionUtil.getUnitQueryDouble(query.getUnitId()));
     }
 }

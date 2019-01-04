@@ -15,6 +15,7 @@ import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.UserSession;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.excel.write.ExcelWriter;
+import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.mapper.statistics.EvaluationResultMapper;
@@ -38,13 +39,13 @@ public class EvaluationResultService {
 
 	public Page<EvaluationResultVO> userAll(AppraisalSummaryQueryDTO query) {
 		Page<EvaluationResultVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
-		evaluationResultMapper.userAll(query, ServiceSupport.getUnitQueryDouble(query.getUnitId()));
+		evaluationResultMapper.userAll(query, DataPermissionUtil.getUnitQueryDouble(query.getUnitId()));
 		return page;
 	};
 
 	public Page<EvaluationResultVO> evaluationInfo(AppraisalSummaryQueryDTO query) {
         Page<EvaluationResultVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
-        evaluationResultMapper.evaluationInfo(query,ServiceSupport.getUnitQueryDouble(query.getUnitId()));
+        evaluationResultMapper.evaluationInfo(query,DataPermissionUtil.getUnitQueryDouble(query.getUnitId()));
         return page;
     };
     
@@ -74,7 +75,7 @@ public class EvaluationResultService {
 			}
 		}
 				
-		UnitQuery unitQuery = ServiceSupport.getUnitQueryDouble(unitId);
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(unitId);
 
 		List<EvaluationResultVO> list = evaluationResultMapper.evaluationInfo(query, unitQuery);
 		if (list == null || list.size() == 0) {

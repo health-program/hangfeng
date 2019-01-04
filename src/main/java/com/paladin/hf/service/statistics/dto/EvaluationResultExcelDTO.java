@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.paladin.framework.core.container.ConstantsContainer;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.excel.write.WriteProperty;
+import com.paladin.hf.core.UnitContainer;
 
 
 /**   
@@ -91,7 +92,7 @@ public class EvaluationResultExcelDTO
 
     public String getUnitName() {
         try {
-            return UnitConatiner.getUnitName(unitId);
+            return UnitContainer.getUnitName(unitId);
         }catch(BusinessException e) {
             return "";          
         }
@@ -99,7 +100,7 @@ public class EvaluationResultExcelDTO
 
     public String getAgencyName() {
         try {
-            return UnitConatiner.getUnitName(agencyId);
+            return UnitContainer.getUnitName(agencyId);
         }catch(BusinessException e) {
             return "";          
         }

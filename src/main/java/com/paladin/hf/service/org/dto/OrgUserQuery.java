@@ -2,10 +2,10 @@ package com.paladin.hf.service.org.dto;
 
 import java.util.Date;
 import java.util.List;
-import com.netmatch.tonto.framework.service.QueryCondition;
-import com.netmatch.tonto.framework.service.QueryType;
-import com.netmatch.tonto.framework.web.controller.OffsetPage;
 
+import com.paladin.framework.common.OffsetPage;
+import com.paladin.framework.common.QueryCondition;
+import com.paladin.framework.common.QueryType;
 
 public class OrgUserQuery extends OffsetPage{
 

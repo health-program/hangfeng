@@ -176,28 +176,9 @@ public class UnitContainer implements VersionContainer {
 	// 如果使用分布式，则这里需要改为REDIS等方式
 	// ----------------------------------------------
 
-	public int _saveOrUpdate(OrgUnit unit) {
-		int effect = unitService.saveOrUpdate(unit);
-		if (effect > 0) {
-			VersionContainerManager.versionChanged(getId());
-		}
-		return effect;
-	}
 
-	public int _remove(String id) {
-		int effect = unitService.removeUnit(id);
-		if (effect > 0) {
-			VersionContainerManager.versionChanged(getId());
-		}
-		return effect;
-	}
-
-	public static int saveOrUpdate(OrgUnit unit) {
-		return container._saveOrUpdate(unit);
-	}
-
-	public static int remove(String id) {
-		return container._remove(id);
+	public static void updateData() {
+		VersionContainerManager.versionChanged(container.getId());
 	}
 
 	// ----------------------------------------------

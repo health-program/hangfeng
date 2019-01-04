@@ -45,19 +45,9 @@ public class HfUserSession extends UserSession implements Serializable {
 	public final static int ASSESS_ROLE_LEVEL_SELF = 1;
 
 	/**
-	 * 可操作考评科室下数据角色
-	 */
-	public final static int ASSESS_ROLE_LEVEL_DEPARTMENT = 2;
-
-	/**
 	 * 可操作考评科室以及科室下数据角色
 	 */
 	public final static int ASSESS_ROLE_LEVEL_DEPARTMENT_ADMIN = 3;
-
-	/**
-	 * 可操作考评机构下数据角色
-	 */
-	public final static int ASSESS_ROLE_LEVEL_AGENCY = 4;
 
 	/**
 	 * 可操作考评机构以及机构下的数据角色
@@ -205,6 +195,14 @@ public class HfUserSession extends UserSession implements Serializable {
 	 */
 	public boolean isAssessedRole() {
 		return isOrgUser && DEFAULT_ROLE_SELF_ID.equals(roleIds[0]);
+	}
+
+	/**
+	 * 是否管理员等级
+	 * @return
+	 */
+	public boolean isAdminRoleLevel() {
+		return ASSESS_ROLE_LEVEL_ADMIN == roleLevel;
 	}
 
 	/**

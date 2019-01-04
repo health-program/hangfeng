@@ -648,6 +648,83 @@ public abstract class ServiceSupport<Model> {
 		return PageHelper.offsetPage(offset, limit);
 	}
 
+	/**
+	 * 查询记录数
+	 * @param searchParam
+	 * @return
+	 */
+	public int searchAllCount(Object searchParam) {
+		return searchAllCount(searchParam, false);
+	}
+	
+	/**
+	 * 查询记录数
+	 * @param searchParam
+	 * @param simple
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public int searchAllCount(Object searchParam, boolean simple) {
+
+		Example example = null;
+
+		if (searchParam instanceof Example) {
+
+			example = (Example) searchParam;
+
+		} else if (searchParam instanceof Condition) {
+
+			Condition condition = (Condition) searchParam;
+			example = GeneralCriteriaBuilder.buildAnd(modelType, condition);
+
+		} else {
+
+			Class<?> clazz = searchParam.getClass();
+
+			if (List.class.isAssignableFrom(clazz)) {
+				List<Condition> list = (List<Condition>) searchParam;
+				/*
+				 * 对于list，array暂时只处理Condition情况，对于其他多条件传入日后补充
+				 */
+				example = GeneralCriteriaBuilder.buildAnd(modelType, list);
+			} else if (clazz.isArray()) {
+				Condition[] array = (Condition[]) searchParam;
+				example = GeneralCriteriaBuilder.buildAnd(modelType, Arrays.asList(array));
+			} else {
+				example = GeneralCriteriaBuilder.buildQuery(modelType, searchParam);
+			}
+		}
+
+		// 如果是简单模式，则不考虑通用条件和动态条件
+		if (!simple) {
+
+			if (hasCommonCondition) {
+
+				if (example != null) {
+					example = GeneralCriteriaBuilder.buildAnd(example, commonConditions);
+				}
+
+				if (hasDynamicCondition) {
+					example = buildDynamicCondition(example);
+				} else {
+					if (example == null) {
+						return getSqlMapper().selectCountByExample(commonExample);
+					}
+				}
+			} else if (hasDynamicCondition) {
+				example = buildDynamicCondition(example);
+			}
+
+			example = buildOrderBy(example);
+		}
+				
+		if (example == null) {
+			example = new Example(modelType);
+		}
+
+		return getSqlMapper().selectCountByExample(example);
+	}
+	
 	// -----------------------------------------------------
 	// 修改保存删除
 	// -----------------------------------------------------

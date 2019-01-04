@@ -6,17 +6,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.paladin.common.core.permission.PermissionContainer;
+import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.core.ServiceSupport;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.framework.utils.uuid.UUIDUtil;
+import com.paladin.hf.core.UnitContainer;
+import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.mapper.syst.AdminUserMapper;
 import com.paladin.hf.model.syst.AdminUser;
-
+import com.paladin.hf.service.syst.vo.SysUserVO;
 
 @Service
 public class AdminUserService extends ServiceSupport<AdminUser> {
 
 	@Autowired
 	private SysUserService sysUserService;
-	
+
 	@Autowired
 	private AdminUserMapper adminUserMapper;
 
@@ -27,7 +33,7 @@ public class AdminUserService extends ServiceSupport<AdminUser> {
 		String[] roleIds = roles.split(",");
 
 		for (String rid : roleIds) {
-			if (RoleContainer.getRole(rid) == null) {
+			if (PermissionContainer.getInstance().getRole(rid) == null) {
 				throw new BusinessException("角色参数错误");
 			}
 		}
@@ -38,20 +44,18 @@ public class AdminUserService extends ServiceSupport<AdminUser> {
 			throw new BusinessException("单位参数错误");
 		}
 
-		if(user.getId() != null) {
-			
-			AdminUser updateUser= new AdminUser();
+		if (user.getId() != null) {
+			AdminUser updateUser = new AdminUser();
 			updateUser.setId(user.getId());
 			updateUser.setRoles(user.getRoles());
 			updateUser.setName(user.getName());
-			updateUser.setDescription(user.getDescription());	
-			return updateSelective(updateUser);		
-			
+			updateUser.setDescription(user.getDescription());
+			return updateSelective(updateUser);
+
 		} else {
-			
 			String id = UUIDUtil.createUUID();
 			user.setId(id);
-					
+
 			if (sysUserService.createSysUserAccount(user.getAccount(), user.getId()) > 0) {
 				return save(user);
 			}
@@ -60,19 +64,18 @@ public class AdminUserService extends ServiceSupport<AdminUser> {
 	}
 
 	public int removeUser(String id) {
-		 // 逻辑删除档案人员
-        int effect = this.removeByPrimaryKey(id);
-        if (effect > 0) {
-              // 物理删除账号
-              return adminUserMapper.wipeByPrimaryKey(id);
-        }
-        return effect;
+		// 逻辑删除档案人员
+		int effect = this.removeByPrimaryKey(id);
+		if (effect > 0) {
+			// 物理删除账号
+			return adminUserMapper.wipeByPrimaryKey(id);
+		}
+		return effect;
 	}
 
-	  public Page<SysUserVo> adminUserLog(BaseEntity offsetPage,String unitId){
-	        Page<SysUserVo> page = PageHelper.offsetPage(offsetPage.getOffset(), offsetPage.getLimit());//分页
-	        adminUserMapper.adminUserLog(unitId);
-	        return page;
-	       
-	    }
+	public Page<SysUserVO> adminUserLog(OffsetPage offsetPage, String unitId) {
+		Page<SysUserVO> page = PageHelper.offsetPage(offsetPage.getOffset(), offsetPage.getLimit());// 分页
+		adminUserMapper.adminUserLog(unitId);
+		return page;
+	}
 }

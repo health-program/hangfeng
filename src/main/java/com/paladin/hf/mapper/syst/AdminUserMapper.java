@@ -6,12 +6,12 @@ import org.apache.ibatis.annotations.Param;
 
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.syst.AdminUser;
-import com.paladin.hf.model.syst.SysUserVo;
+import com.paladin.hf.service.syst.vo.SysUserVO;
 
 public interface AdminUserMapper extends CustomMapper<AdminUser>{
 
 	int wipeByPrimaryKey(String id);
 	
-	 List<SysUserVo> adminUserLog(@Param("unitId")String unitId);
+	 List<SysUserVO> adminUserLog(@Param("unitId")String unitId);
 
 }

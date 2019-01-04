@@ -22,6 +22,8 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public static final String COLUMN_TRANSFER_ORIGIN_AGENCY_ID = "transferOriginAgencyId";
 	public static final String COLUMN_TRANSFER_ORIGIN_TEAM_ID = "transferOriginTeamId";
 	public static final String COLUMN_TRANSFER_ORIGIN_UNIT_ID = "transferOriginUnitId";
+	
+	public static final String COLUMN_IDENTIFICATION= "identification";
 
 	public static final int TRANSFER_STATUS_ASK = 1;
 	public static final int TRANSFER_STATUS_SUCCESS = 2;

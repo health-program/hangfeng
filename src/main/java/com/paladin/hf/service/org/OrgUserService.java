@@ -9,13 +9,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.pagehelper.Page;
 import com.paladin.framework.common.QueryType;
+import com.paladin.framework.common.GeneralCriteriaBuilder.Condition;
+import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.framework.utils.StringUtil;
+import com.paladin.framework.utils.uuid.UUIDUtil;
+import com.paladin.framework.utils.validate.ValidateUtil;
+import com.paladin.hf.core.DataPermissionUtil;
+import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
+import com.paladin.hf.core.HfUserSession;
+import com.paladin.hf.core.UnitContainer;
+import com.paladin.hf.core.UnitContainer.Unit;
+import com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper;
 import com.paladin.hf.mapper.org.OrgUserMapper;
 import com.paladin.hf.model.org.OrgUser;
+import com.paladin.hf.model.org.OrgUserTransferLog;
+import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
+import com.paladin.hf.service.org.dto.OrgUserQuery;
 import com.paladin.hf.service.syst.SysUserService;
-
 
 @Service
 public class OrgUserService extends ServiceSupport<OrgUser> {
@@ -28,22 +41,21 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 
 	@Autowired
 	private OrgUserTransferLogService orgUserTransferLogService;
-	
+
 	@Autowired
 	private PersonCycAssessMapper personCycAssessMapper;
 
 	public List<OrgUser> findUnitUser(String unitId) {
 		// 判断是否拥有该单位权限
-		if (UserSession.getCurrentUserSession().ownUnit(unitId)) {
-			return searchAll(new Condition(OrgUser.COLUMN_ORG_UNIT_ID, QueryType.EQUAL, unitId, null));
+		if (DataPermissionUtil.ownUnit(unitId)) {
+			return searchAll(new Condition(OrgUser.COLUMN_ORG_UNIT_ID, QueryType.EQUAL, unitId));
 		} else {
 			return new ArrayList<>();
 		}
-
 	}
-	
-	public List<OrgUser> findUserByIdentification(){
-		return searchAll(new Condition("identification", QueryType.EQUAL, username, null));
+
+	public List<OrgUser> findUserByIdentification(String identification) {
+		return searchAll(new Condition(OrgUser.COLUMN_IDENTIFICATION, QueryType.EQUAL, identification));
 	}
 
 	@Transactional
@@ -63,20 +75,20 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		// 是否考评人员处理，赋予考评权限
 		if (orgUser.getIsAssessor() == 0) {
 			orgUser.setAssessUnitId(null);
-			orgUser.setAssessRole(UserSession.DEFAULT_ROLE_SELF_ID);
+			orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_SELF_ID);
 		} else {
 			String assessUid = orgUser.getAssessUnitId();
-			if (StringUtils.isEmpty(assessUid)) {
+			if (StringUtil.isEmpty(assessUid)) {
 				throw new BusinessException("考评人员必须选择考评科室");
 			}
 
 			Unit assessUnit = UnitContainer.getUnit(assessUid);
 			if (assessUnit.isAgency()) {
-				orgUser.setAssessRole(UserSession.DEFAULT_ROLE_AGENCY_ADMIN_ID);
+				orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_AGENCY_ADMIN_ID);
 			} else if (assessUnit.isAssessTeam()) {
-				orgUser.setAssessRole(UserSession.DEFAULT_ROLE_ASSESS_TEAM_ADMIN_ID);
+				orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_ASSESS_TEAM_ADMIN_ID);
 			} else {
-				orgUser.setAssessRole(UserSession.DEFAULT_ROLE_DEPARTMENT_ADMIN_ID);
+				orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_DEPARTMENT_ADMIN_ID);
 			}
 		}
 
@@ -123,8 +135,8 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return orgUserMapper.countUserByIdentification(identification) == 0;
 	}
 
-	public Page<OrgUser> searchUserPage(OrgUserQuery query) {
-		UnitQuery unitQuery = getUnitQueryDouble(query.getOrgUnitId());
+	public PageResult<OrgUser> searchUserPage(OrgUserQuery query) {
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getOrgUnitId());
 		query.setAgencyId(unitQuery.getAgencyId());
 		query.setAgencyIds(unitQuery.getAgencyIds());
 		query.setUnitId(unitQuery.getUnitId());
@@ -147,13 +159,13 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 
 	@Transactional
 	public int transferUser(String[] userIds, String target) {
-		if (!UserSession.getCurrentUserSession().isAdmin()) {
+		if (!HfUserSession.getCurrentUserSession().isAdminRoleLevel()) {
 			throw new BusinessException("只有管理员才有权限转移人员");
 		}
 		int effect = 0;
 		if (userIds != null && userIds.length > 0) {
 
-			String transferBy = UserSession.getCurrentUserSession().getUserId();
+			String transferBy = HfUserSession.getCurrentUserSession().getUserId();
 
 			Unit unit = UnitContainer.getUnit(target);
 			Unit agency = unit.getAgency();
@@ -207,7 +219,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		int effect = 0;
 		if (userIds != null && userIds.length > 0) {
 
-			String transferBy = UserSession.getCurrentUserSession().getUserId();
+			String transferBy = HfUserSession.getCurrentUserSession().getUserId();
 
 			for (String userId : userIds) {
 				OrgUser user = get(userId);
@@ -265,50 +277,50 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 	}
 
 	public List<OrgUser> getTransferAskOutUser() {
-		UnitQuery unitQuery = getUnitQueryDouble(null);
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(null);
 
 		List<Condition> conditions = new ArrayList<>();
 		if (unitQuery.getAgencyId() != null) {
-			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_AGENCY_ID, QueryType.EQUAL, unitQuery.getAgencyId(), null));
+			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_AGENCY_ID, QueryType.EQUAL, unitQuery.getAgencyId()));
 		}
 
 		if (unitQuery.getAgencyIds() != null) {
-			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_AGENCY_ID, QueryType.IN, unitQuery.getAgencyIds(), null));
+			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_AGENCY_ID, QueryType.IN, unitQuery.getAgencyIds()));
 		}
 
 		if (unitQuery.getUnitId() != null) {
-			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_UNIT_ID, QueryType.EQUAL, unitQuery.getUnitId(), null));
+			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_UNIT_ID, QueryType.EQUAL, unitQuery.getUnitId()));
 		}
 
 		if (unitQuery.getUnitId() != null) {
-			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_UNIT_ID, QueryType.IN, unitQuery.getUnitIds(), null));
+			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_UNIT_ID, QueryType.IN, unitQuery.getUnitIds()));
 		}
 
 		if (unitQuery.getAssessTeamId() != null) {
-			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_TEAM_ID, QueryType.EQUAL, unitQuery.getAssessTeamId(), null));
+			conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_ORIGIN_TEAM_ID, QueryType.EQUAL, unitQuery.getAssessTeamId()));
 		}
 
-		conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.IN, outTransferAsk, null));
+		conditions.add(new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.IN, outTransferAsk));
 		return searchAll(conditions);
 	}
 
 	public List<OrgUser> getTransferAskInUser() {
 
-		UserSession session = UserSession.getCurrentUserSession();
-		if (session.isAdmin()) {
-			return searchAll(new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK, null));
+		HfUserSession session = HfUserSession.getCurrentUserSession();
+		if (session.isAdminRoleLevel()) {
+			return searchAll(new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK));
 		}
 
-		List<String> agencyIds = session.getOwnAgencyId();
+		List<String> agencyIds = DataPermissionUtil.getOwnAgencyId();
 
 		if (agencyIds != null) {
 			int size = agencyIds.size();
 			if (size == 1) {
-				return searchAll(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK, null),
-						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.EQUAL, agencyIds.get(0), null) });
+				return searchAll(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK),
+						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.EQUAL, agencyIds.get(0)) });
 			} else if (size > 1) {
-				return searchAll(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK, null),
-						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.IN, agencyIds, null) });
+				return searchAll(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK),
+						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.IN, agencyIds) });
 			}
 		}
 
@@ -317,21 +329,21 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 
 	public int getCountOfTransferAskIn() {
 
-		UserSession session = UserSession.getCurrentUserSession();
-		if (session.isAdmin()) {
-			return searchAllCount(new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK, null));
+		HfUserSession session = HfUserSession.getCurrentUserSession();
+		if (session.isAdminRoleLevel()) {
+			return searchAllCount(new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK));
 		}
 
-		List<String> agencyIds = session.getOwnAgencyId();
+		List<String> agencyIds = DataPermissionUtil.getOwnAgencyId();
 
 		if (agencyIds != null) {
 			int size = agencyIds.size();
 			if (size == 1) {
-				return searchAllCount(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK, null),
-						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.EQUAL, agencyIds.get(0), null) });
+				return searchAllCount(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK),
+						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.EQUAL, agencyIds.get(0)) });
 			} else if (size > 1) {
-				return searchAllCount(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK, null),
-						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.IN, agencyIds, null) });
+				return searchAllCount(new Condition[] { new Condition(OrgUser.COLUMN_TRANSFER_STATUS, QueryType.EQUAL, OrgUser.TRANSFER_STATUS_ASK),
+						new Condition(OrgUser.COLUMN_TRANSFER_AGENCY_ID, QueryType.IN, agencyIds) });
 			}
 		}
 
@@ -349,8 +361,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 				throw new BusinessException("每次导入人数不能超过200");
 			}
 
-			UserSession session = UserSession.getCurrentUserSession();
-			if (!session.ownUnit(unitId)) {
+			if (!DataPermissionUtil.ownUnit(unitId)) {
 				throw new BusinessException("您没有权限导入到该单位");
 			}
 
@@ -386,7 +397,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 					continue;
 				}
 
-				if (StringUtils.isEmpty(user.getName())) {
+				if (StringUtil.isEmpty(user.getName())) {
 					errors.add(new ImportUserError(i, "缺少姓名"));
 					continue;
 				}
@@ -401,7 +412,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 					continue;
 				}
 
-				user.setAssessRole(UserSession.DEFAULT_ROLE_SELF_ID);
+				user.setAssessRole(HfUserSession.DEFAULT_ROLE_SELF_ID);
 				user.setIsAssessor(0);
 				user.setOrgAgencyId(agencyId);
 				user.setOrgAssessTeamId(assessTeamId);
@@ -486,13 +497,13 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		}
 	}
 
-      public List<PersonCycAssessExt> findThisYearAssessSituationList(String orgUserId, Integer myYear) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.clear();
-                calendar.set(Calendar.YEAR, myYear);
-                Date  startTime = calendar.getTime();
-                calendar.set(Calendar.YEAR, myYear + 1);
-                Date endTime = calendar.getTime();
-                return  personCycAssessMapper.findThisYearAssessSituationList(orgUserId,startTime,endTime);
-      }
+	public List<PersonCycAssessExt> findThisYearAssessSituationList(String orgUserId, Integer myYear) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.set(Calendar.YEAR, myYear);
+		Date startTime = calendar.getTime();
+		calendar.set(Calendar.YEAR, myYear + 1);
+		Date endTime = calendar.getTime();
+		return personCycAssessMapper.findThisYearAssessSituationList(orgUserId, startTime, endTime);
+	}
 }

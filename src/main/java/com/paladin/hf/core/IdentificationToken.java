@@ -2,7 +2,7 @@ package com.paladin.hf.core;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 
-import com.netmatch.tonto.utils.secure.SecureUtil;
+import com.paladin.framework.utils.secure.SecureUtil;
 
 public class IdentificationToken extends UsernamePasswordToken {
 

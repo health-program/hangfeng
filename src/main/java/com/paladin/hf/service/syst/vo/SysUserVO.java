@@ -1,12 +1,13 @@
-package com.paladin.hf.model.syst;
+package com.paladin.hf.service.syst.vo;
 
 import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
 /**   
  * @author 黄伟华
  * @version 2018年10月9日 上午10:43:19 
  */
-public class SysUserVo
+public class SysUserVO
 {
     private String orgAgencyId;
     private String orgUnitId;
@@ -47,8 +48,6 @@ public class SysUserVo
     {
         this.lastLoginTime = lastLoginTime;
     }
-    
-    
     
     public String getUnitRootName() {
         try {

@@ -1,6 +1,6 @@
 package com.paladin.hf.service.org.dto;
 
-import com.netmatch.model.organization.OrgUser;
+import com.paladin.hf.model.org.OrgUser;
 
 public class SimpleUser {
 	

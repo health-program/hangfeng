@@ -9,7 +9,6 @@ import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -17,12 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.paladin.framework.common.GeneralCriteriaBuilder;
-import com.paladin.framework.common.QueryType;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.syst.SysUser;
 import com.paladin.hf.service.org.OrgUserService;
-import com.paladin.hf.service.syst.AdminUserService;
 import com.paladin.hf.service.syst.LoginLogService;
 import com.paladin.hf.service.syst.SysUserService;
 

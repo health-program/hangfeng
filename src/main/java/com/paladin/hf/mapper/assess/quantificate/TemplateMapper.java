@@ -2,10 +2,11 @@ package com.paladin.hf.mapper.assess.quantificate;
 
 import java.util.List;
 
+import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.assess.quantificate.Template;
 
 
-public interface TemplateMapper extends CustomerMapper<Template> {
+public interface TemplateMapper extends CustomMapper<Template> {
 
     List<Template> getTemplateList(Template template);
 

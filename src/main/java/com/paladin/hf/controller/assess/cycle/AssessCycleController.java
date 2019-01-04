@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.common.OffsetPage;
-import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.controller.util.FormType;
@@ -190,12 +189,12 @@ public class AssessCycleController extends ControllerSupport {
             
             Unit agency = null;
             
-            if (!session.isAdmin()) {
+            if (!session.isAdminRoleLevel()) {
                   if (session.isAssessTeamRole()) {
                         agency = session.getOwnUnit().getAgency();
                   }
                   else {
-                        List<Unit> agencys = session.getOwnAgency();
+                        List<Unit> agencys = DataPermissionUtil.getOwnAgency();
                         int size = agencys.size();
                         if (size == 1) {
                               agency = agencys.get(0);
@@ -218,19 +217,19 @@ public class AssessCycleController extends ControllerSupport {
       
       @RequestMapping("/edit/input")
       public String editInput(@RequestParam(required = true) String id, Model model) {
-            UserSession session = UserSession.getCurrentUserSession();
+            HfUserSession session = HfUserSession.getCurrentUserSession();
             
             Unit agency = null;
             AssessCycle assessCycle = assessCycleService.get(id);
             if (assessCycle == null)
                   assessCycle = new AssessCycle();
             
-            if (!session.isAdmin()) {
+            if (!session.isAdminRoleLevel()) {
                   if (session.isAssessTeamRole()) {
                         agency = session.getOwnUnit().getAgency();
                   }
                   else {
-                        List<Unit> agencys = session.getOwnAgency();
+                        List<Unit> agencys = DataPermissionUtil.getOwnAgency();
                         int size = agencys.size();
                         if (size == 1) {
                               agency = agencys.get(0);
@@ -247,7 +246,7 @@ public class AssessCycleController extends ControllerSupport {
             }else{
                   String unitId = assessCycle.getUnitId();
                   if (unitId != null && unitId.length() > 0) {
-                        Unit unit = UnitConatiner.getUnit(unitId);
+                        Unit unit = UnitContainer.getUnit(unitId);
                         agency = unit.getAgency();
                   }
             }
@@ -331,13 +330,13 @@ public class AssessCycleController extends ControllerSupport {
             List<AssessCycleTemplate> relations = assessCycleTemplateService.findRelationByCycle(id);
             
             Unit agency = null;
-            UserSession session = UserSession.getCurrentUserSession();
+            HfUserSession session = HfUserSession.getCurrentUserSession();
             
             if (session.isAssessTeamRole()) {
                   agency = session.getOwnUnit();
             }
             else {
-                  agency = UnitConatiner.getUnit(unitId);
+                  agency = UnitContainer.getUnit(unitId);
             }
             
             Map<String, Object> result = new HashMap<>();

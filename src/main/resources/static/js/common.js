@@ -501,6 +501,8 @@
             _initTable(container);
             _initForm(container);
             _initAttachment(container);
+            _initUnitComponment();
+            _initAssessCycleComponment();
             _initCommon(container);
         }
     })
@@ -509,7 +511,578 @@
         $.initComponment();
     }
 
+    $(".tonto-reset-button").click(function() {
+        $("input:not(.tonto-assess-cycle):not([type='hidden'])").each(function() {
+            var a = $(this);
+            if (a.hasClass("tonto-select-assess-cycle") || a.hasClass("tonto-select-assess-cycle-self") ||
+                a.hasClass("tonto-select-assess-cycle-user") || a.hasClass("tonto-select-assess-cycle-unit") ||
+                a.hasClass("tonto-select-assess-cycle-self-enabled")) {
+                return;
+            }
+            a.val("");
+        });
+
+        $("select").each(function() {
+            $(this).find("option:first").prop("selected", 'selected');
+        })
+    });
+
 })(jQuery);
+
+/**
+ * 创建UNIT 控件
+ */
+function _createUnitComponment(input, type, callback) {
+    var $input = $(input);
+    var $wrap = $('<div class="input-group"/>');
+    var name = $input.attr("name") || $input.attr("id");
+    $input.attr("name", "_" + name);
+    var $hideinput = $('<input type="text" style="display:none" name="' + name + '" id="' + name + '"  />');
+    var $removeBtn = $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-remove"> </i></span>');
+    var defaultValue = $input.attr("unitid");
+
+    if (!callback || !(typeof callback == 'function')) {
+        callback = $input.attr("unit-callback");
+        callback = callback ? $.getWindowFunction(callback) : null;
+    }
+
+    if (defaultValue) {
+        $hideinput.val(defaultValue);
+    }
+
+    $input.attr("readonly", true);
+    $input.css("background", "#fff");
+
+    $input.wrap($wrap);
+    $input.after($removeBtn);
+    $input.after($hideinput);
+
+    var com = {
+        input: $input,
+        defaultValue: defaultValue,
+        callback: callback,
+        removeBtn: $removeBtn,
+        name: name,
+        valueInput: $hideinput,
+        current: null,
+        type: type,
+        treedata: null,
+        changedCallbacks: [],
+        setCurrent: function(val) {
+            var that = this;
+
+            if (!that.current && !val) {
+                return;
+            }
+            if (that.current && val && that.current.id == val.id) {
+                return;
+            }
+
+            that.current = val;
+            that.input.val(val ? val.name : "");
+            that.valueInput.val(val ? val.id : "");
+
+            if (that.callback) {
+                that.callback(val);
+            }
+            that.changedCallbacks.forEach(function(fun) {
+                fun(val);
+            });
+        },
+        getCurrent: function() {
+            var that = this;
+            if (!that.valueInput.val()) {
+                that.current = null;
+                return null;
+            }
+            return that.current;
+        },
+        setEnabled: function(enabled) {
+            if (enabled) {
+                this.input.attr('disabled', false);
+                this.valueInput.attr('disabled', false);
+                this.input.css("background", "#fff");
+            } else {
+                this.input.attr('disabled', true);
+                this.valueInput.attr('disabled', true);
+                this.input.css("background", "#eee");
+            }
+        },
+        setData: function(data) {
+            var that = this;
+            var treedata;
+            var defaultValue = that.defaultValue;
+            var type = that.type;
+            var callback = that.callback;
+            var current;
+            var ownunit;
+            var isAgency;
+
+            var required = ((that.input.hasClass("required") || that.input.attr("required") == "required"));
+
+            if (type == 'department' || type == "unit") {
+
+                ownunit = data.ownIds || [];
+                var uniqueUnit;
+                var isUnique = false;
+
+                var g = function(units, isall) {
+                    var nodes = [];
+                    units.forEach(function(unit) {
+                        var node = {
+                            text: unit.name,
+                            data: unit
+                        };
+
+                        if (defaultValue && defaultValue == unit.id) {
+                            current = unit;
+                        }
+
+                        if (ownunit.length == 1 && ownunit[0] == unit.id) {
+                            uniqueUnit = unit;
+                        }
+
+                        if (unit.children) {
+                            node.nodes = g(unit.children, isall);
+                            if (node.nodes.length == 0) {
+                                node.nodes = null;
+                            }
+                        }
+                        nodes.push(node);
+                    });
+
+                    if (!isall) {
+                        nodes = $.grep(nodes, function(n, i) {
+                            if (!n.nodes || n.nodes.length == 0) {
+                                return $.inArray(n.data.id, ownunit) != -1;
+                            }
+                            return true;
+                        });
+                    }
+
+                    return nodes;
+                }
+
+                if (data.agency) {
+                    treedata = g(data.agency, true);
+                    isAgency = true;
+                } else if (data.departments) {
+                    treedata = g(data.departments, false);
+
+                    if (!current && required && ownunit.length == 1) {
+                        // 如果必填并且只有一个值，默认填入
+                        current = uniqueUnit;
+                        isUnique = true;
+                    }
+                }
+
+            } else if (type == "all") {
+
+                var g2 = function(units) {
+                    var nodes = [];
+                    units.forEach(function(unit) {
+                        var node = {
+                            text: unit.name,
+                            data: unit
+                        };
+
+                        if (defaultValue && defaultValue == unit.id) {
+                            current = unit;
+                        }
+
+                        if (unit.children) {
+                            node.nodes = g2(unit.children);
+                            if (node.nodes.length == 0) {
+                                node.nodes = null;
+                            }
+                        }
+                        nodes.push(node);
+                    });
+                    return nodes;
+                }
+
+                treedata = g2(data);
+
+            } else if (type == "agency") {
+                treedata = [];
+
+                data.forEach(function(a) {
+
+                    treedata.push({
+                        text: a.name,
+                        data: a.id
+                    });
+
+                    if (defaultValue && defaultValue == a.id) {
+                        current = a;
+                    }
+                });
+
+                if (!current && required && data.length == 1) {
+                    // 如果必填并且只有一个值，默认填入
+                    current = data[0];
+                    isUnique = true;
+                }
+            }
+
+            that.setCurrent(current);
+
+            that.removeBtn.on("click", function() {
+                that.setCurrent(null);
+            });
+
+            that.input.click(function() {
+
+                layer.open({
+                    type: 1,
+                    title: "单位",
+                    content: "<div class='tonto-unit-check-div'></div>",
+                    area: ['350px', '460px'],
+                    success: function(layero, index) {
+                        $tree = $(layero).find('.tonto-unit-check-div');
+
+                        $tree.treeview({
+                            data: treedata,
+                            levels: treedata && treedata.length > 1 ? 1 : 2
+                        });
+
+                        $tree.on('nodeSelected', function(event, data) {
+
+                            var item = data.data;
+
+                            if (type == "department") {
+                                if (!item.parentId) {
+                                    $.infoMessage("请选择一个科室");
+                                    return;
+                                } else {
+                                    if (!isAgency && ($.inArray(item.id, ownunit) == -1)) {
+                                        $.infoMessage("您不能选择该科室");
+                                        return;
+                                    }
+                                }
+                            } else if (type == "unit") {
+                                if (!isAgency && ($.inArray(item.id, ownunit) == -1)) {
+                                    $.infoMessage("您不能选择该科室");
+                                    return;
+                                }
+                            } else if (type == "agency") {
+                                item = {
+                                    id: item,
+                                    name: data.text
+                                }
+                            }
+
+                            that.setCurrent(item);
+                            layer.close(index);
+                        });
+                    }
+                });
+            });
+        },
+        loadData: function(url) {
+            var that = this;
+            if (!url) {
+                url = (that.type == 'agency') ? "/org/unit/own/agency" : "/org/unit/own/department";
+            }
+            $.postAjax(url, function(data) {
+                that.setData(data);
+            });
+        },
+        addUnitChangedListener: function(callback) {
+            this.changedCallbacks.push(callback);
+        }
+    }
+
+
+    $input[0].unitComponment = com;
+
+    return com;
+}
+
+
+/**
+ * 自动加载初始化单位选择表单控件 <class = tonto-select-unit>
+ */
+function _initUnitComponment(container) {
+
+    /**
+     * 获取UNIT控件
+     */
+    $.extend($.fn, {
+        getUnitComponment: function() {
+            return $(this)[0].unitComponment;
+        }
+    });
+
+    var _tonto_depart = container ? $(container).find(".tonto-select-department") : $(".tonto-select-department");
+    var _tonto_agencys = container ? $(container).find(".tonto-select-agency") : $(".tonto-select-agency");
+    var _tonto_units = container ? $(container).find(".tonto-select-unit") : $(".tonto-select-unit");
+    var _tonto_units_all = container ? $(container).find(".tonto-select-unit-all") : $(".tonto-select-unit-all");
+
+
+    if (_tonto_units.length > 0) {
+        var coms1 = [];
+        for (var i = 0; i < _tonto_units.length; i++) {
+            coms1.push(_createUnitComponment(_tonto_units[i], "unit"));
+        }
+        $.postAjax("/org/unit/own/department", function(data) {
+            for (i = 0; i < coms1.length; i++) {
+                coms1[i].setData(data);
+            }
+        });
+    }
+
+    if (_tonto_depart.length > 0) {
+        var coms2 = [];
+        for (var i = 0; i < _tonto_depart.length; i++) {
+            coms2.push(_createUnitComponment(_tonto_depart[i], "department"));
+        }
+        $.postAjax("/org/unit/own/department", function(data) {
+            for (i = 0; i < coms2.length; i++) {
+                coms2[i].setData(data);
+            }
+        });
+    }
+
+    if (_tonto_agencys.length > 0) {
+        var coms3 = [];
+        for (var i = 0; i < _tonto_agencys.length; i++) {
+            coms3.push(_createUnitComponment(_tonto_agencys[i], "agency"));
+        }
+        $.postAjax("/org/unit/own/agency", function(data) {
+            for (i = 0; i < coms3.length; i++) {
+                coms3[i].setData(data);
+            }
+        });
+    }
+
+    if (_tonto_units_all.length > 0) {
+        var coms4 = [];
+        for (var i = 0; i < _tonto_units_all.length; i++) {
+            coms4.push(_createUnitComponment(_tonto_units_all[i], "all"));
+        }
+        $.postAjax("/org/unit/all", function(data) {
+            for (i = 0; i < coms4.length; i++) {
+                coms4[i].setData(data);
+            }
+        });
+    }
+
+
+}
+
+
+/**
+ * 创建考评周期选择控件
+ */
+function _createAssessCycleComponment(input, _options, callback) {
+
+    var options = {
+        type: 1
+    }
+
+    if (typeof _options == 'function') {
+        callback = _options;
+    } else if (typeof _options == 'object') {
+        $.extend(options, _options);
+    } else {
+        options.type = _options * 1;
+    }
+
+    var $input = $(input);
+    var required = ($input.hasClass("required") || $input.attr("required") == "required");
+    var $wrap = $('<div class="input-group"/>');
+    var name = $input.attr("name") || $input.attr("id");
+    $input.attr("name", "_" + name);
+    var $hideinput = $('<input type="text" class="tonto-assess-cycle" style="display:none" name="' + name + '"  />');
+    var $removeBtn = required ? $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-chevron-down"> </i></span> ') :
+        $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-remove"> </i></span> ');
+    var defaultValue = $input.attr("cycleid");
+    var defaultName = $input.attr("cyclename");
+    var userId = options.userId || $input.attr("userid");
+    var unitId = options.unitId || $input.attr("unitid");
+    var type = options.type;
+
+
+    if (!callback && !(typeof callback == 'function')) {
+        callback = $input.attr("assess-cycle-callback");
+        callback = callback ? $.getWindowFunction(callback) : null;
+    }
+
+    $input.attr("readonly", true);
+    $input.css("background", "#fff");
+
+    $input.wrap($wrap);
+    $input.after($removeBtn);
+    $input.after($hideinput);
+
+    var content = '<section class="tonto-layer-div content table-content">' +
+        '    <table id="_tontoCycleTable" class="table table-hover"></table>' +
+        '    <div style="width:200px" id="_tontoCycleTableTooler">' +
+        //(type == 4 ? '        <input type="text" class="form-control tonto-select-agency" required="required" name="unitId" placeholder="请选择机构"></input>':'') +
+        '    </div>' +
+        '</section>';
+
+    var com = {
+        input: $input,
+        callback: callback,
+        removeBtn: $removeBtn,
+        required: required,
+        content: content,
+        name: name,
+        userId: userId,
+        unitId: unitId,
+        type: options.type,
+        valueInput: $hideinput,
+        setCurrent: function(row) {
+            var that = this;
+            if (row) {
+                that.input.val(row.cycleName);
+                that.valueInput.val(row.id);
+            } else {
+                that.input.val("");
+                that.valueInput.val("");
+            }
+
+            if (that.callback)
+                that.callback(row);
+        },
+        open: function() {
+
+            var that = this;
+            that.first = true;
+            var type = that.type;
+
+            layer.open({
+                type: 1,
+                title: ' ',
+                maxmin: true, //开启最大化最小化按钮
+                content: that.content,
+                area: ['800px', '650px'],
+                success: function(layero, index) {
+
+                    var url = '/console/asscyc/select/' + (type == 1 ? 'self' : (type == 2 ? 'user' : (type == 3 ? 'unit' : (type == 4 ? 'own' : (type == 9 ? 'assess' : 'selfenabled')))));
+
+                    if (that.userId) {
+                        url += "?userId=" + that.userId;
+                        if (that.unitId) {
+                            url += "&unitId=" + that.unitId
+                        }
+                    } else if (that.unitId) {
+                        url += "?unitId=" + that.unitId;
+                    }
+
+                    /*
+                     * 如果是个人的 self=true,则应该查找自己所在机构的数据
+                     */
+
+                    that.table = $.createTable("#_tontoCycleTable", {
+                        idField: "id",
+                        columns: [
+                            [
+                                { title: "单位名称", field: "unitName" },
+                                { title: "周期名称", field: "cycleName" },
+                                { title: "考评类型", field: "assessType", formatter: function(value, row) { return value == "1" ? "年中测评" : "年度考评" } },
+                                { title: "周期状态", field: "cycleState", formatter: function(value, row) { return value == "1" ? "启用" : (value == "2" ? "暂存" : (value == "4" ? "停用" : "归档")) } },
+                                { title: "周期开始时间", field: "cycleStartTime", formatter: "date" },
+                                { title: "周期截止时间", field: "cycleEndTime", formatter: "date" }
+                            ]
+                        ],
+                        url: url,
+                        searchbar: type == 4 ? '#_tontoCycleTableTooler' : null,
+                        sortName: 'createTime',
+                        sortOrder: 'desc',
+                        pagination: true,
+                        toolbar: "#_tontoCycleTableTooler",
+                        showRefresh: true,
+                        onClickRow: function(row, element) {
+                            com.setCurrent(row);
+                            layer.close(index);
+                        }
+                    });
+
+                    var unitInput = $(layero).find('[name="unitId"]');
+                    // if (type == 4) {
+                    //     // $.getAjax("/org/unit/self/agency", function(data) {
+                    //     //     unitInput.attr("readonly", true);
+                    //     //     unitInput.val(data.name);
+                    //     // })
+
+                    //     _createUnitComponment(unitInput, "agency", function() {
+                    //         if (that.first) {
+                    //             that.first = false;
+                    //         } else {
+                    //             that.table.refresh();
+                    //         }
+                    //     }).loadData();
+                    // }
+                }
+            });
+        }
+    }
+
+    $input.click(function() {
+        com.open();
+    });
+
+    $removeBtn.on("click", function() {
+        if (required) {
+            com.open();
+        } else {
+            com.setCurrent(null);
+        }
+
+    });
+
+    if (defaultValue) {
+        if (defaultName) {
+            com.setCurrent({
+                cycleName: defaultName,
+                id: defaultValue
+            });
+        } else {
+            $.getAjax("/console/asscyc/get?id=" + defaultValue, function(data) {
+                com.setCurrent(data);
+                com.defaultValue = data;
+            });
+        }
+    }
+
+
+
+    $input[0].cycleComponment = com;
+
+    return com;
+}
+
+/**
+ * 自动加载初始化考评周期选择表单控件 <class = tonto-select-assess-cycle>
+ */
+function _initAssessCycleComponment() {
+    $(".tonto-select-assess-cycle").each(function() {
+        _createAssessCycleComponment($(this), 4);
+    });
+
+    $(".tonto-select-assess-cycle-assess").each(function() {
+        _createAssessCycleComponment($(this), 9);
+    });
+
+    $(".tonto-select-assess-cycle-self").each(function() {
+        _createAssessCycleComponment($(this), 1);
+    });
+
+    $(".tonto-select-assess-cycle-user").each(function() {
+        _createAssessCycleComponment($(this), 2);
+    });
+
+    $(".tonto-select-assess-cycle-unit").each(function() {
+        _createAssessCycleComponment($(this), 3);
+    });
+
+    $(".tonto-select-assess-cycle-self-enabled").each(function() {
+        _createAssessCycleComponment($(this), 5);
+    });
+}
 
 function _initCommon() {
 
@@ -746,7 +1319,6 @@ function _initCommon() {
             return com;
         }
     });
-
 }
 
 function _initValidator() {
@@ -2183,7 +2755,7 @@ var _Model = function(name, column, options) {
 
     that.initEditDependency();
 
-    if(that.config.pattern == 'view') {
+    if (that.config.pattern == 'view') {
         that.editBtn.hide();
     }
 }

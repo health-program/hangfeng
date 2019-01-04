@@ -2,9 +2,9 @@ package com.paladin.hf.service.assess.cycle.pojo;
 
 import java.util.Date;
 
-import com.netmatch.tonto.framework.service.QueryCondition;
-import com.netmatch.tonto.framework.service.QueryType;
-import com.netmatch.tonto.framework.web.controller.OffsetPage;
+import com.paladin.framework.common.OffsetPage;
+import com.paladin.framework.common.QueryCondition;
+import com.paladin.framework.common.QueryType;
 
 public class AssessCycleQuery extends OffsetPage{
 

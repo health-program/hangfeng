@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.paladin.framework.common.QueryCondition;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.hf.core.UnitContainer.Unit;
 

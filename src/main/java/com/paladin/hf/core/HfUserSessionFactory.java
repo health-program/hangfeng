@@ -4,8 +4,6 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.paladin.common.core.permission.PermissionContainer;
-import com.paladin.common.core.permission.Role;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.syst.AdminUser;
 import com.paladin.hf.model.syst.SysUser;

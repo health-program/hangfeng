@@ -3,6 +3,7 @@ package com.paladin.hf.service.assess.cycle.dto;
 import java.io.Serializable;
 
 import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
 
 
@@ -141,7 +142,7 @@ public class PersonCycAssessExt extends PersonCycAssess implements Serializable
 
 public String getDepartmentName() {
         try {
-            return UnitConatiner.getUnitName(getUnitId());
+            return UnitContainer.getUnitName(getUnitId());
     	}catch(BusinessException e) {
     		return "";
     	}
@@ -149,7 +150,7 @@ public String getDepartmentName() {
     
     public String getAgencyName() {        
         try {
-            return UnitConatiner.getUnitName(getAgencyId());
+            return UnitContainer.getUnitName(getAgencyId());
     	}catch(BusinessException e) {
     		return "";
     	}

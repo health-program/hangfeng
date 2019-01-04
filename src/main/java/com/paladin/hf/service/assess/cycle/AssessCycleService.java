@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.pagehelper.Page;
 import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.PageResult;
@@ -32,13 +31,13 @@ import com.paladin.hf.service.org.OrgUserService;
 public class AssessCycleService extends ServiceSupport<AssessCycle> {
 
 	@Autowired
-	AssessCycleMapper assessCycleMapper;
+	private AssessCycleMapper assessCycleMapper;
 
 	@Autowired
-	AssessCycleTemplateService assessCycleTemplateService;
+	private AssessCycleTemplateService assessCycleTemplateService;
 
 	@Autowired
-	OrgUserService orgUserService;
+	private OrgUserService orgUserService;
 
 	/**
 	 * 保存或更新
@@ -205,7 +204,7 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	@SuppressWarnings("unchecked")
 	public PageResult<AssessCycle> findUserAssessCyclePage(OffsetPage offsetPage, String userId) {
 		if(StringUtil.isEmpty(userId)) {
-			return getEmptyPage(offsetPage);
+			return getEmptyPageResult(offsetPage);
 		}
 		
 		OrgUser user = orgUserService.get(userId);
@@ -228,7 +227,7 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	@SuppressWarnings("unchecked")
 	public PageResult<AssessCycle> findUnitAssessCyclePage(OffsetPage offsetPage, String unitId) {		
 		if(StringUtil.isEmpty(unitId)) {
-			return getEmptyPage(offsetPage);
+			return getEmptyPageResult(offsetPage);
 		}	
 		String agencyId = UnitContainer.getRootUnit(unitId).getId();
 		return searchPage(new Condition[] {

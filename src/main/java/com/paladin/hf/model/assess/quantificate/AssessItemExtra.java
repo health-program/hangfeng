@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.paladin.framework.common.BaseModel;
+
 
 public class AssessItemExtra extends BaseModel{
 	

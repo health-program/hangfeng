@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.netmatch.model.BaseModel;
+import com.paladin.framework.common.BaseModel;
 
 public class AssessQuantitative extends BaseModel{
 	

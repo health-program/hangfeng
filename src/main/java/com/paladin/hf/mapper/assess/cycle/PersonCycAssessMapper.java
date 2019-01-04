@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
 import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
@@ -13,7 +14,7 @@ import com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery;
 
 
 
-public interface PersonCycAssessMapper extends CustomerMapper<PersonCycAssess> {
+public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
     
     /*
      * 加载首页列表数据及条件查询

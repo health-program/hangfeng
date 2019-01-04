@@ -15,10 +15,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.PageResult;
+import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.web.response.CommonResponse;
+import com.paladin.hf.controller.util.FormType;
+import com.paladin.hf.core.DataPermissionUtil;
+import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.model.assess.quantificate.AssessItem;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
@@ -27,9 +32,6 @@ import com.paladin.hf.service.assess.quantificate.AssessItemExtraService;
 import com.paladin.hf.service.assess.quantificate.AssessItemService;
 import com.paladin.hf.service.assess.quantificate.TemplateService;
 import com.paladin.hf.service.assess.quantificate.pojo.TemplateQuery;
-
-import tk.mybatis.mapper.entity.Condition;
-
 
 /**
  * 考评模板管理Controller
@@ -63,17 +65,17 @@ public class TemplateController extends ControllerSupport {
 		wrapAgency(model);
 		return "console/templ/index";
 	}
-	
+
 	private void wrapAgency(Model model) {
-		UserSession session = UserSession.getCurrentUserSession();
+		HfUserSession session = HfUserSession.getCurrentUserSession();
 
 		Unit agency = null;
 
-		if (!session.isAdmin()) {
+		if (!session.isAdminRoleLevel()) {
 			if (session.isAssessTeamRole()) {
 				agency = session.getOwnUnit().getAgency();
 			} else {
-				List<Unit> agencys = session.getOwnAgency();
+				List<Unit> agencys = DataPermissionUtil.getOwnAgency();
 				int size = agencys.size();
 				if (size == 1) {
 					agency = agencys.get(0);
@@ -85,8 +87,8 @@ public class TemplateController extends ControllerSupport {
 			if (agency != null) {
 				model.addAttribute("agencyId", agency.getId());
 				model.addAttribute("agencyName", agency.getName());
-			} 
-		}		
+			}
+		}
 
 	}
 
@@ -100,17 +102,17 @@ public class TemplateController extends ControllerSupport {
 	@ResponseBody
 	@RequestMapping(value = "/search/all")
 	public Object list(TemplateQuery query) {
-		return CommonResponse.getSuccessResponse(new PageResult(templateService.searchPage(query)));
+		return CommonResponse.getSuccessResponse(templateService.searchPage(query));
 	}
 
 	@RequestMapping("/view")
 	public String view(@RequestParam(required = true) String id, Model model) {
-		
+
 		Template template = templateService.get(id);
 		if (template == null)
 			throw new BusinessException("无法找到对应的模板");
 		model.addAttribute("temp", template);
-		
+
 		return "console/templ/detail";
 	}
 
@@ -158,28 +160,28 @@ public class TemplateController extends ControllerSupport {
 		if (bindingResult.hasErrors()) {
 			return this.validErrorHandler(bindingResult);
 		}
-		
+
 		String tid = template.getId();
 		String tname = template.getTemplateName();
-		String orgUnitId=template.getOrgUnitId();
-		
+		String orgUnitId = template.getOrgUnitId();
+
 		boolean copy = "1".equals(isCopy);
 		boolean isAdd = tid == null || tid.length() == 0 || copy;
-		
-		List<Template> sameNameTemplate = templateService.searchAll(new Condition[]{new Condition(Template.COLUMN_TEMPLAT_NAME, QueryType.EQUAL, tname,null),
-		    new Condition(Template.COLUMN_ORG_UNIT_ID, QueryType.EQUAL,orgUnitId,null)});
-        if(sameNameTemplate != null && sameNameTemplate.size()>0){
-              if(isAdd) {//新增、复制
-                   return CommonResponse.getFailResponse("存在相同名称的模板");
-              } else {
-                   for(Template t :sameNameTemplate) {
-                         if(!t.getId().equals(tid)){//修改
-                               return CommonResponse.getFailResponse("存在相同名称的模板");
-                         }
-                   }
-              }
-        }
-				
+
+		List<Template> sameNameTemplate = templateService.searchAll(new Condition[] { new Condition(Template.COLUMN_TEMPLAT_NAME, QueryType.EQUAL, tname),
+				new Condition(Template.COLUMN_ORG_UNIT_ID, QueryType.EQUAL, orgUnitId) });
+		if (sameNameTemplate != null && sameNameTemplate.size() > 0) {
+			if (isAdd) {// 新增、复制
+				return CommonResponse.getFailResponse("存在相同名称的模板");
+			} else {
+				for (Template t : sameNameTemplate) {
+					if (!t.getId().equals(tid)) {// 修改
+						return CommonResponse.getFailResponse("存在相同名称的模板");
+					}
+				}
+			}
+		}
+
 		if (copy) {
 			return CommonResponse.getResponse(templateService.copyTemplate(template));
 		} else {
@@ -243,37 +245,38 @@ public class TemplateController extends ControllerSupport {
 	 */
 	@RequestMapping(value = "/copy", method = { RequestMethod.GET })
 	public String skipCopy(Model model, @RequestParam(required = true) String id) {
-	    wrapAgency(model);
+		wrapAgency(model);
 		Template template = templateService.get(id);
 		model.addAttribute("temp", template);
 		model.addAttribute("isCopy", "1");
 		model.addAttribute("formType", FormType.ADD);
 		return "console/templ/from";
 	}
-	
-	 /**
-     * <模板启用时判断是否等级配置>
-     * @param id
-     * @return
-     * @see [类、类#方法、类#成员]
-     */
+
+	/**
+	 * <模板启用时判断是否等级配置>
+	 * 
+	 * @param id
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
 	@ResponseBody
-    @RequestMapping(value = "/level", method = { RequestMethod.GET })
-    public Object levelCount(@RequestParam(required = true) String id) {
-        return CommonResponse.getSuccessResponse(templateService.levelCount(id));
-    }
-	
-	
-	 /**
-     * <模板启用时判断是否项目配置>
-     * @param id
-     * @return
-     * @see [类、类#方法、类#成员]
-     */
+	@RequestMapping(value = "/level", method = { RequestMethod.GET })
+	public Object levelCount(@RequestParam(required = true) String id) {
+		return CommonResponse.getSuccessResponse(templateService.levelCount(id));
+	}
+
+	/**
+	 * <模板启用时判断是否项目配置>
+	 * 
+	 * @param id
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
 	@ResponseBody
-    @RequestMapping(value = "/item", method = { RequestMethod.GET })
-    public Object itemCount(@RequestParam(required = true) String id) {
-        return CommonResponse.getSuccessResponse(templateService.itemCount(id));
-    }
+	@RequestMapping(value = "/item", method = { RequestMethod.GET })
+	public Object itemCount(@RequestParam(required = true) String id) {
+		return CommonResponse.getSuccessResponse(templateService.itemCount(id));
+	}
 
 }

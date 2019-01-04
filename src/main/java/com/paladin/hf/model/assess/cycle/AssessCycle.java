@@ -5,9 +5,8 @@ import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.paladin.framework.common.BaseModel;
 import com.paladin.framework.core.exception.BusinessException;

@@ -1,8 +1,9 @@
 package com.paladin.hf.mapper.assess.cycle;
 
+import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 
-public interface AssessCycleMapper extends CustomerMapper<AssessCycle> {
+public interface AssessCycleMapper extends CustomMapper<AssessCycle> {
 
 	public int startAssessCycle(String id);
 	

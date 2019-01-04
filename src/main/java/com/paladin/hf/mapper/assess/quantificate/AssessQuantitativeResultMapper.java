@@ -2,10 +2,10 @@ package com.paladin.hf.mapper.assess.quantificate;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.netmatch.model.console.AssessQuantitativeResult;
-import com.netmatch.util.CustomerMapper;
+import com.paladin.framework.mybatis.CustomMapper;
+import com.paladin.hf.model.assess.quantificate.AssessQuantitativeResult;
 
-public interface AssessQuantitativeResultMapper extends CustomerMapper<AssessQuantitativeResult>{
+public interface AssessQuantitativeResultMapper extends CustomMapper<AssessQuantitativeResult>{
 
 	public int removeResult(@Param("cycleId") String cycleId, @Param("userId") String userId);
 

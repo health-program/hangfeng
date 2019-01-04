@@ -1,21 +1,22 @@
 package com.paladin.hf.model.assess.quantificate;
 
-
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 import com.paladin.framework.common.BaseModel;
-
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
 /**
  * 模板
+ * 
  * @author TontoZhou
  * @since 2018年2月6日
  */
-public class Template extends BaseModel{
-    
+public class Template extends BaseModel {
+
 	/**
 	 * 启用
 	 */
@@ -29,25 +30,24 @@ public class Template extends BaseModel{
 	 */
 	public final static String STATE_STOP = "3";
 
-	
 	public final static String COLUMN_ENABLE_STATE = "enableState";
 	public final static String COLUMN_ORG_UNIT_ID = "orgUnitId";
 	public final static String COLUMN_TEMPLAT_NAME = "templateName";
-	
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "UUID")
-    private String id;
 
-    @NotEmpty(message="单位不能为空！")
-    private String orgUnitId;
-    
-    @NotEmpty(message="模板名称不能为空！")
-    private String templateName;
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(generator = "UUID")
+	private String id;
 
-    private String templateDescribe;
+	@NotEmpty(message = "单位不能为空！")
+	private String orgUnitId;
 
-    private String enableState;
+	@NotEmpty(message = "模板名称不能为空！")
+	private String templateName;
+
+	private String templateDescribe;
+
+	private String enableState;
 
 	public String getId() {
 		return id;
@@ -92,15 +92,13 @@ public class Template extends BaseModel{
 	/*
 	 * 扩展显示用字段
 	 */
-	
+
 	public String getUnitName() {
 		try {
-    		return UnitConatiner.getUnitName(orgUnitId);
-    	}catch(BusinessException e) {
-    		return "";
-    	}
-		
+			return UnitContainer.getUnitName(orgUnitId);
+		} catch (BusinessException e) {
+			return "";
+		}
 	}
-
 
 }

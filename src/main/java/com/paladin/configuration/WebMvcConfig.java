@@ -48,7 +48,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("redirect:/hf/main");
+        registry.addViewController("/").setViewName("redirect:/index");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);       
     } 
     

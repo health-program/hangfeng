@@ -233,7 +233,7 @@ public class ShiroConfiguration {
 						String requestUrl = httpRequest.getRequestURI();
 
 						// 过滤静态资源，防止静态资源读取session等操作
-						if (!requestUrl.startsWith("/hf/")) {
+						if (requestUrl.startsWith("/static/")) {
 							chain.doFilter(servletRequest, servletResponse);
 							return;
 						}
@@ -249,9 +249,9 @@ public class ShiroConfiguration {
 		// 必须设置 SecurityManager
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 		// 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-		shiroFilterFactoryBean.setLoginUrl("/hf/login");
+		shiroFilterFactoryBean.setLoginUrl("/login");
 		// 登录成功后要跳转的链接
-		shiroFilterFactoryBean.setSuccessUrl("/hf/index");
+		shiroFilterFactoryBean.setSuccessUrl("/index");
 		// 未授权界面;
 		shiroFilterFactoryBean.setUnauthorizedUrl("/static/html/error_401.html");
 

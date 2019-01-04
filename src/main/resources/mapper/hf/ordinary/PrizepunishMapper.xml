@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.paladin.hf.mapper.ordinary.PrizepunishMapper">
-  <resultMap id="BaseResultMap" type="com.paladin.hf.model.ordinary.Prizepunish">
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="dict_code" jdbcType="VARCHAR" property="dictCode" />
-    <result column="org_user_id" jdbcType="VARCHAR" property="orgUserId" />
-    <result column="happen_time" jdbcType="DATE" property="happenTime" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="place" jdbcType="VARCHAR" property="place" />
-    <result column="checks" jdbcType="VARCHAR" property="checks" />
-    <result column="check_people" jdbcType="VARCHAR" property="checkPeople" />
-    <result column="operation_state" jdbcType="VARCHAR" property="operationState" />
-    <result column="examine_state" jdbcType="VARCHAR" property="examineState" />
-    <result column="examine_people" jdbcType="VARCHAR" property="examinePeople" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
-    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
-  </resultMap>
-  
-	<resultMap type="com.netmatch.model.peacedepartment.PrizepunishVo" id="SocMap" extends="BaseResultMap">
-  		<result column="name" jdbcType="VARCHAR" property="userName"/>
-  </resultMap>
    
   <select id="selectPrizepunishAll" resultType="Map">
   	SELECT p.*,u.name FROM prizepunish AS p 
@@ -72,12 +50,7 @@
   	
     <if test="examineState !=null and examineState !='' ">
 	 	and p.examine_state = #{examineState}  
-	 </if>
-	 
-  </select>
-  
-  <select id="prizepId" resultMap="SocMap">
-  SELECT p.*,u.name FROM prizepunish AS p LEFT JOIN org_user AS u ON p.examine_people=u.id WHERE p.id=#{id}
+	 </if>	 
   </select>
   
   <select id="selectPrizepunishAll2" resultType="Map">

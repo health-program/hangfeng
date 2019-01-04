@@ -83,6 +83,8 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	private String userProperty;
 
 	private String identification;
+	
+	private String identificationType;
 
 	private String transferOriginUnitId;
 
@@ -95,8 +97,6 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	private String transferAgencyId;
 
 	private Integer transferStatus;
-
-	private String certificateType;
 
 	public String getIdentification() {
 		return identification;
@@ -353,6 +353,14 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public void setTransferOriginTeamId(String transferOriginTeamId) {
 		this.transferOriginTeamId = transferOriginTeamId;
 	}
+	
+	public String getIdentificationType() {
+		return identificationType;
+	}
+
+	public void setIdentificationType(String identificationType) {
+		this.identificationType = identificationType;
+	}
 
 	/*
 	 * 扩展显示用字段
@@ -407,12 +415,6 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		return null;
 	}
 
-	public String getCertificateType() {
-		return certificateType;
-	}
 
-	public void setCertificateType(String certificateType) {
-		this.certificateType = certificateType;
-	}
 
 }

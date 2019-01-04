@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.paladin.hf.mapper.syst.SysUserMapper">
-<select id="sysUserLog" resultType="com.netmatch.model.system.SysUserVo">
+<select id="sysUserLog" resultType="com.paladin.hf.service.syst.vo.SysUserVO">
 	SELECT ou.`org_agency_id` as orgAgencyId ,ou.`org_unit_id` as orgUnitId,ou.`name` as name,su.`last_login_time` as lastLoginTime FROM sys_user
 	AS su
 	LEFT JOIN org_user AS ou

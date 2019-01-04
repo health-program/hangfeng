@@ -16,6 +16,4 @@ public interface PrizepunishMapper extends CustomMapper<Prizepunish>{
     List<Map<String, Object>> selectPrizepunishAll2(Prizepunish prizepunish);
     
     List<Map<String, Object>> appSelectPrizepunishAll(Prizepunish prizepunish);
-    
-    Prizepunish prizepId(@Param("id") String id);
 }

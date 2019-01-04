@@ -1,39 +1,146 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>宣教登录</title>
+    <title>行风监管系统登录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
     <link rel="stylesheet" href="/static/assets/bootstrap3/css/bootstrap.min.css" />
     <script type="text/javascript" src="/static/assets/jquery/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="/static/assets/bootstrap3/js/bootstrap.min.js"></script>
 </head>
+<style>
+    .login_bg {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 90px;
+    bottom: 45px;
+    z-index: 100;
+    background: url("/static/image/login1.jpg");
+    opacity: 0.7;
+}
 
-<body>
-        <div id="loginModal" class="modal show">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="text-center text-primary">登录</h4>
-                    </div>
-                    <div class="modal-body" style="height:200px">
-                        <form class="form col-md-12 center-block" action="/hf/login" method="post">
-                            <div class="form-group has-feedback">
-                                <input type="text" id="username" name="username" class="form-control" placeholder="用户名" /> <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                            </div>
-                            <div class="form-group has-feedback">
-                                <input type="password" id="password" name="password" class="form-control" placeholder="密码" /> <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                            </div>
-                            <div th:if="${isError == true}" class="alert alert-danger alert-dismissable">登录账号或密码错误</div>
-                            <div class="form-group">
-                                <button class="btn btn-primary btn-lg btn-block">立刻登录</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
+#login-box {
+    position: relative;
+    margin-top: 150px;
+    left: 19%;
+    z-index: 10000;
+}
+
+.login_title {
+    width: 100%;
+    padding-left: 15%;
+    /*font-style:oblique;
+     height:15vh;
+    line-height:15vh;
+    font-size:22px; */
+}
+
+.login_foot {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    height: 5vh;
+    line-height: 5vh;
+    text-align: center;
+}
+
+.login_foot .pull-right {
+    margin-right: 2%;
+}
+
+
+.login_title h2 {
+    font-family: cursive;
+    margin-bottom: 5px;
+}
+
+.login_title h4 {
+    color: #a2a7ab;
+    font-family: monospace;
+    margin-top: 5px;
+}
+</style>
+
+<body class="hold-transition skin-blue login-page" target="_top">
+    <section class="login_title" style="position:relative;">
+        <h2>昆山市卫计委行风监管系统</h2>
+        <h4>Kunshanshi weijiwei hangfeng jianguan xitong</h4>
+    </section>
+    <div id="login-box" class="login-box">
+        <!-- <div class="login-logo">
+        
+    </div> -->
+        <div class="login-box-body" style="width:400px;padding:40px 65px 65px 65px;box-shadow: 0 0 8px rgba(0,0,0,0.5);">
+            <form id="login_form" action="/login" method="post">
+                <input type="hidden" id="vildcode" name="vildcode" value="0" />
+                <div style="text-align:center;color:rgba(255,0,0,0.5)" id="message" th:text="${message}"></div>
+                <div class="login-logo" style="margin-top: -28px;font-size:25px">
+                    <small>行风</small><big><b>监管</b></big>
+                </div>
+                <div class="form-group has-feedback" style="margin-top: -15px;">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="用户名" />
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="密码" />
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div th:if="${isError == true}" class="alert alert-danger alert-dismissable">登录账号或密码错误</div>
+                <!--  <div id="drag" style="margin-bottom: 15px; width:100%"></div> -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button type="button" onclick="checkMethod();" class="btn btn-primary btn-block btn-flat" style="margin-bottom: -19px;">登录</button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
+        <div style="width:113px ;background-color: white;padding: 7px 7px 7px 7px; position: fixed;top:78vh;right:20PX;'">
+            <img alt="" src="/app/obtain/url" style="width:100px;height:100px;" />
+            <p style="margin: 5px 0 -5px 0;">扫描二维码下载</p>
+        </div>
+    </div>
+    <div class="login_bg">
+    </div>
+    <div class="login_foot">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2017 <a
+                href="http://www.netintech.cn">网进科技</a>.
+            </strong> All rights reserved.
+    </div>
+    <script type="text/javascript">
+    //用回车键执行条件查询
+    $('body').bind('keypress', function(event) {
+        if (event.keyCode == '13') {
+            checkMethod();
+        }
+    });
+
+    function checkMethod() {
+        var username = $('#username').val();
+        if (username == '') {
+            alert('您好，请输入用户名！', { icon: 5 });
+            return;
+        }
+
+        var password = $('#password').val();
+        if (password == '') {
+        	alert('您好，请输入密码！', { icon: 5 });
+            return;
+        }
+        /*var vildcode=$('#vildcode').val();
+        if(vildcode=='' || vildcode=='0'){
+            layer.msg('您好，请拖动滑块验证！', {icon: 5}); 
+            $("#message").html("您好，请重新拖动滑块！");
+            $("#message").show();
+            return;
+        }*/
+        $("#login_form").submit();
+    }
+    </script>
 </body>
 
 </html>

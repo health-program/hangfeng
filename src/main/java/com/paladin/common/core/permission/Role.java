@@ -46,6 +46,7 @@ public class Role {
 	}
 
 	public void addPermission(OrgPermission orgPermission, Map<String, OrgPermission> allPermissionMap) {
+		
 		String code = orgPermission.getExpressionContent();
 		if (code != null && code.length() > 0) {
 			permissionCodeSet.add(code);

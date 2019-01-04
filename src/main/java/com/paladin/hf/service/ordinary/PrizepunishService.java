@@ -32,14 +32,9 @@ public class PrizepunishService extends ServiceSupport<Prizepunish>
         return prizepunishMapper.selectPrizepunishAll2(prizepunish);
     }
        
-
     public List<Map<String, Object>> appGetPageList(Prizepunish  prizepunish,OffsetPage offsetPage) {
         PageHelper.offsetPage(offsetPage.getOffset(), offsetPage.getLimit());      
         return prizepunishMapper.appSelectPrizepunishAll(prizepunish);//,CamelCaseUtil.toUnderlineName(prizepunish.getAppSort())+" "+prizepunish.getOrder()
     }
-    
-    
-    public Prizepunish prizepId(String id){
-        return prizepunishMapper.prizepId(id);
-    }
+
 }

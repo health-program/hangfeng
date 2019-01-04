@@ -5,6 +5,8 @@ import javax.persistence.Id;
 
 public class OrgRole extends UnDeleteBaseModel {
 
+	public static final String COLUMN_FIELD_IS_DEFAULT = "isDefault";
+	public static final String COLUMN_FIELD_ROLE_LEVEL = "roleLevel";
 	// id
 	@Id
 	private String id;

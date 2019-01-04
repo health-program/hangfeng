@@ -2,11 +2,9 @@ package com.paladin.hf.service.assess.cycle.dto;
 
 import java.io.Serializable;
 
-import com.netmatch.core.conatiner.UnitConatiner;
-import com.netmatch.tonto.framework.exception.BusinessException;
+import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
 
-import net.coobird.thumbnailator.Thumbnails;
 
 /**   
  * @author jisanjie
@@ -19,9 +17,9 @@ public class PersonCycAssessExt extends PersonCycAssess implements Serializable
        */
       private static final long serialVersionUID = 1L;
 
-private String userName;//用户名
+      private String userName;//用户名
     
-    private String assessCycName;//考评周期名称
+      private String assessCycName;//考评周期名称
     
     /**
      *  新增返回字段

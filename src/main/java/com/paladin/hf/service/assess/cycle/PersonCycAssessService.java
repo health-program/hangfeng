@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.netmatch.controller.cycleperson.pojo.PersonCycAssessQuery;
-import com.netmatch.core.ums.UserSession;
-import com.netmatch.mapper.personcyc.PersonCycAssessMapper;
-import com.netmatch.model.personcyc.PersonCycAssess;
-import com.netmatch.model.personcyc.PersonCycAssessExt;
-import com.netmatch.service.ServiceSupport;
+import com.paladin.framework.core.ServiceSupport;
+import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
+import com.paladin.hf.core.HfUserSession;
+import com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper;
+import com.paladin.hf.model.assess.cycle.PersonCycAssess;
+import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
+import com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery;
 
 /**
  * @author jisanjie
@@ -29,7 +30,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	 */
 	public Page<PersonCycAssessExt> searchSelfCycAssessPage(PersonCycAssessQuery perCycAssQuery) {
 		Page<PersonCycAssessExt> page = PageHelper.offsetPage(perCycAssQuery.getOffset(), perCycAssQuery.getLimit());// 分页
-		UserSession session = UserSession.getCurrentUserSession();
+		HfUserSession session = HfUserSession.getCurrentUserSession();
 		String orgUserId = session.getUserId();// 获取当前用户的id
 		perCycAssQuery.setOrgUserId(orgUserId);
 		perCycAssMapper.associationQueryAll(perCycAssQuery);// 条件查询

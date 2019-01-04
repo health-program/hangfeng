@@ -4,9 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.netmatch.core.conatiner.UnitConatiner;
-import com.netmatch.model.BaseModel;
-import com.netmatch.tonto.framework.exception.BusinessException;
+import com.paladin.framework.common.BaseModel;
+import com.paladin.framework.core.exception.BusinessException;
+
 
 public class AssessCycleTemplate extends BaseModel {
 

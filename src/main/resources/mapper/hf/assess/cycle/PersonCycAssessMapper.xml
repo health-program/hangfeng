@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.netmatch.mapper.personcyc.PersonCycAssessMapper">
-	<resultMap id="BaseResultMap" type="com.netmatch.model.personcyc.PersonCycAssess">
+<mapper namespace="com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper">
+	<resultMap id="BaseResultMap" type="com.paladin.hf.model.assess.cycle.PersonCycAssess">
 		<id column="id" jdbcType="VARCHAR" property="id" />
 		<result column="org_user_id" jdbcType="VARCHAR" property="orgUserId" />
 		<result column="assess_cycle_id" jdbcType="VARCHAR" property="assessCycleId" />
@@ -12,8 +12,7 @@
 		<result column="depart_opinion" jdbcType="VARCHAR" property="departOpinion" />
 		<result column="depart_grade" jdbcType="VARCHAR" property="departGrade" />
 		<result column="depart_ass_time" jdbcType="DATE" property="departAssTime" />
-		<result column="unit_group_opinion" jdbcType="VARCHAR"
-			property="unitGroupOpinion" />
+		<result column="unit_group_opinion" jdbcType="VARCHAR" property="unitGroupOpinion" />
 		<result column="unit_ass_grade" jdbcType="VARCHAR" property="unitAssGrade" />
 		<result column="unit_ass_time" jdbcType="DATE" property="unitAssTime" />
 		<result column="confirmed_result" jdbcType="VARCHAR" property="confirmedResult" />
@@ -22,10 +21,8 @@
 		<result column="operate_state" jdbcType="VARCHAR" property="operateState" />
 		<result column="assessed_sign" jdbcType="VARCHAR" property="assessedSign" />
 		<result column="dep_assessor_sign" jdbcType="VARCHAR" property="depAssessorSign" />
-		<result column="unit_assessor_sign" jdbcType="VARCHAR"
-			property="unitAssessorSign" />
-		<result column="assessed_confirm_sign" jdbcType="VARCHAR"
-			property="assessedConfirmSign" />
+		<result column="unit_assessor_sign" jdbcType="VARCHAR" property="unitAssessorSign" />
+		<result column="assessed_confirm_sign" jdbcType="VARCHAR" property="assessedConfirmSign" />
 		<result column="unit_id" jdbcType="VARCHAR" property="unitId" />
 		<result column="agency_id" jdbcType="VARCHAR" property="agencyId" />
 		<result column="create_time" jdbcType="DATE" property="createTime" />
@@ -34,7 +31,7 @@
 		<result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
 	</resultMap>
 
-	<resultMap type="com.netmatch.model.personcyc.PersonCycAssessExt"
+	<resultMap type="com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt"
 		id="ExtMap" extends="BaseResultMap">
 		<result column="cycle_name" jdbcType="VARCHAR" property="assessCycName" />
 		<result column="name" jdbcType="VARCHAR" property="userName" />
@@ -43,36 +40,28 @@
 	<sql id="listSelectItems">
 		pca.id AS id,
 		pca.org_user_id AS orgUserId,
-		pca.assess_cycle_id AS
-		assessCycleId,
+		pca.assess_cycle_id AS assessCycleId,
 		pca.self_ass_grade AS selfAssGrade,
-		pca.self_ass_time AS
-		selfAssTime,
+		pca.self_ass_time AS selfAssTime,
 		pca.depart_grade AS departGrade,
-		pca.depart_ass_time AS
-		departAssTime,
+		pca.depart_ass_time AS departAssTime,
 		pca.unit_ass_grade AS unitAssGrade,
-		pca.unit_ass_time AS
-		unitAssTime,
+		pca.unit_ass_time AS unitAssTime,
 		pca.confirmed_result AS confirmedResult,
 		pca.confirmed_time AS confirmedTime,
 		pca.remarks AS remarks,
 		pca.operate_state AS operateState,
 		pca.assessed_sign AS assessedSign,
 		pca.dep_assessor_sign AS depAssessorSign,
-		pca.unit_assessor_sign AS
-		unitAssessorSign,
+		pca.unit_assessor_sign AS unitAssessorSign,
 		pca.assessed_confirm_sign AS assessedConfirmSign,
 		pca.unit_id AS unitId,
 		pca.agency_id AS agencyId,
-		pca.assess_team_id AS
-		assessTeamId,
+		pca.assess_team_id AS assessTeamId,
 		pca.create_time AS createTime,
-		pca.create_user_id AS
-		createUserId,
+		pca.create_user_id AS createUserId,
 		pca.update_time AS updateTime,
-		pca.update_user_id AS
-		updateUserId
+		pca.update_user_id AS updateUserId
 	</sql>
 
 	<select id="getCycleAssessExt" parameterType="string" resultMap="ExtMap">
@@ -89,7 +78,7 @@
 
 	<!-- 加载首页列表数据及条件查询 -->
 	<select id="associationQueryAll"
-		parameterType="com.netmatch.controller.cycleperson.pojo.PersonCycAssessQuery"
+		parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery"
 		resultMap="ExtMap">
 		SELECT
 		<include refid="listSelectItems" />
@@ -109,7 +98,7 @@
 
 	<!-- 医德医风档案管理-查看-考评情况 -->
 	<select id="viewAssessSituation"
-		parameterType="com.netmatch.controller.cycleperson.pojo.PersonCycAssessQuery"
+		parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery"
 		resultMap="ExtMap">
 		SELECT
 		<include refid="listSelectItems" />
@@ -197,7 +186,7 @@
 
 	<!-- 未考评 -->
 	<select id="noAssessment" parameterType="Map"
-		resultType="com.netmatch.model.personcyc.PersonCycAssessExt">
+		resultType="com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt">
 		SELECT
 		ou.org_agency_id AS agencyId,
 		ou.org_assess_team_id AS assessTeamId,
@@ -242,8 +231,7 @@
 		ORDER BY ou.org_unit_id ASC
 	</select>
 
-	<select id="findThisYearAssessSituationList" 
-		resultMap="ExtMap">
+	<select id="findThisYearAssessSituationList" resultMap="ExtMap">
 		SELECT
 		pca.id AS id,
 		pca.org_user_id AS orgUserId,
@@ -267,8 +255,7 @@
 		ORDER BY ac.cycle_start_time DESC;
 	</select>
 
-	<select id="getAssessRegistrationForm"
-		parameterType="com.netmatch.controller.cycleperson.pojo.PersonCycAssessQuery"
+	<select id="getAssessRegistrationForm" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery"
 		resultMap="ExtMap">
 		SELECT
 		ot.unit_name as unitName,

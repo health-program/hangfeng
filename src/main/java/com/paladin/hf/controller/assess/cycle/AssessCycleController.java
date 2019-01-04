@@ -16,7 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.PageResult;
+import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.web.response.CommonResponse;
+import com.paladin.hf.controller.util.FormType;
+import com.paladin.hf.core.DataPermissionUtil;
+import com.paladin.hf.core.HfUserSession;
+import com.paladin.hf.core.UnitContainer;
 import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.assess.quantificate.AssessCycleTemplate;
@@ -50,16 +55,16 @@ public class AssessCycleController extends ControllerSupport {
       @RequestMapping(value = "/index")
       public String index(Model model) {
             
-            UserSession session = UserSession.getCurrentUserSession();
+            HfUserSession session = HfUserSession.getCurrentUserSession();
             
             Unit agency = null;
             
-            if (!session.isAdmin()) {
+            if (!session.isAdminRoleLevel()) {
                   if (session.isAssessTeamRole()) {
                         agency = session.getOwnUnit().getAgency();
                   }
                   else {
-                        List<Unit> agencys = session.getOwnAgency();
+                        List<Unit> agencys = DataPermissionUtil.getOwnAgency();
                         int size = agencys.size();
                         if (size == 1) {
                               agency = agencys.get(0);
@@ -81,14 +86,13 @@ public class AssessCycleController extends ControllerSupport {
       @ResponseBody
       @RequestMapping(value = "/list")
       public Object listPage(AssessCycleQuery assessCycleQuery) {
-            return CommonResponse.getSuccessResponse(new PageResult(assessCycleService.searchPage(assessCycleQuery)));
+            return CommonResponse.getSuccessResponse(assessCycleService.searchPage(assessCycleQuery));
       }
       
       @ResponseBody
       @RequestMapping(value = "/select/self")
       public Object selfListPage(OffsetPage offsetPage) {
-            return CommonResponse
-                  .getSuccessResponse(new PageResult(assessCycleService.findSelfAssessCyclePage(offsetPage)));
+            return CommonResponse.getSuccessResponse(assessCycleService.findSelfAssessCyclePage(offsetPage));
       }
       
       @ResponseBody
@@ -96,42 +100,41 @@ public class AssessCycleController extends ControllerSupport {
       @RequestMapping(value = "/app/select/self")
       public Object appselfListPage(OffsetPage offsetPage) {
             return CommonResponse
-                  .getSuccessResponse(new PageResult(assessCycleService.findSelfAssessCyclePage(offsetPage)));
+                  .getSuccessResponse(assessCycleService.findSelfAssessCyclePage(offsetPage));
       }
       
       @ResponseBody
       @RequestMapping(value = "/select/user")
       public Object userListPage(AssessCycleSelectQuery query) {
-            return CommonResponse.getSuccessResponse(
-                  new PageResult(assessCycleService.findUserAssessCyclePage(query, query.getUserId())));
+            return CommonResponse.getSuccessResponse(assessCycleService.findUserAssessCyclePage(query, query.getUserId()));
       }
       
       @ResponseBody
       @RequestMapping(value = "/select/unit")
       public Object unitListPage(AssessCycleSelectQuery query) {
             return CommonResponse.getSuccessResponse(
-                  new PageResult(assessCycleService.findUnitAssessCyclePage(query, query.getUnitId())));
+                  assessCycleService.findUnitAssessCyclePage(query, query.getUnitId()));
       }
       
       @ResponseBody
       @RequestMapping(value = "/select/assess")
       public Object assessListPage(AssessCycleSelectQuery query) {
             return CommonResponse.getSuccessResponse(
-                  new PageResult(assessCycleService.findAvailableAssessCyclePage(query, query.getUnitId())));
+                  assessCycleService.findAvailableAssessCyclePage(query, query.getUnitId()));
       }
       
       @ResponseBody
       @RequestMapping(value = "/select/own")
       public Object ownListPage(AssessCycleSelectQuery query) {
             return CommonResponse.getSuccessResponse(
-                  new PageResult(assessCycleService.findOwnedAssessCyclePage(query, query.getUnitId())));
+                  assessCycleService.findOwnedAssessCyclePage(query, query.getUnitId()));
       }
       
       @ResponseBody
       @RequestMapping(value = "/select/selfenabled")
       public Object selfEnabledListPage(OffsetPage offsetPage) {
             return CommonResponse
-                  .getSuccessResponse(new PageResult(assessCycleService.findEnabledSelfAssessCyclePage(offsetPage)));
+                  .getSuccessResponse(assessCycleService.findEnabledSelfAssessCyclePage(offsetPage));
       }
       
       @ResponseBody
@@ -142,18 +145,18 @@ public class AssessCycleController extends ControllerSupport {
       
       @RequestMapping("/view")
       public String view(@RequestParam(required = true) String id, Model model) {
-            UserSession session = UserSession.getCurrentUserSession();
+            HfUserSession session = HfUserSession.getCurrentUserSession();
             AssessCycle assessCycle = assessCycleService.get(id);
             if (assessCycle == null)
                   assessCycle = new AssessCycle();
             
             Unit agency = null;
-            if (!session.isAdmin()) {
+            if (!session.isAdminRoleLevel()) {
                   if (session.isAssessTeamRole()) {
                         agency = session.getOwnUnit().getAgency();
                   }
                   else {
-                        List<Unit> agencys = session.getOwnAgency();
+                        List<Unit> agencys = DataPermissionUtil.getOwnAgency();
                         int size = agencys.size();
                         if (size == 1) {
                               agency = agencys.get(0);
@@ -166,7 +169,7 @@ public class AssessCycleController extends ControllerSupport {
             }else{
                   String unitId = assessCycle.getUnitId();
                   if (unitId != null && unitId.length() > 0) {
-                        Unit unit = UnitConatiner.getUnit(unitId);
+                        Unit unit = UnitContainer.getUnit(unitId);
                         agency = unit.getAgency();
                   }
             }
@@ -183,7 +186,7 @@ public class AssessCycleController extends ControllerSupport {
       
       @RequestMapping("/add/input")
       public String addInput(String parentId, Model model) {
-            UserSession session = UserSession.getCurrentUserSession();
+            HfUserSession session = HfUserSession.getCurrentUserSession();
             
             Unit agency = null;
             

@@ -1,5 +1,6 @@
 package com.paladin.hf.service.assess.cycle.pojo;
 
+import com.paladin.framework.common.OffsetPage;
 
 public class AssessCycleSelectQuery extends OffsetPage{
 	

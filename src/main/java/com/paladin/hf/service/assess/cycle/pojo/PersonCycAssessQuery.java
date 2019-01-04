@@ -2,6 +2,10 @@ package com.paladin.hf.service.assess.cycle.pojo;
 
 import java.util.List;
 
+import com.paladin.framework.common.OffsetPage;
+import com.paladin.framework.common.QueryCondition;
+import com.paladin.framework.common.QueryType;
+
 
 /**
  * @author jisanjie

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.netmatch.mapper.console.AssessCycleMapper">
+<mapper namespace="com.paladin.hf.mapper.assess.cycle.AssessCycleMapper">
 
 	<update id="startAssessCycle" parameterType="string">
 		UPDATE assess_cycle
@@ -25,7 +25,7 @@
 	</delete>
 
 	<select id="getAgencyFirstAssessCycle" parameterType="string"
-		resultType="com.netmatch.model.console.AssessCycle">
+		resultType="com.paladin.hf.model.assess.cycle.AssessCycle">
 		SELECT
 		id AS id,
 		unit_id AS unitId,

@@ -5,16 +5,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.Page;
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.OffsetPage;
+import com.paladin.framework.common.PageResult;
 import com.paladin.framework.common.QueryType;
+import com.paladin.framework.core.ServiceSupport;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.framework.utils.StringUtil;
+import com.paladin.hf.core.HfUserSession;
+import com.paladin.hf.core.UnitContainer;
 import com.paladin.hf.mapper.assess.cycle.AssessCycleMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.assess.quantificate.AssessCycleTemplate;
 import com.paladin.hf.model.org.OrgUser;
+import com.paladin.hf.service.assess.cycle.pojo.AssessCycleSelectQuery;
 import com.paladin.hf.service.assess.quantificate.AssessCycleTemplateService;
 import com.paladin.hf.service.org.OrgUserService;
 
-import tk.mybatis.mapper.entity.Condition;
 
 /**
  * @author jisanjie
@@ -40,7 +47,7 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	public int saveOrUpdateAssessCycle(AssessCycle assessCycle) {
-		if (StringUtils.isEmpty(assessCycle.getId())) {
+		if (StringUtil.isEmpty(assessCycle.getId())) {
 			assessCycle.setCycleState(AssessCycle.CYCLE_STATE_DRAFT);
 			return save(assessCycle);
 		} else {
@@ -95,7 +102,7 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	public AssessCycle getSelfFirstAssessCycle() {
-		UserSession session = UserSession.getCurrentUserSession();
+	    HfUserSession session = HfUserSession.getCurrentUserSession();
 		return getUserFirstAssessCycle(session.getUserId());
 	}
 
@@ -106,7 +113,7 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	public AssessCycle getUserFirstAssessCycle(String userId) {
-		if(StringUtils.isEmpty(userId)) {
+		if(StringUtil.isEmpty(userId)) {
 			return null;
 		}	
 		return getUserFirstAssessCycle(orgUserService.get(userId));
@@ -133,10 +140,10 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	public AssessCycle getUnitFirstAssessCycle(String unitId) {
-		if(StringUtils.isEmpty(unitId)) {
+		if(StringUtil.isEmpty(unitId)) {
 			return null;
 		}		
-		String agencyId = UnitConatiner.getRootUnit(unitId).getId();
+		String agencyId = UnitContainer.getRootUnit(unitId).getId();
 		return assessCycleMapper.getAgencyFirstAssessCycle(agencyId);
 	}
 
@@ -147,8 +154,8 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	public AssessCycle getOwnedFirstAssessCycle() {
-		UserSession session = UserSession.getCurrentUserSession();
-		if (session.isAdmin()) {
+	    HfUserSession session = HfUserSession.getCurrentUserSession();
+		if (session.isAdminRoleLevel()) {
 			return assessCycleMapper.getAgencyFirstAssessCycle(null);
 		} else {
 			String unitId = session.getOwnUnitId();
@@ -162,12 +169,12 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @param offsetPage
 	 * @return
 	 */
-	public Page<AssessCycle> findSelfAssessCyclePage(OffsetPage offsetPage) {
-		UserSession session = UserSession.getCurrentUserSession();
+	public PageResult<AssessCycle> findSelfAssessCyclePage(OffsetPage offsetPage) {
+	    HfUserSession session = HfUserSession.getCurrentUserSession();
 		String agencyId = session.getUserAgencyId();
 		return searchPage(new Condition[] {
-				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT, null)	
+				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT)	
 		}, offsetPage.getOffset(), offsetPage.getLimit(), true);
 	}
 
@@ -176,13 +183,13 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @param offsetPage
 	 * @return
 	 */
-	public Page<?> findEnabledSelfAssessCyclePage(OffsetPage offsetPage) {
+	public PageResult<AssessCycle> findEnabledSelfAssessCyclePage(OffsetPage offsetPage) {
 
-		UserSession session = UserSession.getCurrentUserSession();
+	    HfUserSession session = HfUserSession.getCurrentUserSession();
 		String agencyId = session.getUserAgencyId();
 		return searchPage(new Condition[] {
-				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START, null)					
+				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START)					
 		}, offsetPage.getOffset(), offsetPage.getLimit(), true);
 		
 	}
@@ -196,8 +203,8 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Page<AssessCycle> findUserAssessCyclePage(OffsetPage offsetPage, String userId) {
-		if(StringUtils.isEmpty(userId)) {
+	public PageResult<AssessCycle> findUserAssessCyclePage(OffsetPage offsetPage, String userId) {
+		if(StringUtil.isEmpty(userId)) {
 			return getEmptyPage(offsetPage);
 		}
 		
@@ -206,8 +213,8 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 			throw new BusinessException("找不到对应人员档案[ID:" + userId + "]");
 		String agencyId = user.getOrgAgencyId();
 		return searchPage(new Condition[] {
-				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT, null)	
+				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT)	
 		}, offsetPage.getOffset(), offsetPage.getLimit(), true);
 	}
 
@@ -219,14 +226,14 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Page<AssessCycle> findUnitAssessCyclePage(OffsetPage offsetPage, String unitId) {		
-		if(StringUtils.isEmpty(unitId)) {
+	public PageResult<AssessCycle> findUnitAssessCyclePage(OffsetPage offsetPage, String unitId) {		
+		if(StringUtil.isEmpty(unitId)) {
 			return getEmptyPage(offsetPage);
 		}	
-		String agencyId = UnitConatiner.getRootUnit(unitId).getId();
+		String agencyId = UnitContainer.getRootUnit(unitId).getId();
 		return searchPage(new Condition[] {
-				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT, null)	
+				new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+				new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT)	
 		}, offsetPage.getOffset(), offsetPage.getLimit(), true);
 	}
 
@@ -236,24 +243,24 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @param offsetPage
 	 * @return
 	 */
-	public Page<AssessCycle> findOwnedAssessCyclePage(OffsetPage offsetPage, String unitId) {
+	public PageResult<AssessCycle> findOwnedAssessCyclePage(OffsetPage offsetPage, String unitId) {
 		
 		if(unitId == null || unitId.length() == 0) {			
-			UserSession session= UserSession.getCurrentUserSession();			
-			if(session.isAdmin()) {
-				return searchPage(new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT, null), offsetPage.getOffset(), offsetPage.getLimit(), true);
+		    HfUserSession session= HfUserSession.getCurrentUserSession();			
+			if(session.isAdminRoleLevel()) {
+				return searchPage(new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT), offsetPage.getOffset(), offsetPage.getLimit(), true);
 			} else {						
 				String agencyId = session.getOwnUnit().getAgency().getId();								
 				return searchPage(new Condition[] {
-						new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-						new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT, null)	
+						new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+						new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT)	
 				}, offsetPage.getOffset(), offsetPage.getLimit(), true);
 			}			
 		} else {			
-			String agencyId = UnitConatiner.getRootUnit(unitId).getId();
+			String agencyId = UnitContainer.getRootUnit(unitId).getId();
 			return searchPage(new Condition[] {
-					new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-					new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT, null)	
+					new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+					new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.NOT_EQUAL, AssessCycle.CYCLE_STATE_DRAFT)	
 			}, offsetPage.getOffset(), offsetPage.getLimit(), true);
 		}
 	}
@@ -264,23 +271,23 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @param unitId
 	 * @return
 	 */
-	public Page<AssessCycle> findAvailableAssessCyclePage(AssessCycleSelectQuery query, String unitId) {
+	public PageResult<AssessCycle> findAvailableAssessCyclePage(AssessCycleSelectQuery query, String unitId) {
 		if(unitId == null || unitId.length() == 0) {			
-			UserSession session= UserSession.getCurrentUserSession();			
-			if(session.isAdmin()) {
-				return searchPage(new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START, null), query.getOffset(), query.getLimit(), true);
+		    HfUserSession session= HfUserSession.getCurrentUserSession();			
+			if(session.isAdminRoleLevel()) {
+				return searchPage(new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START), query.getOffset(), query.getLimit(), true);
 			} else {						
 				String agencyId = session.getOwnUnit().getAgency().getId();								
 				return searchPage(new Condition[] {
-						new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-						new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START, null)	
+						new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+						new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START)	
 				}, query.getOffset(), query.getLimit(), true);
 			}			
 		} else {			
-			String agencyId = UnitConatiner.getRootUnit(unitId).getId();
+			String agencyId = UnitContainer.getRootUnit(unitId).getId();
 			return searchPage(new Condition[] {
-					new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId, null),
-					new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START, null)	
+					new Condition(AssessCycle.COLUMN_UNIT_ID, QueryType.EQUAL, agencyId),
+					new Condition(AssessCycle.COLUMN_FIELD_CYCLESTATE, QueryType.EQUAL, AssessCycle.CYCLE_STATE_START)	
 			}, query.getOffset(), query.getLimit(), true);
 		}
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.netmatch.mapper.console.TemplateMapper">
-  <resultMap id="BaseResultMap" type="com.netmatch.model.console.Template">
+<mapper namespace="com.paladin.hf.mapper.assess.quantificate.TemplateMapper">
+  <resultMap id="BaseResultMap" type="com.paladin.hf.model.assess.quantificate.Template">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="org_unit_id" jdbcType="VARCHAR" property="orgUnitId" />
     <result column="template_name" jdbcType="VARCHAR" property="templateName" />
@@ -12,14 +12,14 @@
     <result column="update_time" jdbcType="DATE" property="updateTime" />
     <result column="update_adminid" jdbcType="VARCHAR" property="updateAdminid" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
-    <association property="orgUnit" javaType="com.netmatch.model.organization.OrgUnit">
+    <association property="orgUnit" javaType="com.paladin.hf.model.org.OrgUnit">
 			<id property="uid" column="uid" />
 			<result property="unitName" column="unit_name" />
 		</association>
   </resultMap>
   
   <!-- 条件查询考评模板列表 -->
-  <select id="getTemplateList" parameterType="com.netmatch.model.console.Template" resultMap="BaseResultMap" >
+  <select id="getTemplateList" parameterType="com.paladin.hf.model.assess.quantificate.Template" resultMap="BaseResultMap" >
 	SELECT
 	ou.unit_name,
 	t.*

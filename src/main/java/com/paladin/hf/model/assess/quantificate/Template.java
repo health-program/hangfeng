@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.paladin.framework.common.BaseModel;
+
 
 /**
  * 模板

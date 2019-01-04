@@ -9,6 +9,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.paladin.framework.common.BaseModel;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
+
 
 /**
  * 
@@ -79,7 +83,7 @@ public class AssessCycle extends BaseModel
      */
     public String getUnitName(){
     	try {
-    		return UnitConatiner.getUnitName(unitId);
+    		return UnitContainer.getUnitName(unitId);
     	}catch(BusinessException e) {
     		return "";
     	}

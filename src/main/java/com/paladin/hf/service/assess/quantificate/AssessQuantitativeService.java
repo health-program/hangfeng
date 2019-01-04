@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.utils.StringUtil;
+import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.mapper.assess.quantificate.AssessQuantitativeMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
@@ -26,8 +28,6 @@ import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserDetailQuery;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;
 import com.paladin.hf.service.ordinary.PrizepunishService;
-
-import tk.mybatis.mapper.entity.Condition;
 
 @Service
 public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative> {
@@ -49,7 +49,7 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 	 */
 	public Page<OrgUserAssess> findUserAssess(AssessQuantitativeUserQuery query) {
 		Page<OrgUserAssess> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());
-		UnitQuery unitQuery = getUnitQueryDouble(query.getUnitId());
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
 		assessQuantitativeMapper.findUserAssess(query, unitQuery);
 		return page;
 	}
@@ -84,13 +84,13 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 
 		List<Condition> conditions = new ArrayList<>();
 		conditions.add(new Condition(Prizepunish.COLUMN_OPERATION_STATE, QueryType.IN,
-				new String[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }, null));
-		conditions.add(new Condition(Prizepunish.COLUMN_ORG_USER_ID, QueryType.EQUAL, userId, null));
-		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.GREAT_EQUAL, startTime, null));
-		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.LESS_EQUAL, endTime, null));
+				new String[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
+		conditions.add(new Condition(Prizepunish.COLUMN_ORG_USER_ID, QueryType.EQUAL, userId));
+		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.GREAT_EQUAL, startTime));
+		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.LESS_EQUAL, endTime));
 
 		if (StringUtil.isNotEmpty(eventType)) {
-			conditions.add(new Condition(Prizepunish.COLUMN_DICT_CODE, QueryType.EQUAL, eventType, null));
+			conditions.add(new Condition(Prizepunish.COLUMN_DICT_CODE, QueryType.EQUAL, eventType));
 		}
 
 		List<Prizepunish> prizepunishs = prizepunishService.searchAll(conditions);
@@ -163,10 +163,10 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 
 		if (model.getId() == null || model.getId().length() == 0) {
 			List<AssessQuantitative> result = searchAll(
-					new Condition[] { new Condition(AssessQuantitative.COLUMN_FIELD_USER_ID, QueryType.EQUAL, model.getUserId(), null),
-							new Condition(AssessQuantitative.COLUMN_FIELD_CYCLE_ID, QueryType.EQUAL, model.getCycleId(), null),
-							new Condition(AssessQuantitative.COLUMN_FIELD_PRIZEPUNISH_ID, QueryType.EQUAL, model.getPrizePunishId(), null),
-							new Condition(AssessQuantitative.COLUMN_FIELD_ASSESS_ITEM_EXTRA_ID, QueryType.EQUAL, model.getAssessItemExtraId(), null) });
+					new Condition[] { new Condition(AssessQuantitative.COLUMN_FIELD_USER_ID, QueryType.EQUAL, model.getUserId()),
+							new Condition(AssessQuantitative.COLUMN_FIELD_CYCLE_ID, QueryType.EQUAL, model.getCycleId()),
+							new Condition(AssessQuantitative.COLUMN_FIELD_PRIZEPUNISH_ID, QueryType.EQUAL, model.getPrizePunishId()),
+							new Condition(AssessQuantitative.COLUMN_FIELD_ASSESS_ITEM_EXTRA_ID, QueryType.EQUAL, model.getAssessItemExtraId()) });
 
 			if (result != null && result.size() > 0) {
 				throw new BusinessException("无法对同一奖惩内容做多次评分");

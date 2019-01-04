@@ -25,26 +25,24 @@ import com.paladin.hf.service.statistics.vo.PrizepunishCountVO;
 @RequestMapping("/prize/count")
 public class PrizepunishCountController extends ControllerSupport
 {
-    
     @Autowired
     private PrizeCountQueryService prizeCountQueryService;
-    @Autowired
-    private DictService dictService;
     
     @RequestMapping(value = "/index", method = { RequestMethod.GET })
     public String index(Model model) {
-       
         return "console/peacedepartment/prize_count_index";
     }
     
     @RequestMapping("/search/all")
     @ResponseBody
     public Object searchAll(PrizepunishQueryDTO query) {
-        ModelMap map=new ModelMap();
-         List<Dict> dicts=dictService.selectDictPrize(query.getDictCode());
-         List<PrizepunishCountVO> list=prizeCountQueryService.prizeCountQueryAll(query);
-         map.put("dicts", dicts);
-         map.put("list", list);
-         return CommonResponse.getSuccessResponse(map); 
+//        ModelMap map=new ModelMap();
+//         List<Dict> dicts=dictService.selectDictPrize(query.getDictCode());
+//         List<PrizepunishCountVO> list=prizeCountQueryService.prizeCountQueryAll(query);
+//         map.put("dicts", dicts);
+//         map.put("list", list);
+//         return CommonResponse.getSuccessResponse(map); 
+    	// TODO 去除字典表
+    	return null;
     }
 }

@@ -5,10 +5,11 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.ordinary.Prizepunish;
 
 
-public interface PrizepunishMapper extends CustomerMapper<Prizepunish>{
+public interface PrizepunishMapper extends CustomMapper<Prizepunish>{
     
     List<Map<String, Object>> selectPrizepunishAll(Prizepunish prizepunish);
     

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
@@ -14,10 +15,6 @@ import com.paladin.hf.mapper.assess.quantificate.TemplateMapper;
 import com.paladin.hf.model.assess.quantificate.AssessItem;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
 import com.paladin.hf.model.assess.quantificate.Template;
-
-import tk.mybatis.mapper.entity.Condition;
-
-
 
 
 /**
@@ -45,8 +42,8 @@ public class TemplateService extends ServiceSupport<Template> {
 	}
 
 	public List<Template> findStartedTemplateByUnit(String unitId) {
-		return searchAll(new Condition[] { new Condition(Template.COLUMN_ORG_UNIT_ID, QueryType.EQUAL, unitId, null),
-				new Condition(Template.COLUMN_ENABLE_STATE, QueryType.EQUAL, Template.STATE_START, null) });
+		return searchAll(new Condition[] { new Condition(Template.COLUMN_ORG_UNIT_ID, QueryType.EQUAL, unitId),
+				new Condition(Template.COLUMN_ENABLE_STATE, QueryType.EQUAL, Template.STATE_START) });
 	}
 
 	/**

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.paladin.hf.mapper.ordinary.PrizepunishMapper">
+  <resultMap id="BaseResultMap" type="com.paladin.hf.model.ordinary.Prizepunish">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="dict_code" jdbcType="VARCHAR" property="dictCode" />
+    <result column="org_user_id" jdbcType="VARCHAR" property="orgUserId" />
+    <result column="happen_time" jdbcType="DATE" property="happenTime" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="place" jdbcType="VARCHAR" property="place" />
+    <result column="checks" jdbcType="VARCHAR" property="checks" />
+    <result column="check_people" jdbcType="VARCHAR" property="checkPeople" />
+    <result column="operation_state" jdbcType="VARCHAR" property="operationState" />
+    <result column="examine_state" jdbcType="VARCHAR" property="examineState" />
+    <result column="examine_people" jdbcType="VARCHAR" property="examinePeople" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  
+	<resultMap type="com.netmatch.model.peacedepartment.PrizepunishVo" id="SocMap" extends="BaseResultMap">
+  		<result column="name" jdbcType="VARCHAR" property="userName"/>
+  </resultMap>
+   
+  <select id="selectPrizepunishAll" resultType="Map">
+  	SELECT p.*,u.name FROM prizepunish AS p 
+  		LEFT JOIN org_user AS u 
+  	ON p.org_user_id=u.id where 1=1
+  	
+	  <if test="orgUserId !=null and orgUserId !='' ">
+	  	and p.org_user_id=#{orgUserId}
+	  </if>
+	  
+	 <if test="dictCode !=null and dictCode !='' ">
+	 	and p.dict_code = #{dictCode}  
+	 </if> 
+	  <if test="operationState !=null and operationState !='' ">
+	 	and p.operation_state = #{operationState} 
+	 </if> 
+	 <if test="state !=null and state !='' ">
+	 	and p.operation_state != #{state} and p.operation_state !='2' 
+	 </if> 
+	 <if test="stateUnit !=null and stateUnit !='' ">
+	 	and p.operation_state in(2,4,5)  
+	 </if>
+	  <if test="examineState !=null and examineState !='' ">
+	 	and p.examine_state = #{examineState} 
+	 </if> 
+	  <if test="happenTime !=null and happenTime !='' ">
+	 	and happen_time <![CDATA[>=]]> #{happenTime} 
+	 </if>
+	 
+	 <if test="endhappenTime !=null and endhappenTime !='' ">
+	 	and happen_time <![CDATA[<=]]> #{endhappenTime} 
+	 </if>
+	 
+  </select>
+  
+  
+  <select id="appSelectPrizepunishAll" resultType="Map">
+  SELECT P.*,dict.`dict_name` FROM prizepunish AS p ,dict WHERE p.dict_code=dict.`sort` AND dict.`dict_code`='SJLX'  AND dict.`status`=0 
+  
+	  <if test="orgUserId !=null and orgUserId !='' ">
+		  	and org_user_id=#{orgUserId}
+	  </if>
+  
+	 <if test="dictCode !=null and dictCode !='' ">
+	 	and p.dict_code = #{dictCode}  
+	 </if>   
+  	
+    <if test="examineState !=null and examineState !='' ">
+	 	and p.examine_state = #{examineState}  
+	 </if>
+	 
+  </select>
+  
+  <select id="prizepId" resultMap="SocMap">
+  SELECT p.*,u.name FROM prizepunish AS p LEFT JOIN org_user AS u ON p.examine_people=u.id WHERE p.id=#{id}
+  </select>
+  
+  <select id="selectPrizepunishAll2" resultType="Map">
+	SELECT p.*,u.name FROM prizepunish AS p
+	LEFT JOIN org_user AS u
+	ON p.org_user_id=u.id where 1=1
+	and p.org_user_id=#{orgUserId} 
+	and p.operation_state in (4,5)
+	
+	<if test="dictCode !=null and dictCode !='' ">
+		and p.dict_code = #{dictCode}
+	</if>
+	
+	<if test="happenTime !=null and happenTime !='' ">
+		and happen_time <![CDATA[>=]]>
+		#{happenTime}
+	</if>
+
+	<if test="endhappenTime !=null and endhappenTime !='' ">
+		and happen_time <![CDATA[<=]]>
+		#{endhappenTime}
+	</if>
+  </select>
+  
+</mapper>

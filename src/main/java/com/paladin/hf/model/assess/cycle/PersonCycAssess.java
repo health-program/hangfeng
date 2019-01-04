@@ -9,8 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-import com.netmatch.model.BaseModel;
-
+import com.paladin.framework.common.BaseModel;
 
 /**
  * 

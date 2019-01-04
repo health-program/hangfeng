@@ -1,5 +1,6 @@
 package com.paladin.hf.controller.syst;
 
+import java.util.Collection;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.paladin.common.core.permission.MenuPermission;
 import com.paladin.framework.utils.WebUtil;
 import com.paladin.framework.utils.validate.ValidateUtil;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.IdentificationToken;
+import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.model.syst.SysUser;
 import com.paladin.hf.service.syst.SysUserService;
 
@@ -35,41 +38,35 @@ public class LoginController {
 	public Object main(HttpServletRequest request) {
 		HfUserSession userSession = HfUserSession.getCurrentUserSession();
 
-		HashMap<String, String> user = new HashMap<>();
-		user.put("id", userSession.getUserId());
-		user.put("name", userSession.getUserName());
-
 		int role = 4;
+		Unit agency = userSession.getUserAgency();
 
-		if (!userSession.isAdminRoleLevel()) {
-			user.put("agency", userSession.getUserAgency().getName());
+		if (userSession.isAdminUser() || userSession.isAssessTeamRole() || userSession.isAgencyAssessRole()) {
+			role = 2;
+		} else if (userSession.isDepartmentAssessRole()) {
+			role = 3;
+		} else if (userSession.isAssessedRole()) {
+			role = 4;
+		} else if (userSession.isAdminRoleLevel()) {
 			role = 1;
-		} else {
-			user.put("agency", " ");
-
-			if (userSession.isAdminUser()) {
-				role = 1;
-			} else {
-				if (userSession.isAssessedRole()) {
-					role = 4;
-				} else if (userSession.isDepartmentAssessRole()) {
-					role = 3;
-				} else {
-					role = 2;
-				}
-			}
 		}
 
 		SysUser sysUser = sysUserService.getUser(userSession.getAccount());
 
-		String page = userSession.isAssessedRole() ? "/hf/index_non_assessor" : "/hf/index_assessor";
+		String page = userSession.isAssessedRole() ? "/hf/index_self" : "/hf/index_manager";
 
 		ModelAndView model = new ModelAndView(page);
 
-		model.addObject("user", user);
+		model.addObject("agency", agency == null ? "管理员" : agency.getName());
+		model.addObject("name", userSession.getUserName());
 		model.addObject("role", role);
 		model.addObject("isFirst", sysUser.getIsFirstLogin());
-		model.addObject("menus", userSession.getMenuResources());
+
+		Collection<MenuPermission> menus = userSession.getMenuResources();
+		
+		
+
+		// model.addObject("menus", userSession.getMenuResources());
 
 		return model;
 	}
@@ -113,12 +110,12 @@ public class LoginController {
 			return CommonResponse.getFailResponse("请输入有效的身份证号码");
 		}
 	}
-	
+
 	@RequestMapping(value = "/quyi/app/index")
 	public Object quyiAppIndex(@RequestParam String token, Model model) {
-		return new ModelAndView("app_index", "token", token );
+		return new ModelAndView("app_index", "token", token);
 	}
-	
+
 	@RequestMapping(value = "/update/password")
 	@ResponseBody
 	public Object updatePassword(@RequestParam String newPassword, @RequestParam String oldPassword) {

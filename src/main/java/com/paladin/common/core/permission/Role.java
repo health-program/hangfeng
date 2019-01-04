@@ -30,7 +30,7 @@ public class Role {
 	// 角色说明
 	private String roleDesc;
 
-	private HashMap<String, MenuPermission> menuPermissionMap;
+	//private HashMap<String, MenuPermission> menuPermissionMap;
 	private Set<String> permissionCodeSet;
 
 	public Role(OrgRole orgRole) {
@@ -41,41 +41,38 @@ public class Role {
 		this.isDefault = orgRole.getIsDefault() == BaseModel.BOOLEAN_YES;
 		this.enable = orgRole.getEnable() == BaseModel.BOOLEAN_YES;
 
-		this.menuPermissionMap = new HashMap<>();
 		this.permissionCodeSet = new HashSet<>();
 	}
 
-	public void addPermission(OrgPermission orgPermission, Map<String, OrgPermission> allPermissionMap) {
-		
+	public void addPermission(OrgPermission orgPermission) {	
 		String code = orgPermission.getExpressionContent();
 		if (code != null && code.length() > 0) {
 			permissionCodeSet.add(code);
 		}
 
-		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
-			String id = orgPermission.getId();
-			MenuPermission menuPermission = menuPermissionMap.get(id);
-			if (menuPermission == null) {
-				menuPermissionMap.put(id, new MenuPermission(orgPermission, true));
-			} else {
-				menuPermission.setOwned(true);
-			}
-
-			String parentId = orgPermission.getParentId();
-			while (parentId != null && parentId.length() > 0) {
-				menuPermission = menuPermissionMap.get(parentId);
-				if (menuPermission == null) {
-					orgPermission = allPermissionMap.get(parentId);
-					if (orgPermission != null) {
-						menuPermissionMap.put(parentId, new MenuPermission(orgPermission, false));
-						parentId = orgPermission.getParentId();
-						continue;
-					}
-				}
-				break;
-			}
-		}
-
+//		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
+//			String id = orgPermission.getId();
+//			MenuPermission menuPermission = menuPermissionMap.get(id);
+//			if (menuPermission == null) {
+//				menuPermissionMap.put(id, new MenuPermission(orgPermission, true));
+//			} else {
+//				menuPermission.setOwned(true);
+//			}
+//
+//			String parentId = orgPermission.getParentId();
+//			while (parentId != null && parentId.length() > 0) {
+//				menuPermission = menuPermissionMap.get(parentId);
+//				if (menuPermission == null) {
+//					orgPermission = allPermissionMap.get(parentId);
+//					if (orgPermission != null) {
+//						menuPermissionMap.put(parentId, new MenuPermission(orgPermission, false));
+//						parentId = orgPermission.getParentId();
+//						continue;
+//					}
+//				}
+//				break;
+//			}
+//		}
 	}
 
 	public Collection<MenuPermission> getMenuPermissions() {

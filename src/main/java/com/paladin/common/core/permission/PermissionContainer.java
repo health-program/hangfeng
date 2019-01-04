@@ -69,16 +69,27 @@ public class PermissionContainer implements VersionContainer {
 		}
 
 		List<OrgRolePermission> orgRolePermissions = orgRolePermissionService.findAll();
-		for (OrgRolePermission orgRolePermission : orgRolePermissions) {
-			OrgPermission permission = permissionMap.get(orgRolePermission.getPermissionId());
-			Role role = roleMap.get(orgRolePermission.getRoleId());
-			role.addPermission(permission, permissionMap);
-		}
 		
 		Map<String, MenuPermission> menuPermissionMap = new HashMap<>();
-		for(OrgPermission orgPermission: permissionMap.values()) {
-			addMenuPermission(menuPermissionMap, orgPermission, permissionMap);
+		
+		Map<String, Map<String, MenuPermission>> roleMenuMap = new HashMap<>();
+		for (OrgRolePermission orgRolePermission : orgRolePermissions) {		
+			String roleId =orgRolePermission.getRoleId(); 
+			OrgPermission permission = permissionMap.get(orgRolePermission.getPermissionId());
+			Role role = roleMap.get(roleId);
+			role.addPermission(permission);
+			
+			Map<String, MenuPermission> rpMap = roleMenuMap.get(roleId);
+			if(rpMap == null) {
+				rpMap = new HashMap<>();
+				roleMenuMap.put(roleId, rpMap);
+			}
+			
+			rpMap.put(key, value);
+			
 		}
+		
+	
 				
 		this.menuPermissionCollection = Collections.unmodifiableCollection(menuPermissionMap.values());
 		this.roleMap = roleMap;

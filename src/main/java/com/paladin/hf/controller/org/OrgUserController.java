@@ -71,7 +71,7 @@ public class OrgUserController extends ControllerSupport{
 				model.addAttribute("query", query);
 			}
 		}
-		return "console/organization/user_index";
+		return "/hf/org/user_index";
 	}
 
 	@RequestMapping("/self/index")
@@ -90,7 +90,7 @@ public class OrgUserController extends ControllerSupport{
 			}
 		}
 
-		return "console/organization/user_detail_index";
+		return "/hf/org/user_detail_index";
 	}
 
 	@RequestMapping("/search/all")
@@ -112,7 +112,7 @@ public class OrgUserController extends ControllerSupport{
 		}
 
 		model.addAttribute("backurl", "/org/user/index?cached=1");
-		return "console/organization/user_detail_index";
+		return "/hf/org/user_detail_index";
 	}
 
 	@RequestMapping("/view2")
@@ -126,7 +126,7 @@ public class OrgUserController extends ControllerSupport{
 		}
 
 		model.addAttribute("backurl", "/console/situa/index");
-		return "console/organization/user_detail_index";
+		return "/hf/org/user_detail_index";
 	}
 
 	@RequestMapping("/viewResult")
@@ -140,14 +140,14 @@ public class OrgUserController extends ControllerSupport{
 		}
 
 		model.addAttribute("backurl", "/console/result/index");
-		return "console/organization/user_detail_index";
+		return "/hf/org/user_detail_index";
 	}
 
 	@RequestMapping("/add/input")
 	public String addInput(Model model) {
 		model.addAttribute("user", new OrgUser());
 		model.addAttribute("formType", FormType.ADD);
-		return "console/organization/user_from";
+		return "/hf/org/user_from";
 	}
 
 	@RequestMapping("/edit/input")
@@ -157,7 +157,7 @@ public class OrgUserController extends ControllerSupport{
 			orgUser = new OrgUser();
 		model.addAttribute("user", orgUser);
 		model.addAttribute("formType", FormType.EDIT);
-		return "console/organization/user_from";
+		return "/hf/org/user_from";
 	}
 
 	@RequestMapping("/save")

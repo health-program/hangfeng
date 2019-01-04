@@ -1,66 +1,30 @@
 package com.paladin.common.core.permission;
 
+import java.util.List;
+
 import com.paladin.common.model.org.OrgPermission;
 import com.paladin.framework.common.BaseModel;
 
 public class MenuPermission {
 
-	private String id;
-	// 菜单名称
-	private String name;
-	// URL
-	private String url;
-	// 图标
-	private String icon;
-	// 父ID
-	private String parentId;
-	// 列表顺序
-	private int listOrder;
-	// 是否系统管理员权限
-	private boolean isAdmin;
+	private OrgPermission source;
+
 	// 是否拥有
 	private boolean owned;
+	// 是否菜单
+	private boolean isMenu;
+
+	private List<MenuPermission> children;
 
 	public MenuPermission(OrgPermission orgPermission, boolean owned) {
-		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
-			this.id = orgPermission.getId();
-			this.name = orgPermission.getName();
-			this.url = orgPermission.getExpressionContent();
-			this.isAdmin = orgPermission.getIsAdmin() == BaseModel.BOOLEAN_YES;
-			this.icon = orgPermission.getMenuIcon();
-			this.parentId = orgPermission.getParentId();
-			this.owned = owned;
-		} else {
-			throw new RuntimeException("非菜单权限");
-		}
+		this.source = orgPermission;
+		this.isMenu = orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES;
+		this.owned = owned;
 	}
+	
 
 	public String getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public String getParentId() {
-		return parentId;
-	}
-
-	public int getListOrder() {
-		return listOrder;
-	}
-
-	public boolean isAdmin() {
-		return isAdmin;
+		return source.getId();
 	}
 
 	public boolean isOwned() {
@@ -71,18 +35,31 @@ public class MenuPermission {
 		this.owned = owned;
 	}
 
+	public OrgPermission getSource() {
+		return source;
+	}
+
+	public boolean isMenu() {
+		return isMenu;
+	}
+
+	public List<MenuPermission> getChildren() {
+		return children;
+	}
+	
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return getId().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof MenuPermission) {
 			MenuPermission mp = (MenuPermission) obj;
-			return id.equals(mp.id);
+			return getId().equals(mp.getId());
 		}
 		return false;
 	}
+
 
 }

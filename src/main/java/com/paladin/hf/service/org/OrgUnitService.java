@@ -1,5 +1,8 @@
 package com.paladin.hf.service.org;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.UnitContainer;
 import com.paladin.hf.core.UnitContainer.Unit;
@@ -36,11 +40,13 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
 	 * @param id
 	 * @return
 	 */
+	@Transactional
 	public int removeUnit(String id) {
 		if (orgUnitMapper.countUserOfUnit(id) > 0) {
 			throw new BusinessException("请先删除该科室或机构下的档案人员");
 		}
 		int effect = orgUnitMapper.removeNoChildUnit(id);
+		UnitContainer.updateData();
 		return effect;
 	}
 
@@ -103,5 +109,25 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
 		UnitContainer.updateData();
 		return true;
 	}
+	
+	public List<OrgUnit> findOwnUnit() {
 
+		List<Unit> units = DataPermissionUtil.getOwnAgency();
+		List<OrgUnit> orgUnits = new ArrayList<>();
+
+		if (units != null && units.size() > 0) {
+			for (Unit unit : units) {
+				addUnit2List(unit, orgUnits);
+			}
+		}
+
+		return orgUnits;
+	}
+	
+	private void addUnit2List(Unit unit, List<OrgUnit> orgUnits) {
+		orgUnits.add(unit.getOrgUnit());
+		for (Unit u : unit.getChildren()) {
+			addUnit2List(u, orgUnits);
+		}
+	}
 }

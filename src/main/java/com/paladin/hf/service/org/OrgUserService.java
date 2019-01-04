@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.paladin.framework.common.QueryType;
-import com.paladin.framework.common.GeneralCriteriaBuilder.Condition;
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;

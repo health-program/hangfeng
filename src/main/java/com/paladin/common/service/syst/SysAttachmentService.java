@@ -22,7 +22,7 @@ import com.github.pagehelper.PageHelper;
 import com.paladin.common.mapper.syst.SysAttachmentMapper;
 import com.paladin.common.model.syst.SysAttachment;
 import com.paladin.framework.common.QueryType;
-import com.paladin.framework.common.GeneralCriteriaBuilder.Condition;
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.GeneralCriteriaBuilder;
-import com.paladin.framework.common.GeneralCriteriaBuilder.Condition;
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
@@ -125,7 +125,7 @@ public class SysUserService extends ServiceSupport<SysUser> {
 
 	public SysUser getUser(String account) {
 		Example example = GeneralCriteriaBuilder.buildAnd(SysUser.class,
-				new com.paladin.framework.common.GeneralCriteriaBuilder.Condition(SysUser.COLUMN_FIELD_ACCOUNT, QueryType.EQUAL, account));
+				new Condition(SysUser.COLUMN_FIELD_ACCOUNT, QueryType.EQUAL, account));
 		List<SysUser> users = sysUserMapper.selectByExample(example);
 		return (users != null && users.size() > 0) ? users.get(0) : null;
 	}

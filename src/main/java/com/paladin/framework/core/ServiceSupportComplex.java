@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.GeneralCriteriaBuilder;
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.PageResult;
-import com.paladin.framework.common.GeneralCriteriaBuilder.Condition;
 import com.paladin.framework.mybatis.CustomJoinMapper;
 import com.paladin.framework.utils.reflect.ReflectUtil;
 

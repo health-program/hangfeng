@@ -12,15 +12,20 @@ import com.github.pagehelper.PageHelper;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.framework.utils.StringUtil;
+import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.mapper.assess.quantificate.AssessQuantitativeMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.assess.quantificate.AssessEventScore;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
 import com.paladin.hf.model.assess.quantificate.AssessQuantitative;
+import com.paladin.hf.model.ordinary.Prizepunish;
+import com.paladin.hf.model.ordinary.PrizepunishScore;
 import com.paladin.hf.model.org.OrgUserAssess;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserDetailQuery;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;
+import com.paladin.hf.service.ordinary.PrizepunishService;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -84,7 +89,7 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.GREAT_EQUAL, startTime, null));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.LESS_EQUAL, endTime, null));
 
-		if (StringUtils.isNotEmpty(eventType)) {
+		if (StringUtil.isNotEmpty(eventType)) {
 			conditions.add(new Condition(Prizepunish.COLUMN_DICT_CODE, QueryType.EQUAL, eventType, null));
 		}
 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
@@ -20,8 +21,8 @@ public class AssessQuantitativeResultService extends ServiceSupport<AssessQuanti
 	public AssessQuantitativeResult getResult(String userId, String cycleId) {
 
 		List<AssessQuantitativeResult> results = searchAll(
-				new Condition[] { new Condition(AssessQuantitativeResult.COLUMN_USER_ID, QueryType.EQUAL, userId, null),
-						new Condition(AssessQuantitativeResult.COLUMN_CYCLE_ID, QueryType.EQUAL, cycleId, null) });
+				new Condition[] { new Condition(AssessQuantitativeResult.COLUMN_USER_ID, QueryType.EQUAL, userId),
+						new Condition(AssessQuantitativeResult.COLUMN_CYCLE_ID, QueryType.EQUAL, cycleId) });
 
 		if (results != null && results.size() > 0) {
 			if (results.size() > 1) {

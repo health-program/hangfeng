@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.hf.mapper.assess.quantificate.AssessCycleTemplateMapper;
@@ -51,8 +52,8 @@ public class AssessCycleTemplateService extends ServiceSupport<AssessCycleTempla
 //        }
 //        
         List<AssessCycleTemplate> result = searchAll(new Condition[] {
-            new Condition(AssessCycleTemplate.COLUMN_UNIT_ID, QueryType.EQUAL, unitId, null),
-            new Condition(AssessCycleTemplate.COLUMN_CYCLE_ID, QueryType.EQUAL, id, null)});
+            new Condition(AssessCycleTemplate.COLUMN_UNIT_ID, QueryType.EQUAL, unitId),
+            new Condition(AssessCycleTemplate.COLUMN_CYCLE_ID, QueryType.EQUAL, id)});
         
         if (result.size() > 0) {
             return result.get(0).getTemplateId();

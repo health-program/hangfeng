@@ -1,6 +1,8 @@
 package com.paladin.common.core.permission;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.paladin.common.model.org.OrgPermission;
 import com.paladin.framework.common.BaseModel;
@@ -14,14 +16,18 @@ public class MenuPermission {
 	// 是否菜单
 	private boolean isMenu;
 
-	private List<MenuPermission> children;
+	private Set<MenuPermission> children;
 
 	public MenuPermission(OrgPermission orgPermission, boolean owned) {
 		this.source = orgPermission;
 		this.isMenu = orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES;
 		this.owned = owned;
+		this.children = new HashSet<>();
 	}
-	
+
+	public void addChild(MenuPermission child) {
+		children.add(child);
+	}
 
 	public String getId() {
 		return source.getId();
@@ -43,10 +49,10 @@ public class MenuPermission {
 		return isMenu;
 	}
 
-	public List<MenuPermission> getChildren() {
+	public Collection<MenuPermission> getChildren() {
 		return children;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getId().hashCode();
@@ -60,6 +66,5 @@ public class MenuPermission {
 		}
 		return false;
 	}
-
 
 }

@@ -1,7 +1,5 @@
 package com.paladin.common.core.permission;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +15,6 @@ import com.paladin.common.model.org.OrgRolePermission;
 import com.paladin.common.service.org.OrgPermissionService;
 import com.paladin.common.service.org.OrgRolePermissionService;
 import com.paladin.common.service.org.OrgRoleService;
-import com.paladin.framework.common.BaseModel;
 import com.paladin.framework.core.VersionContainer;
 
 @Component
@@ -37,15 +34,15 @@ public class PermissionContainer implements VersionContainer {
 	private volatile Map<String, Role> roleMap;
 
 	private volatile Map<String, OrgPermission> permissionMap;
-	
-	private volatile Collection<MenuPermission> menuPermissionCollection;
+
+	private volatile Role systemAdminRole;
 
 	/**
 	 * 初始化权限
 	 */
 	public void initPermission() {
 		logger.info("------------初始化权限开始------------");
-		
+
 		Map<String, OrgPermission> permissionMap = new HashMap<>();
 		List<OrgPermission> orgPermissions = orgPermissionService.findAll();
 		for (OrgPermission orgPermission : orgPermissions) {
@@ -69,88 +66,62 @@ public class PermissionContainer implements VersionContainer {
 		}
 
 		List<OrgRolePermission> orgRolePermissions = orgRolePermissionService.findAll();
-		
-		Map<String, MenuPermission> menuPermissionMap = new HashMap<>();
-		
-		Map<String, Map<String, MenuPermission>> roleMenuMap = new HashMap<>();
-		for (OrgRolePermission orgRolePermission : orgRolePermissions) {		
-			String roleId =orgRolePermission.getRoleId(); 
-			OrgPermission permission = permissionMap.get(orgRolePermission.getPermissionId());
+
+		for (OrgRolePermission orgRolePermission : orgRolePermissions) {
+			String roleId = orgRolePermission.getRoleId();
+			String permissionId = orgRolePermission.getPermissionId();
+
+			OrgPermission permission = permissionMap.get(permissionId);
 			Role role = roleMap.get(roleId);
-			role.addPermission(permission);
-			
-			Map<String, MenuPermission> rpMap = roleMenuMap.get(roleId);
-			if(rpMap == null) {
-				rpMap = new HashMap<>();
-				roleMenuMap.put(roleId, rpMap);
-			}
-			
-			rpMap.put(key, value);
-			
+			role.addPermission(permission, permissionMap);
 		}
-		
-	
-				
-		this.menuPermissionCollection = Collections.unmodifiableCollection(menuPermissionMap.values());
+
+		for (Role role : roleMap.values()) {
+			role.initMenuPermission();
+		}
+
+		// 创建系统管理员角色及菜单
+		Role systemAdminRole = new Role();
+		for (OrgPermission orgPermission : permissionMap.values()) {
+			systemAdminRole.addPermission(orgPermission, permissionMap);
+		}
+
+		systemAdminRole.initMenuPermission();
+
 		this.roleMap = roleMap;
 		logger.info("------------初始化权限结束------------");
-	}
-	
-	private void addMenuPermission(Map<String, MenuPermission> menuPermissionMap, OrgPermission orgPermission, Map<String, OrgPermission> allPermissionMap) {
-		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
-			String id = orgPermission.getId();
-			MenuPermission menuPermission = menuPermissionMap.get(id);
-			if (menuPermission == null) {
-				menuPermissionMap.put(id, new MenuPermission(orgPermission, true));
-			} else {
-				menuPermission.setOwned(true);
-			}
-
-			String parentId = orgPermission.getParentId();
-			while (parentId != null && parentId.length() > 0) {
-				menuPermission = menuPermissionMap.get(parentId);
-				if (menuPermission == null) {
-					orgPermission = allPermissionMap.get(parentId);
-					if (orgPermission != null) {
-						menuPermissionMap.put(parentId, new MenuPermission(orgPermission, false));
-						parentId = orgPermission.getParentId();
-						continue;
-					}
-				}
-				break;
-			}
-		}
 	}
 
 	/**
 	 * 获取角色
+	 * 
 	 * @param id
 	 * @return
 	 */
 	public Role getRole(String id) {
 		return roleMap.get(id);
 	}
-	
+
 	/**
-	 * 获取菜单权限集合
+	 * 获取系统管理员角色
+	 * 
 	 * @return
 	 */
-	public Collection<MenuPermission> getMenuPermissionCollection() {
-		return menuPermissionCollection;
+	public Role getSystemAdminRole() {
+		return systemAdminRole;
 	}
 
-	
 	@Override
 	public String getId() {
 		return "permission_container";
 	}
 
 	private static PermissionContainer container;
-	
+
 	public static PermissionContainer getInstance() {
 		return container;
 	}
-	
+
 	@Override
 	public boolean versionChangedHandle(long version) {
 		initPermission();

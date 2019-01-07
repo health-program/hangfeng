@@ -3,7 +3,6 @@ package com.paladin.hf.core;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.apache.shiro.SecurityUtils;
 
@@ -199,6 +198,7 @@ public class HfUserSession extends UserSession implements Serializable {
 
 	/**
 	 * 是否管理员等级
+	 * 
 	 * @return
 	 */
 	public boolean isAdminRoleLevel() {
@@ -286,7 +286,7 @@ public class HfUserSession extends UserSession implements Serializable {
 	public Collection<MenuPermission> getMenuResources() {
 		PermissionContainer container = PermissionContainer.getInstance();
 		if (isSystemAdmin) {
-			container.getMenuPermissionCollection();
+			container.getSystemAdminRole().getMenuPermissions();
 		}
 
 		if (isOrgUser) {
@@ -294,14 +294,14 @@ public class HfUserSession extends UserSession implements Serializable {
 		}
 
 		if (isAdminUser) {
-			HashSet<MenuPermission> coll = new HashSet<>();
+			ArrayList<Role> roles = new ArrayList<>(roleIds.length);
 			for (String rid : roleIds) {
 				Role role = container.getRole(rid);
 				if (role != null) {
-					coll.addAll(role.getMenuPermissions());
+					roles.add(role);
 				}
 			}
-			return coll;
+			return Role.getMultiRoleMenuPermission(roles);
 		}
 
 		return new ArrayList<MenuPermission>();

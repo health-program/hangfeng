@@ -1,7 +1,6 @@
 package com.paladin.hf.controller.syst;
 
 import java.util.Collection;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.paladin.common.core.permission.MenuPermission;
+import com.paladin.common.model.org.OrgPermission;
 import com.paladin.framework.utils.WebUtil;
 import com.paladin.framework.utils.validate.ValidateUtil;
 import com.paladin.framework.web.response.CommonResponse;
@@ -63,12 +63,37 @@ public class LoginController {
 		model.addObject("isFirst", sysUser.getIsFirstLogin());
 
 		Collection<MenuPermission> menus = userSession.getMenuResources();
-		
-		
-
-		// model.addObject("menus", userSession.getMenuResources());
+		StringBuilder sb = new StringBuilder("<li class=\"header\">菜单</li>");
+		createMenuHtml(menus, sb);
+		System.out.println(sb.toString());
+		model.addObject("menuHtml", sb.toString());
 
 		return model;
+	}
+
+	private void createMenuHtml(Collection<MenuPermission> menus, StringBuilder sb) {
+		for (MenuPermission menu : menus) {
+			OrgPermission op = menu.getSource();
+			Collection<MenuPermission> children = menu.getChildren();
+
+			String href = menu.isMenu() && menu.isOwned() ? op.getExpressionContent() : "javascript:void(0)";
+			String icon = op.getMenuIcon();
+			if (icon != null && icon.length() > 0) {
+				icon = "icon iconfont icon-" + icon;
+			} else {
+				icon = "fa fa-circle-o";
+			}
+
+			if (children.size() > 0) {
+				sb.append("<li class=\"treeview\"><a href=\"").append(href).append("\"><i class=\"").append(icon).append("\"></i><span>").append(op.getName())
+						.append("</span><span class=\"pull-right-container\"><i class=\"fa fa-angle-left pull-right\"></i></span></a><ul class=\"treeview-menu\">");
+				createMenuHtml(children, sb);
+				sb.append("</ul></li>");
+			} else {
+				sb.append("<li><a href=\"").append(href).append("\"><i class=\"").append(icon).append("\"></i> <span>").append(op.getName())
+						.append("</span></a></li>");
+			}
+		}
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)

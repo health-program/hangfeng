@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.paladin.common.model.org.OrgPermission;
 import com.paladin.common.model.org.OrgRole;
@@ -30,8 +29,9 @@ public class Role {
 	// 角色说明
 	private String roleDesc;
 
-	//private HashMap<String, MenuPermission> menuPermissionMap;
-	private Set<String> permissionCodeSet;
+	private HashMap<String, MenuPermission> menuPermissionMap;
+	private HashSet<MenuPermission> rootMenuPermissionSet;
+	private HashSet<String> permissionCodeSet;
 
 	public Role(OrgRole orgRole) {
 		this.id = orgRole.getId();
@@ -41,46 +41,104 @@ public class Role {
 		this.isDefault = orgRole.getIsDefault() == BaseModel.BOOLEAN_YES;
 		this.enable = orgRole.getEnable() == BaseModel.BOOLEAN_YES;
 
+		this.menuPermissionMap = new HashMap<>();
+		this.rootMenuPermissionSet = new HashSet<>();
 		this.permissionCodeSet = new HashSet<>();
 	}
 
-	public void addPermission(OrgPermission orgPermission) {	
+	public Role() {
+		this.menuPermissionMap = new HashMap<>();
+		this.rootMenuPermissionSet = new HashSet<>();
+		this.permissionCodeSet = new HashSet<>();
+	}
+
+	public void addPermission(OrgPermission orgPermission, Map<String, OrgPermission> allPermissionMap) {
 		String code = orgPermission.getExpressionContent();
 		if (code != null && code.length() > 0) {
 			permissionCodeSet.add(code);
 		}
 
-//		if (orgPermission.getIsMenu() == BaseModel.BOOLEAN_YES) {
-//			String id = orgPermission.getId();
-//			MenuPermission menuPermission = menuPermissionMap.get(id);
-//			if (menuPermission == null) {
-//				menuPermissionMap.put(id, new MenuPermission(orgPermission, true));
-//			} else {
-//				menuPermission.setOwned(true);
-//			}
-//
-//			String parentId = orgPermission.getParentId();
-//			while (parentId != null && parentId.length() > 0) {
-//				menuPermission = menuPermissionMap.get(parentId);
-//				if (menuPermission == null) {
-//					orgPermission = allPermissionMap.get(parentId);
-//					if (orgPermission != null) {
-//						menuPermissionMap.put(parentId, new MenuPermission(orgPermission, false));
-//						parentId = orgPermission.getParentId();
-//						continue;
-//					}
-//				}
-//				break;
-//			}
-//		}
+		String permissionId = orgPermission.getId();
+
+		MenuPermission mp = menuPermissionMap.get(permissionId);
+		if (mp == null) {
+			mp = new MenuPermission(orgPermission, true);
+			menuPermissionMap.put(permissionId, mp);
+
+			String parentId = mp.getSource().getParentId();
+			while (parentId != null && parentId.length() > 0) {
+				if (menuPermissionMap.get(parentId) != null) {
+					break;
+				}
+
+				OrgPermission op = allPermissionMap.get(parentId);
+				if (op != null) {
+					mp = new MenuPermission(op, false);
+					menuPermissionMap.put(parentId, mp);
+					parentId = op.getParentId();
+				} else {
+					break;
+				}
+			}
+		} else {
+			mp.setOwned(true);
+		}
+	}
+
+	public void initMenuPermission() {
+		for (MenuPermission mp : menuPermissionMap.values()) {
+			String parentId = mp.getSource().getParentId();
+			if (parentId == null || parentId.length() == 0) {
+				rootMenuPermissionSet.add(mp);
+			} else {
+				MenuPermission parentMp = menuPermissionMap.get(parentId);
+				if (parentMp == null) {
+					rootMenuPermissionSet.add(mp);
+				} else {
+					parentMp.addChild(mp);
+				}
+			}
+		}
 	}
 
 	public Collection<MenuPermission> getMenuPermissions() {
-		return Collections.unmodifiableCollection(menuPermissionMap.values());
+		return Collections.unmodifiableCollection(rootMenuPermissionSet);
 	}
 
-	public MenuPermission getMenuPermission(String id) {
-		return menuPermissionMap.get(id);
+	public static Collection<MenuPermission> getMultiRoleMenuPermission(Collection<Role> roles) {
+
+		HashSet<MenuPermission> root = new HashSet<>();
+		HashMap<String, MenuPermission> mpMap = new HashMap<>();
+
+		for (Role role : roles) {
+			for (MenuPermission mp : role.menuPermissionMap.values()) {
+				String id = mp.getSource().getId();
+				MenuPermission a = mpMap.get(id);
+				if (a != null) {
+					if (a.isOwned() == false && mp.isOwned()) {
+						a.setOwned(true);
+					}
+				} else {
+					mpMap.put(id, new MenuPermission(mp.getSource(), mp.isOwned()));
+				}
+			}
+		}
+
+		for (MenuPermission mp : mpMap.values()) {
+			String parentId = mp.getSource().getParentId();
+			if (parentId == null || parentId.length() == 0) {
+				root.add(mp);
+			} else {
+				MenuPermission parentMp = mpMap.get(parentId);
+				if (parentMp == null) {
+					root.add(mp);
+				} else {
+					parentMp.addChild(mp);
+				}
+			}
+		}
+
+		return root;
 	}
 
 	public boolean ownPermission(String code) {

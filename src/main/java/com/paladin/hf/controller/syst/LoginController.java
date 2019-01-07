@@ -65,7 +65,6 @@ public class LoginController {
 		Collection<MenuPermission> menus = userSession.getMenuResources();
 		StringBuilder sb = new StringBuilder("<li class=\"header\">菜单</li>");
 		createMenuHtml(menus, sb);
-		System.out.println(sb.toString());
 		model.addObject("menuHtml", sb.toString());
 
 		return model;
@@ -76,22 +75,33 @@ public class LoginController {
 			OrgPermission op = menu.getSource();
 			Collection<MenuPermission> children = menu.getChildren();
 
-			String href = menu.isMenu() && menu.isOwned() ? op.getExpressionContent() : "javascript:void(0)";
+			String href = menu.isMenu() && menu.isOwned() ? op.getExpressionContent() : null;
+
 			String icon = op.getMenuIcon();
 			if (icon != null && icon.length() > 0) {
-				icon = "icon iconfont icon-" + icon;
+				icon = "fa iconfont icon-" + icon;
 			} else {
 				icon = "fa fa-circle-o";
 			}
 
 			if (children.size() > 0) {
-				sb.append("<li class=\"treeview\"><a href=\"").append(href).append("\"><i class=\"").append(icon).append("\"></i><span>").append(op.getName())
-						.append("</span><span class=\"pull-right-container\"><i class=\"fa fa-angle-left pull-right\"></i></span></a><ul class=\"treeview-menu\">");
+				sb.append("<li class=\"treeview\"><a class=\"nav-link\"");
+				if (href != null) {
+					sb.append(" onclick=\"addTabs({id:'").append(op.getId()).append("',title: '").append(op.getName()).append("',close: true,url: '")
+							.append(href).append("',urlType: 'relative'});\"");
+				}
+
+				sb.append("><i class=\"").append(icon).append("\"></i><span>").append(op.getName()).append(
+						"</span><span class=\"pull-right-container\"><i class=\"fa fa-angle-left pull-right\"></i></span></a><ul class=\"treeview-menu\">");
 				createMenuHtml(children, sb);
 				sb.append("</ul></li>");
 			} else {
-				sb.append("<li><a href=\"").append(href).append("\"><i class=\"").append(icon).append("\"></i> <span>").append(op.getName())
-						.append("</span></a></li>");
+				sb.append("<li><a class=\"nav-link\"");
+				if (href != null) {
+					sb.append(" onclick=\"addTabs({id:'").append(op.getId()).append("',title: '").append(op.getName()).append("',close: true,url: '")
+							.append(href).append("',urlType: 'relative'});\"");
+				}
+				sb.append("><i class=\"").append(icon).append("\"></i> <span>").append(op.getName()).append("</span></a></li>");
 			}
 		}
 	}

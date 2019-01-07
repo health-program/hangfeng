@@ -2322,11 +2322,11 @@ $(function () {
             init($menu_ul, options.data, level);
         }
         else {
-            if (!options.url) return;
-            $.getJSON(options.url, options.param, function (data) {
-
-                init($menu_ul, data, level);
-            });
+            if (options.url) {
+                $.getJSON(options.url, options.param, function (data) {
+                    init($menu_ul, data, level);
+                });
+            }    
         }
 
         function init($menu_ul, data, level) {

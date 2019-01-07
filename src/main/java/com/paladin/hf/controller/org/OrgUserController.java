@@ -1,6 +1,5 @@
 package com.paladin.hf.controller.org;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,11 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.paladin.framework.common.Condition;
-import com.paladin.framework.common.GeneralCriteriaBuilder;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ControllerSupport;
-import com.paladin.framework.core.container.ConstantsContainer;
-import com.paladin.framework.excel.read.ExcelReader;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.controller.util.FormType;
 import com.paladin.hf.core.HfUserSession;
@@ -34,7 +29,6 @@ import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
 import com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery;
 import com.paladin.hf.service.org.OrgUserService;
-import com.paladin.hf.service.org.dto.ExcelUser;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
 import com.paladin.hf.service.org.dto.SimpleUser;
 import com.paladin.hf.service.syst.SysUserService;
@@ -270,7 +264,7 @@ public class OrgUserController extends ControllerSupport{
 	 */
 	@RequestMapping("/transfer/index")
 	public String transferIndex() {
-		return "console/organization/user_transfer_index";
+		return "/hf/org/user_transfer_index";
 	}
 
 	/**
@@ -293,7 +287,7 @@ public class OrgUserController extends ControllerSupport{
 	 */
 	@RequestMapping("/transfer/ask/index")
 	public String transferAskIndex() {
-		return "console/organization/user_transfer_ask_index";
+		return "/hf/org/user_transfer_ask_index";
 	}
 
 	/**
@@ -450,7 +444,7 @@ public class OrgUserController extends ControllerSupport{
 	       }else {
 	             model.addAttribute("backurl","/org/user/view?id=" + orgUserId);
       }
-	      return "console/organization/this_year_assess_list";
+	      return "/hf/org/this_year_assess_list";
 	}
 	
 	
@@ -479,6 +473,6 @@ public class OrgUserController extends ControllerSupport{
 	public String assessRegistrationForm(PersonCycAssessQuery perCycAssQuery, Model model){
 	        PersonCycAssessExt perCycAss= perCycAssMapper.getAssessRegistrationForm(perCycAssQuery); 
 	        model.addAttribute("perCycAss", perCycAss);
-            return "console/organization/assess_registration_form";
+            return "/hf/org/assess_registration_form";
 	}
 }

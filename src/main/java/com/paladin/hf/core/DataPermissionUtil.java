@@ -161,10 +161,6 @@ public class DataPermissionUtil {
 			return assessTeamId;
 		}
 
-		public void setAssessTeamId(String assessTeamId) {
-			this.assessTeamId = assessTeamId;
-		}
-
 	}
 
 	/**

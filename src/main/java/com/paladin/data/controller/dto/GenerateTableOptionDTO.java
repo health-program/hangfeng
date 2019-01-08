@@ -22,6 +22,8 @@ public class GenerateTableOptionDTO {
 	private String subModel;
 
 	private String projectPath;
+	
+	private String filePath;
 
 	private List<GenerateColumnOptionDTO> columnOptions;
 
@@ -223,6 +225,14 @@ public class GenerateTableOptionDTO {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

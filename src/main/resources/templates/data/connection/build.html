@@ -52,6 +52,18 @@
                     <li class="item">
                         <form class="form-horizontal tonto-form-validate">
                             <div class="form-group">
+                                <label for="projectPath" class="col-md-2 control-label">文件路径</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="filePath" class="form-control"
+                                           required="required" placeholder="请输入文件路径"/>
+                                </div>
+                            </div>
+                        </form>
+                        <button onclick="buildFile()" type="button" class="btn btn-primary btn-block submitBtn">生成文件</button>              
+                    </li>
+                    <li class="item">
+                        <form class="form-horizontal tonto-form-validate">
+                            <div class="form-group">
                                 <label for="projectPath" class="col-md-2 control-label">Boot项目路径</label>
                                 <div class="col-md-5">
                                     <input type="text" name="projectPath" th:value="${projectPath}" class="form-control"
@@ -234,6 +246,15 @@ function build2boot() {
     }
 }
 
+function buildFile() {
+    var params = buildParams();
+    if (params) {
+        $.postJsonAjax("/data/connection/db/build/file", params, function() {
+            $.successMessage("创建成功");
+        }, $(".submitBtn"));
+    }
+}
+
 function build() {
     var params = buildParams();
     if (params) {
@@ -241,7 +262,11 @@ function build() {
     }
 }
 
-function show(result) {
+function convertHtml(content){
+	content = content.re
+}
+
+function show(result) {	
     layer.tab({
         area: ['700px', '780px'],
         maxmin: true,

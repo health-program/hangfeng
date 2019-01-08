@@ -1,37 +1,11 @@
-package com.paladin.hf.model.org;
+package com.paladin.hf.service.org.vo;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
-import com.paladin.framework.common.UnDeleteModel;
-
-import tk.mybatis.mapper.annotation.IgnoreInMultipleResult;
-
-public class OrgUser extends UnDeleteModel implements Serializable {
-
-	private static final long serialVersionUID = -229307096210558949L;
-
-	public static final String COLUMN_ORG_UNIT_ID = "orgUnitId";
-	public static final String COLUMN_TRANSFER_AGENCY_ID = "transferAgencyId";
-	public static final String COLUMN_TRANSFER_STATUS = "transferStatus";
-
-	public static final String COLUMN_TRANSFER_ORIGIN_AGENCY_ID = "transferOriginAgencyId";
-	public static final String COLUMN_TRANSFER_ORIGIN_TEAM_ID = "transferOriginTeamId";
-	public static final String COLUMN_TRANSFER_ORIGIN_UNIT_ID = "transferOriginUnitId";
-
-	public static final String COLUMN_IDENTIFICATION = "identification";
-
-	public static final int TRANSFER_STATUS_ASK = 1;
-	public static final int TRANSFER_STATUS_SUCCESS = 2;
-	public static final int TRANSFER_STATUS_FAIL = 3;
-
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(generator = "UUID")
+public class OrgUserVO {
 	private String id;
 
 	private String orgUnitId;
@@ -64,11 +38,10 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 
 	private Date comeUnitTime;
 
-	@IgnoreInMultipleResult
 	private String resume;
-	@IgnoreInMultipleResult
+
 	private String reward;
-	@IgnoreInMultipleResult
+
 	private String punish;
 
 	private Integer isAdmin;
@@ -84,7 +57,7 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	private String userProperty;
 
 	private String identification;
-
+	
 	private String identificationType;
 
 	private String transferOriginUnitId;
@@ -98,30 +71,6 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	private String transferAgencyId;
 
 	private Integer transferStatus;
-
-	public String getIdentification() {
-		return identification;
-	}
-
-	public void setIdentification(String identification) {
-		this.identification = identification;
-	}
-
-	public String getJobLevel() {
-		return jobLevel;
-	}
-
-	public void setJobLevel(String jobLevel) {
-		this.jobLevel = jobLevel;
-	}
-
-	public String getUserProperty() {
-		return userProperty;
-	}
-
-	public void setUserProperty(String userProperty) {
-		this.userProperty = userProperty;
-	}
 
 	public String getId() {
 		return id;
@@ -139,12 +88,44 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.orgUnitId = orgUnitId;
 	}
 
+	public String getOrgAgencyId() {
+		return orgAgencyId;
+	}
+
+	public void setOrgAgencyId(String orgAgencyId) {
+		this.orgAgencyId = orgAgencyId;
+	}
+
+	public String getOrgAssessTeamId() {
+		return orgAssessTeamId;
+	}
+
+	public void setOrgAssessTeamId(String orgAssessTeamId) {
+		this.orgAssessTeamId = orgAssessTeamId;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public Date getRecordCreateTime() {
+		return recordCreateTime;
+	}
+
+	public void setRecordCreateTime(Date recordCreateTime) {
+		this.recordCreateTime = recordCreateTime;
 	}
 
 	public String getSex() {
@@ -259,20 +240,12 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.isAssessor = isAssessor;
 	}
 
-	public Date getRecordCreateTime() {
-		return recordCreateTime;
+	public String getAssessRole() {
+		return assessRole;
 	}
 
-	public void setRecordCreateTime(Date recordCreateTime) {
-		this.recordCreateTime = recordCreateTime;
-	}
-
-	public String getAccount() {
-		return account;
-	}
-
-	public void setAccount(String account) {
-		this.account = account;
+	public void setAssessRole(String assessRole) {
+		this.assessRole = assessRole;
 	}
 
 	public String getAssessUnitId() {
@@ -283,28 +256,68 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.assessUnitId = assessUnitId;
 	}
 
-	public String getAssessRole() {
-		return assessRole;
+	public String getJobLevel() {
+		return jobLevel;
 	}
 
-	public void setAssessRole(String assessRole) {
-		this.assessRole = assessRole;
+	public void setJobLevel(String jobLevel) {
+		this.jobLevel = jobLevel;
 	}
 
-	public String getOrgAgencyId() {
-		return orgAgencyId;
+	public String getUserProperty() {
+		return userProperty;
 	}
 
-	public void setOrgAgencyId(String orgAgencyId) {
-		this.orgAgencyId = orgAgencyId;
+	public void setUserProperty(String userProperty) {
+		this.userProperty = userProperty;
 	}
 
-	public String getOrgAssessTeamId() {
-		return orgAssessTeamId;
+	public String getIdentification() {
+		return identification;
 	}
 
-	public void setOrgAssessTeamId(String orgAssessTeamId) {
-		this.orgAssessTeamId = orgAssessTeamId;
+	public void setIdentification(String identification) {
+		this.identification = identification;
+	}
+
+	public String getIdentificationType() {
+		return identificationType;
+	}
+
+	public void setIdentificationType(String identificationType) {
+		this.identificationType = identificationType;
+	}
+
+	public String getTransferOriginUnitId() {
+		return transferOriginUnitId;
+	}
+
+	public void setTransferOriginUnitId(String transferOriginUnitId) {
+		this.transferOriginUnitId = transferOriginUnitId;
+	}
+
+	public String getTransferOriginTeamId() {
+		return transferOriginTeamId;
+	}
+
+	public void setTransferOriginTeamId(String transferOriginTeamId) {
+		this.transferOriginTeamId = transferOriginTeamId;
+	}
+
+	public String getTransferOriginAgencyId() {
+		return transferOriginAgencyId;
+	}
+
+	public void setTransferOriginAgencyId(String transferOriginAgencyId) {
+		this.transferOriginAgencyId = transferOriginAgencyId;
+	}
+
+	public String getTransferUnitId() {
+		return transferUnitId;
+	}
+
+	public void setTransferUnitId(String transferUnitId) {
+		this.transferUnitId = transferUnitId;
 	}
 
 	public String getTransferAgencyId() {
@@ -322,45 +335,57 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public void setTransferStatus(Integer transferStatus) {
 		this.transferStatus = transferStatus;
 	}
+	
+	/*
+	 * 扩展显示用字段
+	 */
 
-	public String getTransferOriginUnitId() {
-		return transferOriginUnitId;
+	public String getUnitName() {
+		try {
+			return UnitContainer.getUnitName(orgUnitId);
+		} catch (BusinessException e) {
+			return "";
+		}
 	}
 
-	public void setTransferOriginUnitId(String transferOriginUnitId) {
-		this.transferOriginUnitId = transferOriginUnitId;
+	public String getUnitRootName() {
+		try {
+			return UnitContainer.getRootUnitName(orgUnitId);
+		} catch (BusinessException e) {
+			return "";
+		}
 	}
 
-	public String getTransferUnitId() {
-		return transferUnitId;
+	public String getAssessUnitName() {
+		if (assessUnitId != null && assessUnitId.length() != 0) {
+			try {
+				return UnitContainer.getUnitName(assessUnitId);
+			} catch (BusinessException e) {
+				return "";
+			}
+		}
+		return null;
 	}
 
-	public void setTransferUnitId(String transferUnitId) {
-		this.transferUnitId = transferUnitId;
+	public String getTransferOriginUnitName() {
+		if (transferStatus != null) {
+			try {
+				return UnitContainer.getUnit(transferOriginUnitId).toString();
+			} catch (BusinessException e) {
+				return "";
+			}
+		}
+		return null;
 	}
 
-	public String getTransferOriginAgencyId() {
-		return transferOriginAgencyId;
+	public String getTransferUnitName() {
+		if (transferStatus != null) {
+			try {
+				return UnitContainer.getUnit(transferUnitId).toString();
+			} catch (BusinessException e) {
+				return "";
+			}
+		}
+		return null;
 	}
-
-	public void setTransferOriginAgencyId(String transferOriginAgencyId) {
-		this.transferOriginAgencyId = transferOriginAgencyId;
-	}
-
-	public String getTransferOriginTeamId() {
-		return transferOriginTeamId;
-	}
-
-	public void setTransferOriginTeamId(String transferOriginTeamId) {
-		this.transferOriginTeamId = transferOriginTeamId;
-	}
-
-	public String getIdentificationType() {
-		return identificationType;
-	}
-
-	public void setIdentificationType(String identificationType) {
-		this.identificationType = identificationType;
-	}
-
 }

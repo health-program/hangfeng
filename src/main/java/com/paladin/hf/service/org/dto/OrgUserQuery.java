@@ -7,7 +7,7 @@ import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.QueryCondition;
 import com.paladin.framework.common.QueryType;
 
-public class OrgUserQuery extends OffsetPage{
+public class OrgUserQuery extends OffsetPage {
 
 	private String name;
 	private String jobRank;
@@ -15,29 +15,27 @@ public class OrgUserQuery extends OffsetPage{
 	private Date startRecordCreateTime;
 	private Date endRecordCreateTime;
 	private String orgUnitId;
-	
-	
+
 	private String assessTeamId;
 	private String unitId;
 	private String agencyId;
 	private List<String> unitIds;
 	private List<String> agencyIds;
-	
+
 	private String userProperty;
-	
+
 	private List<Integer> transferStatus;
-	
 
 	@QueryCondition(type = QueryType.EQUAL)
 	public String getUserProperty() {
-            return userProperty;
-      }
+		return userProperty;
+	}
 
-      public void setUserProperty(String userProperty) {
-            this.userProperty = userProperty;
-      }
+	public void setUserProperty(String userProperty) {
+		this.userProperty = userProperty;
+	}
 
-      @QueryCondition(type = QueryType.LIKE)
+	@QueryCondition(type = QueryType.LIKE)
 	public String getName() {
 		return name;
 	}
@@ -81,7 +79,7 @@ public class OrgUserQuery extends OffsetPage{
 	public void setEndRecordCreateTime(Date endRecordCreateTime) {
 		this.endRecordCreateTime = endRecordCreateTime;
 	}
-	
+
 	@QueryCondition(type = QueryType.EQUAL, name = "orgUnitId")
 	public String getUnitId() {
 		return unitId;
@@ -143,7 +141,5 @@ public class OrgUserQuery extends OffsetPage{
 	public void setTransferStatus(List<Integer> transferStatus) {
 		this.transferStatus = transferStatus;
 	}
-
-
 
 }

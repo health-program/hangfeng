@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,10 +177,20 @@ public class DBConnectionController extends ControllerSupport {
 
 		beanCopy(option, tableOption);
 
+		List<GenerateColumnOptionDTO> columnOptionDTOs = option.getColumnOptions();
+		for (GenerateColumnOptionDTO columnOptionDTO : columnOptionDTOs) {
+			GenerateColumnOption columnOption = tableOption.getColumnOption(columnOptionDTO.getColumnName());
+			beanCopy(columnOptionDTO, columnOption);
+		}
+
 		HashMap<String, String> contentMap = new HashMap<>();
 		contentMap.put("model", generateService.buildFileContent(tableOption, BuilderType.MODEL));
 		contentMap.put("mapper", generateService.buildFileContent(tableOption, BuilderType.MAPPER));
 		contentMap.put("service", generateService.buildFileContent(tableOption, BuilderType.SERVICE));
+
+		contentMap.put("pageIndex", generateService.buildFileContent(tableOption, BuilderType.PAGE_INDEX));
+		contentMap.put("pageAdd", generateService.buildFileContent(tableOption, BuilderType.PAGE_ADD));
+		contentMap.put("pageDetail", generateService.buildFileContent(tableOption, BuilderType.PAGE_DETAIL));
 
 		return CommonResponse.getSuccessResponse(null, contentMap);
 	}
@@ -212,9 +223,9 @@ public class DBConnectionController extends ControllerSupport {
 		GenerateTableOption tableOption = new GenerateTableOption(table, dataBaseSource.getDataBaseConfig().getType());
 
 		beanCopy(option, tableOption);
-		
-		List<GenerateColumnOptionDTO>  columnOptionDTOs = option.getColumnOptions();
-		for(GenerateColumnOptionDTO columnOptionDTO : columnOptionDTOs) {
+
+		List<GenerateColumnOptionDTO> columnOptionDTOs = option.getColumnOptions();
+		for (GenerateColumnOptionDTO columnOptionDTO : columnOptionDTOs) {
 			GenerateColumnOption columnOption = tableOption.getColumnOption(columnOptionDTO.getColumnName());
 			beanCopy(columnOptionDTO, columnOption);
 		}
@@ -242,6 +253,60 @@ public class DBConnectionController extends ControllerSupport {
 		visitCacheService.putCache(request, CACHE_PROJECT_PATH, projectPath);
 
 		return CommonResponse.getSuccessResponse();
+	}
+
+	@RequestMapping("/db/build/file")
+	@ResponseBody
+	public Object buildFile(HttpServletRequest request, HttpServletResponse response, @RequestBody GenerateTableOptionDTO option) {
+
+		String dbName = option.getDbName();
+		String tableName = option.getTableName();
+
+		DataBaseSource dataBaseSource = connectionService.getDataBaseSource(dbName);
+
+		if (dataBaseSource == null) {
+			throw new BusinessException("不存在数据库：" + dbName);
+		}
+
+		DataBase dataBase = dataBaseSource.getDataBase(false);
+		Table table = dataBase.getChild(tableName);
+
+		if (table == null) {
+			throw new BusinessException("不存在表：" + tableName);
+		}
+
+		GenerateTableOption tableOption = new GenerateTableOption(table, dataBaseSource.getDataBaseConfig().getType());
+
+		beanCopy(option, tableOption);
+
+		List<GenerateColumnOptionDTO> columnOptionDTOs = option.getColumnOptions();
+		for (GenerateColumnOptionDTO columnOptionDTO : columnOptionDTOs) {
+			GenerateColumnOption columnOption = tableOption.getColumnOption(columnOptionDTO.getColumnName());
+			beanCopy(columnOptionDTO, columnOption);
+		}
+
+		String projectPath = option.getFilePath();
+
+		if (projectPath == null || projectPath.length() == 0) {
+			throw new BusinessException("项目路径不能为空");
+		}
+
+		generateService.buildProjectFile(tableOption, BuilderType.MODEL, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.MODEL_VO, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.MODEL_DTO, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.QUERY_DTO, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.MAPPER, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.SERVICE, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.CONTROLLER, projectPath);
+
+		generateService.buildProjectFile(tableOption, BuilderType.SQLMAPPER, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.JAVASCRIPT, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.PAGE_INDEX, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.PAGE_ADD, projectPath);
+		generateService.buildProjectFile(tableOption, BuilderType.PAGE_DETAIL, projectPath);
+
+		return CommonResponse.getSuccessResponse();
+
 	}
 
 }

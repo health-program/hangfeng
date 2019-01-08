@@ -13,6 +13,7 @@ import com.paladin.framework.common.QueryType;
 import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;
+import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.utils.StringUtil;
 import com.paladin.framework.utils.uuid.UUIDUtil;
@@ -27,7 +28,9 @@ import com.paladin.hf.mapper.org.OrgUserMapper;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.org.OrgUserTransferLog;
 import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
+import com.paladin.hf.service.org.dto.OrgUserDTO;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
+import com.paladin.hf.service.org.vo.OrgUserVO;
 import com.paladin.hf.service.syst.SysUserService;
 
 @Service
@@ -45,6 +48,28 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 	@Autowired
 	private PersonCycAssessMapper personCycAssessMapper;
 
+	public OrgUserVO getUser(String id) {
+		OrgUser user = get(id);
+		if (user != null) {
+			OrgUserVO vo = new OrgUserVO();
+			SimpleBeanCopyUtil.simpleCopy(user, vo);
+			return vo;
+		}
+		return null;
+	}
+	
+	public PageResult<OrgUserVO> findUser(OrgUserQuery query) {
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getOrgUnitId());
+		query.setAgencyId(unitQuery.getAgencyId());
+		query.setAgencyIds(unitQuery.getAgencyIds());
+		query.setUnitId(unitQuery.getUnitId());
+		query.setUnitIds(unitQuery.getUnitIds());
+		query.setAssessTeamId(unitQuery.getAssessTeamId());
+
+		return searchPage(query).convert(OrgUserVO.class);		
+	}
+
+	// TODO 干嘛的？只查一层？
 	public List<OrgUser> findUnitUser(String unitId) {
 		// 判断是否拥有该单位权限
 		if (DataPermissionUtil.ownUnit(unitId)) {
@@ -59,9 +84,13 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 	}
 
 	@Transactional
-	public int saveOrUpdateUser(OrgUser orgUser) {
+	public boolean addUser(OrgUserDTO orgUserDTO) {
+		if (orgUserDTO == null) {
+			throw new BusinessException("新增人员数据异常");
+		}
 
-		int effect = 0;
+		OrgUser orgUser = new OrgUser();
+		SimpleBeanCopyUtil.simpleCopy(orgUserDTO, orgUser);
 
 		Unit unit = UnitContainer.getUnit(orgUser.getOrgUnitId());
 		// 设置冗余字段 机构
@@ -92,39 +121,93 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 			}
 		}
 
-		String userId = orgUser.getId();
+		String idcard = orgUser.getIdentification();
+
+		if (idcard != null && idcard.length() != 0) {
+
+			// 加入身份证类型后验证需要结合身份证类型，暂时不验证
+			// if (!ValidateUtil.isValidatedAllIdcard(idcard)) {
+			// throw new BusinessException("请输入有效的身份证号码");
+			// }
+
+			if (!isUniqueIdcard(idcard)) {
+				throw new BusinessException("身份证号码不能重复");
+			}
+		} else {
+			throw new BusinessException("身份证号码不能为空");
+		}
+
+		String orgUserId = UUIDUtil.createUUID();
+		orgUser.setId(orgUserId);
+		if (sysUserService.createOrgUserAccount(orgUser.getAccount(), orgUserId) > 0) {
+			save(orgUser);
+		}
+
+		return true;
+	}
+
+	@Transactional
+	public boolean updateUser(OrgUserDTO orgUserDTO) {
+
+		String userId = orgUserDTO.getId();
+		if (userId == null || userId.length() == 0) {
+			throw new BusinessException("找不到需要更新的人员");
+		}
+
+		OrgUser orgUser = get(userId);
+		if (orgUser == null) {
+			throw new BusinessException("找不到需要更新的人员");
+		}
+
+		SimpleBeanCopyUtil.simpleCopy(orgUserDTO, orgUser);
+
+		Unit unit = UnitContainer.getUnit(orgUser.getOrgUnitId());
+		// 设置冗余字段 机构
+		orgUser.setOrgAgencyId(unit.getAgency().getId());
+
+		Unit assessTeam = unit.getAssessTeam();
+		if (assessTeam != null) {
+			orgUser.setOrgAssessTeamId(assessTeam.getId());
+		} else {
+			orgUser.setOrgAssessTeamId(null);
+		}
+
+		// 是否考评人员处理，赋予考评权限
+		if (orgUser.getIsAssessor() == 0) {
+			orgUser.setAssessUnitId(null);
+			orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_SELF_ID);
+		} else {
+			String assessUid = orgUser.getAssessUnitId();
+			if (StringUtil.isEmpty(assessUid)) {
+				throw new BusinessException("考评人员必须选择考评科室");
+			}
+
+			Unit assessUnit = UnitContainer.getUnit(assessUid);
+			if (assessUnit.isAgency()) {
+				orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_AGENCY_ADMIN_ID);
+			} else if (assessUnit.isAssessTeam()) {
+				orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_ASSESS_TEAM_ADMIN_ID);
+			} else {
+				orgUser.setAssessRole(HfUserSession.DEFAULT_ROLE_DEPARTMENT_ADMIN_ID);
+			}
+		}
 
 		String idcard = orgUser.getIdentification();
 		if (idcard != null && idcard.length() != 0) {
-			if (!ValidateUtil.isValidatedAllIdcard(idcard)) {
-				throw new BusinessException("请输入有效的身份证号码");
-			}
+			// 加入身份证类型后验证需要结合身份证类型，暂时不验证
+			// if (!ValidateUtil.isValidatedAllIdcard(idcard)) {
+			// throw new BusinessException("请输入有效的身份证号码");
+			// }
 
-			if (userId == null || userId.length() == 0) {
-				if (!isUniqueIdcard(idcard)) {
-					throw new BusinessException("身份证号码不能重复");
-				}
-			} else {
-				if (!isUniqueIdcardButSelf(idcard, userId)) {
-					throw new BusinessException("身份证号码不能重复");
-				}
-			}
-		}
-
-		if (userId == null || userId.length() == 0) {
-			String orgUserId = UUIDUtil.createUUID();
-			orgUser.setId(orgUserId);
-			if (sysUserService.createOrgUserAccount(orgUser.getAccount(), orgUserId) > 0) {
-				effect = save(orgUser);
+			if (!isUniqueIdcardButSelf(idcard, userId)) {
+				throw new BusinessException("身份证号码不能重复");
 			}
 		} else {
-			orgUser.setAccount(null);
-			effect = this.updateSelective(orgUser);
-
-			// 需要更新UserSession
+			throw new BusinessException("身份证号码不能为空");
 		}
 
-		return effect;
+		update(orgUser);
+		return true;
 	}
 
 	public boolean isUniqueIdcardButSelf(String identification, String userId) {
@@ -135,16 +218,8 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return orgUserMapper.countUserByIdentification(identification) == 0;
 	}
 
-	public PageResult<OrgUser> searchUserPage(OrgUserQuery query) {
-		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getOrgUnitId());
-		query.setAgencyId(unitQuery.getAgencyId());
-		query.setAgencyIds(unitQuery.getAgencyIds());
-		query.setUnitId(unitQuery.getUnitId());
-		query.setUnitIds(unitQuery.getUnitIds());
-		query.setAssessTeamId(unitQuery.getAssessTeamId());
 
-		return searchPage(query);
-	}
+
 
 	@Transactional
 	public int wipeByPrimaryKey(String id) {
@@ -506,4 +581,5 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		Date endTime = calendar.getTime();
 		return personCycAssessMapper.findThisYearAssessSituationList(orgUserId, startTime, endTime);
 	}
+
 }

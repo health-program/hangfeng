@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ControllerSupport;
+import com.paladin.framework.core.query.QueryInputMethod;
+import com.paladin.framework.core.query.QueryOutputMethod;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.controller.util.FormType;
 import com.paladin.hf.core.HfUserSession;
@@ -29,10 +31,10 @@ import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
 import com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery;
 import com.paladin.hf.service.org.OrgUserService;
+import com.paladin.hf.service.org.dto.OrgUserDTO;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
 import com.paladin.hf.service.org.dto.SimpleUser;
 import com.paladin.hf.service.syst.SysUserService;
-
 
 /**
  * 
@@ -55,24 +57,90 @@ public class OrgUserController extends ControllerSupport{
     @Autowired
     private PersonCycAssessMapper perCycAssMapper;
     
+    // ----------------- 档案管理 -----------------
+    
 	@RequestMapping("/index")
-	public String index(@RequestParam(required = false) String cached, HttpServletRequest request, Model model) {
-		OrgUserQuery query = null;
-		if (cached != null && cached.length() > 0) {
-			HttpSession session = request.getSession();
-			query = (OrgUserQuery) session.getAttribute(OrgUserQuery.class.getName());
-			if (query != null) {
-				model.addAttribute("query", query);
-			}
-		}
+	@QueryInputMethod(queryClass = OrgUserQuery.class)
+	public String index(HttpServletRequest request, Model model) {
 		return "/hf/org/user_index";
 	}
+	
+	@RequestMapping("/find")
+	@ResponseBody
+	@QueryOutputMethod(queryClass = OrgUserQuery.class, paramIndex = 0)
+	public Object find(OrgUserQuery query) {
+		return CommonResponse.getSuccessResponse(orgUserService.findUser(query));
+	}
+	
+	@RequestMapping("/get")
+	@ResponseBody
+	public Object get(@RequestParam String id) {
+		return CommonResponse.getSuccessResponse(orgUserService.getUser(id));
+	}
+	
+	@RequestMapping("/add")
+	public String add() {
+		return "/hf/org/user_add";
+	}
+	
+	@RequestMapping("/detail")
+	public String detail(@RequestParam String id, Model model) {
+		model.addAttribute("id", id);
+		return "/hf/org/user_detail";
+	}
+	
+	@RequestMapping("/save")
+	@ResponseBody
+	public Object save(@Valid OrgUserDTO orgUser, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return this.validErrorHandler(bindingResult);
+		}	
+		return CommonResponse.getResponse(orgUserService.addUser(orgUser));
+	}
+	
+	@RequestMapping("/update")
+	@ResponseBody
+	public Object udpate(@Valid OrgUserDTO orgUser, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return this.validErrorHandler(bindingResult);
+		}	
+		return CommonResponse.getResponse(orgUserService.updateUser(orgUser));
+	}
+
+	/**
+	 * 
+	 * 逻辑删除档案人员 物理删除账号
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/real/delete")
+	@ResponseBody
+	public Object realDelete(@RequestParam(required = true) String id) {
+		return CommonResponse.getResponse(orgUserService.wipeByPrimaryKey(id));
+	}
+
+	/**
+	 * 重置密码
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/reset/password")
+	@ResponseBody
+	public Object resetPassword(@RequestParam(required = true) String userId) {
+		return CommonResponse.getResponse(sysUserService.resetOrgUserPassword(userId));
+	}
+	
+	
+	
+	
+	
+	
 
 	@RequestMapping("/self/index")
 	public String selfIndex(Model model) {
-
 		HfUserSession session = HfUserSession.getCurrentUserSession();
-
 		if (session.isSystemAdmin()) {
 			return "no_business";
 		} else {
@@ -83,17 +151,9 @@ public class OrgUserController extends ControllerSupport{
 				model.addAttribute("assessCycleName", assessCycle.getCycleName());
 			}
 		}
-
 		return "/hf/org/user_detail_index";
 	}
 
-	@RequestMapping("/search/all")
-	@ResponseBody
-	public Object searchAll(OrgUserQuery query, HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		session.setAttribute(OrgUserQuery.class.getName(), query);
-		return CommonResponse.getSuccessResponse(orgUserService.searchUserPage(query));// .searchPage(query)));
-	}
 
 	@RequestMapping("/view")
 	public String view(@RequestParam(required = true) String id, Model model) {
@@ -154,65 +214,9 @@ public class OrgUserController extends ControllerSupport{
 		return "/hf/org/user_from";
 	}
 
-	@RequestMapping("/save")
-	@ResponseBody
-	public Object save(@Valid OrgUser orgUser, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return this.validErrorHandler(bindingResult);
-		}
 
-		String uid = orgUser.getId();
-		String identifi = orgUser.getIdentification();
 
-		boolean isAdd = uid == null || uid.length() == 0;
-		if (identifi == null || identifi.length() == 0) {
-			return CommonResponse.getFailResponse("身份证号不能为空！");
-		}
-		List<OrgUser> sameOrgUsers = orgUserService.searchAll(new Condition("identification", QueryType.EQUAL, identifi));
-		if (sameOrgUsers.size() > 0 && sameOrgUsers != null) {
-			if (isAdd) {// 新增
-				return CommonResponse.getFailResponse("该身份证号已存在！");
-			} else {// 修改
-				for (OrgUser user : sameOrgUsers) {
-					if (!user.getId().equals(uid)) {
-						return CommonResponse.getFailResponse("该身份证号已存在！");
-					}
-				}
-			}
-		}
-		return CommonResponse.getResponse(orgUserService.saveOrUpdateUser(orgUser));
-	}
-
-	@RequestMapping("/delete")
-	@ResponseBody
-	public Object delete(@RequestParam(required = true) String id) {
-		return CommonResponse.getResponse(orgUserService.removeByPrimaryKey(id), "删除失败");
-	}
-
-	/**
-	 * 
-	 * 逻辑删除档案人员 物理删除账号
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping("/real/delete")
-	@ResponseBody
-	public Object realDelete(@RequestParam(required = true) String id) {
-		return CommonResponse.getResponse(orgUserService.wipeByPrimaryKey(id));
-	}
-
-	/**
-	 * 重置密码
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	@RequestMapping("/reset/password")
-	@ResponseBody
-	public Object resetPassword(@RequestParam(required = true) String userId) {
-		return CommonResponse.getResponse(sysUserService.resetOrgUserPassword(userId));
-	}
+	
 
 	/**
 	 * 验证账号是否可行

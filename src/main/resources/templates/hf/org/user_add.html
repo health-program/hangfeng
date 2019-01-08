@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header" />
+
+<body>
+    
+    <section class="content-header">
+        <h1>org_user</h1>
+        <ol class="breadcrumb">
+            <li><a href="/null/org/user/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">新增</li>
+        </ol>
+    </section>
+    <section class="content">
+    </section>
+    <div th:include="/hf/footer" />
+    <script type="text/javascript">
+    var options = {
+        id: "model",
+        name: "新增",
+        url:"/null/org/user/save",
+        columns: [
+				{ title: "出生日期", name: "birthday", inputType: "DATE" },
+				{ title: "民族", name: "nation", inputType: "TEXT" },
+				{ title: "identification_type", name: "identificationType", inputType: "TEXT" },
+				{ title: "是否考评人员", name: "isAssessor", inputType: "TEXT" },
+				{ title: "transfer_origin_unit_id", name: "transferOriginUnitId", inputType: "TEXT" },
+				{ title: "transfer_agency_id", name: "transferAgencyId", inputType: "TEXT" },
+				{ title: "是否管理员", name: "isAdmin", inputType: "TEXT" },
+				{ title: "身份证", name: "identification", inputType: "TEXT" },
+				{ title: "transfer_origin_agency_id", name: "transferOriginAgencyId", inputType: "TEXT" },
+				{ title: "职称", name: "jobRank", inputType: "TEXT" },
+				{ title: "党派", name: "partisan", inputType: "TEXT" },
+				{ title: "历年惩处", name: "punish", inputType: "TEXT" },
+				{ title: "单位ID", name: "orgAgencyId", inputType: "TEXT" },
+				{ title: "人员属性", name: "userProperty", inputType: "TEXT" },
+				{ title: "学历", name: "oeducation", inputType: "TEXT" },
+				{ title: "职级", name: "jobLevel", inputType: "TEXT" },
+				{ title: "transfer_unit_id", name: "transferUnitId", inputType: "TEXT" },
+				{ title: "参加工作时间", name: "comeUnitTime", inputType: "DATE" },
+				{ title: "个人简历", name: "resume", inputType: "TEXT" },
+				{ title: "历年奖励", name: "reward", inputType: "TEXT" },
+				{ title: "考评角色", name: "assessRole", inputType: "TEXT" },
+				{ title: "性别", name: "sex", inputType: "TEXT" },
+				{ title: "transfer_status", name: "transferStatus", inputType: "TEXT" },
+				{ title: "属于考评小组ID", name: "orgAssessTeamId", inputType: "TEXT" },
+				{ title: "参加工作时间", name: "startWorkTime", inputType: "DATE" },
+				{ title: "职务", name: "jobDuties", inputType: "TEXT" },
+				{ title: "姓名", name: "name", inputType: "TEXT" },
+				{ title: "record_create_time", name: "recordCreateTime", inputType: "DATE" },
+				{ title: "机构ID", name: "orgUnitId", inputType: "TEXT" },
+				{ title: "账号", name: "account", inputType: "TEXT" },
+				{ title: "transfer_origin_team_id", name: "transferOriginTeamId", inputType: "TEXT" },
+				{ title: "考评单位ID", name: "assessUnitId", inputType: "TEXT" }
+				]
+    }
+
+    $(function() {       
+        var html = generateEditHtml(options);
+        $(".content").html(html);
+        var model = new tonto.Model("model", options.columns, {
+            pattern:"edit",
+            successCallback:function(){
+                $.successAlert("保存成功",function(){
+                    window.location = "/null/org/user/index";
+                });
+            }
+        });
+        model.setData(null);
+        $.initComponment();
+    });
+    </script>
+</body>
+
+</html>

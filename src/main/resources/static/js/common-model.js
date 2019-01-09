@@ -1567,6 +1567,24 @@ var _unitFieldBuilder = new _FieldBuilder("UNIT", {
         var unit = column.unitComponment && column.unitComponment.getCurrent();
         return unit ? unit.id : null;
     },
+    fillView: function(column, data, model) {
+        // VIEW页面填充值时候调用
+        if (typeof column.fillView === 'function') {
+            return column.fillView(column, data, model);
+        }
+
+        var p = model.viewBody.find("[name='" + column.name + "']");
+        if (!p || p.length == 0) return;
+        var v = data ? data[column.viewName] : null;
+
+        if (v) {
+            p.removeClass("text-muted");
+            p.text(v);
+        } else {
+            p.addClass("text-muted");
+            p.text("无");
+        }
+    },
     hideEdit: function(column, model) {
         if (column.editDisplay === "hide") {
             return;

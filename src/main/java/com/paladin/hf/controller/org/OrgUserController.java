@@ -121,23 +121,6 @@ public class OrgUserController extends ControllerSupport {
 		return CommonResponse.getResponse(orgUserService.wipeByPrimaryKey(id));
 	}
 
-	
-
-	@RequestMapping("/self/index")
-	public String selfIndex(Model model) {
-		HfUserSession session = HfUserSession.getCurrentUserSession();
-		if (session.isSystemAdmin()) {
-			return "no_business";
-		} else {
-			model.addAttribute("user", orgUserService.get(session.getUserId()));
-			AssessCycle assessCycle = assessCycleService.getSelfFirstAssessCycle();
-			if (assessCycle != null) {
-				model.addAttribute("assessCycleId", assessCycle.getId());
-				model.addAttribute("assessCycleName", assessCycle.getCycleName());
-			}
-		}
-		return "/hf/org/user_detail_index";
-	}
 
 	@RequestMapping("/view")
 	public String view(@RequestParam(required = true) String id, Model model) {

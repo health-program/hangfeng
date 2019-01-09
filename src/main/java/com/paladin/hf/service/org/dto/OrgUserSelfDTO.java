@@ -2,15 +2,8 @@ package com.paladin.hf.service.org.dto;
 
 import java.util.Date;
 
-public class OrgUserDTO {
-	private String id;
-
-	private String account;
+public class OrgUserSelfDTO {
 	
-	private String orgUnitId;
-
-	private String name;
-
 	private Date recordCreateTime;
 
 	private String sex;
@@ -37,41 +30,9 @@ public class OrgUserDTO {
 
 	private String punish;
 
-	private Integer isAssessor;
-
-	private String assessUnitId;
-
 	private String jobLevel;
 
 	private String userProperty;
-
-	private String identification;
-	
-	private String identificationType;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getOrgUnitId() {
-		return orgUnitId;
-	}
-
-	public void setOrgUnitId(String orgUnitId) {
-		this.orgUnitId = orgUnitId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public Date getRecordCreateTime() {
 		return recordCreateTime;
@@ -177,22 +138,6 @@ public class OrgUserDTO {
 		this.punish = punish;
 	}
 
-	public Integer getIsAssessor() {
-		return isAssessor;
-	}
-
-	public void setIsAssessor(Integer isAssessor) {
-		this.isAssessor = isAssessor;
-	}
-
-	public String getAssessUnitId() {
-		return assessUnitId;
-	}
-
-	public void setAssessUnitId(String assessUnitId) {
-		this.assessUnitId = assessUnitId;
-	}
-
 	public String getJobLevel() {
 		return jobLevel;
 	}
@@ -207,30 +152,6 @@ public class OrgUserDTO {
 
 	public void setUserProperty(String userProperty) {
 		this.userProperty = userProperty;
-	}
-
-	public String getIdentification() {
-		return identification;
-	}
-
-	public void setIdentification(String identification) {
-		this.identification = identification;
-	}
-
-	public String getIdentificationType() {
-		return identificationType;
-	}
-
-	public void setIdentificationType(String identificationType) {
-		this.identificationType = identificationType;
-	}
-
-	public String getAccount() {
-		return account;
-	}
-
-	public void setAccount(String account) {
-		this.account = account;
 	}
 
 	

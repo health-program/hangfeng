@@ -30,6 +30,7 @@ import com.paladin.hf.model.org.OrgUserTransferLog;
 import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
 import com.paladin.hf.service.org.dto.OrgUserDTO;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
+import com.paladin.hf.service.org.dto.OrgUserSelfDTO;
 import com.paladin.hf.service.org.vo.OrgUserVO;
 import com.paladin.hf.service.syst.SysUserService;
 
@@ -211,7 +212,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		}
 
 		String nowAccount = orgUser.getAccount();
-		if(nowAccount == null || nowAccount.length() == 0) {
+		if (nowAccount == null || nowAccount.length() == 0) {
 			throw new BusinessException("账号不能为空");
 		}
 
@@ -219,6 +220,24 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 			sysUserService.updateAccount(userId, originAccount, nowAccount);
 		}
 
+		update(orgUser);
+		return true;
+	}
+
+	@Transactional
+	public boolean updateUserSelf(OrgUserSelfDTO orgUserDTO) {
+		String userId = HfUserSession.getCurrentUserSession().getUserId();
+		if (userId == null || userId.length() == 0) {
+			throw new BusinessException("找不到需要更新的人员");
+		}
+
+		OrgUser orgUser = get(userId);
+
+		if (orgUser == null) {
+			throw new BusinessException("找不到需要更新的人员");
+		}
+
+		SimpleBeanCopyUtil.simpleCopy(orgUserDTO, orgUser);
 		update(orgUser);
 		return true;
 	}

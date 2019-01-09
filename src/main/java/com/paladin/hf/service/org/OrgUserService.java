@@ -57,7 +57,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		}
 		return null;
 	}
-	
+
 	public PageResult<OrgUserVO> findUser(OrgUserQuery query) {
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getOrgUnitId());
 		query.setAgencyId(unitQuery.getAgencyId());
@@ -66,7 +66,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		query.setUnitIds(unitQuery.getUnitIds());
 		query.setAssessTeamId(unitQuery.getAssessTeamId());
 
-		return searchPage(query).convert(OrgUserVO.class);		
+		return searchPage(query).convert(OrgUserVO.class);
 	}
 
 	// TODO 干嘛的？只查一层？
@@ -155,9 +155,13 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		}
 
 		OrgUser orgUser = get(userId);
+
 		if (orgUser == null) {
 			throw new BusinessException("找不到需要更新的人员");
 		}
+
+		// 原账号
+		String originAccount = orgUser.getAccount();
 
 		SimpleBeanCopyUtil.simpleCopy(orgUserDTO, orgUser);
 
@@ -206,6 +210,15 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 			throw new BusinessException("身份证号码不能为空");
 		}
 
+		String nowAccount = orgUser.getAccount();
+		if(nowAccount == null || nowAccount.length() == 0) {
+			throw new BusinessException("账号不能为空");
+		}
+
+		if (!originAccount.equals(nowAccount)) {
+			sysUserService.updateAccount(userId, originAccount, nowAccount);
+		}
+
 		update(orgUser);
 		return true;
 	}
@@ -217,9 +230,6 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 	public boolean isUniqueIdcard(String identification) {
 		return orgUserMapper.countUserByIdentification(identification) == 0;
 	}
-
-
-
 
 	@Transactional
 	public int wipeByPrimaryKey(String id) {

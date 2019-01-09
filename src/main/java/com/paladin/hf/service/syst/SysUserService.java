@@ -122,6 +122,17 @@ public class SysUserService extends ServiceSupport<SysUser> {
 		Example example = GeneralCriteriaBuilder.buildAnd(SysUser.class, new Condition(SysUser.COLUMN_FIELD_ACCOUNT, QueryType.EQUAL, account));
 		return sysUserMapper.selectCountByExample(example) == 0;
 	}
+	
+	/**
+	 * 根据原账号和用户ID更新账号
+	 * @param userId
+	 * @param originAccount
+	 * @param nowAccount
+	 * @return
+	 */
+	public int updateAccount(String userId, String originAccount, String nowAccount) {
+		return sysUserMapper.updateAccount(userId, originAccount, nowAccount);
+	}
 
 	public SysUser getUser(String account) {
 		Example example = GeneralCriteriaBuilder.buildAnd(SysUser.class,
@@ -129,6 +140,7 @@ public class SysUserService extends ServiceSupport<SysUser> {
 		List<SysUser> users = sysUserMapper.selectByExample(example);
 		return (users != null && users.size() > 0) ? users.get(0) : null;
 	}
+	
 
 	/**
 	 * 更新登录人密码
@@ -243,5 +255,7 @@ public class SysUserService extends ServiceSupport<SysUser> {
 		sysUserMapper.sysUserLog(assessRole);
 		return page;
 	}
+
+
 
 }

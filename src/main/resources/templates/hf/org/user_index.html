@@ -19,41 +19,43 @@
                 <div class="col-md-12">
                     <form id="searchbar" class="form-horizontal">
                         <div class="form-group">
-                            <label for="unitId" style="width: 130px" class="col-xs-2 control-label">被考评科室</label>
-                            <div class="col-xs-2">
-                                <input type="text" class="form-control tonto-select-unit" name="orgUnitId" th:attr="unitid=${query?.orgUnitId}" placeholder="请选择科室"></input>
-                            </div>
-                            <label for="name" style="width: 100px" class="col-xs-2 control-label">姓名</label>
-                            <div class="col-xs-2">
+                            <label for="name" class="col-xs-1 control-label">姓名</label>
+                            <div class="col-xs-3">
                                 <input type="text" name="name" th:value="${query?.name}" class="form-control" />
                             </div>
-                            <label for="jobRank" style="width: 80px" class="col-xs-2 control-label">职称</label>
-                            <div class="col-xs-2">
+                            <label for="startRecordCreateTime" class="col-xs-1 control-label">建档时间</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择开始日期" />
+                            </div>
+                            <label for="endRecordCreateTime" style="width:30px" class="col-xs-1 control-label">至</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择结束日期" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="jobRank" class="col-xs-1 control-label">职称</label>
+                            <div class="col-xs-3">
                                 <select name="jobRank" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.jobRank}" enumcode="job-rank-type">
                                     <option value="">请选择</option>
                                 </select>
                             </div>
-                            <label for="userProperty" style="width: 90px" class="col-xs-2 control-label">人员属性</label>
-                            <div class="col-xs-2">
+                            <label for="userProperty" class="col-xs-1 control-label">人员属性</label>
+                            <div class="col-xs-3">
                                 <select name="userProperty" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.userProperty}" enumcode="user_property_type">
                                     <option value="">请选择</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="isAssessor" style="width: 130px" class="col-xs-2 control-label">是否考评人员</label>
-                            <div class="col-xs-2">
+                            <label for="unitId" class="col-xs-1 control-label">被考评科室</label>
+                            <div class="col-xs-3">
+                                <input type="text" class="form-control tonto-select-unit" name="orgUnitId" th:attr="unitid=${query?.orgUnitId}" placeholder="请选择科室"></input>
+                            </div>
+                            <label for="isAssessor" class="col-xs-1 control-label">是否考评人员</label>
+                            <div class="col-xs-3">
                                 <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
                                     <option value="">请选择</option>
                                 </select>
-                            </div>
-                            <label for="startRecordCreateTime" style="width: 100px" class="col-xs-2 control-label">建档时间</label>
-                            <div class="col-xs-2">
-                                <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
-                            </div>
-                            <label for="endRecordCreateTime" style="width: 80px; text-align: center" class="col-xs-1 control-label">至</label>
-                            <div class="col-xs-2">
-                                <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
                             </div>
                         </div>
                     </form>
@@ -116,7 +118,7 @@
                     { title: "职称", field: "jobRank", enumcode: "job-rank-type" },
                     { title: "职务", field: "jobDuties", enumcode: "job-duties-type" },
                     { title: "学历", field: "oeducation", enumcode: "oeducation-type" },
-                    { title: "建档时间", field: "recordCreateTime" },
+                    { title: "建档时间", field: "recordCreateTime", formatter: "date" },
                     {
                         title: "操作",
                         align: "center",
@@ -132,7 +134,7 @@
                                 removeUser(row);
                             }
                         },
-                        formatter: function operateFormatter(value, row, index) {
+                        formatter: function(value, row, index) {
                             return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
                                 '<button class="reset btn btn-xs btn-warning" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>重置密码</button>' +
                                 '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
@@ -179,7 +181,7 @@
     function resetPassword(row) {
         if (row) {
             layer.confirm('<span style="color:red;">（还原后的密码为：000000），确定还原密码吗？</span>', function() {
-                $.postAjax("/org/user/reset/password", { userId: row.id }, function() {
+                $.postAjax("/sys/user/reset/password", { userId: row.id }, function() {
                     layer.msg("重置密码成功", { icon: 1 });
                 });
             });

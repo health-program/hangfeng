@@ -5,6 +5,8 @@ import java.util.Date;
 public class OrgUserDTO {
 	private String id;
 
+	private String account;
+	
 	private String orgUnitId;
 
 	private String name;
@@ -231,6 +233,14 @@ public class OrgUserDTO {
 
 	public void setIdentificationType(String identificationType) {
 		this.identificationType = identificationType;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.paladin.framework.common.Condition;
-import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.core.query.QueryInputMethod;
 import com.paladin.framework.core.query.QueryOutputMethod;
@@ -43,7 +40,7 @@ import com.paladin.hf.service.syst.SysUserService;
  */
 @Controller
 @RequestMapping("/org/user")
-public class OrgUserController extends ControllerSupport{
+public class OrgUserController extends ControllerSupport {
 
 	@Autowired
 	private OrgUserService orgUserService;
@@ -53,58 +50,62 @@ public class OrgUserController extends ControllerSupport{
 
 	@Autowired
 	private AssessCycleService assessCycleService;
-	
-    @Autowired
-    private PersonCycAssessMapper perCycAssMapper;
-    
-    // ----------------- 档案管理 -----------------
-    
+
+	@Autowired
+	private PersonCycAssessMapper perCycAssMapper;
+
+	// ----------------- 档案管理 -----------------
+
 	@RequestMapping("/index")
 	@QueryInputMethod(queryClass = OrgUserQuery.class)
 	public String index(HttpServletRequest request, Model model) {
 		return "/hf/org/user_index";
 	}
-	
+
 	@RequestMapping("/find")
 	@ResponseBody
 	@QueryOutputMethod(queryClass = OrgUserQuery.class, paramIndex = 0)
 	public Object find(OrgUserQuery query) {
 		return CommonResponse.getSuccessResponse(orgUserService.findUser(query));
 	}
-	
+
 	@RequestMapping("/get")
 	@ResponseBody
 	public Object get(@RequestParam String id) {
 		return CommonResponse.getSuccessResponse(orgUserService.getUser(id));
 	}
-	
+
 	@RequestMapping("/add")
 	public String add() {
 		return "/hf/org/user_add";
 	}
-	
+
 	@RequestMapping("/detail")
 	public String detail(@RequestParam String id, Model model) {
 		model.addAttribute("id", id);
 		return "/hf/org/user_detail";
 	}
-	
+
 	@RequestMapping("/save")
 	@ResponseBody
 	public Object save(@Valid OrgUserDTO orgUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return this.validErrorHandler(bindingResult);
-		}	
+		}
 		return CommonResponse.getResponse(orgUserService.addUser(orgUser));
 	}
-	
+
 	@RequestMapping("/update")
 	@ResponseBody
 	public Object udpate(@Valid OrgUserDTO orgUser, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return this.validErrorHandler(bindingResult);
-		}	
-		return CommonResponse.getResponse(orgUserService.updateUser(orgUser));
+		}
+		if (orgUserService.updateUser(orgUser)) {
+			return CommonResponse.getSuccessResponse(orgUserService.getUser(orgUser.getId()));
+		} else {
+			return CommonResponse.getFailResponse();
+		}
 	}
 
 	/**
@@ -120,22 +121,6 @@ public class OrgUserController extends ControllerSupport{
 		return CommonResponse.getResponse(orgUserService.wipeByPrimaryKey(id));
 	}
 
-	/**
-	 * 重置密码
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	@RequestMapping("/reset/password")
-	@ResponseBody
-	public Object resetPassword(@RequestParam(required = true) String userId) {
-		return CommonResponse.getResponse(sysUserService.resetOrgUserPassword(userId));
-	}
-	
-	
-	
-	
-	
 	
 
 	@RequestMapping("/self/index")
@@ -153,7 +138,6 @@ public class OrgUserController extends ControllerSupport{
 		}
 		return "/hf/org/user_detail_index";
 	}
-
 
 	@RequestMapping("/view")
 	public String view(@RequestParam(required = true) String id, Model model) {
@@ -214,21 +198,6 @@ public class OrgUserController extends ControllerSupport{
 		return "/hf/org/user_from";
 	}
 
-
-
-	
-
-	/**
-	 * 验证账号是否可行
-	 * 
-	 * @param account
-	 * @return
-	 */
-	@RequestMapping("/validate/account")
-	@ResponseBody
-	public Object validateAccount(@RequestParam(required = true) String account) {
-		return CommonResponse.getSuccessResponse(sysUserService.validateAccount(account));
-	}
 
 	/**
 	 * 查找单位下所有人员
@@ -385,44 +354,54 @@ public class OrgUserController extends ControllerSupport{
 	@RequestMapping("/import")
 	@ResponseBody
 	public Object importUser(@RequestParam("file") MultipartFile file, @RequestParam("unitId") String unitId) {
-//		try {
-//			XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
-//			ExcelReader<ExcelUser> reader = new DefaultExcelReader<ExcelUser>(ExcelUser.class, new DefaultSheet(workbook.getSheetAt(0)), 2);
-//			List<ExcelUser> rows = reader.readRows();
-//
-//			List<OrgUser> users = new ArrayList<>(rows.size());
-//			for (ExcelUser row : rows) {
-//
-//				OrgUser user = new OrgUser();
-//				user.setAccount(row.getAccount());
-//				user.setRecordCreateTime(convert(row.getRecordCreateTime()));
-//				user.setName(row.getName());
-//				user.setIdentification(row.getIdentification());
-//
-//				user.setSex(ConstantsContainer.getKeyByValue("sex-type", row.getSex()));
-//				user.setBirthday(convert(row.getBirthday()));
-//				user.setNation(ConstantsContainer.getKeyByValue("nation-type", row.getNation()));
-//				user.setPartisan(ConstantsContainer.getKeyByValue("partisan-type", row.getPartisan()));
-//				user.setJobRank(ConstantsContainer.getKeyByValue("job-rank-type", row.getJobRank()));
-//				user.setJobDuties(ConstantsContainer.getKeyByValue("job-duties-type", row.getJobDuties()));
-//				user.setJobLevel(ConstantsContainer.getKeyByValue("job_level", row.getJobLevel()));
-//				user.setOeducation(ConstantsContainer.getKeyByValue("oeducation-type", row.getOeducation()));
-//				user.setStartWorkTime(convert(row.getStartWorkTime()));
-//				user.setComeUnitTime(convert(row.getComeUnitTime()));
-//				user.setUserProperty(ConstantsContainer.getKeyByValue("user_property_type", row.getUserProperty()));
-//				user.setResume(row.getResume());
-//				user.setReward(row.getReward());
-//				user.setPunish(row.getPunish());
-//
-//				users.add(user);
-//			}
-//
-//			return CommonResponse.getSuccessResponse(orgUserService.importUser(users, unitId));
-//		} catch (IOException | ExcelReadException e) {
-//			throw new BusinessException("导入失败", e);
-//		}
+		// try {
+		// XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+		// ExcelReader<ExcelUser> reader = new
+		// DefaultExcelReader<ExcelUser>(ExcelUser.class, new
+		// DefaultSheet(workbook.getSheetAt(0)), 2);
+		// List<ExcelUser> rows = reader.readRows();
+		//
+		// List<OrgUser> users = new ArrayList<>(rows.size());
+		// for (ExcelUser row : rows) {
+		//
+		// OrgUser user = new OrgUser();
+		// user.setAccount(row.getAccount());
+		// user.setRecordCreateTime(convert(row.getRecordCreateTime()));
+		// user.setName(row.getName());
+		// user.setIdentification(row.getIdentification());
+		//
+		// user.setSex(ConstantsContainer.getKeyByValue("sex-type", row.getSex()));
+		// user.setBirthday(convert(row.getBirthday()));
+		// user.setNation(ConstantsContainer.getKeyByValue("nation-type",
+		// row.getNation()));
+		// user.setPartisan(ConstantsContainer.getKeyByValue("partisan-type",
+		// row.getPartisan()));
+		// user.setJobRank(ConstantsContainer.getKeyByValue("job-rank-type",
+		// row.getJobRank()));
+		// user.setJobDuties(ConstantsContainer.getKeyByValue("job-duties-type",
+		// row.getJobDuties()));
+		// user.setJobLevel(ConstantsContainer.getKeyByValue("job_level",
+		// row.getJobLevel()));
+		// user.setOeducation(ConstantsContainer.getKeyByValue("oeducation-type",
+		// row.getOeducation()));
+		// user.setStartWorkTime(convert(row.getStartWorkTime()));
+		// user.setComeUnitTime(convert(row.getComeUnitTime()));
+		// user.setUserProperty(ConstantsContainer.getKeyByValue("user_property_type",
+		// row.getUserProperty()));
+		// user.setResume(row.getResume());
+		// user.setReward(row.getReward());
+		// user.setPunish(row.getPunish());
+		//
+		// users.add(user);
+		// }
+		//
+		// return CommonResponse.getSuccessResponse(orgUserService.importUser(users,
+		// unitId));
+		// } catch (IOException | ExcelReadException e) {
+		// throw new BusinessException("导入失败", e);
+		// }
 		return null;
-		//TODO 需要修改
+		// TODO 需要修改
 	}
 
 	private java.sql.Date convert(java.util.Date date) {
@@ -430,28 +409,26 @@ public class OrgUserController extends ControllerSupport{
 			return null;
 		return new java.sql.Date(date.getTime());
 	}
-	
-	
+
 	/**
 	 * 跳往本年度周期考评列表页
 	 * 
-     * @author jisanjie
-     * @version 2018/09/26
+	 * @author jisanjie
+	 * @version 2018/09/26
 	 */
 	@RequestMapping("/to/this/year/assess/page")
-	private String toThisYearAssessPage(String orgUserId,Model model){
-	      model.addAttribute("bUserId",orgUserId);
-	      OrgUser user = orgUserService.get(orgUserId);
-	      HfUserSession session = HfUserSession.getCurrentUserSession();
-	       if (session.getAccount().equals(user.getAccount())){
-	             model.addAttribute("backurl","/org/user/self/index");  
-	       }else {
-	             model.addAttribute("backurl","/org/user/view?id=" + orgUserId);
-      }
-	      return "/hf/org/this_year_assess_list";
+	private String toThisYearAssessPage(String orgUserId, Model model) {
+		model.addAttribute("bUserId", orgUserId);
+		OrgUser user = orgUserService.get(orgUserId);
+		HfUserSession session = HfUserSession.getCurrentUserSession();
+		if (session.getAccount().equals(user.getAccount())) {
+			model.addAttribute("backurl", "/org/user/self/index");
+		} else {
+			model.addAttribute("backurl", "/org/user/view?id=" + orgUserId);
+		}
+		return "/hf/org/this_year_assess_list";
 	}
-	
-	
+
 	/**
 	 * 获取本年度周期考评列表
 	 * 
@@ -460,23 +437,22 @@ public class OrgUserController extends ControllerSupport{
 	 */
 	@RequestMapping("/find/this/year/list")
 	@ResponseBody
-	private Object findThisYearAssessSituationList(String orgUserId,Integer myYear){
-	      
-	    List<PersonCycAssessExt>  list = orgUserService.findThisYearAssessSituationList(orgUserId,myYear);
-	    return CommonResponse.getSuccessResponse(list);
+	private Object findThisYearAssessSituationList(String orgUserId, Integer myYear) {
+
+		List<PersonCycAssessExt> list = orgUserService.findThisYearAssessSituationList(orgUserId, myYear);
+		return CommonResponse.getSuccessResponse(list);
 	}
-	
-	
+
 	/**
 	 * 跳往人员考评登记表页
 	 * 
-     * @author jisanjie
-     * @version 2018/09/26 
+	 * @author jisanjie
+	 * @version 2018/09/26
 	 */
 	@RequestMapping("/assess/registration/form")
-	public String assessRegistrationForm(PersonCycAssessQuery perCycAssQuery, Model model){
-	        PersonCycAssessExt perCycAss= perCycAssMapper.getAssessRegistrationForm(perCycAssQuery); 
-	        model.addAttribute("perCycAss", perCycAss);
-            return "/hf/org/assess_registration_form";
+	public String assessRegistrationForm(PersonCycAssessQuery perCycAssQuery, Model model) {
+		PersonCycAssessExt perCycAss = perCycAssMapper.getAssessRegistrationForm(perCycAssQuery);
+		model.addAttribute("perCycAss", perCycAss);
+		return "/hf/org/assess_registration_form";
 	}
 }

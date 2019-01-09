@@ -11,5 +11,7 @@
 		and ou.`assess_role`=#{assessRole}
 	</if>
 </select>
-
+<update id="updateAccount">
+	UPDATE sys_user SET account = #{nowAccount} where user_id = #{userId} and account = #{originAccount}
+</update>
 </mapper>

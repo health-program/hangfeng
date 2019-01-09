@@ -4,72 +4,236 @@
 <head th:include="/hf/header" />
 
 <body>
-    
+    <tt:constant enumcode="boolean-type,sex-type,nation-type,partisan-type,job_level,certificate-type,job-duties-type,job-rank-type,oeducation-type,user_property_type" />
+    <div class="container">
     <section class="content-header">
-        <h1>org_user</h1>
+        <h1>医德医风档案管理</h1>
         <ol class="breadcrumb">
-            <li><a href="/null/org/user/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li><a href="/org/user/index"><i class="fa fa-list-alt"></i>列表</a></li>
             <li class="active">新增</li>
         </ol>
     </section>
     <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="glyphicon glyphicon-user"></i>
+                <h3 class="box-title">新增人员档案</h3>
+                <div class="box-tools pull-right">
+                </div>
+            </div>
+            <div id="model_edit" class="box-body">
+                <form id="model_form" action="/org/user/save" method="post" class="form-horizontal edit-body">
+                    <div class="form-group">
+                        <label for="account" class="col-sm-3 control-label">账号：</label>
+                        <div class="col-sm-3">
+                            <input name="account" placeholder="请输入账号，5~30位数字，字母或下划线" type="text" class="form-control" />
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" onclick="validateAccount()" class="btn btn-sm btn-warning">检查账号是否可用</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">姓名：</label>
+                        <div class="col-sm-3">
+                            <input name="name" placeholder="请输入姓名" type="text" class="form-control" />
+                        </div>
+                        <label for="sex" class="col-sm-2 control-label">性别：</label>
+                        <div class="col-sm-3">
+                            <select name="sex" class="form-control tonto-select-constant" enumcode="sex-type">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="identificationType" class="col-sm-3 control-label">身份证件类型：</label>
+                        <div class="col-sm-3">
+                            <select name="identificationType" class="form-control tonto-select-constant" enumcode="certificate-type">
+                            </select>
+                        </div>
+                        <label for="identification" class="col-sm-2 control-label">身份证件号码：</label>
+                        <div class="col-sm-3">
+                            <input name="identification" placeholder="请输入身份证件号码" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userProperty" class="col-sm-3 control-label">人员属性：</label>
+                        <div class="col-sm-3">
+                            <select name="userProperty" class="form-control tonto-select-constant" enumcode="user_property_type">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <label for="orgUnitId" class="col-sm-2 control-label">所属科室：</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control tonto-select-department" name="orgUnitId" placeholder="请选择所属科室"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="isAssessor" class="col-sm-3 control-label">是否考评人员：</label>
+                        <div class="col-sm-3">
+                            <select name="isAssessor" class="form-control tonto-select-constant" enumcode="boolean-type">
+                            </select>
+                        </div>
+                        <label for="assessUnitId" class="col-sm-2 control-label">考评科室：</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control tonto-select-unit" name="assessUnitId" placeholder="请选择考评科室"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthday" class="col-sm-3 control-label">出生日期：</label>
+                        <div class="col-sm-3">
+                            <input name="birthday" autocomplete="off" placeholder="请输入出生日期" type="text" class="form-control tonto-datepicker-date" />
+                        </div>
+                        <label for="recordCreateTime" class="col-sm-2 control-label">建档日期：</label>
+                        <div class="col-sm-3">
+                            <input name="recordCreateTime" autocomplete="off" placeholder="请输入建档日期" type="text" class="form-control tonto-datepicker-date" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nation" class="col-sm-3 control-label">民族：</label>
+                        <div class="col-sm-3">
+                            <select name="nation" class="form-control tonto-select-constant" enumcode="nation-type">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <label for="partisan" class="col-sm-2 control-label">党派：</label>
+                        <div class="col-sm-3">
+                            <select name="partisan" class="form-control tonto-select-constant" enumcode="partisan-type">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="jobDuties" class="col-sm-3 control-label">职务：</label>
+                        <div class="col-sm-3">
+                            <select name="jobDuties" class="form-control tonto-select-constant" enumcode="job-duties-type">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <label for="jobRank" class="col-sm-2 control-label">职称：</label>
+                        <div class="col-sm-3">
+                            <select name="jobRank" class="form-control tonto-select-constant" enumcode="job-rank-type">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="jobLevel" class="col-sm-3 control-label">职级：</label>
+                        <div class="col-sm-3">
+                            <select name="jobLevel" class="form-control tonto-select-constant" enumcode="job_level">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <label for="oeducation" class="col-sm-2 control-label">学历：</label>
+                        <div class="col-sm-3">
+                            <select name="oeducation" class="form-control tonto-select-constant" enumcode="oeducation-typ">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="startWorkTime" class="col-sm-3 control-label">参加工作时间：</label>
+                        <div class="col-sm-3">
+                            <input name="startWorkTime" autocomplete="off" placeholder="请输入参加工作时间" type="text" class="form-control tonto-datepicker-date" />
+                        </div>
+                        <label for="comeUnitTime" class="col-sm-2 control-label">进单位时间：</label>
+                        <div class="col-sm-3">
+                            <input name="comeUnitTime" autocomplete="off" placeholder="请输入进单位时间" type="text" class="form-control tonto-datepicker-date" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="resume" class="col-sm-3 control-label">个人简历：</label>
+                        <div class="col-sm-8">
+                            <textarea name="resume" rows="5" placeholder="请输入个人简历" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reward" class="col-sm-3 control-label">历年奖励：</label>
+                        <div class="col-sm-8">
+                            <textarea name="reward" rows="5" placeholder="请输入历年奖励" type="text" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="punish" class="col-sm-3 control-label">历年惩处：</label>
+                        <div class="col-sm-8">
+                            <textarea name="punish" rows="5" placeholder="请输入历年惩处" type="text" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 col-sm-offset-3">
+                            <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </section>
+    </div>
     <div th:include="/hf/footer" />
     <script type="text/javascript">
     var options = {
         id: "model",
         name: "新增",
-        url:"/null/org/user/save",
+        url: "/org/user/save",
         columns: [
-				{ title: "出生日期", name: "birthday", inputType: "DATE" },
-				{ title: "民族", name: "nation", inputType: "TEXT" },
-				{ title: "identification_type", name: "identificationType", inputType: "TEXT" },
-				{ title: "是否考评人员", name: "isAssessor", inputType: "TEXT" },
-				{ title: "transfer_origin_unit_id", name: "transferOriginUnitId", inputType: "TEXT" },
-				{ title: "transfer_agency_id", name: "transferAgencyId", inputType: "TEXT" },
-				{ title: "是否管理员", name: "isAdmin", inputType: "TEXT" },
-				{ title: "身份证", name: "identification", inputType: "TEXT" },
-				{ title: "transfer_origin_agency_id", name: "transferOriginAgencyId", inputType: "TEXT" },
-				{ title: "职称", name: "jobRank", inputType: "TEXT" },
-				{ title: "党派", name: "partisan", inputType: "TEXT" },
-				{ title: "历年惩处", name: "punish", inputType: "TEXT" },
-				{ title: "单位ID", name: "orgAgencyId", inputType: "TEXT" },
-				{ title: "人员属性", name: "userProperty", inputType: "TEXT" },
-				{ title: "学历", name: "oeducation", inputType: "TEXT" },
-				{ title: "职级", name: "jobLevel", inputType: "TEXT" },
-				{ title: "transfer_unit_id", name: "transferUnitId", inputType: "TEXT" },
-				{ title: "参加工作时间", name: "comeUnitTime", inputType: "DATE" },
-				{ title: "个人简历", name: "resume", inputType: "TEXT" },
-				{ title: "历年奖励", name: "reward", inputType: "TEXT" },
-				{ title: "考评角色", name: "assessRole", inputType: "TEXT" },
-				{ title: "性别", name: "sex", inputType: "TEXT" },
-				{ title: "transfer_status", name: "transferStatus", inputType: "TEXT" },
-				{ title: "属于考评小组ID", name: "orgAssessTeamId", inputType: "TEXT" },
-				{ title: "参加工作时间", name: "startWorkTime", inputType: "DATE" },
-				{ title: "职务", name: "jobDuties", inputType: "TEXT" },
-				{ title: "姓名", name: "name", inputType: "TEXT" },
-				{ title: "record_create_time", name: "recordCreateTime", inputType: "DATE" },
-				{ title: "机构ID", name: "orgUnitId", inputType: "TEXT" },
-				{ title: "账号", name: "account", inputType: "TEXT" },
-				{ title: "transfer_origin_team_id", name: "transferOriginTeamId", inputType: "TEXT" },
-				{ title: "考评单位ID", name: "assessUnitId", inputType: "TEXT" }
-				]
+            { title: "账号", name: "account", inputType: "TEXT", colspan: 2 },
+
+            { title: "姓名", name: "name", inputType: "TEXT" },
+            { title: "性别", name: "sex", inputType: "SELECT", enum: "sex-type" },
+            { title: "身份证件类型", name: "identificationType", inputType: "SELECT", enum: "certificate-type" },
+            { title: "身份证件号码", name: "identification", inputType: "TEXT" },
+
+            { title: "人员属性", name: "userProperty", inputType: "SELECT", enum: "user_property_type" },
+            { title: "所属科室", name: "orgUnitId", inputType: "UNIT", viewName: "orgUnitName", unitType: "tonto-select-department" },
+            { title: "是否考评人员", name: "isAssessor", inputType: "SELECT", enum: "boolean-type" },
+            { title: "考评科室", name: "assessUnitId", inputType: "UNIT", viewName: "assessUnitName", unitType: "tonto-select-unit", dependency: ["isAssessor", "1"] },
+
+            { title: "出生日期", name: "birthday", inputType: "DATE" },
+            { title: "建档日期", name: "recordCreateTime", inputType: "DATE" },
+
+            { title: "民族", name: "nation", inputType: "SELECT", enum: "nation-type" },
+            { title: "党派", name: "partisan", inputType: "SELECT", enum: "partisan-type" },
+
+            { title: "职务", name: "jobDuties", inputType: "SELECT", enum: "job-duties-type" },
+            { title: "职称", name: "jobRank", inputType: "SELECT", enum: "job-rank-type" },
+
+            { title: "职级", name: "jobLevel", inputType: "SELECT", enum: "job_level" },
+            { title: "学历", name: "oeducation", inputType: "SELECT", enum: "oeducation-typ" },
+
+            { title: "参加工作时间", name: "startWorkTime", inputType: "DATE" },
+            { title: "进单位时间", name: "comeUnitTime", inputType: "DATE" },
+
+            { title: "个人简历", name: "resume", inputType: "TEXTAREA", colspan: 2 },
+            { title: "历年奖励", name: "reward", inputType: "TEXTAREA", colspan: 2 },
+            { title: "历年惩处", name: "punish", inputType: "TEXTAREA", colspan: 2 }
+        ]
     }
 
-    $(function() {       
-        var html = generateEditHtml(options);
-        $(".content").html(html);
+    $(function() {
         var model = new tonto.Model("model", options.columns, {
-            pattern:"edit",
-            successCallback:function(){
-                $.successAlert("保存成功",function(){
-                    window.location = "/null/org/user/index";
+            pattern: "edit",
+            successCallback: function() {
+                $.successAlert("保存成功", function() {
+                    window.location = "/org/user/index";
                 });
             }
         });
         model.setData(null);
-        $.initComponment();
     });
+
+    function validateAccount() {
+        if ($("#userForm").validateElement("#account")) {
+            var account = $("input[name='account']").val();
+            if (!account) {
+                $.errorMessage("请输入账号");
+                return;
+            }
+            $.getAjax("/sys/user/validate/account?account=" + account, function(result) {
+                if (result == 1)
+                    layer.msg("账号可用", { icon: 1 });
+                else
+                    layer.msg("账号不可用", { icon: 2 });
+            });
+        }
+    }
     </script>
 </body>
 

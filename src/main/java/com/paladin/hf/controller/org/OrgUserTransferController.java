@@ -63,7 +63,7 @@ public class OrgUserTransferController extends ControllerSupport {
 	@RequestMapping("/ask/in")
 	@ResponseBody
 	public Object transferAskInUser() {
-		return CommonResponse.getSuccessResponse(orgUserService.getTransferAskInUser());
+		return CommonResponse.getSuccessResponse(orgUserService.findTransferAskInUser());
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class OrgUserTransferController extends ControllerSupport {
 	@RequestMapping("/ask/out")
 	@ResponseBody
 	public Object transferAskOutUser() {
-		return CommonResponse.getSuccessResponse(orgUserService.getTransferAskOutUser());
+		return CommonResponse.getSuccessResponse(orgUserService.findTransferAskOutUser());
 	}
 
 	/**

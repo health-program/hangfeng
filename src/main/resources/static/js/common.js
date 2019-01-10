@@ -1619,12 +1619,32 @@ function _initTable() {
                             col.formatter = function(value, row, index) {
                                 return (value === true || value === "true") ? "是" : "否";
                             }
+                        } else if (col.formatter == 'identification') {
+                            col.formatter = function(value, row, index) {
+                                if (value) {
+                                    var l = value.length;
+                                    if (l > 7) {
+                                        var s = value.substr(0, 3);
+                                        var a = value.length - 7;
+                                        for (; a > 0; a--) s += "*";
+                                        s += value.substr(value.length - 4, 4);
+                                        return s;
+                                    } else {
+                                        return value;
+                                    }
+                                }
+                                return "";
+                            }
                         }
                     }
 
                     // 枚举情况
                     if (col.enumcode && !col.formatter) {
                         col.formatter = $.getEnumColumnFormatter(window._constant_cache, col.enumcode);
+                    }
+
+                    if (!col.align) {
+                        col.align = "center";
                     }
                 });
             });

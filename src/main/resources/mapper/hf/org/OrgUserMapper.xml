@@ -31,11 +31,19 @@
 	</update>
 	
 	<select id="countElseUserByIdentification" resultType="int">
-		SELECT COUNT(1) FROM org_user WHERE identification = #{identification} AND is_delete = 0 AND id != #{userId}
+		SELECT COUNT(1) FROM org_user WHERE identification = #{identification} AND is_delete != 1 AND id != #{userId}
 	</select>
 	
 	<select id="countUserByIdentification" resultType="int">
-		SELECT COUNT(1) FROM org_user WHERE identification = #{identification} AND is_delete = 0
+		SELECT COUNT(1) FROM org_user WHERE identification = #{identification} AND is_delete != 1
 	</select>
+	
+	<update id="updateUserStatus">
+		UPDATE org_user SET is_delete = #{status} WHERE id = #{userId}
+	</update>
+	
+	<update id="updateUserForClaim">
+		UPDATE org_user SET is_delete = 0, transfer_status=null, is_assessor=0,assess_role=1,assess_unit_id= null,org_agency_id = #{agencyId},org_unit_id = #{unitId},org_assess_team_id = #{teamId} WHERE id = #{userId} and is_delete = 2
+	</update>
 	
 </mapper>

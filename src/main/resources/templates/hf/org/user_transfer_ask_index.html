@@ -40,11 +40,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="jobRank" class="col-xs-1 control-label">职称</label>
+                                    <label for="identification" class="col-xs-1 control-label">身份证</label>
                                     <div class="col-xs-3">
-                                        <select name="jobRank" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.jobRank}" enumcode="job-rank-type">
-                                            <option value="">请选择</option>
-                                        </select>
+                                        <input type="text" name="identification" th:value="${query?.identification}" placeholder="请输入身份证" class="form-control" />
                                     </div>
                                     <label for="userProperty" class="col-xs-1 control-label">人员属性</label>
                                     <div class="col-xs-3">
@@ -99,8 +97,8 @@
                 <div class="tab-pane" id="tab3">
                     <table id="dataGrid3"></table>
                     <div id="toolbar3">
-                            <a onclick="agreeTransferUser()" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i>同意人员转移申请</a>
-                            <a onclick="rejectTransferUser()" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>驳回人员转移申请</a>
+                        <a onclick="agreeTransferUser()" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i>同意人员转移申请</a>
+                        <a onclick="rejectTransferUser()" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>驳回人员转移申请</a>
                     </div>
                 </div>
             </div>
@@ -131,11 +129,11 @@
                     { title: "被考评科室", field: "unitName" },
                     { title: "是否考评人", field: "isAssessor", enumcode: "boolean-type" },
                     { title: "姓名", field: "name" },
+                    { title: "身份证", field: "identification", formatter: "identification" },
                     { title: "性别", field: "sex", enumcode: "sex-type" },
                     { title: "人员属性", field: "userProperty", enumcode: "user_property_type" },
                     { title: "职称", field: "jobRank", enumcode: "job-rank-type" },
                     { title: "职务", field: "jobDuties", enumcode: "job-duties-type" },
-                    { title: "学历", field: "oeducation", enumcode: "oeducation-type" },
                     { title: "建档时间", field: "recordCreateTime", formatter: "date" }
                 ]
             ],
@@ -234,7 +232,7 @@
             layer.confirm('确定要申请转移人员吗', function() {
                 $.postAjax("/org/user/transfer/ask", { userId: ids, target: target }, function() {
                     $.successMessage("申请转移成功");
-                    query();
+                    table.refresh();
                 });
             });
         } else {
@@ -295,10 +293,6 @@
         } else {
             $.errorMessage("请至少选中一条业务数据");
         }
-    }
-
-    function query() {
-        table.refresh();
     }
     /*]]>*/
     </script>

@@ -7,20 +7,27 @@ import com.paladin.hf.model.org.OrgUser;
 
 public interface OrgUserMapper extends CustomMapper<OrgUser> {
 
-	int wipeByPrimaryKey(String id);
+	public int wipeByPrimaryKey(String id);
 
-	int updateUserUnit(@Param("userId") String userId, @Param("agencyId") String agencyId, @Param("teamId") String teamId, @Param("unitId") String unitId);
-
-	int updateUsersUnit(@Param("userIds") String[] userIds, @Param("agencyId") String agencyId, @Param("teamId") String teamId, @Param("unitId") String unitId);
-
-	int updateUnitForTransferAsk(@Param("userId") String userId, @Param("agencyId") String agencyId, @Param("teamId") String teamId,
+	public int updateUserUnit(@Param("userId") String userId, @Param("agencyId") String agencyId, @Param("teamId") String teamId,
 			@Param("unitId") String unitId);
 
-	int removeTransferAsk(@Param("userIds") String[] userIds);
+	public int updateUsersUnit(@Param("userIds") String[] userIds, @Param("agencyId") String agencyId, @Param("teamId") String teamId,
+			@Param("unitId") String unitId);
 
-	int rejectTransferAsk(@Param("userIds") String[] userIds);
+	public int updateUnitForTransferAsk(@Param("userId") String userId, @Param("agencyId") String agencyId, @Param("teamId") String teamId,
+			@Param("unitId") String unitId);
 
-	int countElseUserByIdentification(@Param("identification") String identification, @Param("userId") String userId);
+	public int removeTransferAsk(@Param("userIds") String[] userIds);
 
-	int countUserByIdentification(@Param("identification") String identification);
+	public int rejectTransferAsk(@Param("userIds") String[] userIds);
+
+	public int countElseUserByIdentification(@Param("identification") String identification, @Param("userId") String userId);
+
+	public int countUserByIdentification(@Param("identification") String identification);
+
+	public int updateUserStatus(@Param("userId") String userId, @Param("status") int status);
+
+	public int updateUserForClaim(@Param("userId") String userId, @Param("agencyId") String agencyId, @Param("teamId") String teamId,
+			@Param("unitId") String unitId);
 }

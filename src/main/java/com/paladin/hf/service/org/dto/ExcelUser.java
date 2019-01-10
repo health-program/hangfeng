@@ -15,49 +15,52 @@ public class ExcelUser {
 	@ReadProperty(cellIndex = 2)
 	private String name;
 
-	@ReadProperty(cellIndex = 3)
-	private String identification;
+	@ReadProperty(cellIndex = 3, enumType="certificate-type")
+	private Integer identificationType;
 	
 	@ReadProperty(cellIndex = 4)
-	private String sex;
+	private String identification;
 	
-	@ReadProperty(cellIndex = 5)
+	@ReadProperty(cellIndex = 5 , enumType="sex-type")
+	private Integer sex;
+	
+	@ReadProperty(cellIndex = 6)
 	private Date birthday;
 
-	@ReadProperty(cellIndex = 6)
-	private String nation;
+	@ReadProperty(cellIndex = 7, enumType="nation-type")
+	private Integer nation;
 
-	@ReadProperty(cellIndex = 7)
-	private String partisan;
+	@ReadProperty(cellIndex = 8, enumType="partisan-type")
+	private Integer partisan;
 	
-	@ReadProperty(cellIndex = 8)
-	private String jobRank;
+	@ReadProperty(cellIndex = 9, enumType="job-rank-type")
+	private Integer jobRank;
 	
-	@ReadProperty(cellIndex = 9)
-	private String jobDuties;
+	@ReadProperty(cellIndex = 10, enumType="job-duties-type")
+	private Integer jobDuties;
 	
-	@ReadProperty(cellIndex = 10)
-	private String jobLevel;
+	@ReadProperty(cellIndex = 11, enumType="job_level")
+	private Integer jobLevel;
 	
-	@ReadProperty(cellIndex = 11)
-	private String oeducation;
-	
-	@ReadProperty(cellIndex = 12)
-	private Date startWorkTime;
+	@ReadProperty(cellIndex = 12, enumType="oeducation-type")
+	private Integer oeducation;
 	
 	@ReadProperty(cellIndex = 13)
-	private Date comeUnitTime;
+	private Date startWorkTime;
 	
 	@ReadProperty(cellIndex = 14)
-	private String userProperty;
+	private Date comeUnitTime;
 	
-	@ReadProperty(cellIndex = 15)
-	private String resume;
+	@ReadProperty(cellIndex = 15, enumType="user_property_type")
+	private Integer userProperty;
 	
 	@ReadProperty(cellIndex = 16)
-	private String reward;
+	private String resume;
 	
 	@ReadProperty(cellIndex = 17)
+	private String reward;
+	
+	@ReadProperty(cellIndex = 18)
 	private String punish;
 
 	public String getAccount() {
@@ -84,6 +87,14 @@ public class ExcelUser {
 		this.name = name;
 	}
 
+	public Integer getIdentificationType() {
+		return identificationType;
+	}
+
+	public void setIdentificationType(Integer identificationType) {
+		this.identificationType = identificationType;
+	}
+
 	public String getIdentification() {
 		return identification;
 	}
@@ -92,11 +103,11 @@ public class ExcelUser {
 		this.identification = identification;
 	}
 
-	public String getSex() {
+	public Integer getSex() {
 		return sex;
 	}
 
-	public void setSex(String sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 
@@ -108,51 +119,51 @@ public class ExcelUser {
 		this.birthday = birthday;
 	}
 
-	public String getNation() {
+	public Integer getNation() {
 		return nation;
 	}
 
-	public void setNation(String nation) {
+	public void setNation(Integer nation) {
 		this.nation = nation;
 	}
 
-	public String getPartisan() {
+	public Integer getPartisan() {
 		return partisan;
 	}
 
-	public void setPartisan(String partisan) {
+	public void setPartisan(Integer partisan) {
 		this.partisan = partisan;
 	}
 
-	public String getJobRank() {
+	public Integer getJobRank() {
 		return jobRank;
 	}
 
-	public void setJobRank(String jobRank) {
+	public void setJobRank(Integer jobRank) {
 		this.jobRank = jobRank;
 	}
 
-	public String getJobDuties() {
+	public Integer getJobDuties() {
 		return jobDuties;
 	}
 
-	public void setJobDuties(String jobDuties) {
+	public void setJobDuties(Integer jobDuties) {
 		this.jobDuties = jobDuties;
 	}
 
-	public String getJobLevel() {
+	public Integer getJobLevel() {
 		return jobLevel;
 	}
 
-	public void setJobLevel(String jobLevel) {
+	public void setJobLevel(Integer jobLevel) {
 		this.jobLevel = jobLevel;
 	}
 
-	public String getOeducation() {
+	public Integer getOeducation() {
 		return oeducation;
 	}
 
-	public void setOeducation(String oeducation) {
+	public void setOeducation(Integer oeducation) {
 		this.oeducation = oeducation;
 	}
 
@@ -172,11 +183,11 @@ public class ExcelUser {
 		this.comeUnitTime = comeUnitTime;
 	}
 
-	public String getUserProperty() {
+	public Integer getUserProperty() {
 		return userProperty;
 	}
 
-	public void setUserProperty(String userProperty) {
+	public void setUserProperty(Integer userProperty) {
 		this.userProperty = userProperty;
 	}
 
@@ -203,11 +214,6 @@ public class ExcelUser {
 	public void setPunish(String punish) {
 		this.punish = punish;
 	}
-	
-	
-	
-	
-	
-	
+
 	
 }

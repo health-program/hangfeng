@@ -28,6 +28,11 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	public static final int TRANSFER_STATUS_ASK = 1;
 	public static final int TRANSFER_STATUS_SUCCESS = 2;
 	public static final int TRANSFER_STATUS_FAIL = 3;
+	
+	public static final int USER_STATUS_LEAVE = 2;
+	public static final int USER_STATUS_DELETE = 1;
+	public static final int USER_STATUS_NORMAL = 0;
+
 
 	@Id
 	@Column(name = "id")
@@ -46,19 +51,19 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 
 	private Date recordCreateTime;
 
-	private String sex;
+	private Integer sex;
 
-	private String oeducation;
+	private Integer oeducation;
 
-	private String nation;
+	private Integer nation;
 
-	private String partisan;
+	private Integer partisan;
 
 	private Date birthday;
 
-	private String jobDuties;
+	private Integer jobDuties;
 
-	private String jobRank;
+	private Integer jobRank;
 
 	private Date startWorkTime;
 
@@ -79,13 +84,13 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 
 	private String assessUnitId;
 
-	private String jobLevel;
+	private Integer jobLevel;
 
-	private String userProperty;
+	private Integer userProperty;
 
 	private String identification;
 
-	private String identificationType;
+	private Integer identificationType;
 
 	private String transferOriginUnitId;
 
@@ -98,30 +103,6 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 	private String transferAgencyId;
 
 	private Integer transferStatus;
-
-	public String getIdentification() {
-		return identification;
-	}
-
-	public void setIdentification(String identification) {
-		this.identification = identification;
-	}
-
-	public String getJobLevel() {
-		return jobLevel;
-	}
-
-	public void setJobLevel(String jobLevel) {
-		this.jobLevel = jobLevel;
-	}
-
-	public String getUserProperty() {
-		return userProperty;
-	}
-
-	public void setUserProperty(String userProperty) {
-		this.userProperty = userProperty;
-	}
 
 	public String getId() {
 		return id;
@@ -139,6 +120,22 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.orgUnitId = orgUnitId;
 	}
 
+	public String getOrgAgencyId() {
+		return orgAgencyId;
+	}
+
+	public void setOrgAgencyId(String orgAgencyId) {
+		this.orgAgencyId = orgAgencyId;
+	}
+
+	public String getOrgAssessTeamId() {
+		return orgAssessTeamId;
+	}
+
+	public void setOrgAssessTeamId(String orgAssessTeamId) {
+		this.orgAssessTeamId = orgAssessTeamId;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -147,35 +144,51 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.name = name;
 	}
 
-	public String getSex() {
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public Date getRecordCreateTime() {
+		return recordCreateTime;
+	}
+
+	public void setRecordCreateTime(Date recordCreateTime) {
+		this.recordCreateTime = recordCreateTime;
+	}
+
+	public Integer getSex() {
 		return sex;
 	}
 
-	public void setSex(String sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 
-	public String getOeducation() {
+	public Integer getOeducation() {
 		return oeducation;
 	}
 
-	public void setOeducation(String oeducation) {
+	public void setOeducation(Integer oeducation) {
 		this.oeducation = oeducation;
 	}
 
-	public String getNation() {
+	public Integer getNation() {
 		return nation;
 	}
 
-	public void setNation(String nation) {
+	public void setNation(Integer nation) {
 		this.nation = nation;
 	}
 
-	public String getPartisan() {
+	public Integer getPartisan() {
 		return partisan;
 	}
 
-	public void setPartisan(String partisan) {
+	public void setPartisan(Integer partisan) {
 		this.partisan = partisan;
 	}
 
@@ -187,19 +200,19 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.birthday = birthday;
 	}
 
-	public String getJobDuties() {
+	public Integer getJobDuties() {
 		return jobDuties;
 	}
 
-	public void setJobDuties(String jobDuties) {
+	public void setJobDuties(Integer jobDuties) {
 		this.jobDuties = jobDuties;
 	}
 
-	public String getJobRank() {
+	public Integer getJobRank() {
 		return jobRank;
 	}
 
-	public void setJobRank(String jobRank) {
+	public void setJobRank(Integer jobRank) {
 		this.jobRank = jobRank;
 	}
 
@@ -259,20 +272,12 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.isAssessor = isAssessor;
 	}
 
-	public Date getRecordCreateTime() {
-		return recordCreateTime;
+	public String getAssessRole() {
+		return assessRole;
 	}
 
-	public void setRecordCreateTime(Date recordCreateTime) {
-		this.recordCreateTime = recordCreateTime;
-	}
-
-	public String getAccount() {
-		return account;
-	}
-
-	public void setAccount(String account) {
-		this.account = account;
+	public void setAssessRole(String assessRole) {
+		this.assessRole = assessRole;
 	}
 
 	public String getAssessUnitId() {
@@ -283,28 +288,68 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.assessUnitId = assessUnitId;
 	}
 
-	public String getAssessRole() {
-		return assessRole;
+	public Integer getJobLevel() {
+		return jobLevel;
 	}
 
-	public void setAssessRole(String assessRole) {
-		this.assessRole = assessRole;
+	public void setJobLevel(Integer jobLevel) {
+		this.jobLevel = jobLevel;
 	}
 
-	public String getOrgAgencyId() {
-		return orgAgencyId;
+	public Integer getUserProperty() {
+		return userProperty;
 	}
 
-	public void setOrgAgencyId(String orgAgencyId) {
-		this.orgAgencyId = orgAgencyId;
+	public void setUserProperty(Integer userProperty) {
+		this.userProperty = userProperty;
 	}
 
-	public String getOrgAssessTeamId() {
-		return orgAssessTeamId;
+	public String getIdentification() {
+		return identification;
 	}
 
-	public void setOrgAssessTeamId(String orgAssessTeamId) {
-		this.orgAssessTeamId = orgAssessTeamId;
+	public void setIdentification(String identification) {
+		this.identification = identification;
+	}
+
+	public Integer getIdentificationType() {
+		return identificationType;
+	}
+
+	public void setIdentificationType(Integer identificationType) {
+		this.identificationType = identificationType;
+	}
+
+	public String getTransferOriginUnitId() {
+		return transferOriginUnitId;
+	}
+
+	public void setTransferOriginUnitId(String transferOriginUnitId) {
+		this.transferOriginUnitId = transferOriginUnitId;
+	}
+
+	public String getTransferOriginTeamId() {
+		return transferOriginTeamId;
+	}
+
+	public void setTransferOriginTeamId(String transferOriginTeamId) {
+		this.transferOriginTeamId = transferOriginTeamId;
+	}
+
+	public String getTransferOriginAgencyId() {
+		return transferOriginAgencyId;
+	}
+
+	public void setTransferOriginAgencyId(String transferOriginAgencyId) {
+		this.transferOriginAgencyId = transferOriginAgencyId;
+	}
+
+	public String getTransferUnitId() {
+		return transferUnitId;
+	}
+
+	public void setTransferUnitId(String transferUnitId) {
+		this.transferUnitId = transferUnitId;
 	}
 
 	public String getTransferAgencyId() {
@@ -323,44 +368,8 @@ public class OrgUser extends UnDeleteModel implements Serializable {
 		this.transferStatus = transferStatus;
 	}
 
-	public String getTransferOriginUnitId() {
-		return transferOriginUnitId;
-	}
-
-	public void setTransferOriginUnitId(String transferOriginUnitId) {
-		this.transferOriginUnitId = transferOriginUnitId;
-	}
-
-	public String getTransferUnitId() {
-		return transferUnitId;
-	}
-
-	public void setTransferUnitId(String transferUnitId) {
-		this.transferUnitId = transferUnitId;
-	}
-
-	public String getTransferOriginAgencyId() {
-		return transferOriginAgencyId;
-	}
-
-	public void setTransferOriginAgencyId(String transferOriginAgencyId) {
-		this.transferOriginAgencyId = transferOriginAgencyId;
-	}
-
-	public String getTransferOriginTeamId() {
-		return transferOriginTeamId;
-	}
-
-	public void setTransferOriginTeamId(String transferOriginTeamId) {
-		this.transferOriginTeamId = transferOriginTeamId;
-	}
-
-	public String getIdentificationType() {
-		return identificationType;
-	}
-
-	public void setIdentificationType(String identificationType) {
-		this.identificationType = identificationType;
+	public static String getColumnIdentification() {
+		return COLUMN_IDENTIFICATION;
 	}
 
 }

@@ -233,7 +233,7 @@ public class ShiroConfiguration {
 						String requestUrl = httpRequest.getRequestURI();
 
 						// 过滤静态资源，防止静态资源读取session等操作
-						if (requestUrl.startsWith("/static/")) {
+						if (requestUrl.startsWith("/static/") || requestUrl.startsWith("/favicon.ico")) {
 							chain.doFilter(servletRequest, servletResponse);
 							return;
 						}

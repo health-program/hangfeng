@@ -1,33 +1,41 @@
 package com.paladin.hf.service.org;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.common.Condition;
+import com.paladin.framework.common.ExcelImportResult;
+import com.paladin.framework.common.ExcelImportResult.ExcelImportError;
 import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.framework.excel.DefaultSheet;
+import com.paladin.framework.excel.read.DefaultReadColumn;
+import com.paladin.framework.excel.read.ExcelReadException;
+import com.paladin.framework.excel.read.ExcelReader;
+import com.paladin.framework.excel.read.ReadColumn;
 import com.paladin.framework.utils.StringUtil;
 import com.paladin.framework.utils.uuid.UUIDUtil;
-import com.paladin.framework.utils.validate.ValidateUtil;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.UnitContainer;
 import com.paladin.hf.core.UnitContainer.Unit;
-import com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper;
 import com.paladin.hf.mapper.org.OrgUserMapper;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.org.OrgUserTransferLog;
-import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
+import com.paladin.hf.service.org.dto.ExcelUser;
+import com.paladin.hf.service.org.dto.OrgUserClaimQuery;
 import com.paladin.hf.service.org.dto.OrgUserDTO;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
 import com.paladin.hf.service.org.dto.OrgUserSelfDTO;
@@ -46,9 +54,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 	@Autowired
 	private OrgUserTransferLogService orgUserTransferLogService;
 
-	@Autowired
-	private PersonCycAssessMapper personCycAssessMapper;
-
+	/**
+	 * 获取某个人员具体信息
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public OrgUserVO getUser(String id) {
 		OrgUser user = get(id);
 		if (user != null) {
@@ -59,6 +70,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return null;
 	}
 
+	/**
+	 * 查找人员档案
+	 * 
+	 * @param query
+	 * @return
+	 */
 	public PageResult<OrgUserVO> findUser(OrgUserQuery query) {
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getOrgUnitId());
 		query.setAgencyId(unitQuery.getAgencyId());
@@ -68,6 +85,30 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		query.setAssessTeamId(unitQuery.getAssessTeamId());
 
 		return searchPage(query).convert(OrgUserVO.class);
+	}
+
+	/**
+	 * 查找人员档案
+	 * 
+	 * @param query
+	 * @return
+	 */
+	public PageResult<OrgUserVO> findUserForClaim(OrgUserClaimQuery query) {
+		String uid = query.getOrgUnitId();
+		if (uid != null && uid.length() > 0) {
+			Unit unit = UnitContainer.getUnit(uid);
+			if (unit != null) {
+				if (unit.isAgency()) {
+					query.setAgencyId(uid);
+				} else if (unit.isAssessTeam()) {
+					query.setAssessTeamId(uid);
+				} else {
+					query.setUnitId(uid);
+				}
+			}
+		}
+
+		return searchPage(query, true).convert(OrgUserVO.class);
 	}
 
 	// TODO 干嘛的？只查一层？
@@ -80,10 +121,22 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		}
 	}
 
+	/**
+	 * 根据身份证号码查找人员
+	 * 
+	 * @param identification
+	 * @return
+	 */
 	public List<OrgUser> findUserByIdentification(String identification) {
 		return searchAll(new Condition(OrgUser.COLUMN_IDENTIFICATION, QueryType.EQUAL, identification));
 	}
 
+	/**
+	 * 新增人员
+	 * 
+	 * @param orgUserDTO
+	 * @return
+	 */
 	@Transactional
 	public boolean addUser(OrgUserDTO orgUserDTO) {
 		if (orgUserDTO == null) {
@@ -147,6 +200,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return true;
 	}
 
+	/**
+	 * 更新人员
+	 * 
+	 * @param orgUserDTO
+	 * @return
+	 */
 	@Transactional
 	public boolean updateUser(OrgUserDTO orgUserDTO) {
 
@@ -224,6 +283,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return true;
 	}
 
+	/**
+	 * 更新自己的信息
+	 * 
+	 * @param orgUserDTO
+	 * @return
+	 */
 	@Transactional
 	public boolean updateUserSelf(OrgUserSelfDTO orgUserDTO) {
 		String userId = HfUserSession.getCurrentUserSession().getUserId();
@@ -242,16 +307,35 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return true;
 	}
 
+	/**
+	 * 判断是否唯一身份证（除自己外）
+	 * 
+	 * @param identification
+	 * @param userId
+	 * @return
+	 */
 	public boolean isUniqueIdcardButSelf(String identification, String userId) {
 		return orgUserMapper.countElseUserByIdentification(identification, userId) == 0;
 	}
 
+	/**
+	 * 判断是否唯一身份证
+	 * 
+	 * @param identification
+	 * @return
+	 */
 	public boolean isUniqueIdcard(String identification) {
 		return orgUserMapper.countUserByIdentification(identification) == 0;
 	}
 
+	/**
+	 * 移除人员，并删除账号
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@Transactional
-	public int wipeByPrimaryKey(String id) {
+	public int removeUser(String id) {
 		// 逻辑删除档案人员
 		int effect = this.removeByPrimaryKey(id);
 		if (effect > 0) {
@@ -261,6 +345,57 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return effect;
 	}
 
+	/**
+	 * 人员离岗
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public int leave(String userId) {
+		return orgUserMapper.updateUserStatus(userId, OrgUser.USER_STATUS_LEAVE);
+	}
+
+	/**
+	 * 人员认领
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@Transactional
+	public int claim(String[] userIds) {
+		HfUserSession session = HfUserSession.getCurrentUserSession();
+		Unit unit = session.getOwnUnit();
+		if (unit == null) {
+			throw new BusinessException("您没有权限认领人员");
+		}
+
+		int effect = 0;
+		String transferBy = session.getUserId();
+		Unit team = unit.getAssessTeam();
+		for (String userId : userIds) {
+			OrgUser user = get(userId);
+			if (user.getIsDelete() != OrgUser.USER_STATUS_LEAVE) {
+				continue;
+			}
+
+			String source = user.getOrgUnitId();
+			String target = unit.getId();
+
+			if (orgUserMapper.updateUserForClaim(userId, unit.getAgency().getId(), team == null ? null : team.getId(), target) > 0) {
+				addUserTransferLog(userId, source, target, OrgUserTransferLog.TRANSFER_TYPE_ASK, transferBy);
+				effect++;
+			}
+		}
+		return effect;
+	}
+
+	/**
+	 * 转移人员到目标科室
+	 * 
+	 * @param userIds
+	 * @param target
+	 * @return
+	 */
 	@Transactional
 	public int transferUser(String[] userIds, String target) {
 		if (!HfUserSession.getCurrentUserSession().isAdminRoleLevel()) {
@@ -290,6 +425,13 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return effect;
 	}
 
+	/**
+	 * 转移人员申请
+	 * 
+	 * @param userIds
+	 * @param target
+	 * @return
+	 */
 	@Transactional
 	public int transferAsk(String[] userIds, String target) {
 		Unit unit = UnitContainer.getUnit(target);
@@ -318,6 +460,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return effect;
 	}
 
+	/**
+	 * 同意人员转移
+	 * 
+	 * @param userIds
+	 * @return
+	 */
 	@Transactional
 	public int agreeTransferAsk(String[] userIds) {
 		int effect = 0;
@@ -347,6 +495,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return effect;
 	}
 
+	/**
+	 * 拒绝人员转移
+	 * 
+	 * @param userIds
+	 * @return
+	 */
 	public int rejectTransferAsk(String[] userIds) {
 		return orgUserMapper.rejectTransferAsk(userIds);
 	}
@@ -380,7 +534,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		outTransferAsk.add(OrgUser.TRANSFER_STATUS_FAIL);
 	}
 
-	public List<OrgUser> getTransferAskOutUser() {
+	/**
+	 * 查找转移出去的人员
+	 * 
+	 * @return
+	 */
+	public List<OrgUser> findTransferAskOutUser() {
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(null);
 
 		List<Condition> conditions = new ArrayList<>();
@@ -408,7 +567,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return searchAll(conditions);
 	}
 
-	public List<OrgUser> getTransferAskInUser() {
+	/**
+	 * 查找转移进来的人员
+	 * 
+	 * @return
+	 */
+	public List<OrgUser> findTransferAskInUser() {
 
 		HfUserSession session = HfUserSession.getCurrentUserSession();
 		if (session.isAdminRoleLevel()) {
@@ -431,6 +595,11 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return new ArrayList<>();
 	}
 
+	/**
+	 * 获取转移申请数
+	 * 
+	 * @return
+	 */
 	public int getCountOfTransferAskIn() {
 
 		HfUserSession session = HfUserSession.getCurrentUserSession();
@@ -454,161 +623,120 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return 0;
 	}
 
+	/**
+	 * 删除人员转移申请
+	 * 
+	 * @param userIds
+	 * @return
+	 */
 	public int removeTransferAskUser(String[] userIds) {
 		return orgUserMapper.removeTransferAsk(userIds);
 	}
 
-	public ImportUserResult importUser(List<OrgUser> users, String unitId) {
+	private static final List<ReadColumn> userImportColumns = DefaultReadColumn.createReadColumn(ExcelUser.class);
 
-		if (users != null && users.size() > 0) {
-			if (users.size() > 200) {
-				throw new BusinessException("每次导入人数不能超过200");
+	/**
+	 * 导入人员
+	 * 
+	 * @param users
+	 * @param unitId
+	 * @return
+	 */
+	@SuppressWarnings("resource")
+	@Transactional
+	public ExcelImportResult importUser(InputStream excelInputStream, String unitId) {
+		//TODO 导入科室是否加入该功能，缺省为选择科室
+		
+		if (!DataPermissionUtil.ownUnit(unitId)) {
+			throw new BusinessException("您没有权限导入到该单位");
+		}
+
+		Unit unit = UnitContainer.getUnit(unitId);
+
+		// 设置冗余字段 机构
+		String agencyId = unit.getAgency().getId();
+		String assessTeamId = null;
+
+		Unit assessTeam = unit.getAssessTeam();
+		if (assessTeam != null) {
+			assessTeamId = assessTeam.getId();
+		}
+
+		XSSFWorkbook workbook;
+		try {
+			workbook = new XSSFWorkbook(excelInputStream);
+		} catch (IOException e1) {
+			throw new BusinessException("导入异常");
+		}
+
+		ExcelReader<ExcelUser> reader = new ExcelReader<>(ExcelUser.class, userImportColumns, new DefaultSheet(workbook.getSheetAt(0)), 2);
+		List<ExcelImportError> errors = new ArrayList<>();
+
+		int i = 0;
+
+		while (reader.hasNext()) {
+			i++;
+			if (i > 500) {
+				break;
 			}
 
-			if (!DataPermissionUtil.ownUnit(unitId)) {
-				throw new BusinessException("您没有权限导入到该单位");
+			ExcelUser excelUser = null;
+			try {
+				excelUser = reader.readRow();
+			} catch (ExcelReadException e) {
+				errors.add(new ExcelImportError(i, e));
+				continue;
 			}
 
-			Unit unit = UnitContainer.getUnit(unitId);
+			OrgUser user = new OrgUser();
+			SimpleBeanCopyUtil.simpleCopy(excelUser, user);
 
-			// 设置冗余字段 机构
-			String agencyId = unit.getAgency().getId();
-			String assessTeamId = null;
-
-			Unit assessTeam = unit.getAssessTeam();
-			if (assessTeam != null) {
-				assessTeamId = assessTeam.getId();
+			String idcard = user.getIdentification();
+			if (idcard != null && idcard.length() != 0) {
+				if (!isUniqueIdcard(idcard)) {
+					errors.add(new ExcelImportError(i, "身份证号码不能重复"));
+					continue;
+				}
+			} else {
+				errors.add(new ExcelImportError(i, "缺少身份证号码"));
+				continue;
 			}
 
-			List<ImportUserError> errors = new ArrayList<>();
-
-			int i = 0;
-
-			for (OrgUser user : users) {
-				i++;
-				String idcard = user.getIdentification();
-				if (idcard != null && idcard.length() != 0) {
-					if (!ValidateUtil.isValidatedAllIdcard(idcard)) {
-						errors.add(new ImportUserError(i, "无效的身份证号码"));
-						continue;
-					}
-
-					if (!isUniqueIdcard(idcard)) {
-						throw new BusinessException("身份证号码不能重复");
-					}
-				} else {
-					errors.add(new ImportUserError(i, "缺少身份证号码"));
-					continue;
-				}
-
-				if (StringUtil.isEmpty(user.getName())) {
-					errors.add(new ImportUserError(i, "缺少姓名"));
-					continue;
-				}
-
-				if (user.getRecordCreateTime() == null) {
-					errors.add(new ImportUserError(i, "缺少建档日期"));
-					continue;
-				}
-
-				if (user.getBirthday() == null) {
-					errors.add(new ImportUserError(i, "缺少出生日期"));
-					continue;
-				}
-
-				user.setAssessRole(HfUserSession.DEFAULT_ROLE_SELF_ID);
-				user.setIsAssessor(0);
-				user.setOrgAgencyId(agencyId);
-				user.setOrgAssessTeamId(assessTeamId);
-				user.setOrgUnitId(unitId);
-
-				String userId = UUIDUtil.createUUID();
-				user.setId(userId);
-				try {
-					sysUserService.createOrgUserAndCount(user.getAccount(), user);
-				} catch (BusinessException e) {
-					errors.add(new ImportUserError(i, e.getMessage()));
-					continue;
-				} catch (Exception e) {
-					errors.add(new ImportUserError(i, "保存失败"));
-					continue;
-				}
+			if (StringUtil.isEmpty(user.getName())) {
+				errors.add(new ExcelImportError(i, "缺少姓名"));
+				continue;
 			}
 
-			return new ImportUserResult(users.size(), errors);
-		}
-
-		return null;
-	}
-
-	public static class ImportUserResult {
-
-		private int successCount;
-		private int errorCount;
-
-		private List<ImportUserError> errors;
-
-		public ImportUserResult(int totalCount, List<ImportUserError> errors) {
-
-			if (errors != null) {
-				errorCount = errors.size();
+			if (user.getRecordCreateTime() == null) {
+				errors.add(new ExcelImportError(i, "缺少建档日期"));
+				continue;
 			}
 
-			successCount = totalCount - errorCount;
+			if (user.getBirthday() == null) {
+				errors.add(new ExcelImportError(i, "缺少出生日期"));
+				continue;
+			}
 
-			this.errors = errors;
+			user.setAssessRole(HfUserSession.DEFAULT_ROLE_SELF_ID);
+			user.setIsAssessor(0);
+			user.setOrgAgencyId(agencyId);
+			user.setOrgAssessTeamId(assessTeamId);
+			user.setOrgUnitId(unitId);
+
+			String userId = UUIDUtil.createUUID();
+			user.setId(userId);
+			try {
+				sysUserService.createOrgUserAndCount(user.getAccount(), user);
+			} catch (BusinessException e) {
+				errors.add(new ExcelImportError(i, e.getMessage()));
+				continue;
+			} catch (Exception e) {
+				errors.add(new ExcelImportError(i, "保存失败"));
+				continue;
+			}
 		}
 
-		public int getSuccessCount() {
-			return successCount;
-		}
-
-		public int getErrorCount() {
-			return errorCount;
-		}
-
-		public List<ImportUserError> getErrors() {
-			return errors;
-		}
-
-	}
-
-	public static class ImportUserError {
-
-		private int index;
-
-		private String message;
-
-		public ImportUserError(int index, String message) {
-			this.index = index;
-			this.message = message;
-		}
-
-		public int getIndex() {
-			return index;
-		}
-
-		public void setIndex(int index) {
-			this.index = index;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public void setMessage(String message) {
-			this.message = message;
-		}
-	}
-
-	public List<PersonCycAssessExt> findThisYearAssessSituationList(String orgUserId, Integer myYear) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.clear();
-		calendar.set(Calendar.YEAR, myYear);
-		Date startTime = calendar.getTime();
-		calendar.set(Calendar.YEAR, myYear + 1);
-		Date endTime = calendar.getTime();
-		return personCycAssessMapper.findThisYearAssessSituationList(orgUserId, startTime, endTime);
+		return new ExcelImportResult(i, errors);
 	}
 
 }

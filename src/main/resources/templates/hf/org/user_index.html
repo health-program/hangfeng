@@ -78,11 +78,10 @@
             <div id="result" class="box-body">
                 <table id="dataGrid"></table>
                 <div id="toolbar">
-                    <div class="btn-group">
-                        <a onclick="addUser()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
-                        <a onclick="importUser()" class="btn btn-success"><i class="glyphicon glyphicon-import"></i>导入</a>
-                        <a onclick="transferAskUser()" id="transferBtn" class="btn btn-success"><i class="glyphicon glyphicon-open"></i>人员转移申请</a>
-                    </div>
+                    <a onclick="addUser()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                    <a onclick="importUser()" class="btn btn-success"><i class="glyphicon glyphicon-import"></i>导入</a>
+                    <a onclick="transferAskUser()" id="transferBtn" class="btn btn-warning"><i class="glyphicon glyphicon-transfer"></i>人员转移申请</a>
+                    <a onclick="leave()" id="transferBtn" class="btn btn-danger"><i class="glyphicon glyphicon-export"></i>离岗</a>
                 </div>
             </div>
         </div>

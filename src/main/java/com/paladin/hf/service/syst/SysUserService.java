@@ -8,11 +8,8 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.GeneralCriteriaBuilder;
-import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
@@ -25,7 +22,6 @@ import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.syst.AdminUser;
 import com.paladin.hf.model.syst.SysUser;
 import com.paladin.hf.service.org.OrgUserService;
-import com.paladin.hf.service.syst.vo.SysUserVO;
 
 import tk.mybatis.mapper.entity.Example;
 
@@ -249,13 +245,5 @@ public class SysUserService extends ServiceSupport<SysUser> {
 		user.setLastLoginTime(new Date());
 		sysUserMapper.updateByPrimaryKeySelective(user);
 	}
-
-	public Page<SysUserVO> sysUserLog(OffsetPage offsetPage, String assessRole) {
-		Page<SysUserVO> page = PageHelper.offsetPage(offsetPage.getOffset(), offsetPage.getLimit());// 分页
-		sysUserMapper.sysUserLog(assessRole);
-		return page;
-	}
-
-
 
 }

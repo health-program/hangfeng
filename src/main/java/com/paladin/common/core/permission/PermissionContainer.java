@@ -85,7 +85,6 @@ public class PermissionContainer implements VersionContainer {
 		for (OrgPermission orgPermission : permissionMap.values()) {
 			systemAdminRole.addPermission(orgPermission, permissionMap);
 		}
-
 		systemAdminRole.initMenuPermission();
 
 		this.roleMap = roleMap;

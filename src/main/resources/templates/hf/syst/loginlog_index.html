@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+    <tt:constant enumcode="userRole" />
+    <section class="content-header">
+        <h1>登录日常查看</h1>
+        <ol class="breadcrumb">
+            <li class="active">列表</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab" aria-expanded="true">管理人员</a></li>
+                <li class=""><a href="#tab2" data-toggle="tab" aria-expanded="false">考评人员</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    <div class="box-body" style="border-bottom: 1px solid #eee">
+                        <div class="col-md-12">
+                            <form id="searchbar1" class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="name" class="col-xs-1 control-label">机构</label>
+                                    <div class="col-xs-3">
+                                        <input type="text" class="form-control tonto-select-agency" name="unitId" required="required" placeholder="请选择"></input>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table1.refresh()"><i class="fa fa-search"></i>查询</button>
+                                <button type="button" style="width:100px" class="btn btn-default" onclick="$('#searchbar1')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="result" class="box-body">
+                        <table id="dataGrid1"></table>
+                        <div id="toolbar1">
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab2">
+                    <div class="box-body" style="border-bottom: 1px solid #eee">
+                        <div class="col-md-12">
+                            <form id="searchbar2" class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="name" class="col-xs-1 control-label">角色</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control tonto-select-constant" name="assessRole" enumcode="userRole">
+                                            <option value="">请选择角色</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table2.refresh()"><i class="fa fa-search"></i>查询</button>
+                                <button type="button" style="width:100px" class="btn btn-default" onclick="$('#searchbar2')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="result" class="box-body">
+                        <table id="dataGrid2"></table>
+                        <div id="toolbar2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    var table1;
+    var table2;
+
+
+    $(function() {
+        initDataGrid();
+    });
+
+    function initDataGrid() {
+        table1 = $.createTable("#dataGrid1", {
+            columns: [
+                [
+                    { title: "机构", field: "unitName" },
+                    { title: "姓名", field: "name" },
+                    { title: "最后一次登陆时间", field: "lastLoginTime", formatter: "datetime" }
+                ]
+            ],
+            url: '/sys/loginlog/find/adminuser',
+            searchbar: '#searchbar1',
+            showColumns: true,
+            pagination: true,
+            toolbar: "#toolbar1",
+            showRefresh: true
+        });
+
+        table2 = $.createTable("#dataGrid2", {
+            columns: [
+                [{
+                    title: "单位名称",
+                    field: "unitRootName"
+                }, {
+                    title: "科室",
+                    field: "unitName"
+                }, {
+                    title: "姓名",
+                    field: "name"
+                }, {
+                    title: "最后一次登陆时间",
+                    field: "lastLoginTime",
+                    formatter: "datetime"
+                }]
+            ],
+            url: '/sys/loginlog/find/orguser',
+            searchbar: '#searchbar2',
+            showColumns: true,
+            pagination: true,
+            clickToSelect: true,
+            toolbar: "#toolbar2",
+            showRefresh: true
+        });
+    }
+
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

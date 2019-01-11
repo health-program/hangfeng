@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.common.OffsetPage;
+import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.web.response.CommonResponse;
-import com.paladin.hf.service.syst.AdminUserService;
-import com.paladin.hf.service.syst.SysUserService;
+import com.paladin.hf.service.syst.LoginLogService;
 
 /**   
  * @author 黄伟华
@@ -17,30 +17,27 @@ import com.paladin.hf.service.syst.SysUserService;
  */
 
 @Controller
-@RequestMapping("/login/log")
-public class UserLoginLogController
+@RequestMapping("/sys/loginlog")
+public class UserLoginLogController extends ControllerSupport
 {
     @Autowired
-    private SysUserService sysUserService;
-    
-    @Autowired
-    private AdminUserService adminUserService;
+    private LoginLogService loginLogService;
     
     @RequestMapping(value = "/index", method = {RequestMethod.GET})
     public String index()
     {
-        return "/console/loginLog/index";
+        return "/hf/syst/loginlog_index";
     }
     
     @ResponseBody
-    @RequestMapping(value = "/sysUserLog", method = {RequestMethod.GET})
+    @RequestMapping(value = "/find/orguser", method = {RequestMethod.GET})
     public Object sysUserLog(OffsetPage offsetPage,String assessRole) {
-        return CommonResponse.getSuccessResponse(sysUserService.sysUserLog(offsetPage, assessRole));
+        return CommonResponse.getSuccessResponse(loginLogService.findOrgUserLoginLog(offsetPage, assessRole));
     } 
     
     @ResponseBody
-    @RequestMapping(value = "/adminUserLog", method = {RequestMethod.GET})
+    @RequestMapping(value = "/find/adminuser", method = {RequestMethod.GET})
     public Object adminUserLog(OffsetPage offsetPage,String unitId) {
-        return CommonResponse.getSuccessResponse(adminUserService.adminUserLog(offsetPage,unitId));
+        return CommonResponse.getSuccessResponse(loginLogService.findAdminUserLoginLog(offsetPage,unitId));
     } 
 }

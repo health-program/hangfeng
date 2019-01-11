@@ -1,33 +1,23 @@
-package com.paladin.hf.model.syst;
+package com.paladin.hf.service.syst.dto;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+public class AdminUserDTO {
 
-import com.paladin.framework.common.UnDeleteModel;
+	private String id;
 
-public class AdminUser extends UnDeleteModel implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5129575095681729517L;
-
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(generator = "UUID")
-	private String id; 
-	
+	@NotEmpty(message = "机构不能为空！")
 	private String unitId;
-    
+
+	@NotEmpty(message = "名称不能为空！")
 	private String name;
-    
+
+	@NotEmpty(message = "账号不能为空！")
 	private String account;
-	
+
 	private String description;
-	
+
+	@NotEmpty(message = "角色不能为空！")
 	private String roles;
 
 	public String getId() {
@@ -62,6 +52,13 @@ public class AdminUser extends UnDeleteModel implements Serializable{
 		this.account = account;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public String getRoles() {
 		return roles;
@@ -70,19 +67,4 @@ public class AdminUser extends UnDeleteModel implements Serializable{
 	public void setRoles(String roles) {
 		this.roles = roles;
 	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	
-	
-	
-	
-	
-	
 }

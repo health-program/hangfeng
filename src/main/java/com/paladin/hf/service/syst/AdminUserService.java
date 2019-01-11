@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.paladin.common.core.permission.PermissionContainer;
-import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.utils.uuid.UUIDUtil;
@@ -15,7 +12,6 @@ import com.paladin.hf.core.UnitContainer;
 import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.mapper.syst.AdminUserMapper;
 import com.paladin.hf.model.syst.AdminUser;
-import com.paladin.hf.service.syst.vo.SysUserVO;
 
 @Service
 public class AdminUserService extends ServiceSupport<AdminUser> {
@@ -71,11 +67,5 @@ public class AdminUserService extends ServiceSupport<AdminUser> {
 			return adminUserMapper.wipeByPrimaryKey(id);
 		}
 		return effect;
-	}
-
-	public Page<SysUserVO> adminUserLog(OffsetPage offsetPage, String unitId) {
-		Page<SysUserVO> page = PageHelper.offsetPage(offsetPage.getOffset(), offsetPage.getLimit());// 分页
-		adminUserMapper.adminUserLog(unitId);
-		return page;
 	}
 }

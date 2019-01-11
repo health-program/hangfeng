@@ -15,18 +15,18 @@ public class OrgUserClaimQuery extends OffsetPage {
 	private Date startRecordCreateTime;
 	private Date endRecordCreateTime;
 	private String orgUnitId;
-	private String userProperty;
+	private Integer userProperty;
 
 	private String assessTeamId;
 	private String unitId;
 	private String agencyId;
 
 	@QueryCondition(type = QueryType.EQUAL)
-	public String getUserProperty() {
+	public Integer getUserProperty() {
 		return userProperty;
 	}
 
-	public void setUserProperty(String userProperty) {
+	public void setUserProperty(Integer userProperty) {
 		this.userProperty = userProperty;
 	}
 

@@ -88,6 +88,7 @@
         </div>
     </section>
     <div th:include="/hf/footer"></div>
+    <script type="text/javascript" src="/static/js/ajaxfileupload.js"></script>
     <script type="text/javascript">
     /*<![CDATA[*/
     var table;
@@ -271,29 +272,31 @@
             dataType: 'json', //返回值类型 一般设置为json
             success: function(data, status) //服务器成功响应处理函数
             {
-                $.jsonResposneFunction(function(result) {
+                $.ajaxResponseHandler(data, function(result) {
                     if (result) {
                         if (result.errorCount == 0) {
-                            $.successAlert("导入成功");
+                            $.successAlert("成功导入" + result.successCount + "条记录");
                         } else {
                             var html = "<p>成功导入" + result.successCount + "条记录</p>";
                             result.errors.forEach(function(a) {
                                 html += "<p>导入第<b>" + a.index + "</b>条记录失败：" + a.message + "</p>";
                             });
 
-                            layer.alert(html, { icon: 2, area: ['600px', '400px'] });
+                            layer.alert(html, { icon: 2, area: ['600px', '400px'] }, function(index) {
+                                layer.close(index);
+                                table.refresh();
+                            });
                         }
                     } else {
                         $.successAlert("没有可导入的人员，是否正确使用模板");
                     }
-                })(data);
+                });
             },
             error: function(data, status, e) //服务器响应失败处理函数
             {
-                console.log(data);
+                console.log(e);
             }
         })
-        return false;
     }
 
     function transferAskUser() {

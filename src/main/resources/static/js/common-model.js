@@ -95,7 +95,7 @@ function generateEditFormHtml(options, hide) {
                 console && console.log("域[name:" + column.name + "]生成colspan大于最大colspan");
                 continue;
             } else {
-                currentColspan = 0;
+                currentColspan = options.maxColspan;
             }
         }
 
@@ -195,7 +195,7 @@ function generateViewFormHtml(options) {
                 console && console.log("域[name:" + column.name + "]生成colspan大于最大colspan");
                 continue;
             } else {
-                currentColspan = 0;
+                currentColspan = options.maxColspan;
             }
         }
 
@@ -1552,7 +1552,7 @@ var _unitFieldBuilder = new _FieldBuilder("UNIT", {
         if (typeof column.dependTrigger === 'function') {
             return column.dependTrigger(column, model);
         }
-        model.editBody.find("[name='" + column.name + "']").change(function() {
+        column.unitComponment && column.unitComponment.addUnitChangedListener(function() {
             if (model.filling === false) {
                 model.checkEditDependency();
             }

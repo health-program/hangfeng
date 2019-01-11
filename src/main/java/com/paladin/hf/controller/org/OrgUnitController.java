@@ -18,17 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.core.ControllerSupport;
+import com.paladin.framework.utils.uuid.UUIDUtil;
 import com.paladin.framework.web.response.CommonResponse;
-import com.paladin.hf.controller.util.FormType;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.UnitContainer;
 import com.paladin.hf.core.UnitContainer.Unit;
-import com.paladin.hf.model.org.OrgUnit;
 import com.paladin.hf.service.org.OrgUnitService;
 import com.paladin.hf.service.org.dto.OrgUnitDTO;
 import com.paladin.hf.service.org.dto.SimpleUnit;
-
+import com.paladin.hf.service.org.vo.OrgUnitVO;
 
 @Controller
 @RequestMapping("/org/unit")
@@ -39,53 +38,59 @@ public class OrgUnitController extends ControllerSupport {
 
 	@RequestMapping("/index")
 	public String index() {
-		return "console/organization/unit_index";
+		return "/hf/org/unit_index";
 	}
 
-	@RequestMapping("/search/all")
+	@RequestMapping("/find")
 	@ResponseBody
-	public Object searchAll() {
+	public Object find() {
 		return CommonResponse.getSuccessResponse(orgUnitService.findOwnUnit());
 	}
 
-	@RequestMapping("/view")
-	public String view(@RequestParam(required = true) String id, Model model) {
-		OrgUnit orgUnit = orgUnitService.get(id);
-		if (orgUnit == null)
-			orgUnit = new OrgUnit();
-		model.addAttribute("unit", orgUnit);
-		model.addAttribute("parentUnitId", orgUnit.getParentUnitId());
-		model.addAttribute("formType", FormType.VIEW);
-		return "console/organization/unit_from";
+	@RequestMapping("/get")
+	@ResponseBody
+	public Object getDetail(@RequestParam String id, Model model) {
+		return CommonResponse.getSuccessResponse(beanCopy(orgUnitService.get(id), new OrgUnitVO()));
 	}
 
-	@RequestMapping("/add/input")
-	public String addInput(String parentId, Model model) {
-		model.addAttribute("parentUnitId", parentId);
-		model.addAttribute("unit", new OrgUnit());
-		model.addAttribute("formType", FormType.ADD);
-		return "console/organization/unit_from";
+	@RequestMapping("/add")
+	public String addInput(@RequestParam(required = false) String parentId, Model model) {
+		if (parentId != null && parentId.length() > 0) {
+			model.addAttribute("parentUnit", UnitContainer.getUnit(parentId));
+		}
+		return "/hf/org/unit_add";
 	}
 
-	@RequestMapping("/edit/input")
-	public String editInput(@RequestParam(required = true) String id, Model model) {
-		OrgUnit orgUnit = orgUnitService.get(id);
-		if (orgUnit == null)
-			orgUnit = new OrgUnit();
-		model.addAttribute("unit", orgUnit);
-		model.addAttribute("parentUnitId", orgUnit.getParentUnitId());
-		model.addAttribute("formType", FormType.EDIT);
-		return "console/organization/unit_from";
+	@RequestMapping("/detail")
+	public String detailInput(@RequestParam String id, Model model) {
+		model.addAttribute("id", id);
+		return "/hf/org/unit_detail";
 	}
 
 	@RequestMapping("/save")
 	@ResponseBody
-	public Object save(@Valid OrgUnitDTO orgUnit, BindingResult bindingResult) {
+	public Object save(@Valid OrgUnitDTO orgUnitDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return this.validErrorHandler(bindingResult);
+			return validErrorHandler(bindingResult);
 		}
-		// TODO 判断orgUnitDTO哪些字段可以改
-		return CommonResponse.getResponse(orgUnitService.saveOrUpdateUnit(orgUnit));
+		String id = UUIDUtil.createUUID();
+		orgUnitDTO.setUid(id);
+		if (orgUnitService.saveUnit(orgUnitDTO)) {
+			return CommonResponse.getSuccessResponse(orgUnitService.get(id));
+		}
+		return CommonResponse.getFailResponse();
+	}
+
+	@RequestMapping("/update")
+	@ResponseBody
+	public Object update(@Valid OrgUnitDTO orgUnitDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return validErrorHandler(bindingResult);
+		}
+		if (orgUnitService.updateUnit(orgUnitDTO)) {
+			return CommonResponse.getSuccessResponse(beanCopy(orgUnitService.get(orgUnitDTO.getUid()), new OrgUnitVO()));
+		}
+		return CommonResponse.getFailResponse();
 	}
 
 	@RequestMapping("/delete")
@@ -94,7 +99,6 @@ public class OrgUnitController extends ControllerSupport {
 		return CommonResponse.getResponse(orgUnitService.removeUnit(id), "请先删除所有子级单位");
 	}
 
-	
 	/**
 	 * 获取拥有的科室
 	 * 
@@ -132,21 +136,21 @@ public class OrgUnitController extends ControllerSupport {
 	public Object getOwnAgency() {
 		List<Unit> agencys = DataPermissionUtil.getOwnAgency();
 		List<SimpleUnit> result = new ArrayList<>(agencys.size());
-		
+
 		for (Unit agency : agencys) {
 			result.add(new SimpleUnit(agency));
 		}
 
 		return CommonResponse.getSuccessResponse(result);
 	}
-	
+
 	@RequestMapping("/self/agency")
 	@ResponseBody
 	public Object getSelfAgency() {
 		HfUserSession session = HfUserSession.getCurrentUserSession();
 		return CommonResponse.getSuccessResponse(new SimpleUnit(session.getUserAgency()));
 	}
-	
+
 	@RequestMapping("/all")
 	@ResponseBody
 	public Object allUnit() {

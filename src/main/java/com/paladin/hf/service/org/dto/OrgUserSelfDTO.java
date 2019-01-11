@@ -6,19 +6,19 @@ public class OrgUserSelfDTO {
 	
 	private Date recordCreateTime;
 
-	private String sex;
+	private Integer sex;
 
-	private String oeducation;
+	private Integer oeducation;
 
-	private String nation;
+	private Integer nation;
 
-	private String partisan;
+	private Integer partisan;
 
 	private Date birthday;
 
-	private String jobDuties;
+	private Integer jobDuties;
 
-	private String jobRank;
+	private Integer jobRank;
 
 	private Date startWorkTime;
 
@@ -30,9 +30,9 @@ public class OrgUserSelfDTO {
 
 	private String punish;
 
-	private String jobLevel;
+	private Integer jobLevel;
 
-	private String userProperty;
+	private Integer userProperty;
 
 	public Date getRecordCreateTime() {
 		return recordCreateTime;
@@ -42,35 +42,35 @@ public class OrgUserSelfDTO {
 		this.recordCreateTime = recordCreateTime;
 	}
 
-	public String getSex() {
+	public Integer getSex() {
 		return sex;
 	}
 
-	public void setSex(String sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 
-	public String getOeducation() {
+	public Integer getOeducation() {
 		return oeducation;
 	}
 
-	public void setOeducation(String oeducation) {
+	public void setOeducation(Integer oeducation) {
 		this.oeducation = oeducation;
 	}
 
-	public String getNation() {
+	public Integer getNation() {
 		return nation;
 	}
 
-	public void setNation(String nation) {
+	public void setNation(Integer nation) {
 		this.nation = nation;
 	}
 
-	public String getPartisan() {
+	public Integer getPartisan() {
 		return partisan;
 	}
 
-	public void setPartisan(String partisan) {
+	public void setPartisan(Integer partisan) {
 		this.partisan = partisan;
 	}
 
@@ -82,19 +82,19 @@ public class OrgUserSelfDTO {
 		this.birthday = birthday;
 	}
 
-	public String getJobDuties() {
+	public Integer getJobDuties() {
 		return jobDuties;
 	}
 
-	public void setJobDuties(String jobDuties) {
+	public void setJobDuties(Integer jobDuties) {
 		this.jobDuties = jobDuties;
 	}
 
-	public String getJobRank() {
+	public Integer getJobRank() {
 		return jobRank;
 	}
 
-	public void setJobRank(String jobRank) {
+	public void setJobRank(Integer jobRank) {
 		this.jobRank = jobRank;
 	}
 
@@ -138,21 +138,22 @@ public class OrgUserSelfDTO {
 		this.punish = punish;
 	}
 
-	public String getJobLevel() {
+	public Integer getJobLevel() {
 		return jobLevel;
 	}
 
-	public void setJobLevel(String jobLevel) {
+	public void setJobLevel(Integer jobLevel) {
 		this.jobLevel = jobLevel;
 	}
 
-	public String getUserProperty() {
+	public Integer getUserProperty() {
 		return userProperty;
 	}
 
-	public void setUserProperty(String userProperty) {
+	public void setUserProperty(Integer userProperty) {
 		this.userProperty = userProperty;
 	}
 
+	
 	
 }

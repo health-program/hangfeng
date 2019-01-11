@@ -1,70 +1,73 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="console/header">
+<head th:include="/hf/header">
 </head>
 
 <body>
+    <tt:constant enumcode="unit-type" />
     <section class="content-header">
-        <h1>单位管理</h1>
+        <h1>单位科室维护管理</h1>
     </section>
-<!--     <section class="content-header">
-        <fieldset>
-            <legend>查询条件</legend>
-            <form id="searchbar" class="form-horizontal">
-                <div  class="form-group">
-                    <label style="width: 95px" for="unitName" class="col-sm-2 control-label">单位名称:</label>
-                    <div class="col-sm-2">
-                        <input type="text" name="unitName" class="form-control" id="unitName" />
-                    </div>
-                    <div style="text-align: right" class="col-sm-9">
-                        <a onclick="query()" class="btn btn-primary">查询</a>
-                        <button type="reset" class="btn">重置</button>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <table id="dataGrid"></table>
+                <div id="toolbar">
+                    <div class="btn-group">
+                        <a onclick="addUnit()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加单位</a>
                     </div>
                 </div>
-            </form>
-            </fieldset>
-    </section> -->
-    <section class="content table-content">
-        <table id="dataGrid"></table>
-    </section>
-    <div id="toolbar">
-        <div class="btn-group">
-	        <a onclick="addUnit()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>添加单位</a>
-	        <a onclick="addChildUnit()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>添加子项</a>
-	        <a onclick="viewUnit()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看</a>
-	        <a onclick="editUnit()" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i>修改</a>
-	        <a onclick="removeUnit()" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i>删除</a>
+            </div>
         </div>
-    </div>
-    <div th:include="console/footer"></div>
+    </section>
+    <div th:include="/hf/footer"></div>
     <script type="text/javascript" src="/static/js/treetable.js"></script>
     <script type="text/javascript">
     var table;
     var unitTypeMap;
     $(function() {
-        $.getConstantEnum(["unit-type","district-type"], initDataGrid);
+        initDataGrid();
     });
 
-    function initDataGrid(enumMap) {
-	
-    	//var enumFormat = $.getEnumColumnFormatter(enumMap,"unit-type");
-    	
-    	
+    function initDataGrid() {
         table = $.createTable("#dataGrid", {
             idField: "uid",
             columns: [
                 [
-                    {radio:true},
-                    { title: "单位名称", field: "unitName", sortable: true },
-                    { title: "单位类型", field: "unitType", sortable: true, formatter: $.getEnumColumnFormatter(enumMap,"unit-type")},
-                    //{ title: "行政区域", field: "districtCode", formatter: $.getEnumColumnFormatter(enumMap,"district-type")},   
+                    { title: "单位名称", align: "left", field: "unitName", sortable: true },
+                    { title: "单位类型", field: "unitType", sortable: true, enumcode: "unit-type" },
                     { title: "联系人", field: "contact" },
-                    { title: "联系电话", field: "contactPhone" }
+                    { title: "联系电话", field: "contactPhone" },
+                    {
+                        title: "操作",
+                        align: "center",
+                        width: "20%",
+                        events: {
+                            'click .detail': function(e, value, row, index) {
+                                detail(row);
+                            },
+                            'click .add': function(e, value, row, index) {
+                                addUnit(row);
+                            },
+                            'click .remove': function(e, value, row, index) {
+                                removeUnit(row);
+                            }
+                        },
+                        formatter: function(value, row, index) {
+                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
+                                '<button class="add btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-plus"></i>添加子项</button>' +
+                                '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+
+                        }
+                    }
                 ]
             ],
-            url: '/org/unit/search/all',
-           // searchbar: '#searchbar',
+            url: '/org/unit/find',
             sortName: 'unitName',
             sortOrder: 'asc',
             pagination: false,
@@ -76,119 +79,35 @@
             treeParentFilter: true, //过滤掉父节点不正确的（置为空）
             treeParentField: "parentUnitId", //父ID字段
             treeField: "unitName", //展示树的字段
-            clickToSelect:true,
-            showColumns:true
+            clickToSelect: true,
+            showColumns: true
         });
     }
 
-    function addChildUnit() {
-    	var row = getSelectRow();
-    	//var id = row.uid;
-    	if (row) {
-    		layer.open({
-                type: 2,
-                title: ' ',
-                maxmin: true, //开启最大化最小化按钮
-                area: $.getOpenLayerSize(),
-                content: '/org/unit/add/input' + (row.uid ? "?parentId=" + row.uid : ""),
-                success: function(layero, index) {
-                    $.setLayerSubmitHandler(layero, index, function() {
-                        layer.close(index);
-                        table.refresh();
-                    }, "保存成功");
-                }
-            });
-		} else {
-			$.errorMessage("请选中一条业务数据！");
-		}
-        
-    }
-    
-    function addUnit() {
-            layer.open({
-                type: 2,
-                title: ' ',
-                maxmin: true, //开启最大化最小化按钮
-                area: $.getOpenLayerSize(),
-                content: '/org/unit/add/input',
-                success: function(layero, index) {
-                    $.setLayerSubmitHandler(layero, index, function() {
-                        layer.close(index);
-                        table.refresh();
-                    }, "保存成功");
-                }
-            });
-    }
-    
-
-    function editUnit() {
-    	var row = getSelectRow();
-    	if (row) {
-    		layer.open({
-                type: 2,
-                title: ' ',
-                maxmin: true, //开启最大化最小化按钮
-                area: $.getOpenLayerSize(),
-                content: '/org/unit/edit/input?id=' + row.uid,
-                success: function(layero, index) {
-                    $.setLayerSubmitHandler(layero, index, function() {
-                        layer.close(index);
-                        table.refresh();
-                    }, "修改成功");
-                }
-            });
-		} else {
-			$.errorMessage("请选中一条业务数据！");
-		}
-        
+    function addUnit(row) {
+        var href = "/org/unit/add";
+        if (row) {
+            href += "?parentId=" + row.uid;
+        }
+        window.location = href;
     }
 
-    function removeUnit() {
-    	var row = getSelectRow();
-    	if (row) {
-    		layer.confirm('确定删除吗?', function() {
+    function detail(row) {
+        window.location = "/org/unit/detail?id=" + row.uid;
+    }
+
+    function removeUnit(row) {
+        if (row) {
+            layer.confirm('确定删除['+row.unitName+']吗?', function() {
                 $.getAjax('/org/unit/delete?id=' + row.uid, function() {
                     $.successMessage("删除成功");
                     table.refresh();
                 });
             });
-		} else {
-			$.errorMessage("请选中一条业务数据！");
-		}
-        
-    }
-
-    function viewUnit() {
-    	var row = getSelectRow();
-    	if (row) {
-    		layer.open({
-                type: 2,
-                title: ' ',
-                maxmin: true, //开启最大化最小化按钮
-                area: $.getOpenLayerSize(),
-                content: '/org/unit/view?id=' + row.uid
-            });	
-		} else {
-			$.errorMessage("请选中一条业务数据！");
-		}
-        
-    }
-
-    function query() {
-        table.refresh();
-    }
-    
-    function getSelectRow() {
-        var rows = table.getSelections();
-        return rows.length>0?rows[0]:null;
-    }
-    
-    $('body').bind('keypress',function (event){
-        if(event.keyCode == '13'){
-            query();
+        } else {
+            $.errorMessage("请选中一条业务数据！");
         }
-    });
-    
+    }
     </script>
 </body>
 

@@ -691,6 +691,12 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 			OrgUser user = new OrgUser();
 			SimpleBeanCopyUtil.simpleCopy(excelUser, user);
 
+			Integer idcardType = user.getIdentificationType();
+			if(idcardType == null) {
+				errors.add(new ExcelImportError(i, "缺少身份证类型"));
+				continue;
+			}
+			
 			String idcard = user.getIdentification();
 			if (idcard != null && idcard.length() != 0) {
 				if (!isUniqueIdcard(idcard)) {
@@ -704,16 +710,6 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 
 			if (StringUtil.isEmpty(user.getName())) {
 				errors.add(new ExcelImportError(i, "缺少姓名"));
-				continue;
-			}
-
-			if (user.getRecordCreateTime() == null) {
-				errors.add(new ExcelImportError(i, "缺少建档日期"));
-				continue;
-			}
-
-			if (user.getBirthday() == null) {
-				errors.add(new ExcelImportError(i, "缺少出生日期"));
 				continue;
 			}
 
@@ -739,4 +735,5 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		return new ExcelImportResult(i, errors);
 	}
 
+	// TODO 登记打印功能
 }

@@ -99,6 +99,10 @@ public class Role {
 				}
 			}
 		}
+		
+		for (MenuPermission mp : rootMenuPermissionSet) {
+			mp.init();
+		}
 	}
 
 	public Collection<MenuPermission> getMenuPermissions() {

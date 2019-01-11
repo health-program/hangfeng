@@ -60,7 +60,7 @@ public class ${upperModelName}Controller extends ControllerSupport {
 		String id = UUIDUtil.createUUID();
 		model.set${primaryName}(id);
 		if (${lowerModelName}Service.save(model) > 0) {
-			return CommonResponse.getSuccessResponse(${lowerModelName}Service.get(id));
+			return CommonResponse.getSuccessResponse(beanCopy(${lowerModelName}Service.get(id), new ${upperModelName}VO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
@@ -74,7 +74,7 @@ public class ${upperModelName}Controller extends ControllerSupport {
 		String id = ${lowerModelName}DTO.getId();
 		${upperModelName} model = beanCopy(${lowerModelName}DTO, ${lowerModelName}Service.get(id));
 		if (${lowerModelName}Service.update(model) > 0) {
-			return CommonResponse.getSuccessResponse(${lowerModelName}Service.get(id));
+			return CommonResponse.getSuccessResponse(beanCopy(${lowerModelName}Service.get(id), new ${upperModelName}VO()));
 		}
 		return CommonResponse.getFailResponse();
 	}

@@ -22,16 +22,16 @@ public class OrgUserQuery extends OffsetPage {
 	private List<String> unitIds;
 	private List<String> agencyIds;
 
-	private String userProperty;
+	private Integer userProperty;
 
 	private List<Integer> transferStatus;
 
 	@QueryCondition(type = QueryType.EQUAL)
-	public String getUserProperty() {
+	public Integer getUserProperty() {
 		return userProperty;
 	}
 
-	public void setUserProperty(String userProperty) {
+	public void setUserProperty(Integer userProperty) {
 		this.userProperty = userProperty;
 	}
 

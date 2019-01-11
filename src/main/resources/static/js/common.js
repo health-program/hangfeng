@@ -264,6 +264,11 @@
             }
             return false;
         },
+        ajaxResponseHandler: function(response, callback) {
+            if ($.ajaxResponseCheck(response) === true) {
+                typeof callback === 'function' && callback(response.result);
+            }
+        },
         wrapAjaxSuccessCallback: function(callback, submitBtn) {
 
             if (callback && typeof callback != 'function' && !submitBtn) {
@@ -725,7 +730,9 @@ function _createUnitComponment(input, type, callback) {
                 }
             }
 
-            that.setCurrent(current);
+            if (current && current.id) {
+                that.setCurrent(current);
+            }
 
             that.removeBtn.on("click", function() {
                 that.setCurrent(null);

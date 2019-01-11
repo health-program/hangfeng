@@ -6,30 +6,29 @@ import javax.persistence.Id;
 
 import com.paladin.framework.common.UnDeleteModel;
 
-public class OrgUnit extends UnDeleteModel{
-
-	public final static String UNIT_TYPE_DEPARTMENT = "A";
-	public final static String UNIT_TYPE_AGENCY = "B";
-	public final static String UNIT_TYPE_ASSESS_TEAM = "C";
-
+public class OrgUnit extends UnDeleteModel {
 	
+	public final static int UNIT_TYPE_AGENCY = 1;
+	public final static int UNIT_TYPE_ASSESS_TEAM = 2;
+	public final static int UNIT_TYPE_DEPARTMENT = 3;
+
 	@Id
 	@Column(name = "uid")
 	@GeneratedValue(generator = "UUID")
 	private String uid;
-	
+
 	private String unitName;
 
 	private String unitDescription;
 
 	private String parentUnitId;
 
-	private String unitType;
+	private Integer unitType;
 
 	private String districtCode;
-	
+
 	private String contact;
-	
+
 	private String contactPhone;
 
 	public String getUid() {
@@ -64,11 +63,11 @@ public class OrgUnit extends UnDeleteModel{
 		this.parentUnitId = parentUnitId;
 	}
 
-	public String getUnitType() {
+	public Integer getUnitType() {
 		return unitType;
 	}
 
-	public void setUnitType(String unitType) {
+	public void setUnitType(Integer unitType) {
 		this.unitType = unitType;
 	}
 

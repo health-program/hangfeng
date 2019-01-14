@@ -1029,6 +1029,8 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         }
 
         // 解析的附件
+        if (!data) return;
+
         var filename = column.fileName,
             v = data[column.name];
         data[filename] = $.parseAttachmentData(data[filename]);
@@ -1158,7 +1160,7 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         }
 
         var name = column.name,
-            atts = data[column.fileName];
+            atts = data && data[column.fileName];
 
         if (atts) {
             var attDiv = model.viewBody.find('[name="' + name + '"]');
@@ -1251,7 +1253,6 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         }
 
         var name = column.fileName,
-            data = model.data,
             atts = data ? data[name] : null,
             fileInput = model.formBody.find('[name="' + name + '"]');
 

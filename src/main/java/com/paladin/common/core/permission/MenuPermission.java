@@ -91,4 +91,8 @@ public class MenuPermission {
 		return false;
 	}
 
+	public int getListOrder() {
+		return listOrder;
+	}
+
 }

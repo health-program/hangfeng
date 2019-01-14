@@ -286,7 +286,7 @@ public class HfUserSession extends UserSession implements Serializable {
 	public Collection<MenuPermission> getMenuResources() {
 		PermissionContainer container = PermissionContainer.getInstance();
 		if (isSystemAdmin) {
-			container.getSystemAdminRole().getMenuPermissions();
+			return container.getSystemAdminRole().getMenuPermissions();
 		}
 
 		if (isOrgUser) {
@@ -295,6 +295,10 @@ public class HfUserSession extends UserSession implements Serializable {
 
 		if (isAdminUser) {
 			ArrayList<Role> roles = new ArrayList<>(roleIds.length);
+			if (roles.size() == 1) {
+				return container.getRole(roleIds[0]).getMenuPermissions();
+			}
+			
 			for (String rid : roleIds) {
 				Role role = container.getRole(rid);
 				if (role != null) {

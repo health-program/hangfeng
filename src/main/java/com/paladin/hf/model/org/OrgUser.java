@@ -7,11 +7,11 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.paladin.framework.common.UnDeleteModel;
+import com.paladin.framework.common.UnDeleteBaseModel;
 
 import tk.mybatis.mapper.annotation.IgnoreInMultipleResult;
 
-public class OrgUser extends UnDeleteModel implements Serializable {
+public class OrgUser extends UnDeleteBaseModel implements Serializable {
 
 	private static final long serialVersionUID = -229307096210558949L;
 

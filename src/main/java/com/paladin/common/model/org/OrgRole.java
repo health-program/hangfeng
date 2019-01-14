@@ -74,4 +74,5 @@ public class OrgRole extends UnDeleteBaseModel {
 		this.enable = enable;
 	}
 
+
 }

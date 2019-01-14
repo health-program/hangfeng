@@ -6,9 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.paladin.framework.common.UnDeleteModel;
+import com.paladin.framework.common.UnDeleteBaseModel;
 
-public class AdminUser extends UnDeleteModel implements Serializable{
+public class AdminUser extends UnDeleteBaseModel implements Serializable{
 	
 	/**
 	 * 

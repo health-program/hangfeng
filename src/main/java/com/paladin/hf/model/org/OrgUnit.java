@@ -4,9 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.paladin.framework.common.UnDeleteModel;
+import com.paladin.framework.common.UnDeleteBaseModel;
 
-public class OrgUnit extends UnDeleteModel {
+public class OrgUnit extends UnDeleteBaseModel {
 	
 	public final static int UNIT_TYPE_AGENCY = 1;
 	public final static int UNIT_TYPE_ASSESS_TEAM = 2;

@@ -1,9 +1,12 @@
 <!DOCTYPE HTML>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-<head th:include="console/header">
+<head th:include="/hf/header">
 </head>
 <body>
+    <input type="hidden" id="userId" th:value="${user.id}"/>
+    
+<tt:constant enumcode="ass-grades,job-duties-type,sex-type" />
 <div class="container">
 <section class="content">
             <div class="box box-primary">
@@ -14,33 +17,33 @@
                           <h1 class="box-title">周期考评-个人</h1>
                 </div>
                 <div class="box-body">
-                    <div class="row" style="padding:15px;padding-top:0px">
-                            <form class="form-horizontal" th:object="${user}">
-                                 <fieldset>
-                                 <legend>个人基本信息</legend>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">姓名</label>
-                                    <div class="col-sm-3">
-                                        <p class="form-control-static" th:text="*{name}" />
-                                    </div>
-                                    <label class="col-sm-2 control-label">性别</label>
-                                    <div class="col-sm-3">
-                                        <p class="form-control-static" id="sex" th:attr="enum-code-value=${user.sex}" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="col-sm-2 control-label">出生日期</label>
-                                    <div class="col-sm-3">
-                                        <p class="form-control-static" th:text="*{birthday}" />
-                                    </div>
-                                    <label class="col-sm-2 control-label">职务</label>
-                                    <div class="col-sm-3">
-                                        <p class="form-control-static" id="jobDuties" th:attr="enum-code-value=${user.jobDuties}" />
-                                    </div>
-                                </div>
-                             </fieldset>
-                            </form>
-                        </div>
+                    <div id="model_user_view" class="box-body">
+	                    <form class="form-horizontal">
+		                    <fieldset>
+		                       <legend>个人基本信息</legend>
+		                       <div class="form-group">
+		                           <label class="col-sm-2 control-label">姓名</label>
+		                           <div class="col-sm-3">
+		                               <p name="name" class="form-control-static description"/>
+		                           </div>
+		                           <label class="col-sm-2 control-label">性别</label>
+		                           <div class="col-sm-3">
+		                               <p name="sex" class="form-control-static description"/>
+		                           </div>
+		                       </div>
+		                       <div class="form-group">
+		                           <label class="col-sm-2 control-label">出生日期</label>
+		                           <div class="col-sm-3">
+		                               <p name="birthday" class="form-control-static description"/>
+		                           </div>
+		                           <label class="col-sm-2 control-label">职务</label>
+		                           <div class="col-sm-3">
+		                               <p name="jobDuties" class="form-control-static description"/>
+		                           </div>
+		                       </div>
+		                    </fieldset>
+	                    </form>
+                    </div>
                     
                 
                     <form class="form-horizontal tonto-form-validate" id="unitForm" action="/person/cyc/confirm" callback-url="/person/cyc/index" method="post" th:object="${perCycAss}">
@@ -196,43 +199,71 @@
             </div>
 </section>
 </div>
-<div th:include="console/footer"></div>
+<div th:include="/hf/footer"></div>
 
 <script type="text/javascript">
-$(function() {
-	/*<![CDATA[*/
-	//confirmedResult：被考评人确认结果
-	var crval = $("#confirmedResult").val();
-	$("#confirmedResult").attr("name","");
-	if(crval){
-		$("input[name='confirmedResult'][value="+crval+"]").attr("checked",true); 
-	}
-	
-	 /*------判断radio是否有选中，获取选中的值--------*/
-	 $(function(){
-         $("#btnSubmit").click(function(){
-            var val=$('input:radio[name="confirmedResult"]:checked').val();
-            if(val==null){
-                $.failMessage("考评等次还没确认!")
-                return false;
-            }
-            return true;
-     });
-	})
-	
-	$.getConstantEnum([
-        { code: "sex-type", type: 'p', target: '#sex' },
-        { code: "job-duties-type", type: 'p', target: '#jobDuties' }
-    ]);
 
-});
+
+	var options_user = {
+	        id: "model_user",
+	        name: "详情",
+	        columns: [
+	            { title: "姓名", name: "name", inputType: "TEXT"},
+	            { title: "性别", name: "sex", inputType: "SELECT",enum:"sex-type"},
+	            { title: "出生日期", name: "birthday", inputType: "DATE"},
+	            { title: "职务", name: "jobDuties", inputType: "SELECT", enum:"job-duties-type"}
+	                  
+	        ]
+	    }
+
+
+	var userId = $("#userId").val();
+	
+	$(function() {
+		/*<![CDATA[*/
+		           
+		$.getAjax("/person/cyc/find/user?id=" + userId, function(data) {
+            var model_user = new tonto.Model("model_user", options_user.columns, {
+                extraParam:{
+                    id:userId
+                }
+            });
+            model_user.setData(data);
+        });
+		           
+		           
+		           
+		//confirmedResult：被考评人确认结果
+		var crval = $("#confirmedResult").val();
+		$("#confirmedResult").attr("name","");
+		if(crval){
+			$("input[name='confirmedResult'][value="+crval+"]").attr("checked",true); 
+		}
+		
+		 /*------判断radio是否有选中，获取选中的值--------*/
+		 $(function(){
+	         $("#btnSubmit").click(function(){
+	            var val=$('input:radio[name="confirmedResult"]:checked').val();
+	            if(val==null){
+	                $.failMessage("考评等次还没确认!")
+	                return false;
+	            }
+	            return true;
+	     });
+		})
+		
+	
+	});
 
 	$("#fieldset1").find("input,select,textarea").attr({disabled:true,readonly:true});
 	$("#fieldset2").find("input,select,textarea").attr({disabled:true,readonly:true});
+	
 	$("#fieldset3").find("input,select,textarea").attr({disabled:true,readonly:true});
 	$("#fieldset3").find(".tonto-datepicker-date").css("background","#eee");
+	
 	$("#fieldset4").find("input,select,textarea").attr({disabled:true,readonly:true});
 	$("#fieldset4").find(".tonto-datepicker-date").css("background","#eee");
+	
 	$("#fieldset5").find("input,select,textarea").attr({disabled:true,readonly:true});
 	$("#fieldset5").find(".tonto-datepicker-date").css("background","#eee");
 

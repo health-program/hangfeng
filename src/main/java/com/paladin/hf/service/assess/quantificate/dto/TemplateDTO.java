@@ -1,4 +1,4 @@
-package com.paladin.hf.model.assess.quantificate;
+package com.paladin.hf.service.assess.quantificate.dto;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -15,20 +15,20 @@ import com.paladin.hf.core.UnitContainer;
  * @author TontoZhou
  * @since 2018年2月6日
  */
-public class Template extends BaseModel {
+public class TemplateDTO extends BaseModel {
 
 	/**
 	 * 启用
 	 */
-	public final static Integer STATE_START = 1;
+	public final static String STATE_START = "1";
 	/**
 	 * 暂存，草稿
 	 */
-	public final static Integer STATE_DRAFT = 2;
+	public final static String STATE_DRAFT = "2";
 	/**
 	 * 停用
 	 */
-	public final static Integer STATE_STOP = 3;
+	public final static String STATE_STOP = "3";
 
 	public final static String COLUMN_ENABLE_STATE = "enableState";
 	public final static String COLUMN_ORG_UNIT_ID = "orgUnitId";
@@ -47,7 +47,7 @@ public class Template extends BaseModel {
 
 	private String templateDescribe;
 
-	private Integer enableState;
+	private String enableState;
 
 	public String getId() {
 		return id;
@@ -81,21 +81,19 @@ public class Template extends BaseModel {
 		this.templateDescribe = templateDescribe;
 	}
 
-	
-	
+	public String getEnableState() {
+		return enableState;
+	}
+
+	public void setEnableState(String enableState) {
+		this.enableState = enableState;
+	}
+
 	/*
 	 * 扩展显示用字段
 	 */
 
-	public Integer getEnableState() {
-            return enableState;
-      }
-
-      public void setEnableState(Integer enableState) {
-            this.enableState = enableState;
-      }
-
-      public String getUnitName() {
+	public String getUnitName() {
 		try {
 			return UnitContainer.getUnitName(orgUnitId);
 		} catch (BusinessException e) {

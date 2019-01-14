@@ -28,6 +28,7 @@ import com.paladin.hf.mapper.org.OrgUserMapper;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.org.OrgUserTransferLog;
 import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
+import com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO;
 import com.paladin.hf.service.org.dto.OrgUserDTO;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
 import com.paladin.hf.service.org.vo.OrgUserVO;
@@ -582,7 +583,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		}
 	}
 
-	public List<PersonCycAssessExt> findThisYearAssessSituationList(String orgUserId, Integer myYear) {
+	public List<PersonnelCycleAssessDTO> findThisYearAssessSituationList(String orgUserId, Integer myYear) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.clear();
 		calendar.set(Calendar.YEAR, myYear);

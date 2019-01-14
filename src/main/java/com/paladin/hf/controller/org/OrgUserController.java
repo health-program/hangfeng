@@ -26,6 +26,7 @@ import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
+import com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO;
 import com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery;
 import com.paladin.hf.service.org.OrgUserService;
 import com.paladin.hf.service.org.dto.OrgUserDTO;
@@ -439,7 +440,7 @@ public class OrgUserController extends ControllerSupport {
 	@ResponseBody
 	private Object findThisYearAssessSituationList(String orgUserId, Integer myYear) {
 
-		List<PersonCycAssessExt> list = orgUserService.findThisYearAssessSituationList(orgUserId, myYear);
+		List<PersonnelCycleAssessDTO> list = orgUserService.findThisYearAssessSituationList(orgUserId, myYear);
 		return CommonResponse.getSuccessResponse(list);
 	}
 
@@ -451,7 +452,7 @@ public class OrgUserController extends ControllerSupport {
 	 */
 	@RequestMapping("/assess/registration/form")
 	public String assessRegistrationForm(PersonCycAssessQuery perCycAssQuery, Model model) {
-		PersonCycAssessExt perCycAss = perCycAssMapper.getAssessRegistrationForm(perCycAssQuery);
+		PersonnelCycleAssessDTO perCycAss = perCycAssMapper.getAssessRegistrationForm(perCycAssQuery);
 		model.addAttribute("perCycAss", perCycAss);
 		return "/hf/org/assess_registration_form";
 	}

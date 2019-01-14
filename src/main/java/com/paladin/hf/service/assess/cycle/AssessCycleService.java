@@ -17,6 +17,7 @@ import com.paladin.hf.mapper.assess.cycle.AssessCycleMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.assess.quantificate.AssessCycleTemplate;
 import com.paladin.hf.model.org.OrgUser;
+import com.paladin.hf.service.assess.cycle.dto.AssessCycleDTO;
 import com.paladin.hf.service.assess.cycle.pojo.AssessCycleSelectQuery;
 import com.paladin.hf.service.assess.quantificate.AssessCycleTemplateService;
 import com.paladin.hf.service.org.OrgUserService;
@@ -298,6 +299,10 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 
       public int selectTemplateIdByAssessCycleId(String id) {
             return assessCycleMapper.selectTemplateIdByAssessCycleId(id);
+      }
+
+      public AssessCycleDTO getOneById(String id) {
+            return assessCycleMapper.getOneById(id);
       }
 
 	

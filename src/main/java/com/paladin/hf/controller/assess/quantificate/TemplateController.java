@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.common.Condition;
-import com.paladin.framework.common.PageResult;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.core.exception.BusinessException;
@@ -31,6 +30,7 @@ import com.paladin.hf.model.assess.quantificate.Template;
 import com.paladin.hf.service.assess.quantificate.AssessItemExtraService;
 import com.paladin.hf.service.assess.quantificate.AssessItemService;
 import com.paladin.hf.service.assess.quantificate.TemplateService;
+import com.paladin.hf.service.assess.quantificate.dto.TemplateDTO;
 import com.paladin.hf.service.assess.quantificate.pojo.TemplateQuery;
 
 /**
@@ -63,7 +63,7 @@ public class TemplateController extends ControllerSupport {
 	@RequestMapping(value = "/index")
 	public String index(Model model) {
 		wrapAgency(model);
-		return "console/templ/index";
+		return "/hf/assess/quantificate/template_index";
 	}
 
 	private void wrapAgency(Model model) {
@@ -108,12 +108,12 @@ public class TemplateController extends ControllerSupport {
 	@RequestMapping("/view")
 	public String view(@RequestParam(required = true) String id, Model model) {
 
-		Template template = templateService.get(id);
-		if (template == null)
+		TemplateDTO templateDTO = templateService.getOneByPrimaryKey(id);
+		if (templateDTO == null)
 			throw new BusinessException("无法找到对应的模板");
-		model.addAttribute("temp", template);
+		model.addAttribute("temp", templateDTO);
 
-		return "console/templ/detail";
+		return "/hf/assess/quantificate/template_view";
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class TemplateController extends ControllerSupport {
 		wrapAgency(model);
 		model.addAttribute("temp", new Template());
 		model.addAttribute("formType", FormType.ADD);
-		return "console/templ/from";
+		return "/hf/assess/quantificate/template_edit";
 	}
 
 	@RequestMapping("/edit/input")
@@ -151,7 +151,7 @@ public class TemplateController extends ControllerSupport {
 		wrapAgency(model);
 		model.addAttribute("temp", template);
 		model.addAttribute("formType", FormType.EDIT);
-		return "console/templ/from";
+		return "/hf/assess/quantificate/template_edit";
 	}
 
 	@RequestMapping("/save")
@@ -250,7 +250,7 @@ public class TemplateController extends ControllerSupport {
 		model.addAttribute("temp", template);
 		model.addAttribute("isCopy", "1");
 		model.addAttribute("formType", FormType.ADD);
-		return "console/templ/from";
+		return "/hf/assess/quantificate/template_edit";
 	}
 
 	/**

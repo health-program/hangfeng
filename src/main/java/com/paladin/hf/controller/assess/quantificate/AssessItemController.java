@@ -42,7 +42,7 @@ public class AssessItemController extends ControllerSupport{
 	
 	@RequestMapping(value = "/index")
 	public String index(Model model) {
-		return "hf/assess/quantificate/index";
+		return "/hf/assess/quantificate/index";
 	}
 	
 	@ResponseBody

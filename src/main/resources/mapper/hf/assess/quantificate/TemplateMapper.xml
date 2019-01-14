@@ -17,7 +17,7 @@
 			<result property="unitName" column="unit_name" />
 		</association>
   </resultMap>
-  
+  <!-- TODO  改为DTO 接收 -->
   <!-- 条件查询考评模板列表 -->
   <select id="getTemplateList" parameterType="com.paladin.hf.model.assess.quantificate.Template" resultMap="BaseResultMap" >
 	SELECT
@@ -68,5 +68,21 @@
     <select id="itemCount" resultType="Integer">
   		SELECT COUNT(0) FROM `assess_item` WHERE template_id=#{id}
   </select>
+  
+  <select id="getOneByPrimaryKey" parameterType="String" resultType="com.paladin.hf.service.assess.quantificate.dto.TemplateDTO">
+		SELECT 
+			id, 
+			org_unit_id AS orgUnitId, 
+			template_name AS templateName,
+			template_describe AS templateDescribe,
+			enable_state AS enableState,
+			create_time AS createTime,
+			create_user_id AS createUserId,
+			update_time AS updateTime,
+			update_user_id AS updateUserId
+		FROM template 
+		WHERE id = #{id}
+  </select>
+  
   
 </mapper>

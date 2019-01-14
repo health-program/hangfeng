@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.assess.quantificate.Template;
+import com.paladin.hf.service.assess.quantificate.dto.TemplateDTO;
 
 
 public interface TemplateMapper extends CustomMapper<Template> {
@@ -32,6 +33,8 @@ public interface TemplateMapper extends CustomMapper<Template> {
      * @see [类、类#方法、类#成员]
      */
     int itemCount(String id);
+
+    TemplateDTO getOneByPrimaryKey(String id);
 
 
 }

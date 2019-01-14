@@ -27,12 +27,12 @@ public class AssessLevelController extends ControllerSupport {
 	
 	@RequestMapping(value = "/index")
 	public String index(Model model) {
-		return "hf/assess/quantificate/assess_level_index";
+		return "/hf/assess/quantificate/assess_level_index";
 	}
 	
 	@RequestMapping(value = "/view")
     public String view(Model model) {
-        return "hf/assess/quantificate/assess_level_view";
+        return "/hf/assess/quantificate/assess_level_view";
     }
 	
 	@ResponseBody
@@ -60,6 +60,6 @@ public class AssessLevelController extends ControllerSupport {
 	      model.addAttribute("btemplateId", templateId);
 	      model.addAttribute("assessCycleId", cycleId);
 	      model.addAttribute("orgUserId", buserId);
-	      return "hf/assess/quantificate/quantitative_result_view";
+	      return "/hf/assess/quantificate/quantitative_result_view";
 	}
 }

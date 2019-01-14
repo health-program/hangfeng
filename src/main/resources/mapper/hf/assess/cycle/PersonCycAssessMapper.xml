@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper">
-	<resultMap id="BaseResultMap" type="com.paladin.hf.model.assess.cycle.PersonCycAssess">
-		<id column="id" jdbcType="VARCHAR" property="id" />
-		<result column="org_user_id" jdbcType="VARCHAR" property="orgUserId" />
-		<result column="assess_cycle_id" jdbcType="VARCHAR" property="assessCycleId" />
-		<result column="work_summary" jdbcType="VARCHAR" property="workSummary" />
-		<result column="self_ass_opinion" jdbcType="VARCHAR" property="selfAssOpinion" />
-		<result column="self_ass_grade" jdbcType="VARCHAR" property="selfAssGrade" />
-		<result column="self_ass_time" jdbcType="DATE" property="selfAssTime" />
-		<result column="depart_opinion" jdbcType="VARCHAR" property="departOpinion" />
-		<result column="depart_grade" jdbcType="VARCHAR" property="departGrade" />
-		<result column="depart_ass_time" jdbcType="DATE" property="departAssTime" />
-		<result column="unit_group_opinion" jdbcType="VARCHAR" property="unitGroupOpinion" />
-		<result column="unit_ass_grade" jdbcType="VARCHAR" property="unitAssGrade" />
-		<result column="unit_ass_time" jdbcType="DATE" property="unitAssTime" />
-		<result column="confirmed_result" jdbcType="VARCHAR" property="confirmedResult" />
-		<result column="confirmed_time" jdbcType="DATE" property="confirmedTime" />
-		<result column="remarks" jdbcType="VARCHAR" property="remarks" />
-		<result column="operate_state" jdbcType="VARCHAR" property="operateState" />
-		<result column="assessed_sign" jdbcType="VARCHAR" property="assessedSign" />
-		<result column="dep_assessor_sign" jdbcType="VARCHAR" property="depAssessorSign" />
-		<result column="unit_assessor_sign" jdbcType="VARCHAR" property="unitAssessorSign" />
-		<result column="assessed_confirm_sign" jdbcType="VARCHAR" property="assessedConfirmSign" />
-		<result column="unit_id" jdbcType="VARCHAR" property="unitId" />
-		<result column="agency_id" jdbcType="VARCHAR" property="agencyId" />
-		<result column="create_time" jdbcType="DATE" property="createTime" />
-		<result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
-		<result column="update_time" jdbcType="DATE" property="updateTime" />
-		<result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
-	</resultMap>
-
-	<resultMap type="com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt"
-		id="ExtMap" extends="BaseResultMap">
-		<result column="cycle_name" jdbcType="VARCHAR" property="assessCycName" />
-		<result column="name" jdbcType="VARCHAR" property="userName" />
-	</resultMap>
 
 	<sql id="listSelectItems">
 		pca.id AS id,
@@ -64,11 +29,11 @@
 		pca.update_user_id AS updateUserId
 	</sql>
 
-	<select id="getCycleAssessExt" parameterType="string" resultMap="ExtMap">
+	<select id="getCycleAssessExt" parameterType="string" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		pca.*,
-		ac.cycle_name,
-		our.`name`
+		ac.cycle_name AS assessCycName,
+		our.`name` AS userName
 		FROM
 		person_cyc_assess pca
 		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
@@ -77,14 +42,13 @@
 	</select>
 
 	<!-- 加载首页列表数据及条件查询 -->
-	<select id="associationQueryAll"
-		parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery"
-		resultMap="ExtMap">
+	<select id="associationQueryAll" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery" 
+		  resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		<include refid="listSelectItems" />
 		,
-		ac.cycle_name,
-		our.`name`
+		ac.cycle_name AS assessCycName,
+        our.`name` AS userName
 		FROM
 		person_cyc_assess pca
 		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
@@ -97,14 +61,13 @@
 	</select>
 
 	<!-- 医德医风档案管理-查看-考评情况 -->
-	<select id="viewAssessSituation"
-		parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery"
-		resultMap="ExtMap">
+	<select id="viewAssessSituation" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery" 
+		  resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		<include refid="listSelectItems" />
 		,
-		ac.cycle_name,
-		our.`name`
+		ac.cycle_name AS assessCycName,
+        our.`name` AS userName
 		FROM
 		person_cyc_assess pca
 		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
@@ -116,12 +79,12 @@
 
 
 	<!--根据操作状态筛选周期考评-科室的首页数据及条件查询 -->
-	<select id="screenAllByOperate" resultMap="ExtMap">
+	<select id="screenAllByOperate" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		<include refid="listSelectItems" />
 		,
-		ac.cycle_name,
-		our.`name`
+		ac.cycle_name AS assessCycName,
+        our.`name` AS userName
 		FROM
 		person_cyc_assess pca
 		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
@@ -173,7 +136,7 @@
 	</select>
 
 	<!--根据考评周期id查询对应考评信息来做判断 -->
-	<select id="searchBaseInfo" resultMap="BaseResultMap">
+	<select id="searchBaseInfo" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		pca.*
 		FROM
@@ -185,8 +148,7 @@
 
 
 	<!-- 未考评 -->
-	<select id="noAssessment" parameterType="Map"
-		resultType="com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt">
+	<select id="noAssessment" parameterType="Map" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		ou.org_agency_id AS agencyId,
 		ou.org_assess_team_id AS assessTeamId,
@@ -231,7 +193,7 @@
 		ORDER BY ou.org_unit_id ASC
 	</select>
 
-	<select id="findThisYearAssessSituationList" resultMap="ExtMap">
+	<select id="findThisYearAssessSituationList" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		pca.id AS id,
 		pca.org_user_id AS orgUserId,
@@ -255,8 +217,8 @@
 		ORDER BY ac.cycle_start_time DESC;
 	</select>
 
-	<select id="getAssessRegistrationForm" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery"
-		resultMap="ExtMap">
+	<select id="getAssessRegistrationForm" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery" 
+	   resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
 		SELECT
 		ot.unit_name as unitName,
 		our.`name`,

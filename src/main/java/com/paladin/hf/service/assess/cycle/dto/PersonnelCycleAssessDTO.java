@@ -3,6 +3,8 @@ package com.paladin.hf.service.assess.cycle.dto;
 import java.util.Date;
 
 import com.paladin.framework.common.BaseModel;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
 /**   
 * @author jisanjie
@@ -20,29 +22,29 @@ public class PersonnelCycleAssessDTO extends BaseModel {
       
       private String selfAssOpinion;
       
-      private String selfAssGrade;
+      private Integer selfAssGrade;
       
       private Date selfAssTime;
       
       private String departOpinion;
       
-      private String departGrade;
+      private Integer departGrade;
       
       private Date departAssTime;
       
       private String unitGroupOpinion;
       
-      private String unitAssGrade;
+      private Integer unitAssGrade;
       
       private Date unitAssTime;
       
-      private String confirmedResult;
+      private Integer confirmedResult;
       
       private Date confirmedTime;
       
       private String remarks;
       
-      private String operateState;
+      private Integer operateState;
       
       private String assessedSign;
       
@@ -59,6 +61,26 @@ public class PersonnelCycleAssessDTO extends BaseModel {
       private String assessCycName;
       
       private String userName;
+      
+      
+      
+      private String unitName;
+      
+      private String sex;
+      
+      private String birthday;
+      
+      private String partisan;
+      
+      private String oeducation;
+      
+      private String jobDuties;
+      
+      private String comeUnitTime;
+      
+      private String userProperty;
+      
+      
 
       public String getId() {
             return id;
@@ -100,14 +122,6 @@ public class PersonnelCycleAssessDTO extends BaseModel {
             this.selfAssOpinion = selfAssOpinion;
       }
 
-      public String getSelfAssGrade() {
-            return selfAssGrade;
-      }
-
-      public void setSelfAssGrade(String selfAssGrade) {
-            this.selfAssGrade = selfAssGrade;
-      }
-
       public Date getSelfAssTime() {
             return selfAssTime;
       }
@@ -122,14 +136,6 @@ public class PersonnelCycleAssessDTO extends BaseModel {
 
       public void setDepartOpinion(String departOpinion) {
             this.departOpinion = departOpinion;
-      }
-
-      public String getDepartGrade() {
-            return departGrade;
-      }
-
-      public void setDepartGrade(String departGrade) {
-            this.departGrade = departGrade;
       }
 
       public Date getDepartAssTime() {
@@ -148,28 +154,12 @@ public class PersonnelCycleAssessDTO extends BaseModel {
             this.unitGroupOpinion = unitGroupOpinion;
       }
 
-      public String getUnitAssGrade() {
-            return unitAssGrade;
-      }
-
-      public void setUnitAssGrade(String unitAssGrade) {
-            this.unitAssGrade = unitAssGrade;
-      }
-
       public Date getUnitAssTime() {
             return unitAssTime;
       }
 
       public void setUnitAssTime(Date unitAssTime) {
             this.unitAssTime = unitAssTime;
-      }
-
-      public String getConfirmedResult() {
-            return confirmedResult;
-      }
-
-      public void setConfirmedResult(String confirmedResult) {
-            this.confirmedResult = confirmedResult;
       }
 
       public Date getConfirmedTime() {
@@ -186,14 +176,6 @@ public class PersonnelCycleAssessDTO extends BaseModel {
 
       public void setRemarks(String remarks) {
             this.remarks = remarks;
-      }
-
-      public String getOperateState() {
-            return operateState;
-      }
-
-      public void setOperateState(String operateState) {
-            this.operateState = operateState;
       }
 
       public String getAssessedSign() {
@@ -259,7 +241,132 @@ public class PersonnelCycleAssessDTO extends BaseModel {
       public void setUserName(String userName) {
             this.userName = userName;
       }
+
+      public String getUnitName() {
+            return unitName;
+      }
+
+      public void setUnitName(String unitName) {
+            this.unitName = unitName;
+      }
+
+      public String getSex() {
+            return sex;
+      }
+
+      public void setSex(String sex) {
+            this.sex = sex;
+      }
+
+      public String getBirthday() {
+            return birthday;
+      }
+
+      public void setBirthday(String birthday) {
+            this.birthday = birthday;
+      }
+
+      public String getPartisan() {
+            return partisan;
+      }
+
+      public void setPartisan(String partisan) {
+            this.partisan = partisan;
+      }
+
+      public String getOeducation() {
+            return oeducation;
+      }
+
+      public void setOeducation(String oeducation) {
+            this.oeducation = oeducation;
+      }
+
+      public String getJobDuties() {
+            return jobDuties;
+      }
+
+      public void setJobDuties(String jobDuties) {
+            this.jobDuties = jobDuties;
+      }
+
+      public String getComeUnitTime() {
+            return comeUnitTime;
+      }
+
+      public void setComeUnitTime(String comeUnitTime) {
+            this.comeUnitTime = comeUnitTime;
+      }
+
+      public String getUserProperty() {
+            return userProperty;
+      }
+
+      public void setUserProperty(String userProperty) {
+            this.userProperty = userProperty;
+      }
       
       
       
+      /*
+       * 扩展显示单位名称
+       */
+      
+
+
+      public Integer getSelfAssGrade() {
+            return selfAssGrade;
+      }
+
+      public void setSelfAssGrade(Integer selfAssGrade) {
+            this.selfAssGrade = selfAssGrade;
+      }
+
+      public Integer getDepartGrade() {
+            return departGrade;
+      }
+
+      public void setDepartGrade(Integer departGrade) {
+            this.departGrade = departGrade;
+      }
+
+      public Integer getUnitAssGrade() {
+            return unitAssGrade;
+      }
+
+      public void setUnitAssGrade(Integer unitAssGrade) {
+            this.unitAssGrade = unitAssGrade;
+      }
+
+      public Integer getConfirmedResult() {
+            return confirmedResult;
+      }
+
+      public void setConfirmedResult(Integer confirmedResult) {
+            this.confirmedResult = confirmedResult;
+      }
+
+      public Integer getOperateState() {
+            return operateState;
+      }
+
+      public void setOperateState(Integer operateState) {
+            this.operateState = operateState;
+      }
+
+      public String getDepartmentName() {
+          try {
+              return UnitContainer.getUnitName(getUnitId());
+          }catch(BusinessException e) {
+              return "";
+          }
+      }
+      
+      public String getAgencyName() {        
+          try {
+              return UnitContainer.getUnitName(getAgencyId());
+          }catch(BusinessException e) {
+              return "";
+          }
+      }
 }

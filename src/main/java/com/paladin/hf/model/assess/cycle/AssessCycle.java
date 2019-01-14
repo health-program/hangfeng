@@ -1,6 +1,6 @@
 package com.paladin.hf.model.assess.cycle;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;

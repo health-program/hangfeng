@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.core.ControllerSupport;
+import com.paladin.framework.utils.uuid.UUIDUtil;
 import com.paladin.framework.web.response.CommonResponse;
-import com.paladin.hf.controller.util.FormType;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.UnitContainer;
@@ -26,6 +26,7 @@ import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.assess.quantificate.AssessCycleTemplate;
 import com.paladin.hf.model.assess.quantificate.Template;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
+import com.paladin.hf.service.assess.cycle.dto.AssessCycleDTO;
 import com.paladin.hf.service.assess.cycle.pojo.AssessCycleQuery;
 import com.paladin.hf.service.assess.cycle.pojo.AssessCycleSelectQuery;
 import com.paladin.hf.service.assess.quantificate.AssessCycleTemplateService;
@@ -79,7 +80,7 @@ public class AssessCycleController extends ControllerSupport {
                   }
             }
             
-            return "hf/assess/cycle/index";
+            return "/hf/assess/cycle/cycle_index";
       }
       
       @ResponseBody
@@ -145,9 +146,9 @@ public class AssessCycleController extends ControllerSupport {
       @RequestMapping("/view")
       public String view(@RequestParam(required = true) String id, Model model) {
             HfUserSession session = HfUserSession.getCurrentUserSession();
-            AssessCycle assessCycle = assessCycleService.get(id);
-            if (assessCycle == null)
-                  assessCycle = new AssessCycle();
+            AssessCycleDTO assessCycleDTO = assessCycleService.getOneById(id);
+            if (assessCycleDTO == null)
+                  assessCycleDTO = new AssessCycleDTO();
             
             Unit agency = null;
             if (!session.isAdminRoleLevel()) {
@@ -166,7 +167,7 @@ public class AssessCycleController extends ControllerSupport {
                   }
                   
             }else{
-                  String unitId = assessCycle.getUnitId();
+                  String unitId = assessCycleDTO.getUnitId();
                   if (unitId != null && unitId.length() > 0) {
                         Unit unit = UnitContainer.getUnit(unitId);
                         agency = unit.getAgency();
@@ -177,10 +178,9 @@ public class AssessCycleController extends ControllerSupport {
                   model.addAttribute("agencyId", agency.getId());
                   model.addAttribute("agencyName", agency.getName());
             }
-            
-            model.addAttribute("assessCycle", assessCycle);
-            model.addAttribute("formType", FormType.VIEW);
-            return "hf/assess/cycle/from";
+            model.addAttribute("id", id);
+            model.addAttribute("assessCycleDTO", assessCycleDTO);
+            return "/hf/assess/cycle/cycle_view";
       }
       
       @RequestMapping("/add/input")
@@ -210,60 +210,92 @@ public class AssessCycleController extends ControllerSupport {
                   }
             }
             
-            model.addAttribute("assessCycle", new AssessCycle());
-            model.addAttribute("formType", FormType.ADD);
-            return "hf/assess/cycle/from";
+            model.addAttribute("assessCycleDTO", new AssessCycleDTO());
+            return "/hf/assess/cycle/cycle_add";
       }
       
-      @RequestMapping("/edit/input")
-      public String editInput(@RequestParam(required = true) String id, Model model) {
-            HfUserSession session = HfUserSession.getCurrentUserSession();
-            
-            Unit agency = null;
-            AssessCycle assessCycle = assessCycleService.get(id);
-            if (assessCycle == null)
-                  assessCycle = new AssessCycle();
-            
-            if (!session.isAdminRoleLevel()) {
-                  if (session.isAssessTeamRole()) {
-                        agency = session.getOwnUnit().getAgency();
-                  }
-                  else {
-                        List<Unit> agencys = DataPermissionUtil.getOwnAgency();
-                        int size = agencys.size();
-                        if (size == 1) {
-                              agency = agencys.get(0);
-                        }
-                        else if (size == 0) {
-                              agency = session.getUserAgency();
-                        }
-                  }
-                  
-                  if (agency != null) {
-                        model.addAttribute("agencyId", agency.getId());
-                        model.addAttribute("agencyName", agency.getName());
-                  }
-            }else{
-                  String unitId = assessCycle.getUnitId();
-                  if (unitId != null && unitId.length() > 0) {
-                        Unit unit = UnitContainer.getUnit(unitId);
-                        agency = unit.getAgency();
-                  }
-            }
-           
-            model.addAttribute("assessCycle", assessCycle);
-            model.addAttribute("formType", FormType.EDIT);
-            return "hf/assess/cycle/from";
+      @RequestMapping("/get/detail")
+      @ResponseBody
+      public Object getDetail(@RequestParam(required = true) String id, Model model) {
+            AssessCycleDTO assessCycleDTO = assessCycleService.getOneById(id);
+            return CommonResponse.getSuccessResponse(assessCycleDTO);
       }
+      
+//      @RequestMapping("/edit/input")
+//      public String editInput(@RequestParam(required = true) String id, Model model) {
+//            HfUserSession session = HfUserSession.getCurrentUserSession();
+//            
+//            Unit agency = null;
+//            AssessCycle assessCycle = assessCycleService.get(id);
+//            if (assessCycle == null)
+//                  assessCycle = new AssessCycle();
+//            
+//            if (!session.isAdminRoleLevel()) {
+//                  if (session.isAssessTeamRole()) {
+//                        agency = session.getOwnUnit().getAgency();
+//                  }
+//                  else {
+//                        List<Unit> agencys = DataPermissionUtil.getOwnAgency();
+//                        int size = agencys.size();
+//                        if (size == 1) {
+//                              agency = agencys.get(0);
+//                        }
+//                        else if (size == 0) {
+//                              agency = session.getUserAgency();
+//                        }
+//                  }
+//                  
+//                  if (agency != null) {
+//                        model.addAttribute("agencyId", agency.getId());
+//                        model.addAttribute("agencyName", agency.getName());
+//                  }
+//            }else{
+//                  String unitId = assessCycle.getUnitId();
+//                  if (unitId != null && unitId.length() > 0) {
+//                        Unit unit = UnitContainer.getUnit(unitId);
+//                        agency = unit.getAgency();
+//                  }
+//            }
+//           
+//            model.addAttribute("assessCycle", assessCycle);
+//            model.addAttribute("formType", FormType.EDIT);
+//            return "/hf/assess/cycle/cycle_view";
+//            
+//
+//      }
       
       @RequestMapping("/save")
       @ResponseBody
-      public Object save(@Valid AssessCycle assessCycle, BindingResult bindingResult) {
+      public Object save(@Valid AssessCycleDTO assessCycleDTO, BindingResult bindingResult) {
+          if (bindingResult.hasErrors()) {
+              return validErrorHandler(bindingResult);
+          }
+          AssessCycle model = beanCopy(assessCycleDTO, new AssessCycle());
+          String id = UUIDUtil.createUUID();
+          model.setId(id);
+          model.setCycleState(AssessCycle.CYCLE_STATE_DRAFT);
+          if (assessCycleService.save(model) > 0) {
+              return CommonResponse.getSuccessResponse(assessCycleService.get(id));
+          }
+          return CommonResponse.getFailResponse();
+      }
+      
+      
+      
+      
+      @RequestMapping("/update")
+      @ResponseBody
+      public Object update(@Valid AssessCycleDTO assessCycleDTO, BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
-                  return this.validErrorHandler(bindingResult);
-            }
-            
-            return CommonResponse.getResponse(assessCycleService.saveOrUpdateAssessCycle(assessCycle));
+                  return validErrorHandler(bindingResult);
+              }
+              String id = assessCycleDTO.getId();
+              AssessCycle model = beanCopy(assessCycleDTO, assessCycleService.get(id));
+              model.setCycleState(AssessCycle.CYCLE_STATE_DRAFT);;
+              if (assessCycleService.update(model) > 0) {
+                  return CommonResponse.getSuccessResponse(assessCycleService.get(id));
+              }
+              return CommonResponse.getFailResponse();
       }
       
       @RequestMapping("/delete")
@@ -305,7 +337,7 @@ public class AssessCycleController extends ControllerSupport {
       
       @RequestMapping("/template/config/index")
       public Object templateConfigIndex() {
-            return "hf/assess/quantificate/config";
+            return "/hf/assess/quantificate/config";
       }
       
       /**
@@ -315,7 +347,7 @@ public class AssessCycleController extends ControllerSupport {
        */
       @RequestMapping("/template/config/view")
       public Object templateConfigView() {
-            return "hf/assess/quantificate/template_config_view";
+            return "/hf/assess/quantificate/template_config_view";
       }
       
       @RequestMapping("/template/config")

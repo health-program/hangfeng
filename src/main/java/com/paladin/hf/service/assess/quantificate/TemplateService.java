@@ -2,6 +2,8 @@ package com.paladin.hf.service.assess.quantificate;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import com.paladin.hf.mapper.assess.quantificate.TemplateMapper;
 import com.paladin.hf.model.assess.quantificate.AssessItem;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
 import com.paladin.hf.model.assess.quantificate.Template;
+import com.paladin.hf.service.assess.quantificate.dto.TemplateDTO;
 
 
 /**
@@ -34,7 +37,7 @@ public class TemplateService extends ServiceSupport<Template> {
 	@Autowired
 	TemplateMapper templateMapper;
 
-	public int updateTemplateState(String id, String state) {
+	public int updateTemplateState(String id, Integer state) {
 		Template template = new Template();
 		template.setId(id);
 		template.setEnableState(state);
@@ -132,6 +135,10 @@ public class TemplateService extends ServiceSupport<Template> {
        */
       public int itemCount(String id){
           return this.templateMapper.itemCount(id);
+      }
+
+      public TemplateDTO getOneByPrimaryKey(String id) {
+            return templateMapper.getOneByPrimaryKey(id);
       };
 
 }

@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+    <tt:constant enumcode="enable-state" />
+    <section class="content-header">
+        <h1>考评模板管理</h1>
+    </section>
+    <section class="content">
+	     <div class="box box-solid">
+	          <div class="box-header with-border">
+	              <i class="fa fa-search"></i>
+	              <h3 class="box-title">查询</h3>
+	          </div>
+	          <div class="box-body">
+		          <form id="searchbar" class="form-horizontal">
+		             <div class="form-group">
+		                 <label for="templateName" style="width: 100px" class="col-sm-1 control-label">模板名称</label>
+		                 <div class="col-sm-2">
+		                     <input type="text" name="templateName" class="form-control" id="templateName" placeholder="请填写模板名称"/>
+		                 </div>
+		                 <label for="enableState" style="width: 100px" class="col-sm-1 control-label">启用状态</label>
+		                 <div class="col-sm-2">
+		                     <select id="enableState" name="enableState" class="form-control tonto-select-constant" enumcode= "enable-state">
+		                         <option value="">请选择</option>
+		                     </select>
+		                 </div>
+		                 <label for="unitId" style="width: 100px" class="col-sm-1 control-label">机构名称</label>
+		                 <div class="col-sm-2">
+		                     <input type="text" th:if="${agencyId} == null" class="form-control tonto-select-agency" name="unitId" placeholder="请选择机构"></input>
+		                     <input type="text" th:if="${agencyId} != null" class="form-control" readonly="readonly" th:value="${agencyName}"></input> 
+		                     <input type="hidden" th:if="${agencyId} != null" class="form-control" name="unitId" th:value="${agencyId}"></input> 
+		                 </div>
+		                 <div class="col-md-12">
+		                      <div class="pull-right">
+		                          <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+		                          <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+		                      </div>
+                         </div>
+		              </div>
+			       </form>
+		       </div>
+	     
+	          <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+	          <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+	     </div>
+	     
+	     <div class="box box-solid" style="margin-top:20px">
+            <div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+               <table id="dataGrid"></table>
+                <div id="toolbar">
+                    <div class="btn-group">
+                        <a onclick="add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                    </div>
+                </div>
+            </div>
+         </div>
+     </section>
+    
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    
+    function query() {
+        table.refresh();
+    }
+    
+    var table;
+    $(function() {
+        initDataGrid();
+    });
+    
+    function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+        
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { title: "单位名称", field: "unitName", sortName:"orgUnitId", sortable: true},
+                    { title: "模板名称", field: "templateName", sortable: true},
+                    { title: "模板描述", field: "templateDescribe" },
+                    { title: "启用状态", field: "enableState", sortable: true, align: 'center', enumcode: "enable-state" },
+                    { title: "操作时间", field: "updateTime", align: 'center', formatter: "date", sortable: true},
+                    {
+                        title: "操作",
+                        align: "center",
+                        width: "35%",
+                        events: {
+                            'click .levelConfig': function(e, value, row, index){
+                            	levelConfig(row);
+                            },
+                            'click .projectConfig': function(e, value, row, index){
+                            	projectConfig(row);
+                            },
+                            'click .start': function(e, value, row, index){
+                            	start(row);
+                            },
+                            'click .copy': function(e, value, row, index){
+                            	copy(row);
+                            },
+                            'click .view': function(e, value, row, index){
+                            	view(row);
+                            },
+                            'click .edit': function(e, value, row, index){
+                            	edit(row);
+                            },
+                            'click .remove': function(e, value, row, index){
+                            	remove(row);
+                            },
+                            'click .stop': function(e, value, row, index){
+                            	stop(row);
+                            }
+                        },
+                    formatter: operateFormatter
+                    }
+                ]
+            ],
+            url: '/console/temp/search/all',
+            searchbar: '#searchbar',
+            sortName: 'orgUnitId',
+            sortOrder: 'asc',
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pagination: true, //分页请设置为false
+            clickToSelect:true,
+            showColumns:true
+        	
+        })
+    }
+    
+    function operateFormatter(value,row,index) {
+    	return [
+        '<button class="levelConfig btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>等级配置' ,
+        '</button>',
+        '<button class="projectConfig btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>项目配置' ,
+        '</button>',
+        '<button class="start btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>启用' ,
+        '</button>',
+        '<button class="copy btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>复制' ,
+        '</button>',
+        '<button class="view btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>查看' ,
+        '</button>',
+        '<button class="edit btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>修改' ,
+        '</button>',
+        '<button class="remove btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>删除' ,
+        '</button>',
+        '<button class="stop btn btn-xs btn-info" style="margin-right:10px">' ,
+        '<i class="glyphicon glyphicon-edit"></i>停用' ,
+        '</button>',
+    	].join('');
+    }
+    
+    //等级配置
+    function levelConfig(row) {
+            if (row.enableState == "1" || row.enableState == "3") { //1:启用;3:停用
+                layer.open({
+                    type: 2,
+                    title: '等级配置 ',
+                    maxmin: true, //开启最大化最小化按钮
+                    area: $.getOpenLayerSize(900, 450),
+                    content: ' /console/assess/level/view?id=' + row.id,
+                });
+            }else{
+                layer.open({
+                    type: 2,
+                    title: '等级配置 ',
+                    maxmin: true, //开启最大化最小化按钮
+                    area: $.getOpenLayerSize(900, 450),
+                    content: ' /console/assess/level/index?id=' + row.id,
+                    success: function(layero, index) {
+                        $.setLayerSubmitHandler(layero, index, function() {
+                            layer.close(index);
+                        }, "保存成功");
+                    }
+                });
+            }
+    }
+
+    //项目配置
+    function projectConfig(row) {
+            if (row.enableState == "1") { //1:启用;3:停用
+                layer.alert("该模板已启用！");
+                return false;
+            }else if(row.enableState == "3"){
+                layer.alert("该模板已归档！");
+                return false;
+            }
+            window.location = "/console/assess/item/index?id=" + row.id;
+    }
+
+    function start(row) {
+            $.getAjax('/console/temp/level?id=' + row.id, function(res) {
+                if(res>0){
+                    $.getAjax('/console/temp/item?id=' + row.id, function(rest) {
+                        if(rest>0){
+                              if (row.enableState == "1") {
+                                   layer.alert("该模板已启用！");
+                                   return false;
+                               }
+                               layer.confirm('确定启用吗?', function() {
+                                   $.getAjax('/console/temp/start?id=' + row.id, function() {
+                                       $.successMessage("启用成功");
+                                       table.refresh();
+                                   });
+                               });
+                        }else{
+                            $.errorMessage("请先项目配置再启用");
+                        }
+                    });
+                }else{
+                    $.errorMessage("请先等级配置再启用");
+                }
+            });
+    }
+
+    function copy(row) {
+            layer.open({
+                type: 2,
+                title: ' ',
+                maxmin: true, //开启最大化最小化按钮
+                content: "/console/temp/copy?id=" + row.id,
+                area: $.getOpenLayerSize(600, 750),
+                success: function(layero, index) {
+                    $.setLayerSubmitHandler(layero, index, function() {
+                        layer.close(index);
+                        table.refresh();
+                    }, "保存成功");
+                }
+            });
+    }
+
+    function view(row) {
+            window.location = '/console/temp/view?id=' + row.id;
+    }
+
+    function add() {
+        layer.open({
+            type: 2,
+            title: ' ',
+            maxmin: true, //开启最大化最小化按钮
+            content: '/console/temp/add/input',
+            area: $.getOpenLayerSize(967, 658),
+            success: function(layero, index) {
+                $.setLayerSubmitHandler(layero, index, function() {
+                    layer.close(index);
+                    table.refresh();
+                }, "保存成功");
+            }
+        });
+    }
+
+    function remove(row) {
+            if (row.enableState == "1" || row.enableState == "3") { //1:启用;3:停用
+                layer.alert("该数据已提交！");
+                return false;
+            }
+            layer.confirm('确定删除吗?', function() {
+                $.getAjax('/console/temp/delete?id=' + row.id, function() {
+                    $.successMessage("删除成功");
+                    table.refresh();
+                });
+            });
+    }
+
+    function edit(row) {
+            if (row.enableState == "1" || row.enableState == "3") {
+                layer.alert("该数据已提交！");
+                return false;
+            }
+            layer.open({
+                type: 2,
+                title: ' ',
+                maxmin: true, //开启最大化最小化按钮
+                area: $.getOpenLayerSize(600, 750),
+                content: "/console/temp/edit/input?id=" + row.id,
+                success: function(layero, index) {
+                    $.setLayerSubmitHandler(layero, index, function() {
+                        layer.close(index);
+                        table.refresh();
+                    }, "修改成功");
+                }
+            });
+    }
+
+    function stop(row) {
+         if (row.enableState == "3") {
+                layer.alert("模板已停用！");
+                return false;
+            }
+            $.getAjax('/console/temp/is/stop?id=' + row.id,function(res){
+                if(res>0){
+                    layer.alert("该模板已经被其他考评周期引用!");
+                }else{
+                    layer.confirm('确定停用吗?', function() {
+                    $.getAjax('/console/temp/stop?id=' + row.id, function() {
+                        $.successMessage("停用成功");
+                        table.refresh();
+                    });
+                });
+                }
+            })
+    }
+
+    function getSelectRow() {
+        var rows = table.getSelections();
+        return rows.length>0?rows[0]:null;
+    } 
+    
+    $('body').bind('keypress',function (event){
+        if(event.keyCode == '13'){
+            query();
+        }
+    });
+    
+    
+    
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+
+    <tt:constant enumcode="cycle-state,assess-type" />
+    <section class="content-header">
+        <h1>考评周期管理</h1>
+    </section>
+    <section class="content">
+         <div class="box box-solid">
+	          <div class="box-header with-border">
+	              <i class="fa fa-search"></i>
+	              <h3 class="box-title">查询</h3>
+	          </div>
+	          <div class="box-body">
+	              <form id="searchbar" class="form-horizontal">
+	                  <div class="form-group">
+	                      <label for="unitId" style="width:130px" class="col-sm-2 control-label">周期名称</label>
+	                      <div class="col-sm-2">
+	                          <input type="text" name="cycleName" class="form-control" placeholder="请输入" />
+	                      </div>
+	                      <label for="cycleState" style="width:100px" class="col-sm-2 control-label">周期状态</label>
+	                      <div class="col-sm-2">
+	                          <select name="cycleState" class="form-control tonto-select-constant" enumcode="cycle-state">
+	                              <option value="">请选择</option>
+	                          </select>
+	                      </div>
+	                      <label for="unitId" style="width:100px" class="col-sm-2 control-label">机构选择</label>
+	                      <div class="col-sm-2">
+	                          <input type="text" th:if="${agencyId} == null" class="form-control tonto-select-agency"  name="unitId" placeholder="请选择机构"></input>
+	                          <input type="text" th:if="${agencyId} != null" class="form-control" readonly="readonly" th:value="${agencyName}"></input> 
+	                          <input type="hidden" th:if="${agencyId} != null" class="form-control" name="unitId" th:value="${agencyId}"></input>                         
+	                      </div>
+	                  </div>
+	                  
+	                  <div class="form-group">
+	                      <label for="assessType" style="width:130px" class="col-sm-2 control-label">考评类型</label>
+	                      <div class="col-sm-2">
+	                          <select name="assessType" class="form-control tonto-select-constant"  enumcode="assess-type">
+	                              <option value="">请选择</option>
+	                          </select>
+	                      </div>
+	                      <label for="assessStartTime" style="width:100px" class="col-sm-2 control-label">周期时间</label>
+	                      <div class="col-sm-2">
+	                          <input type="text" name="cycleStartTime" class="form-control col-sm-2 tonto-datepicker-date"  placeholder="请选择" />
+	                      </div>
+	                      <label for="assessEndTime" style="width:100px;text-align:center" class="col-sm-1 control-label">至</label>
+	                      <div class="col-sm-2">
+	                          <input type="text" name="cycleEndTime" class="form-control col-sm-2 tonto-datepicker-date"  placeholder="请选择" />
+	                      </div>
+	                  </div>
+	              </form>
+	              <div class="col-md-12">
+	                  <div class="pull-right">
+	                      <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+	                      <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+	                  </div>
+	              </div>
+	              
+	              <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+	              <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+	        </div>
+       </div>
+       <div class="box box-solid" style="margin-top:20px">
+	        <div class="box-header with-border">
+	            <i class="fa fa-list-alt"></i>
+	            <h3 class="box-title">结果</h3>
+	        </div>
+           <div id="result" class="box-body">
+               <table id="dataGrid"></table>
+	            <div id="toolbar">
+			        <div class="btn-group">
+				        <a onclick="add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+			        </div>
+	            </div>
+           </div>
+       </div>
+    </section>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    var table;
+    $(function() {
+        initDataGrid();
+    });
+    
+    function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+        
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                 { title: "单位名称", field: "unitName", sortName:"unitId", sortable: true},
+                 { title: "周期名称", field: "cycleName", sortable: true},
+                 { title: "周期开始时间", field: "cycleStartTime", formatter: "date" },
+                 { title: "周期截止时间", field: "cycleEndTime", formatter: "date" },
+                 { title: "考评开始时间", field: "assessStartTime", formatter: "date" },
+                 { title: "考评截止时间", field: "assessEndTime", formatter: "date" },
+                 { title: "周期状态", field: "cycleState",sortable: true, enumcode:"cycle-state"},
+                 { title: "考评类型", field: "assessType",sortable: true, enumcode:"assess-type"},
+                 { title: "周期描述", field: "cycleDescribe" },
+                 {
+                     title: "操作",
+                     align: "center",
+                     width: "25%",
+                     events: {
+                         'click .start': function(e, value, row, index) {
+                             if (row.cycleState == "2") {
+                                 start(row);
+                             } else if (row.cycleState == "4") {
+                                 start(row);
+                             }
+                             else if (row.cycleState == "1") {
+                                 stop(row);
+                             }
+                         },
+                         'click .templateConfig': function(e, value, row, index){
+                             templateConfig(row);
+                         },
+                         'click .view': function(e, value, row, index){
+                        	 view(row);
+                         },
+                         'click .edit': function(e, value, row, index){
+                        	 edit(row);
+                         },
+                         'click .remove': function(e, value, row, index){
+                        	 remove(row);
+                         },
+                         'click .archive': function(e, value, row, index){
+                        	 archive(row);
+                         }
+                     },
+                     formatter: operateFormatter
+                 }
+                ]
+              ],
+               url: '/console/asscyc/list',
+               searchbar: '#searchbar',
+               sortName: 'unitId',
+               sortOrder: 'asc',
+               pagination: true,
+               toolbar: "#toolbar",
+               showRefresh: true,
+               clickToSelect:true,
+               showColumns:true
+        })
+    }
+    
+    function operateFormatter(value,row,index) {
+    	if (row.cycleState == "2") {
+    	      return [
+                    '<button class="start btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-edit"></i>提交' ,
+                    '</button>',
+                    '<button class="templateConfig btn btn-xs btn-primary" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-config"></i>模板配置',
+                    '</button>',
+                    '<button class="view btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-open"></i>查看',
+                    '</button>',
+                    '<button class="edit btn btn-xs btn-success" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-edit"></i>修改',
+                    '</button>',
+                    '<button class="remove btn btn-xs btn-danger" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-remove"></i>删除',
+                    '</button>',
+                    '<button class="archive btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-sort"></i>归档',
+                    '</button>'
+    	      ].join('');
+    	}else if(row.cycleState == "4"){
+            return [
+                    '<button class="start btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-edit"></i>启用' ,
+                    '</button>',
+                    '<button class="templateConfig btn btn-xs btn-primary" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-config"></i>模板配置',
+                    '</button>',
+                    '<button class="view btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-open"></i>查看',
+                    '</button>',
+                    '<button class="edit btn btn-xs btn-success" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-edit"></i>修改',
+                    '</button>',
+                    '<button class="remove btn btn-xs btn-danger" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-remove"></i>删除',
+                    '</button>',
+                    '<button class="archive btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-sort"></i>归档',
+                    '</button>'
+             ].join('');
+    	}else if(row.cycleState == "1"){
+            return [
+                    '<button class="start btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-edit"></i>停用' ,
+                    '</button>',
+                    '<button class="templateConfig btn btn-xs btn-primary" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-config"></i>模板配置',
+                    '</button>',
+                    '<button class="view btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-open"></i>查看',
+                    '</button>',
+                    '<button class="edit btn btn-xs btn-success" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-edit"></i>修改',
+                    '</button>',
+                    '<button class="remove btn btn-xs btn-danger" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-remove"></i>删除',
+                    '</button>',
+                    '<button class="archive btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-sort"></i>归档',
+                    '</button>'
+             ].join('');
+    	}
+
+    }
+    
+
+    function templateConfig(row){
+        if (row.cycleState != "2") {// "2"：暂存
+             window.location = "/console/asscyc/template/config/view?id=" + row.id;
+        }else {
+             window.location = "/console/asscyc/template/config/index?id=" + row.id;
+          }
+    }
+
+
+    function archive(row) {
+            if (row.cycleState == "2") {
+                $.infoMessage("无法归档暂存的周期");
+                return;
+            }else if (row.cycleState == "3") {
+            	 $.infoMessage("该周期已经归档！");
+                 return;
+			}else{
+                layer.confirm('确定归档吗?', function() {
+                    $.getAjax('/console/asscyc/archive?id=' + row.id, function() {
+                        $.successMessage("归档成功");
+                        table.refresh();
+                    });
+                });
+            }
+    }
+
+    function start(row) {
+             $.getAjax('/console/asscyc/is/start?id=' + row.id,function(res) {
+                 if (res==0) {
+                     $.errorMessage('该周期还未进行模板配置！');
+                 }else {
+                     layer.confirm('确定提交吗?', function() {
+                         $.getAjax('/console/asscyc/start?id=' + row.id, function() {
+                             $.successMessage("提交成功");
+                             table.refresh();
+                         });
+                     });
+                 }
+             });
+    }
+
+     function stop(row) {
+    		layer.confirm('确定停用吗?', function() {
+                $.getAjax('/console/asscyc/stop?id=' + row.id, function() {
+                    $.successMessage("停用成功");
+                    table.refresh();
+                });
+            });
+    } 
+
+    function add() {
+        window.location = "/console/asscyc/add/input";
+    }
+
+    function edit(row) {
+            if (row.cycleState == "1" || row.cycleState == "4") {
+                $.infoMessage("该周期已经提交，无法修改");
+                return;
+            }
+
+            if (row.cycleState == "3") {
+                $.infoMessage("该周期已经归档，无法修改");
+                return;
+            }
+            
+            window.location = "/console/asscyc/view?id=" + row.id;
+    }
+
+    function remove(row) {
+            if (row.cycleState == "1" || row.cycleState == "4") {
+                $.infoMessage("该周期已经提交，无法删除");
+                return;
+            }
+
+            if (row.cycleState == "3") {
+                $.infoMessage("该周期已经归档，无法删除");
+                return;
+            }
+            layer.confirm('确定删除吗?', function() {
+                $.getAjax('/console/asscyc/delete?id=' + row.id, function() {
+                    $.successMessage("删除成功");
+                    table.refresh();
+                });
+            });
+    }
+
+    function view(row) {
+            window.location = "/console/asscyc/view?id=" + row.id;
+    }
+
+    function getSelectRow(notShowError) {
+        var rows = table.getSelections();
+        var row = rows.length > 0 ? rows[0] : null;
+        if (!notShowError && !row) {
+            $.errorMessage("请选中一条业务数据");
+        }
+        return row;
+    }
+    
+    $('body').bind('keypress',function (event){
+        if(event.keyCode == '13'){
+        	table.refresh();
+        }
+    });
+    
+    </script>
+</body>
+
+</html>

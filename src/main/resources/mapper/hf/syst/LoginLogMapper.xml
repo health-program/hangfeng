@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.paladin.hf.mapper.syst.LoginLogMapper">
+	<select id="findOrgUserLoginLog" resultType="com.paladin.hf.service.syst.vo.SysUserVO">
+	SELECT ou.`org_agency_id` as orgAgencyId ,ou.`org_unit_id` as orgUnitId,ou.`name` as name,su.`last_login_time` as lastLoginTime 
+	FROM sys_user AS su
+	LEFT JOIN org_user AS ou
+	ON su.`user_id`=ou.`id`
+	WHERE ou.`is_delete`='0'
+	<if test="assessRole !=null and assessRole !='' ">
+		and ou.`assess_role`=#{assessRole}
+	</if>
+	ORDER BY su.last_login_time DESC
+</select>
 
+<select id="findAdminUserLoginLog" resultType="com.paladin.hf.service.syst.vo.SysUserVO">
+		SELECT
+		au.`unit_id` AS orgUnitId,
+		au.`name` AS NAME,
+		su.`last_login_time` AS lastLoginTime
+		FROM
+		sys_user AS su
+		LEFT JOIN admin_user AS au
+		ON au.id = su.`user_id`
+		WHERE au.`is_delete` = '0'
+		<if test="unitId !=null and unitId !='' ">
+		 AND au.`unit_id`=#{unitId}
+		</if>
+		ORDER BY su.last_login_time DESC
+	</select>
 </mapper>

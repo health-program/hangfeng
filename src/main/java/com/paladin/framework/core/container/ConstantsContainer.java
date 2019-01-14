@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.paladin.common.model.syst.SysConstant;
 import com.paladin.common.service.syst.SysConstantService;
 import com.paladin.framework.core.VersionContainer;
+import com.paladin.framework.core.VersionContainerManager;
 
 @Component
 public class ConstantsContainer implements VersionContainer {
@@ -64,9 +65,20 @@ public class ConstantsContainer implements VersionContainer {
 		return "constants_container";
 	}
 
+	private static ConstantsContainer container;
+
+	public static ConstantsContainer getInstance() {
+		return container;
+	}
+	
+	public static void updateData() {
+		VersionContainerManager.versionChanged(container.getId());
+	}
+	
 	@Override
 	public boolean versionChangedHandle(long version) {
 		initialize();
+		container = this;
 		return true;
 	}
 

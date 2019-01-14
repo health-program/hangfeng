@@ -20,19 +20,19 @@ public class OrgUserVO {
 
 	private Date recordCreateTime;
 
-	private String sex;
+	private Integer sex;
 
-	private String oeducation;
+	private Integer oeducation;
 
-	private String nation;
+	private Integer nation;
 
-	private String partisan;
+	private Integer partisan;
 
 	private Date birthday;
 
-	private String jobDuties;
+	private Integer jobDuties;
 
-	private String jobRank;
+	private Integer jobRank;
 
 	private Date startWorkTime;
 
@@ -52,13 +52,13 @@ public class OrgUserVO {
 
 	private String assessUnitId;
 
-	private String jobLevel;
+	private Integer jobLevel;
 
-	private String userProperty;
+	private Integer userProperty;
 
 	private String identification;
 	
-	private String identificationType;
+	private Integer identificationType;
 
 	private String transferOriginUnitId;
 
@@ -128,60 +128,12 @@ public class OrgUserVO {
 		this.recordCreateTime = recordCreateTime;
 	}
 
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-
-	public String getOeducation() {
-		return oeducation;
-	}
-
-	public void setOeducation(String oeducation) {
-		this.oeducation = oeducation;
-	}
-
-	public String getNation() {
-		return nation;
-	}
-
-	public void setNation(String nation) {
-		this.nation = nation;
-	}
-
-	public String getPartisan() {
-		return partisan;
-	}
-
-	public void setPartisan(String partisan) {
-		this.partisan = partisan;
-	}
-
 	public Date getBirthday() {
 		return birthday;
 	}
 
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
-	}
-
-	public String getJobDuties() {
-		return jobDuties;
-	}
-
-	public void setJobDuties(String jobDuties) {
-		this.jobDuties = jobDuties;
-	}
-
-	public String getJobRank() {
-		return jobRank;
-	}
-
-	public void setJobRank(String jobRank) {
-		this.jobRank = jobRank;
 	}
 
 	public Date getStartWorkTime() {
@@ -256,36 +208,12 @@ public class OrgUserVO {
 		this.assessUnitId = assessUnitId;
 	}
 
-	public String getJobLevel() {
-		return jobLevel;
-	}
-
-	public void setJobLevel(String jobLevel) {
-		this.jobLevel = jobLevel;
-	}
-
-	public String getUserProperty() {
-		return userProperty;
-	}
-
-	public void setUserProperty(String userProperty) {
-		this.userProperty = userProperty;
-	}
-
 	public String getIdentification() {
 		return identification;
 	}
 
 	public void setIdentification(String identification) {
 		this.identification = identification;
-	}
-
-	public String getIdentificationType() {
-		return identificationType;
-	}
-
-	public void setIdentificationType(String identificationType) {
-		this.identificationType = identificationType;
 	}
 
 	public String getTransferOriginUnitId() {
@@ -334,6 +262,78 @@ public class OrgUserVO {
 
 	public void setTransferStatus(Integer transferStatus) {
 		this.transferStatus = transferStatus;
+	}
+	
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+
+	public Integer getOeducation() {
+		return oeducation;
+	}
+
+	public void setOeducation(Integer oeducation) {
+		this.oeducation = oeducation;
+	}
+
+	public Integer getNation() {
+		return nation;
+	}
+
+	public void setNation(Integer nation) {
+		this.nation = nation;
+	}
+
+	public Integer getPartisan() {
+		return partisan;
+	}
+
+	public void setPartisan(Integer partisan) {
+		this.partisan = partisan;
+	}
+
+	public Integer getJobDuties() {
+		return jobDuties;
+	}
+
+	public void setJobDuties(Integer jobDuties) {
+		this.jobDuties = jobDuties;
+	}
+
+	public Integer getJobRank() {
+		return jobRank;
+	}
+
+	public void setJobRank(Integer jobRank) {
+		this.jobRank = jobRank;
+	}
+
+	public Integer getJobLevel() {
+		return jobLevel;
+	}
+
+	public void setJobLevel(Integer jobLevel) {
+		this.jobLevel = jobLevel;
+	}
+
+	public Integer getUserProperty() {
+		return userProperty;
+	}
+
+	public void setUserProperty(Integer userProperty) {
+		this.userProperty = userProperty;
+	}
+
+	public Integer getIdentificationType() {
+		return identificationType;
+	}
+
+	public void setIdentificationType(Integer identificationType) {
+		this.identificationType = identificationType;
 	}
 	
 	/*
@@ -388,4 +388,6 @@ public class OrgUserVO {
 		}
 		return null;
 	}
+
+
 }

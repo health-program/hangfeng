@@ -5,6 +5,8 @@ import javax.persistence.Id;
 
 public class OrgPermission extends UnDeleteBaseModel {
 
+	public static final String COLUMN_FIELD_GRANTABLE = "grantable";
+	
 	// id
 	@Id
 	private String id;
@@ -35,6 +37,9 @@ public class OrgPermission extends UnDeleteBaseModel {
 
 	// 是否系统管理员权限
 	private Integer isAdmin;
+	
+	// 是否可授权
+	private Integer grantable;
 
 	public String getId() {
 		return id;
@@ -114,6 +119,14 @@ public class OrgPermission extends UnDeleteBaseModel {
 
 	public void setIsAdmin(Integer isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+
+	public Integer getGrantable() {
+		return grantable;
+	}
+
+	public void setGrantable(Integer grantable) {
+		this.grantable = grantable;
 	}
 
 	

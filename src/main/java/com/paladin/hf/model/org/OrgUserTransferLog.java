@@ -10,7 +10,7 @@ public class OrgUserTransferLog {
 	
 	public final static Integer TRANSFER_TYPE_ASK = 1;
 	public final static Integer TRANSFER_TYPE_ADMIN = 2;
-
+	public final static Integer TRANSFER_TYPE_CLAIM = 3;
 	
 	@Id
 	@Column(name = "id")

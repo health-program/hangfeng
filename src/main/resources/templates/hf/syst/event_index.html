@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+    <tt:constant enumcode="unit-type" />
+    <section class="content-header">
+        <h1>事件类型维护</h1>
+    </section>
+    <section class="content">
+        <div class="box box-solid">
+            <div id="result" class="box-body">
+                <table id="dataGrid"></table>
+                <div id="toolbar">
+                    <div class="btn-group">
+                        <a onclick="addEvent()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加事件</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript" src="/static/js/treetable.js"></script>
+    <script type="text/javascript">
+    var table;
+    $(function() {
+        initDataGrid();
+    });
+
+    function initDataGrid() {
+        table = $.createTable("#dataGrid", {
+            columns: [
+                [
+                    { title: "事件名称", field: "value", sortable: true },
+                    {
+                        title: "操作",
+                        align: "center",
+                        width: "20%",
+                        events: {
+                            'click .edit': function(e, value, row, index) {
+                                edit(row);
+                            }
+                        },
+                        formatter: function(value, row, index) {
+                            return '<button class="edit btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>修改</button>';
+
+                        }
+                    }
+                ]
+            ],
+            url: '/sys/event/find',
+            pagination: false,
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pagination: false, //分页请设置为false
+            showColumns: true
+        });
+    }
+
+
+
+    function addEvent() {
+        var content = '<form class="form-horizontal" style="margin:20px">' +
+            '    <div class="form-group">' +
+            '        <label for="eventName" class="col-xs-4 control-label">事件名称</label>' +
+            '        <div class="col-xs-7">' +
+            '            <input type="text" class="form-control" id="eventName" placeholder="请输入事件类型名称"></input>' +
+            '        </div>' +
+            '    </div>' +
+            '    <div class="form-group">' +
+            '        <div class="col-xs-4 col-xs-offset-4">' +
+            '            <button type="button" id="saveBtn" class="btn btn-primary btn-block">保存</button>' +
+            '        </div>' +
+            '    </div>' +
+            '</form>';
+        $.openPageLayer(content, {
+            width: 450,
+            height: 300,
+            title:"新增事件类型",
+            success: function(layero, index) {
+                $("#saveBtn").click(function() {
+                    var name = $("#eventName").val();
+                    if (!name) {
+                        $.errorMessage("请输入事件类型名称");
+                        return;
+                    }
+
+                    $.postAjax("/sys/event/save", { name: name }, function() {
+                        $("保存成功");
+                        layer.close(index);
+                        table.refresh();
+                    });
+                });
+            }
+        });
+    }
+
+    function edit(row) {
+        var content = '<form class="form-horizontal" style="margin:20px">' +
+            '    <div class="form-group">' +
+            '        <label for="eventName" class="col-xs-4 control-label">事件名称</label>' +
+            '        <div class="col-xs-7">' +
+            '            <input type="text" class="form-control" id="eventName" placeholder="请输入事件类型名称"></input>' +
+            '        </div>' +
+            '    </div>' +
+            '    <div class="form-group">' +
+            '        <div class="col-xs-4 col-xs-offset-4">' +
+            '            <button type="button" id="updateBtn" class="btn btn-primary btn-block">保存</button>' +
+            '        </div>' +
+            '    </div>' +
+            '</form>';
+        $.openPageLayer(content, {
+            width: 450,
+            height: 300,
+            title:"修改事件类型",
+            success: function(layero, index) {
+                $("#updateBtn").click(function() {
+                    var name = $("#eventName").val();
+                    if (!name) {
+                        $.errorMessage("请输入事件类型名称");
+                        return;
+                    }
+
+                    if (name == row.value) {
+                        $.errorMessage("输入的事件类型名称不能与原来一样");
+                        return;
+                    }
+
+                    $.postAjax("/sys/event/update", { code: row.key, name: name }, function() {
+                        $("保存成功");
+                        layer.close(index);
+                        table.refresh();
+                    });
+                });
+            }
+        });
+    }
+    </script>
+</body>
+
+</html>

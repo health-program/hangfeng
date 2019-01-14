@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+    <tt:constant enumcode="boolean-type,sex-type,job-duties-type,job-rank-type,oeducation-type,user_property_type" />
+    <section class="content-header">
+        <h1>医德医风档案管理</h1>
+        <ol class="breadcrumb">
+            <li><a href="/org/user/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">人员认领</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-search"></i>
+                <h3 class="box-title">查询</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="name" class="col-xs-1 control-label">姓名</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="name" th:value="${query?.name}" placeholder="请输入姓名" class="form-control" />
+                            </div>
+                            <label for="startRecordCreateTime" class="col-xs-1 control-label">建档时间</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择开始日期" />
+                            </div>
+                            <label for="endRecordCreateTime" style="width:30px" class="col-xs-1 control-label">至</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择结束日期" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="identification" class="col-xs-1 control-label">身份证</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="identification" th:value="${query?.identification}" placeholder="请输入身份证" class="form-control" />
+                            </div>
+                            <label for="userProperty" class="col-xs-1 control-label">人员属性</label>
+                            <div class="col-xs-3">
+                                <select name="userProperty" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.userProperty}" enumcode="user_property_type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="unitId" class="col-xs-1 control-label">原被考评科室</label>
+                            <div class="col-xs-3">
+                                <input type="text" class="form-control tonto-select-unit" name="orgUnitId" th:attr="unitid=${query?.orgUnitId}" placeholder="请选择科室"></input>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                    </div>
+                </div>
+                <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+                <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+            </div>
+        </div>
+        <div class="box box-solid" style="margin-top:20px">
+            <div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <table id="dataGrid"></table>
+                <div id="toolbar">
+                    <a onclick="claimUsers()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>认领</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    var table;
+    $(function() {
+        initDataGrid();
+    });
+
+    function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { checkbox: true },
+                    { title: "所在单位", field: "unitRootName" },
+                    { title: "原被考评科室", field: "unitName" },
+                    { title: "姓名", field: "name" },
+                    { title: "身份证", field: "identification", formatter: "identification" },
+                    { title: "性别", field: "sex", enumcode: "sex-type" },
+                    { title: "人员属性", field: "userProperty", enumcode: "user_property_type" },
+                    { title: "职称", field: "jobRank", enumcode: "job-rank-type" },
+                    { title: "职务", field: "jobDuties", enumcode: "job-duties-type" },
+                    { title: "建档时间", field: "recordCreateTime", formatter: "date" },
+                    {
+                        title: "操作",
+                        align: "center",
+                        width: "20%",
+                        events: {
+                            'click .claim': function(e, value, row, index) {
+                                claimUser(row);
+                            }
+                        },
+                        formatter: function(value, row, index) {
+                            return '<button class="claim btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>认领</button>';
+                        }
+                    }
+                ]
+            ],
+            url: '/org/user/claim/find',
+            searchbar: '#searchbar',
+            sortName: 'orgUnitId',
+            showColumns: true,
+            sortOrder: 'asc',
+            pageSize: limit || undefined,
+            pageNumber: page || 1,
+            pagination: true,
+            clickToSelect: true,
+            toolbar: "#toolbar",
+            showRefresh: true
+        });
+    }
+
+    function claimUser(row) {
+        if (row) {
+            layer.confirm('确定要认领（' + row.name + '）吗', function() {
+                $.postAjax("/org/user/claim/", { userId: [row.id] }, function() {
+                    $.successMessage("认领成功");
+                    table.refresh();
+                });
+            });
+        } else {
+            $.errorMessage("请至少选中一条业务数据");
+        }
+    }
+
+    function claimUsers() {
+        var rows = table.getSelections();
+        if (rows && rows.length > 0) {
+            var ids = [],
+                names = "";
+            rows.forEach(function(row) {
+                names += row.name +",";
+                ids.push(row.id);
+            });
+
+            var names = names.substring(0, names.length - 1);
+            layer.confirm('确定要认领（' + names + '）吗', function() {
+                $.postAjax("/org/user/claim/", { userId: ids }, function() {
+                    $.successMessage("认领成功");
+                    table.refresh();
+                });
+            });
+        } else {
+            $.errorMessage("请至少选中一条业务数据");
+        }
+    }
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

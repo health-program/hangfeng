@@ -1,6 +1,5 @@
 package com.paladin.common.controller.org;
 
-import com.paladin.common.model.org.OrgRole;
 import com.paladin.common.service.org.OrgPermissionService;
 import com.paladin.common.service.org.OrgRolePermissionService;
 import com.paladin.common.service.org.OrgRoleService;
@@ -26,7 +25,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/common/org/role")
+@RequestMapping("/org/role")
 public class OrgRoleController extends ControllerSupport {
 
 	@Autowired
@@ -40,12 +39,12 @@ public class OrgRoleController extends ControllerSupport {
 
 	@RequestMapping("/index")
 	public String index() {
-		return "/common/org/org_role_index";
+		return "/common/org/role_index";
 	}
 
-	@RequestMapping("/find/page")
+	@RequestMapping("/find/all")
 	@ResponseBody
-	public Object findPage(OrgRoleQueryDTO query) {
+	public Object findAll(OrgRoleQueryDTO query) {
 		return CommonResponse.getSuccessResponse(orgRoleService.searchPage(query));
 	}
 
@@ -57,13 +56,13 @@ public class OrgRoleController extends ControllerSupport {
 
 	@RequestMapping("/add")
 	public String addInput() {
-		return "/common/org/org_role_add";
+		return "/common/org/role_add";
 	}
 
 	@RequestMapping("/detail")
 	public String detailInput(@RequestParam String id, Model model) {
 		model.addAttribute("id", id);
-		return "/common/org/org_role_detail";
+		return "/common/org/role_detail";
 	}
 
 	@RequestMapping("/save")
@@ -72,11 +71,10 @@ public class OrgRoleController extends ControllerSupport {
 		if (bindingResult.hasErrors()) {
 			return validErrorHandler(bindingResult);
 		}
-		OrgRole model = beanCopy(orgRoleDTO, new OrgRole());
 		String id = UUIDUtil.createUUID();
-		model.setId(id);
-		if (orgRoleService.save(model) > 0) {
-			return CommonResponse.getSuccessResponse(orgRoleService.get(id));
+		orgRoleDTO.setId(id);
+		if (orgRoleService.saveRole(orgRoleDTO)) {
+			return CommonResponse.getSuccessResponse(beanCopy(orgRoleService.get(id), new OrgRoleVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
@@ -88,35 +86,28 @@ public class OrgRoleController extends ControllerSupport {
 			return validErrorHandler(bindingResult);
 		}
 		String id = orgRoleDTO.getId();
-		OrgRole model = beanCopy(orgRoleDTO, orgRoleService.get(id));
-		if (orgRoleService.update(model) > 0) {
-			return CommonResponse.getSuccessResponse(orgRoleService.get(id));
+		if (orgRoleService.updateRole(orgRoleDTO)) {
+			return CommonResponse.getSuccessResponse(beanCopy(orgRoleService.get(id), new OrgRoleVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
 
-	@RequestMapping("/delete")
-	@ResponseBody
-	public Object delete(@RequestParam String id) {
-		return CommonResponse.getResponse(orgRoleService.removeByPrimaryKey(id));
-	}
-
-	@RequestMapping("/grant/input")
+	@RequestMapping("/grant/index")
 	public String grantAuthorizationInput(@RequestParam String id, Model model) {
 		model.addAttribute("roleId", id);
-		return "/common/org/org_role_grant";
+		return "/common/org/role_grant";
 	}
 
-	@RequestMapping("/grant")
+	@RequestMapping("/grant/find/permission")
 	@ResponseBody
 	public Object getGrantAuthorization(@RequestParam String id, Model model) {
 		Map<String, Object> result = new HashMap<>();
-		result.put("permissions", orgPermissionService.findAll());
+		result.put("permissions", orgPermissionService.findGrantablePermission());
 		result.put("hasPermissions", orgRolePermissionService.getPermissionByRole(id));
 		return CommonResponse.getSuccessResponse(result);
 	}
 
-	@RequestMapping("/grant/save")
+	@RequestMapping("/grant")
 	@ResponseBody
 	public Object grantAuthorization(@RequestParam("roleId") String roleId, @RequestParam("permissionId[]") String[] permissionIds) {
 		return CommonResponse.getResponse(orgRolePermissionService.grantAuthorization(roleId, permissionIds));

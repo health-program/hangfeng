@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.paladin.common.model.org.OrgRole;
 import com.paladin.common.service.org.OrgRoleService;
 import com.paladin.framework.core.ControllerSupport;
+import com.paladin.framework.utils.uuid.UUIDUtil;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.HfUserSession;
@@ -25,66 +26,85 @@ import com.paladin.hf.model.syst.AdminUser;
 import com.paladin.hf.service.org.dto.SimpleUnit;
 import com.paladin.hf.service.syst.AdminUserService;
 import com.paladin.hf.service.syst.SysUserService;
+import com.paladin.hf.service.syst.dto.AdminUserDTO;
 
 @Controller
-@RequestMapping("/system/admin/user")
-public class AdminUserController extends ControllerSupport{
-	
+@RequestMapping("/sys/admin/user")
+public class AdminUserController extends ControllerSupport {
+
 	@Autowired
 	private AdminUserService adminUserService;
-	
+
 	@Autowired
 	private OrgRoleService orgRoleService;
-	
+
 	@Autowired
 	private SysUserService sysUserService;
-	
-	@RequestMapping(value ="/index")
-	public Object index(Model model) {
+
+	@RequestMapping("/index")
+	public String index(Model model) {
 		HfUserSession session = HfUserSession.getCurrentUserSession();
-		List<OrgRole> roles = orgRoleService.getOwnGrantRoles(session.getRoleLevel(),false);		
+		List<OrgRole> roles = orgRoleService.getOwnGrantRoles(session.getRoleLevel(), false);
 		model.addAttribute("roles", roles);
-		return "/console/adminUser/index";
+		return "/hf/syst/admin_user_index";
 	}
-	
-	@RequestMapping(value ="/list")
+
+	@RequestMapping("/find/all")
 	@ResponseBody
-	public Object list() {				
-		
-		List<AdminUser> users = adminUserService.findAll();	
+	public Object findAll() {
+		List<AdminUser> users = adminUserService.findAll();
 		List<Unit> agencys = DataPermissionUtil.getOwnAgency();
 		List<SimpleUnit> result = new ArrayList<>(agencys.size());
-		
+
 		for (Unit agency : agencys) {
 			result.add(new SimpleUnit(agency));
 		}
-		
+
 		HashMap<String, Object> response = new HashMap<>();
 		response.put("users", users);
 		response.put("agencys", result);
-		
-		return CommonResponse.getSuccessResponse(response);				
+
+		return CommonResponse.getSuccessResponse(response);
 	}
-	
-	
+
 	@RequestMapping("/save")
 	@ResponseBody
-	public Object save(@Valid AdminUser user, BindingResult bindingResult) {
+	public Object save(@Valid AdminUserDTO adminUserDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return this.validErrorHandler(bindingResult);
+			return validErrorHandler(bindingResult);
 		}
-		
-		return CommonResponse.getResponse(adminUserService.saveOrUpdateAdminUser(user));
+		AdminUser model = beanCopy(adminUserDTO, new AdminUser());
+		String id = UUIDUtil.createUUID();
+		model.setId(id);
+		if (adminUserService.save(model) > 0) {
+			return CommonResponse.getSuccessResponse();
+		}
+		return CommonResponse.getFailResponse();
+	}
+
+	@RequestMapping("/update")
+	@ResponseBody
+	public Object update(@Valid AdminUserDTO adminUserDTO, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return validErrorHandler(bindingResult);
+		}
+		String id = adminUserDTO.getId();
+		AdminUser model = beanCopy(adminUserDTO, adminUserService.get(id));
+		if (adminUserService.update(model) > 0) {
+			return CommonResponse.getSuccessResponse();
+		}
+		return CommonResponse.getFailResponse();
 	}
 
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Object delete(@RequestParam(required = true) String id) {		
+	public Object delete(@RequestParam(required = true) String id) {
 		return CommonResponse.getResponse(adminUserService.removeUser(id));
 	}
-	
+
 	/**
 	 * 重置密码
+	 * 
 	 * @param userId
 	 * @return
 	 */

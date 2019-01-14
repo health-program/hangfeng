@@ -10,7 +10,7 @@ import com.paladin.framework.common.QueryType;
 public class OrgUserQuery extends OffsetPage {
 
 	private String name;
-	private String jobRank;
+	private String identification;
 	private Integer isAssessor;
 	private Date startRecordCreateTime;
 	private Date endRecordCreateTime;
@@ -22,16 +22,16 @@ public class OrgUserQuery extends OffsetPage {
 	private List<String> unitIds;
 	private List<String> agencyIds;
 
-	private String userProperty;
+	private Integer userProperty;
 
 	private List<Integer> transferStatus;
 
 	@QueryCondition(type = QueryType.EQUAL)
-	public String getUserProperty() {
+	public Integer getUserProperty() {
 		return userProperty;
 	}
 
-	public void setUserProperty(String userProperty) {
+	public void setUserProperty(Integer userProperty) {
 		this.userProperty = userProperty;
 	}
 
@@ -43,16 +43,7 @@ public class OrgUserQuery extends OffsetPage {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	@QueryCondition(type = QueryType.EQUAL)
-	public String getJobRank() {
-		return jobRank;
-	}
-
-	public void setJobRank(String jobRank) {
-		this.jobRank = jobRank;
-	}
-
+	
 	@QueryCondition(type = QueryType.EQUAL)
 	public Integer getIsAssessor() {
 		return isAssessor;
@@ -140,6 +131,15 @@ public class OrgUserQuery extends OffsetPage {
 
 	public void setTransferStatus(List<Integer> transferStatus) {
 		this.transferStatus = transferStatus;
+	}
+
+	@QueryCondition(type = QueryType.LIKE)
+	public String getIdentification() {
+		return identification;
+	}
+
+	public void setIdentification(String identification) {
+		this.identification = identification;
 	}
 
 }

@@ -10,9 +10,9 @@ public class OrgUnitDTO {
 
 	private String parentUnitId;
 
-	private String unitType;
-
 	private String districtCode;
+	
+	private Integer unitType;
 	
 	private String contact;
 	
@@ -50,14 +50,6 @@ public class OrgUnitDTO {
 		this.parentUnitId = parentUnitId;
 	}
 
-	public String getUnitType() {
-		return unitType;
-	}
-
-	public void setUnitType(String unitType) {
-		this.unitType = unitType;
-	}
-
 	public String getDistrictCode() {
 		return districtCode;
 	}
@@ -80,5 +72,13 @@ public class OrgUnitDTO {
 
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
+	}
+
+	public Integer getUnitType() {
+		return unitType;
+	}
+
+	public void setUnitType(Integer unitType) {
+		this.unitType = unitType;
 	}
 }

@@ -15,7 +15,9 @@ import com.paladin.common.model.org.OrgRolePermission;
 import com.paladin.common.service.org.OrgPermissionService;
 import com.paladin.common.service.org.OrgRolePermissionService;
 import com.paladin.common.service.org.OrgRoleService;
+import com.paladin.framework.common.BaseModel;
 import com.paladin.framework.core.VersionContainer;
+import com.paladin.framework.core.VersionContainerManager;
 
 @Component
 public class PermissionContainer implements VersionContainer {
@@ -83,11 +85,13 @@ public class PermissionContainer implements VersionContainer {
 		// 创建系统管理员角色及菜单
 		Role systemAdminRole = new Role();
 		for (OrgPermission orgPermission : permissionMap.values()) {
-			systemAdminRole.addPermission(orgPermission, permissionMap);
+			if (orgPermission.getIsAdmin() == BaseModel.BOOLEAN_YES) {
+				systemAdminRole.addPermission(orgPermission, permissionMap);
+			}
 		}
-
 		systemAdminRole.initMenuPermission();
 
+		this.systemAdminRole = systemAdminRole;
 		this.roleMap = roleMap;
 		logger.info("------------初始化权限结束------------");
 	}
@@ -120,6 +124,10 @@ public class PermissionContainer implements VersionContainer {
 
 	public static PermissionContainer getInstance() {
 		return container;
+	}
+	
+	public static void updateData() {
+		VersionContainerManager.versionChanged(container.getId());
 	}
 
 	@Override

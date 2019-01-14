@@ -5,11 +5,10 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotEmpty;
 
-import com.paladin.framework.common.UnDeleteModel;
+import com.paladin.framework.common.UnDeleteBaseModel;
 
-public class AdminUser extends UnDeleteModel implements Serializable{
+public class AdminUser extends UnDeleteBaseModel implements Serializable{
 	
 	/**
 	 * 
@@ -21,18 +20,14 @@ public class AdminUser extends UnDeleteModel implements Serializable{
 	@GeneratedValue(generator = "UUID")
 	private String id; 
 	
-    @NotEmpty(message="机构不能为空！")
 	private String unitId;
     
-    @NotEmpty(message="名称不能为空！")
 	private String name;
     
-    @NotEmpty(message="账号不能为空！")	
 	private String account;
 	
 	private String description;
 	
-    @NotEmpty(message="角色不能为空！")	
 	private String roles;
 
 	public String getId() {

@@ -1,9 +1,12 @@
 package com.paladin.common.core.permission;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import com.paladin.common.model.org.OrgPermission;
@@ -26,11 +29,14 @@ public class Role {
 	// 是否启用
 	private boolean enable;
 
+	// 是否可授权
+	private boolean grantable;
+
 	// 角色说明
 	private String roleDesc;
 
 	private HashMap<String, MenuPermission> menuPermissionMap;
-	private HashSet<MenuPermission> rootMenuPermissionSet;
+	private Collection<MenuPermission> rootMenuPermissionSet;
 	private HashSet<String> permissionCodeSet;
 
 	public Role(OrgRole orgRole) {
@@ -85,6 +91,9 @@ public class Role {
 		}
 	}
 
+	/**
+	 * 初始化菜单权限，加入排序等
+	 */
 	public void initMenuPermission() {
 		for (MenuPermission mp : menuPermissionMap.values()) {
 			String parentId = mp.getSource().getParentId();
@@ -99,10 +108,26 @@ public class Role {
 				}
 			}
 		}
+
+		ArrayList<MenuPermission> rootList = new ArrayList<>();
+		for (MenuPermission mp : rootMenuPermissionSet) {
+			mp.init();
+			rootList.add(mp);
+		}
+
+		Collections.sort(rootList, new Comparator<MenuPermission>() {
+			@Override
+			public int compare(MenuPermission mr1, MenuPermission mr2) {
+				return mr1.getListOrder() - mr2.getListOrder();
+			}
+		});
+
+		this.rootMenuPermissionSet = rootList;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection<MenuPermission> getMenuPermissions() {
-		return Collections.unmodifiableCollection(rootMenuPermissionSet);
+		return Collections.unmodifiableList((List) rootMenuPermissionSet);
 	}
 
 	public static Collection<MenuPermission> getMultiRoleMenuPermission(Collection<Role> roles) {
@@ -138,7 +163,20 @@ public class Role {
 			}
 		}
 
-		return root;
+		ArrayList<MenuPermission> rootList = new ArrayList<>();
+		for (MenuPermission mp : root) {
+			mp.init();
+			rootList.add(mp);
+		}
+
+		Collections.sort(rootList, new Comparator<MenuPermission>() {
+			@Override
+			public int compare(MenuPermission mr1, MenuPermission mr2) {
+				return mr1.getListOrder() - mr2.getListOrder();
+			}
+		});
+
+		return rootList;
 	}
 
 	public boolean ownPermission(String code) {
@@ -195,6 +233,10 @@ public class Role {
 
 	public void setRoleDesc(String roleDesc) {
 		this.roleDesc = roleDesc;
+	}
+
+	public boolean isGrantable() {
+		return grantable;
 	}
 
 }

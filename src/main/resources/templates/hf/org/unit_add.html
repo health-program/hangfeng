@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header" />
+
+<body>
+    <tt:constant enumcode="unit-type,district-type" />
+    <section class="content-header">
+        <h1>单位科室维护管理</h1>
+        <ol class="breadcrumb">
+            <li><a href="/org/unit/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">新增</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="glyphicon glyphicon-user"></i>
+                <h3 class="box-title">新增机构科室</h3>
+                <div class="box-tools pull-right">
+                </div>
+            </div>
+            <div id="model_edit" class="box-body">
+                <form id="model_form" action="/org/unit/save" method="post" class="form-horizontal edit-body">
+                    <div class="form-group">
+                        <label for="parentUnitId" class="col-sm-3 control-label">上级科室：</label>
+                        <div class="col-sm-3">
+                            <input name="parentUnitId" placeholder="请输入上级科室" type="text" class="form-control tonto-select-unit" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitName" class="col-sm-3 control-label">单位名称：</label>
+                        <div class="col-sm-3">
+                            <input name="unitName" placeholder="请输入单位名称" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact" class="col-sm-3 control-label">联系人：</label>
+                        <div class="col-sm-3">
+                            <input name="contact" placeholder="请输入联系人" type="text" class="form-control" />
+                        </div>
+                        <label for="contactPhone" class="col-sm-2 control-label">联系电话：</label>
+                        <div class="col-sm-3">
+                            <input name="contactPhone" placeholder="请输入联系电话" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="districtCode" class="col-sm-3 control-label">行政区域代码：</label>
+                        <div class="col-sm-3">
+                            <select name="districtCode" class="form-control tonto-select-constant" enumcode="district-type">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitType" class="col-sm-3 control-label">单位类型：</label>
+                        <div class="col-sm-8">
+                            <div name="unitType" class="tonto-radio-constant" enumcode="unit-type"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitDescription" class="col-sm-3 control-label">单位描述：</label>
+                        <div class="col-sm-8">
+                            <textarea name="unitDescription" rows="5" placeholder="请输入单位描述" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 col-sm-offset-3">
+                            <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <input type="hidden" id="pid" th:value="${parentUnit?.id}" />
+    <input type="hidden" id="pname" th:value="${parentUnit?.name}" />
+    <div th:include="/hf/footer" />
+    <script type="text/javascript">
+    var options = {
+        id: "model",
+        name: "新增机构科室",
+        url: "/org/unit/save",
+        columns: [
+            { title: "上级科室", name: "parentUnitId", inputType: "UNIT", unitType: "tonto-select-unit", viewName: "parentUnitName", colspan: 2 },
+            { title: "单位名称", name: "unitName", inputType: "TEXT", colspan: 2 },
+            { title: "单位类型", name: "unitType", inputType: "RADIO", enum: "unit-type", colspan: 2 },
+            { title: "行政区域代码", name: "districtCode", inputType: "SELECT", enum: "district-type" },
+            { title: "联系人", name: "contact", inputType: "TEXT" },
+            { title: "联系电话", name: "contactPhone", inputType: "TEXT" },
+            { title: "单位描述", name: "unitDescription", inputType: "TEXTAREA" }
+        ]
+    }
+
+    $(function() {
+        var model = new tonto.Model("model", options.columns, {
+            pattern: "edit",
+            successCallback: function() {
+                $.successAlert("保存成功", function() {
+                    window.location = "/org/unit/index";
+                });
+            }
+        });
+        model.setData(null);
+
+        var pid = $("#pid").val(),
+            pname = $("#pname").val();
+
+        if (pid) {
+            $("#parentUnitId").data("unitComponment").setCurrent({
+                id: pid,
+                name: pname
+            });
+        }
+    });
+    </script>
+</body>
+
+</html>

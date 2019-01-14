@@ -62,14 +62,14 @@ public class UnitContainer implements VersionContainer {
 		@JsonIgnore
 		OrgUnit orgUnit;
 
-		String id;
-		String name;
-		String parentId;
-		String unitType;
+		private String id;
+		private String name;
+		private String parentId;
+		private Integer unitType;
 
 		@JsonIgnore
-		Unit parent;
-		List<Unit> children;
+		private Unit parent;
+		private List<Unit> children;
 
 		public Unit(OrgUnit orgUnit) {
 			this.id = orgUnit.getUid();
@@ -131,7 +131,7 @@ public class UnitContainer implements VersionContainer {
 
 		@JsonIgnore
 		public boolean isAssessTeam() {
-			return OrgUnit.UNIT_TYPE_ASSESS_TEAM.equals(unitType);
+			return OrgUnit.UNIT_TYPE_ASSESS_TEAM == unitType;
 		}
 
 		public boolean equals(Object obj) {
@@ -165,7 +165,7 @@ public class UnitContainer implements VersionContainer {
 			return parentId;
 		}
 
-		public String getUnitType() {
+		public Integer getUnitType() {
 			return unitType;
 		}
 

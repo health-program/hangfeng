@@ -1,84 +1,103 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="console/header">
+<head th:include="/hf/header">
 </head>
 
 <body>
-    <div class="container-fluid">
-        <section class="content-header">
-            <h1>人员转移</h1>
-        </section>
-        <section class="content-header">
-            <fieldset>
-                <legend>查询条件</legend>
-                <form id="searchbar" class="form-horizontal">
-                    <div class="form-group">
-                        <label for="unitId" style="width:130px" class="col-xs-2 control-label">被考评科室</label>
-                        <div class="col-xs-2">
-                            <input type="text" class="form-control tonto-select-unit" name="orgUnitId" th:attr="unitid=${query?.orgUnitId}" placeholder="请选择科室"></input>
+    <tt:constant enumcode="boolean-type,sex-type,job-duties-type,job-rank-type,oeducation-type,user_property_type" />
+    <section class="content-header">
+        <h1>医德医风档案管理</h1>
+        <ol class="breadcrumb">
+            <li class="active">列表</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-search"></i>
+                <h3 class="box-title">查询</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="name" class="col-xs-1 control-label">姓名</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="name" th:value="${query?.name}" placeholder="请输入姓名" class="form-control" />
+                            </div>
+                            <label for="startRecordCreateTime" class="col-xs-1 control-label">建档时间</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择开始日期" />
+                            </div>
+                            <label for="endRecordCreateTime" style="width:30px" class="col-xs-1 control-label">至</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择结束日期" />
+                            </div>
                         </div>
-                        <label for="name" style="width:100px" class="col-xs-2 control-label">姓名</label>
-                        <div class="col-xs-2">
-                            <input type="text" name="name" th:value="${query?.name}" class="form-control" />
+                        <div class="form-group">
+                            <label for="identification" class="col-xs-1 control-label">身份证</label>
+                            <div class="col-xs-3">
+                                <input type="text" name="identification" th:value="${query?.identification}" placeholder="请输入身份证" class="form-control" />
+                            </div>
+                            <label for="userProperty" class="col-xs-1 control-label">人员属性</label>
+                            <div class="col-xs-3">
+                                <select name="userProperty" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.userProperty}" enumcode="user_property_type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
                         </div>
-                        <label for="jobRank" style="width:80px" class="col-xs-2 control-label">职称</label>
-                        <div class="col-xs-2">
-                            <select name="jobRank" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.jobRank}" enumcode="job-rank-type">
-                                <option value="">请选择</option>
-                            </select>
+                        <div class="form-group">
+                            <label for="unitId" class="col-xs-1 control-label">被考评科室</label>
+                            <div class="col-xs-3">
+                                <input type="text" class="form-control tonto-select-unit" name="orgUnitId" th:attr="unitid=${query?.orgUnitId}" placeholder="请选择科室"></input>
+                            </div>
+                            <label for="isAssessor" class="col-xs-1 control-label">是否考评人员</label>
+                            <div class="col-xs-3">
+                                <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
                         </div>
-                        <label for="userProperty" style="width:90px" class="col-xs-2 control-label">人员属性</label>
-                        <div class="col-xs-2">
-                            <select name="userProperty" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.userProperty}" enumcode="user_property_type">
-                                <option value="">请选择</option>
-                            </select>
+                    </form>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                    </div>
+                </div>
+                <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+                <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+            </div>
+        </div>
+        <div class="box box-solid" style="margin-top:20px">
+            <div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <table id="dataGrid"></table>
+                <div id="toolbar">
+                    <div class="btn-group">
+                        <a onclick="transfer()" class="btn btn-success"><i class="glyphicon glyphicon-cog"></i>申请转移目标</a>
+                        <div style="width:400px">
+                            <input type="text" class="form-control tonto-select-unit-all" name="targetUnit" placeholder="请选择目标科室或机构"></input>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="isAssessor" style="width:130px" class="col-xs-2 control-label">是否考评人员</label>
-                        <div class="col-xs-2">
-                            <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <label for="startRecordCreateTime" style="width:100px" class="col-xs-2 control-label">建档时间</label>
-                        <div class="col-xs-2">
-                            <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
-                        </div>
-                        <label for="endRecordCreateTime" style="width:80px;text-align:center" class="col-xs-1 control-label">至</label>
-                        <div class="col-xs-2">
-                            <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
-                        </div>
-                        <div class="col-xs-2" style="text-align:right">
-                            <a onclick="query()" class="btn btn-primary">查询</a>
-                            <button type="reset" class="btn">重置</button>
-                        </div>
-                    </div>
-                </form>
-            </fieldset>
-        </section>
-        <section class="content table-content" style="margin-top:10px">
-            <table id="dataGrid"></table>
-        </section>
-        <div id="toolbar">
-            <div class="btn-group">
-                <a onclick="transfer()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>转移人员</a>
-                <div style="width:400px">
-                    <input type="text" class="form-control tonto-select-unit" name="targetUnit" placeholder="请选择目标科室或机构"></input>
                 </div>
             </div>
         </div>
-    </div>
-    <div th:include="console/footer"></div>
+    </section>
+    <div th:include="/hf/footer"></div>
     <script type="text/javascript">
     /*<![CDATA[*/
     var table;
     $(function() {
-        $.getConstantEnum(["boolean-type", "sex-type", "job-duties-type", "job-rank-type", "oeducation-type", "user_property_type"], initDataGrid);
+        initDataGrid();
     });
 
-    function initDataGrid(enumMap) {
+    function initDataGrid() {
         var limit = $("#pageLimit").val();
         var offset = $("#pageOffset").val();
         var page = (limit && offset) ? offset / limit + 1 : 1;
@@ -89,18 +108,17 @@
                 [
                     { checkbox: true },
                     { title: "所在单位", field: "unitRootName" },
-                    { title: "被考评科室", field: "unitName" },
-                    { title: "是否考评人", field: "isAssessor", formatter: $.getEnumColumnFormatter(enumMap, "boolean-type") },
+                    { title: "原被考评科室", field: "unitName" },
                     { title: "姓名", field: "name" },
-                    { title: "性别", field: "sex", formatter: $.getEnumColumnFormatter(enumMap, "sex-type") },
-                    { title: "人员属性", field: "userProperty", formatter: $.getEnumColumnFormatter(enumMap, "user_property_type") },
-                    { title: "职称", field: "jobRank", formatter: $.getEnumColumnFormatter(enumMap, "job-rank-type") },
-                    { title: "职务", field: "jobDuties", formatter: $.getEnumColumnFormatter(enumMap, "job-duties-type") },
-                    { title: "学历", field: "oeducation", formatter: $.getEnumColumnFormatter(enumMap, "oeducation-type") },
-                    { title: "建档时间", field: "recordCreateTime" }
+                    { title: "身份证", field: "identification", formatter: "identification" },
+                    { title: "性别", field: "sex", enumcode: "sex-type" },
+                    { title: "人员属性", field: "userProperty", enumcode: "user_property_type" },
+                    { title: "职称", field: "jobRank", enumcode: "job-rank-type" },
+                    { title: "职务", field: "jobDuties", enumcode: "job-duties-type" },
+                    { title: "建档时间", field: "recordCreateTime", formatter: "date" }
                 ]
             ],
-            url: '/org/user/search/all',
+            url: '/org/user/find',
             searchbar: '#searchbar',
             sortName: 'orgUnitId',
             showColumns: true,
@@ -114,8 +132,6 @@
         });
     }
 
-
-
     function transfer() {
         var target = $("#targetUnit").val();
         if (!target) {
@@ -125,24 +141,19 @@
         var rows = table.getSelections();
         if (rows && rows.length > 0) {
             var ids = [];
-            rows.forEach(function(row){
+            rows.forEach(function(row) {
                 ids.push(row.id);
             });
 
             layer.confirm('转移后考评人员将被重置为非考评人员！确定要转移人员吗?', function() {
-                $.postAjax("/org/user/transfer", { userId: ids, target: target }, function() {
+                $.postAjax("/org/user/transfer/", { userId: ids, target: target }, function() {
                     $.successMessage("转移成功");
-                    query();
+                    table.refresh();
                 });
             });
         } else {
             $.errorMessage("请选中一条业务数据");
         }
-
-    }
-
-    function query() {
-        table.refresh();
     }
 
     // 关键词搜索框添加绑定回车函数

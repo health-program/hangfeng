@@ -95,7 +95,7 @@ function generateEditFormHtml(options, hide) {
                 console && console.log("域[name:" + column.name + "]生成colspan大于最大colspan");
                 continue;
             } else {
-                currentColspan = 0;
+                currentColspan = options.maxColspan;
             }
         }
 
@@ -195,7 +195,7 @@ function generateViewFormHtml(options) {
                 console && console.log("域[name:" + column.name + "]生成colspan大于最大colspan");
                 continue;
             } else {
-                currentColspan = 0;
+                currentColspan = options.maxColspan;
             }
         }
 
@@ -1029,6 +1029,8 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         }
 
         // 解析的附件
+        if (!data) return;
+
         var filename = column.fileName,
             v = data[column.name];
         data[filename] = $.parseAttachmentData(data[filename]);
@@ -1158,7 +1160,7 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         }
 
         var name = column.name,
-            atts = data[column.fileName];
+            atts = data && data[column.fileName];
 
         if (atts) {
             var attDiv = model.viewBody.find('[name="' + name + '"]');
@@ -1251,7 +1253,6 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         }
 
         var name = column.fileName,
-            data = model.data,
             atts = data ? data[name] : null,
             fileInput = model.formBody.find('[name="' + name + '"]');
 
@@ -1552,7 +1553,7 @@ var _unitFieldBuilder = new _FieldBuilder("UNIT", {
         if (typeof column.dependTrigger === 'function') {
             return column.dependTrigger(column, model);
         }
-        model.editBody.find("[name='" + column.name + "']").change(function() {
+        column.unitComponment && column.unitComponment.addUnitChangedListener(function() {
             if (model.filling === false) {
                 model.checkEditDependency();
             }
@@ -1566,6 +1567,24 @@ var _unitFieldBuilder = new _FieldBuilder("UNIT", {
 
         var unit = column.unitComponment && column.unitComponment.getCurrent();
         return unit ? unit.id : null;
+    },
+    fillView: function(column, data, model) {
+        // VIEW页面填充值时候调用
+        if (typeof column.fillView === 'function') {
+            return column.fillView(column, data, model);
+        }
+
+        var p = model.viewBody.find("[name='" + column.name + "']");
+        if (!p || p.length == 0) return;
+        var v = data ? data[column.viewName] : null;
+
+        if (v) {
+            p.removeClass("text-muted");
+            p.text(v);
+        } else {
+            p.addClass("text-muted");
+            p.text("无");
+        }
     },
     hideEdit: function(column, model) {
         if (column.editDisplay === "hide") {

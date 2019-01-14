@@ -1,5 +1,7 @@
 package com.paladin.hf.service.syst.vo;
 
+import java.util.Date;
+
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.hf.core.UnitContainer;
 
@@ -12,7 +14,7 @@ public class SysUserVO
     private String orgAgencyId;
     private String orgUnitId;
     private String name;
-    private String lastLoginTime;
+    private Date lastLoginTime;
     
     
     public String getOrgAgencyId()
@@ -40,15 +42,7 @@ public class SysUserVO
     {
         this.name = name;
     }
-    public String getLastLoginTime()
-    {
-        return lastLoginTime;
-    }
-    public void setLastLoginTime(String lastLoginTime)
-    {
-        this.lastLoginTime = lastLoginTime;
-    }
-    
+
     public String getUnitRootName() {
         try {
             return UnitContainer.getRootUnitName(orgAgencyId);
@@ -64,4 +58,11 @@ public class SysUserVO
             return "";
         }
     }
+    
+	public Date getLastLoginTime() {
+		return lastLoginTime;
+	}
+	public void setLastLoginTime(Date lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
+	}
 }

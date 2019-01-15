@@ -3,16 +3,12 @@ package com.paladin.hf.controller.statistics;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.paladin.framework.common.OffsetPage;
-import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
@@ -43,32 +39,32 @@ public class EvaluationResultController {
 			model.addAttribute("assessCycleId", assessCycle.getId());
 			model.addAttribute("assessCycleName", assessCycle.getCycleName());
 		}
-		return "console/reportanalysis/evaluation_result_index";
+		return "/hf/reportanalysis/evaluation_result_index";
 	}
 
 	@RequestMapping("/search/all")
 	@ResponseBody
 	public Object searchAll(AppraisalSummaryQueryDTO query) {
-		return CommonResponse.getSuccessResponse(new PageResult(evaluationResultService.userAll(query)));
+		return CommonResponse.getSuccessResponse(evaluationResultService.userAll(query));
 	}
 	
 	@RequestMapping("/evaluation/count")
     public String evaluationCount(Model model,AppraisalSummaryQueryDTO query) {
 	    model.addAttribute("unitId", query.getUnitId());
         model.addAttribute("assessCycleId", query.getAssessCycleId());
-        return "console/reportanalysis/evaluation_result_info";
+        return "/hf/reportanalysis/evaluation_result_info";
     }
 	
 	@RequestMapping("/evaluation/info")
     @ResponseBody
     public Object evaluationInfo(AppraisalSummaryQueryDTO query) {
-        return CommonResponse.getSuccessResponse(new PageResult(evaluationResultService.evaluationInfo(query)));
+        return CommonResponse.getSuccessResponse(evaluationResultService.evaluationInfo(query));
     }
 	
 	@RequestMapping("/evaluation/people")
     @ResponseBody
     public Object evaluationPeople(AppraisalSummaryQueryDTO query) {
-        return CommonResponse.getSuccessResponse(new PageResult(evaluationResultService.evaluationPeople(query)));
+        return CommonResponse.getSuccessResponse(evaluationResultService.evaluationPeople(query));
     }
 
 	@RequestMapping("/export")
@@ -89,23 +85,23 @@ public class EvaluationResultController {
 		}
 	}
 
-	   @RequestMapping("/exportPeople")
-	    public void exportPeople(HttpServletResponse response, AppraisalSummaryQueryDTO query) {
-	        try {
-	            // 1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
-	            response.setContentType("multipart/form-data");
-	            // 2.设置文件头：最后一个参数是设置下载文件名(假如我们叫a.pdf)
-	            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("科室下属人员考评情况.xlsx", "UTF-8"));
-	            evaluationResultService.exportPeople(response.getOutputStream(), query);
-	        } catch (Exception e) {
-	            response.reset();
-	            if (e instanceof BusinessException) {
-	                throw (BusinessException) e;
-	            } else {
-	                throw new BusinessException("导出EXCEL失败", e);
-	            }
-	        }
-	    }
+   @RequestMapping("/exportPeople")
+    public void exportPeople(HttpServletResponse response, AppraisalSummaryQueryDTO query) {
+        try {
+            // 1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
+            response.setContentType("multipart/form-data");
+            // 2.设置文件头：最后一个参数是设置下载文件名(假如我们叫a.pdf)
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("科室下属人员考评情况.xlsx", "UTF-8"));
+            evaluationResultService.exportPeople(response.getOutputStream(), query);
+        } catch (Exception e) {
+            response.reset();
+            if (e instanceof BusinessException) {
+                throw (BusinessException) e;
+            } else {
+                throw new BusinessException("导出EXCEL失败", e);
+            }
+        }
+    }
 	
 	
 }

@@ -85,7 +85,7 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 
 		List<Condition> conditions = new ArrayList<>();
 		conditions.add(new Condition(Prizepunish.COLUMN_OPERATION_STATE, QueryType.IN,
-				new String[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
+				new int[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
 		conditions.add(new Condition(Prizepunish.COLUMN_ORG_USER_ID, QueryType.EQUAL, userId));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.GREAT_EQUAL, startTime));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.LESS_EQUAL, endTime));

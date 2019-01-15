@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.paladin.framework.common.OffsetPage;
+import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.UserSession;
 import com.paladin.framework.core.exception.BusinessException;
@@ -22,7 +23,7 @@ import com.paladin.hf.mapper.statistics.EvaluationResultMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.statistics.dto.AppraisalSummaryQueryDTO;
-import com.paladin.hf.service.statistics.dto.EvaluationResultExcelDTO;
+import com.paladin.hf.service.statistics.dto.EvaluationResultPeopleExcelDTO;
 import com.paladin.hf.service.statistics.vo.EvaluationResultVO;
 
 
@@ -37,22 +38,22 @@ public class EvaluationResultService {
 	@Autowired
 	private AssessCycleService assessCycleService;
 
-	public Page<EvaluationResultVO> userAll(AppraisalSummaryQueryDTO query) {
+	public PageResult<EvaluationResultVO> userAll(AppraisalSummaryQueryDTO query) {
 		Page<EvaluationResultVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
 		evaluationResultMapper.userAll(query, DataPermissionUtil.getUnitQueryDouble(query.getUnitId()));
-		return page;
+		return new PageResult<>(page);
 	}
 
-	public Page<EvaluationResultVO> evaluationInfo(AppraisalSummaryQueryDTO query) {
+	public PageResult<EvaluationResultVO> evaluationInfo(AppraisalSummaryQueryDTO query) {
         Page<EvaluationResultVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
         evaluationResultMapper.evaluationInfo(query,DataPermissionUtil.getUnitQueryDouble(query.getUnitId()));
-        return page;
+        return new PageResult<>(page);
     }
     
-    public Page<EvaluationResultVO> evaluationPeople(AppraisalSummaryQueryDTO query) {
+    public PageResult<EvaluationResultVO> evaluationPeople(AppraisalSummaryQueryDTO query) {
         Page<EvaluationResultVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
         evaluationResultMapper.evaluationPeople(query);
-        return page;
+        return new PageResult<>(page);
     }
 	
 	public void export(OutputStream output, AppraisalSummaryQueryDTO query) {
@@ -72,7 +73,7 @@ public class EvaluationResultService {
 //				
 //		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(unitId);
 //
-//		List<EvaluationResultVO> list = evaluationResultMapper.evaluationInfo(query, unitQuery);
+//		List<EvaluationResultDeptExcelDTO> list = evaluationResultMapper.excelDept(query, unitQuery);
 //		if (list == null || list.size() == 0) {
 //			throw new BusinessException("没有可导的数据");
 //		}

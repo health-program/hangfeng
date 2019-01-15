@@ -1,19 +1,20 @@
 package com.paladin.hf.mapper.ordinary;
 
 import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.ordinary.Prizepunish;
+import com.paladin.hf.service.ordinary.dto.PrizepunishQuery;
+import com.paladin.hf.service.ordinary.vo.PrizepunishVO;
 
 
 public interface PrizepunishMapper extends CustomMapper<Prizepunish>{
     
-    List<Map<String, Object>> selectPrizepunishAll(Prizepunish prizepunish);
+    /*科室查询某个人的奖惩记录 */
+    List<PrizepunishVO> selectPrizeDept(PrizepunishQuery query);
     
-    List<Map<String, Object>> selectPrizepunishAll2(Prizepunish prizepunish);
+    /*查询个人的奖惩记录 */
+    List<PrizepunishVO> selectPrizePeople(PrizepunishQuery query);
     
-    List<Map<String, Object>> appSelectPrizepunishAll(Prizepunish prizepunish);
+    /*机构查询某个人的奖惩记录 */
+    List<PrizepunishVO> selectPrizeUnit(PrizepunishQuery query);
 }

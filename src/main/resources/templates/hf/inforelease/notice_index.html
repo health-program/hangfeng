@@ -1,145 +1,141 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="console/header">
+<head th:include="/hf/header">
 </head>
 <body>
-
 	<section class="content-header">
 		<h1>通知公告管理</h1>
 	</section>
-	<section class="content-header">
-		<fieldset>
-			<legend>查询条件</legend>
-			<form id="searchbar" class="form-horizontal">
-				<div class="form-group">
-					<input type="hidden" name="id" id="id" value="0" /> <label
-						style="width: 110px" class="col-sm-2 control-label"
-						for="isRelease">是否发布:</label>
-					<div class="col-sm-2">
-						<select id="isRelease" name="isRelease"
-							class="form-control tonto-select-constant" enumcode="is_release">
-							<option value="">请选择</option>
-						</select>
-					</div>
-					<label style="width: 110px" class="col-sm-2 control-label"
-						for="importance">重要程度:</label>
-					<div class="col-sm-2">
-						<select id="importance" name="importance"
-							class="form-control tonto-select-constant" enumcode="importance">
-							<option value="">请选择</option>
-						</select>
-					</div>
-					<label style="width: 110px" class="col-sm-2 control-label"
-						for="dict_id">标题:</label>
-					<div class="col-sm-2">
-						<input type="text" name="title" class="form-control" id="title" />
-					</div>
+	 <tt:constant enumcode="is_release,importance" />
+	<section class="content">
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-search"></i>
+                <h3 class="box-title">查询</h3>
+            </div>
+				<div class="box-body">
+					<form id="searchbar" class="form-horizontal">
+						<input type="hidden" name="type" value="0" />
+						<div class="form-group">
+							<label style="width: 110px" class="col-sm-2 control-label"
+								for="isRelease">是否发布:</label>
+							<div class="col-sm-2">
+								<select id="isRelease" name="isRelease"
+									class="form-control tonto-select-constant" enumcode="is_release">
+									<option value="">请选择</option>
+								</select>
+							</div>
+							<label style="width: 110px" class="col-sm-2 control-label"
+								for="importance">重要程度:</label>
+							<div class="col-sm-2">
+								<select id="importance" name="importance"
+									class="form-control tonto-select-constant" enumcode="importance">
+									<option value="">请选择</option>
+								</select>
+							</div>
+							<label style="width: 110px" class="col-sm-2 control-label"
+								for="dict_id">标题:</label>
+							<div class="col-sm-2">
+								<input type="text" name="title" class="form-control" id="title" placeholder="请输入标题"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label style="width: 110px" class="col-sm-2 control-label"
+								for="filingTime">发布时间:</label>
+							<div class="col-sm-2">
+								<input type="text" id="datepicker1" name="releaseTime"
+									class="form-control tonto-datepicker-date" placeholder="请选择开始日期" />
+							</div>
+							<label style="width: 110px" class="col-sm-2 control-label"
+								for="filingTime">至:</label>
+							<div class="col-sm-2">
+								<input type="text" id="datepicker2" name="endreleaseTime"
+									class="form-control tonto-datepicker-date" placeholder="请选择截至日期" />
+							</div>
+						</div>
+					</form>
+					<div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                    </div>
+                </div>
+					<input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+					<input type ="hidden" id="pageOffset" th:value="${query?.offset}" />
 				</div>
-				<div class="form-group">
-					<label style="width: 110px" class="col-sm-2 control-label"
-						for="filingTime">发布时间:</label>
-					<div class="col-sm-2">
-						<input type="text" id="datepicker1" name="releaseTime"
-							class="form-control tonto-datepicker-date" readonly="readonly"
-							placeholder="请选择日期" />
-					</div>
-					<label style="width: 110px" class="col-sm-2 control-label"
-						for="filingTime">至:</label>
-					<div class="col-sm-2">
-						<input type="text" id="datepicker2" name="endreleaseTime"
-							class="form-control tonto-datepicker-date" readonly="readonly"
-							placeholder="请选择日期" />
-					</div>
-					<div class="col-sm-6" style="text-align: right">
-						<a onclick="query()" class="btn btn-primary">查询</a>
-						<button type="reset" class="btn js-ajax-submit">重置</button>
-					</div>
-				</div>
-			</form>
-		</fieldset>
-
-	</section>
-	<div id="toolbar">
-		<div class="btn-group">
-			<a id="viewnotice" onclick="viewNotice()" class="btn btn-default"><i
-				class="glyphicon glyphicon-search"></i>查看</a> <a id="addnotice"
-				onclick="addnotice()" class="btn btn-default"><i
-				class="glyphicon glyphicon-plus"></i>新增</a> <a id="editnotice"
-				onclick="editNotice()" class="btn btn-default"><i
-				class="glyphicon glyphicon-edit"></i>修改</a> <a id="removenotice"
-				onclick="removeNotice()" class="btn btn-default"><i
-				class="glyphicon glyphicon-remove"></i>删除</a>
+			</div>
 		</div>
-	</div>
-	<section class="content table-content">
-		<table id="dataGrid"></table>
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <div id="toolbar">
+                    <div class="btn-group">
+                        <a onclick="add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                    </div>
+                </div>
+                <table id="dataGrid"></table>
+            </div>
+		</div>
 	</section>
-
-	<div id='info' style="display: none">
-		<ul id="info2" class="list-group"></ul>
-	</div>
-	<div th:include="console/footer"></div>
+	<div th:include="/hf/footer"></div>
 	<script type="text/javascript">
-		$table = $("#dataGrid");
-		$(function () {
-		    $.getConstantEnum(["is_release", "importance"], initDataGrid);
-		  
-		});
-		function query(){
-			$("#dataGrid").bootstrapTable('destroy');
-			$.getConstantEnum(["is_release", "importance"], initDataGrid);
-		}
-		//查询单位信息
-		function initDataGrid(enumMap){
-		    $table.bootstrapTable({
-		        height : tableModel.getHeight(),
-		        idField : "id",
-		        columns : [[
-					{ radio:true },
-		            {title: "标题", field: "title",width: "500px" },
-		            {title: "是否发布", field: "isRelease",formatter: $.getEnumColumnFormatter(enumMap,"is_release") },
-		            {title: "重要程度", field: "importance",formatter: $.getEnumColumnFormatter(enumMap,"importance") },
-		            {title: "发布时间", field: "releaseTime",sortable: true ,width: "200px"}
-		        ]],
-		        url : '/console/infore/list/index',
-		        queryParams: function(params){
-		        	         var params = {
-		        	        		 id:$("#id").val(),
-		        	        		 title: $("#title").val(),
-		        	        		 isRelease: $("#isRelease").val(),
-		        	        		 importance: $("#importance").val(),
-		        	        		 releaseTime: $("#datepicker1").val(),
-		        	        		 endreleaseTime: $("#datepicker2").val(),
-		        			sort:params.sort,
-		        			order:params.order,
-		        			limit: params.limit,
-		        			offset:params.offset,
-		        	    };       
-		            return params;
-		        },
-		        responseHandler : function (res) {
-		            return {
-		                rows : res.result.pageInfo.list,
-		                total : res.result.pageInfo.total
-		            }
-		        },
-		        search : false,
-		        sortName : 'create_time',
-		        sortOrder : 'desc',
-		        pagination : true,
-		        sidePagination : 'server',
-		        pageSize: 10,
-		        pageList : [10,20,30],
-		        toolbar : "#toolbar",
-		        showRefresh : true,
-		        clickToSelect:true,
-		        showColumns:true
-		    });
-		}
+	 /*<![CDATA[*/
+	            
+	 	$(function (){ initDataGrid();});
 		
+		function query() {table.refresh();}
 		
-		
-	        function editNotice(id){
+		function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+		            {title: "标题", field: "title"},
+		            {title: "是否发布", field: "isRelease", enumcode: "is_release" },
+		            {title: "重要程度", field: "importance", enumcode: "importance" },
+		            {title: "发布时间", field: "releaseTime",sortable: false},
+		            {
+                        title: "操作",
+                        align: "center",
+                        width: "200px",
+                        events: {
+                            'click .detail': function(e, value, row, index) {
+                                detail(row);
+                            },
+                            'click .remove': function(e, value, row, index) {
+                                remove(row);
+                            }
+                        },
+                        formatter: function operateFormatter(value, row, index) {
+                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
+                                '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+
+                        }
+                    }
+                ]
+            ],
+            url: '/console/infore/list',
+            searchbar: '#searchbar',
+            sortName: 'releaseTime',
+            showColumns: true,
+            sortOrder: 'asc',
+            pageSize: limit || undefined,
+            pageNumber: page || 1,
+            pagination: true,
+            clickToSelect: true,
+            toolbar: "#toolbar",
+            showRefresh: true
+        });
+    } 
+		 
+	      function editNotice(id){
 	        	var row = getSelectRow();
 	        	if(row){
 					layer.open({
@@ -151,7 +147,7 @@
 						success : function(layero, index) {
 							$.setLayerSubmitHandler(layero, index, function() {
 								layer.close(index);
-								$table.bootstrapTable('refresh', {url : '/console/infore/list/index'});
+								table.refresh();
 							}, "修改成功");
 						}
 					});
@@ -160,65 +156,39 @@
 	        	}
 				}
 	    
-	    function addnotice(){
-		    	layer.open({
-		               type: 2,
-		               title: ' ',
-		               maxmin: true, //开启最大化最小化按钮
-			           area: $.getOpenLayerSize(800, 650),
-		               content: '/console/infore/add/input',
-		                success: function(layero, index){
-		            	 $.setLayerSubmitHandler(layero,index, function(){
-		            			layer.close(index);
-		            			$table.bootstrapTable('refresh', {url: '/console/infore/list/index'});          		
-		            	 },"保存成功");
-		               } 
-		           });
+	    function add(){
+	    	 window.location = '/console/infore/add/notice/input'
 	    }
 	        
-	      function removeNotice() {
-	    	  var row = getSelectRow();
-	    	  if(row){
-	    			layer.confirm('确定删除吗?', function() {
-	    				$.getAjax('/console/infore/delete?id=' + row.id, function() {
-	    					$.successMessage("删除成功");
-	    					$table.bootstrapTable('refresh', {
-	    						url : '/console/infore/list/index'
-	    					});
-	    				});
-	    			});
-	    	  }else{
-	    		  $.errorMessage("请选中一条业务数据");
-	    	  }
-			
+	      function remove(row) {
+   			layer.confirm('确定删除吗?', function() {
+   				$.getAjax('/console/infore/delete?id=' + row.id, function() {
+   					$.successMessage("删除成功");
+   					table.refresh();
+   				});
+   			});
 		}
 	      
-	      function viewNotice() {
-	    	  var row = getSelectRow();
-	    	  if(row){
-	    		  layer.open({
-						type : 2,
-						title : ' ',
-						maxmin : true, //开启最大化最小化按钮
-			            area: $.getOpenLayerSize(800, 650),
-						content : '/console/infore/view?id=' + row.id
-					});
-	    	  }else{
-	    		  $.errorMessage("请选中一条业务数据");
-	    	  }
-			}
+	      function detail(row) {
+	          if (row) {
+	              window.location = '/console/infore/notice/get?id=' + row.id
+	          }
+	      }
 	      
-	    	function getSelectRow(){
-	        	var rows = $table.bootstrapTable('getSelections');
-	    		return rows.length>0?rows[0]:null;
-	        }
+	      function getSelectRow(notShowError) {
+	          var rows = table.getSelections();
+	          var row = rows.length > 0 ? rows[0] : null;
+	          if (!notShowError && !row) {
+	              $.errorMessage("请选中一条业务数据");
+	          }
+	          return row;
+	      }
 	    
-	    	$('body').bind('keypress',function (event){
-	            if(event.keyCode == '13'){
-	                query();
-	            }
-	        });
-	    	
+    	$('body').bind('keypress',function (event){
+            if(event.keyCode == '13'){query();}
+        }); 
+    	
+ /*]]>*/
 </script>
 </body>
 </html>

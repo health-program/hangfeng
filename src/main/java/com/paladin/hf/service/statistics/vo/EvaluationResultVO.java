@@ -2,7 +2,6 @@ package com.paladin.hf.service.statistics.vo;
 
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.core.exception.BusinessException;
-import com.paladin.framework.excel.write.WriteProperty;
 import com.paladin.hf.core.UnitContainer;
 
 
@@ -15,20 +14,13 @@ public class EvaluationResultVO extends OffsetPage {
 	private String id;
 	private String unitId;
 	private String agencyId;
-
-	// 以下用于导出EXCEL
-	@WriteProperty(cellIndex = 0, name = "所属机构", width = 30)	
-	private String agencyName;
-	@WriteProperty(cellIndex = 1, name = "被考评科室", width = 35)
-	private String unitName;	
-	@WriteProperty(cellIndex = 2, name = "考评周期", width = 40)
-	private String assessCycleName;
-	@WriteProperty(cellIndex = 3, name = "已考评人数", width = 15)
-	private String unitAssGradeExcelCOUNT;
-	@WriteProperty(cellIndex = 4, name = "未考评人数", width = 15)
-    private String notUnitAssGradeExcelCOUNT;
-	@WriteProperty(cellIndex = 5, name = "总人数", width = 20)
-    private String totalExcel;
+	private String name;
+	private String assessCycleId;
+	private String unitAssGrade;
+	private String operateState;
+    private String unitAssGradeCOUNT;
+    private String notUnitAssGradeCOUNT;
+    private String total;
 	
 	public String getUnitName() {
 		try {
@@ -70,37 +62,73 @@ public class EvaluationResultVO extends OffsetPage {
 		this.agencyId = agencyId;
 	}
 
-	public String getAssessCycleName() {
-		return assessCycleName;
-	}
+    public String getUnitAssGradeCOUNT()
+    {
+        return unitAssGradeCOUNT;
+    }
 
-	public void setAssessCycleName(String assessCycleName) {
-		this.assessCycleName = assessCycleName;
-	}
+    public void setUnitAssGradeCOUNT(String unitAssGradeCOUNT)
+    {
+        this.unitAssGradeCOUNT = unitAssGradeCOUNT;
+    }
 
-	public String getUnitAssGradeExcelCOUNT() {
-		return unitAssGradeExcelCOUNT;
-	}
+    public String getNotUnitAssGradeCOUNT()
+    {
+        return notUnitAssGradeCOUNT;
+    }
 
-	public void setUnitAssGradeExcelCOUNT(String unitAssGradeExcelCOUNT) {
-		this.unitAssGradeExcelCOUNT = unitAssGradeExcelCOUNT;
-	}
+    public void setNotUnitAssGradeCOUNT(String notUnitAssGradeCOUNT)
+    {
+        this.notUnitAssGradeCOUNT = notUnitAssGradeCOUNT;
+    }
 
-	public String getNotUnitAssGradeExcelCOUNT() {
-		return notUnitAssGradeExcelCOUNT;
-	}
+    public String getTotal()
+    {
+        return total;
+    }
 
-	public void setNotUnitAssGradeExcelCOUNT(String notUnitAssGradeExcelCOUNT) {
-		this.notUnitAssGradeExcelCOUNT = notUnitAssGradeExcelCOUNT;
-	}
+    public void setTotal(String total)
+    {
+        this.total = total;
+    }
 
-	public String getTotalExcel() {
-		return totalExcel;
-	}
+    public String getName()
+    {
+        return name;
+    }
 
-	public void setTotalExcel(String totalExcel) {
-		this.totalExcel = totalExcel;
-	}
-	
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
+    public String getAssessCycleId()
+    {
+        return assessCycleId;
+    }
+
+    public void setAssessCycleId(String assessCycleId)
+    {
+        this.assessCycleId = assessCycleId;
+    }
+
+    public String getUnitAssGrade()
+    {
+        return unitAssGrade;
+    }
+
+    public void setUnitAssGrade(String unitAssGrade)
+    {
+        this.unitAssGrade = unitAssGrade;
+    }
+
+    public String getOperateState()
+    {
+        return operateState;
+    }
+
+    public void setOperateState(String operateState)
+    {
+        this.operateState = operateState;
+    }
 }

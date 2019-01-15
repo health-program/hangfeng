@@ -1,131 +1,175 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="console/header">
+<head th:include="/hf/header">
 </head>
 
 <body>
+    <input type="hidden" id="isView" th:value="${isView}" />
+    
+    <tt:constant enumcode="examine, operation, event_type"/>
     <section class="content-header">
-        <div class="pull-right">
-            <a href="/console/assess/quantitative/department/index?cached=1" class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
-        </div>
-        <h1>人员量化考评</h1>
+            <h1>个人量化考评</h1>
+            <ol class="breadcrumb">
+                <li><a href="/console/assess/quantitative/department/index?cached=1"><i class="fa fa-list-alt"></i>列表</a></li>
+                <li class="active">量化</li>
+            </ol>
     </section>
-    <section class="content-header">
-        <input type="hidden" id="isView" th:value="${isView}" />
-        <fieldset>
-            <legend>查询条件</legend>
-            <form id="searchbar" class="form-horizontal">
-                <input type="hidden" th:value="${userId}" name="userId" />
-                <div class="form-group">
-                    <label style="width: 130px" for="cycleId" class="col-sm-2 control-label">考评周期</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" name="cycleId" placeholder="请选择周期"></input>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="eventType" style="width:130px" class="col-sm-2 control-label">事件类型</label>
-                    <div class="col-sm-2">
-                        <select name="eventType" class="form-control">
-                            <option value="">请选择</option>
-                        </select>
-                    </div>
-                    <label for="startHappenTime" style="width:130px" class="col-sm-2 control-label">发生时间</label>
-                    <div class="col-sm-2">
-                        <input type="text" name="startHappenTime" class="form-control col-sm-2 tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
-                    </div>
-                    <label for="endHappenTime" style="width:80px;text-align:center" class="col-sm-2 control-label">至</label>
-                    <div class="col-sm-2">
-                        <input type="text" name="endHappenTime" class="form-control col-sm-2 tonto-datepicker-date" readonly="readonly" placeholder="请选择日期" />
-                    </div>
-                    <label for="name" style="width:80px" class="col-sm-2 control-label"></label>
-                    <div class="col-sm-2" style="text-align:right">
-                        <a href="javascript:table.refresh();" class="btn btn-primary">查询</a>
-                        <button type="reset" class="btn">重置</button>
-                    </div>
-                </div>
-            </form>
-            </fieldset>
+    <section class="content">
+         <div class="box box-solid">
+              <div class="box-header with-border">
+                  <i class="fa fa-search"></i>
+                  <h3 class="box-title">查询</h3>
+              </div>
+              <div class="box-body">
+                  <form id="searchbar" class="form-horizontal">
+	                <input type="hidden" th:value="${userId}" name="userId" />
+	                <div class="form-group">
+	                    <label style="width: 130px" for="cycleId" class="col-sm-2 control-label">考评周期</label>
+	                    <div class="col-sm-2">
+	                        <input type="text" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" name="cycleId" placeholder="请选择周期"></input>
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label for="eventType" style="width:130px" class="col-sm-2 control-label">事件类型</label>
+	                    <div class="col-sm-2">
+	                        <select name="eventType" class="form-control">
+	                            <option value="">请选择</option>
+	                        </select>
+	                    </div>
+	                    <label for="startHappenTime" style="width:130px" class="col-sm-2 control-label">发生时间</label>
+	                    <div class="col-sm-2">
+	                        <input type="text" name="startHappenTime" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择日期" />
+	                    </div>
+	                    <label for="endHappenTime" style="width:80px;text-align:center" class="col-sm-2 control-label">至</label>
+	                    <div class="col-sm-2">
+	                        <input type="text" name="endHappenTime" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择日期" />
+	                    </div>
+	                    <label for="name" style="width:80px" class="col-sm-2 control-label"></label>
+	                    <div class="col-md-12">
+                            <div class="pull-right">
+                               <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                               <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                            </div>
+                        </div>
+	                 </div>
+                  </form>
+                  
+              </div>
+         </div>
+         
+         <div class="box box-solid" style="margin-top:20px">
+            <div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+               <table id="dataGrid"></table>
+            </div>
+         </div>
     </section>
-    <section class="content table-content">
-        <table id="dataGrid"></table>
-    </section>
-    <div id="toolbar">
-        <div class="btn-group">
-            <a onclick="view()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看</a>
-            <a onclick="score()" class="btn btn-default"  th:if="${isView} != 1"><i class="glyphicon glyphicon-plus"></i>评分</a>
-	        <a href="javascript:assess()" class="btn btn-default"  th:if="${isView} != 1"><i class="glyphicon glyphicon-cog"></i>量化考评</a>
-	        <a href="javascript:viewAssess()" class="btn btn-default"><i class="glyphicon glyphicon-cog"></i>查看考评结果</a>
-        </div>
-    </div>
-    <div th:include="console/footer"></div>
+    
+    
+    
+    
+    <div th:include="/hf/footer"></div>
     <script type="text/javascript">
     /*<![CDATA[*/
     var table;
-    var userId;
+    var isView = $("#isView").val();
+    
     $(function() {
-        $.getConstantEnum(["examine", "operation", "event_type", { code: "event_type", type: 'select', target: '[name="eventType"]' }], initDataGrid);
-        userId = $('[name="userId"]').val();
+        initDataGrid();
     });
-
-
-    function initDataGrid(enumMap) {
-
-        var isView = $("#isView").val();
-
-        var columns = [
-            {radio:true},
-            { title: "事件类型", field: "dictCode", formatter: $.getEnumColumnFormatter(enumMap, "event_type") },
-            { title: "发生时间", field: "happenTime" },
-            { title: "核定部门(人)", field: "checkPeople" },
-            { title: "操作状态", field: "operationState", formatter: $.getEnumColumnFormatter(enumMap, "operation") },
-            { title: "审核状态", field: "examineState", formatter: $.getEnumColumnFormatter(enumMap, "examine") },
-            { title: "审核人", field: "examinePeople" },
-            { title: "加分", field: "addScore" },
-            { title: "扣分", field: "reduceScore" },
-            { title: "一票否决", field: "isVeto", formatter: function(value, row, index) { return row.isVeto ? "有" : "无" } }
-        ]
-
-       /*  if (!isView) {
-            columns.push({
-                title: "评分",
-                width: "60px",
-                align: 'center',
-                events: {
-                    'click .score': function(e, value, row, index) {
-                        score(row);
-                    }
-                },
-                formatter: $.tableColumnFormatter('评分', 'score', 'plus')
-            });
-        } */
-
+    
+    function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+        
         table = $.createTable("#dataGrid", {
             idField: "id",
             columns: [
-                columns
-            ],
-            url: '/console/assess/quantitative/user/detail',
-            searchbar: '#searchbar',
-            pagination: false,
-            toolbar: "#toolbar",
-            showRefresh: true,
-            showToggle: true,
-            clickToSelect:true
-        });
+                      [
+						{ title: "事件类型", field: "dictCode", enumcode:"event_type"},
+						{ title: "发生时间", field: "happenTime" },
+						{ title: "核定部门(人)", field: "checkPeople" },
+						{ title: "操作状态", field: "operationState", enumcode:"operation"},
+						{ title: "审核状态", field: "examineState", enumcode:"examine"},
+						{ title: "审核人", field: "examinePeople" },
+						{ title: "加分", field: "addScore" },
+						{ title: "扣分", field: "reduceScore" },
+						{ title: "一票否决", field: "isVeto", formatter: function(value, row, index) { return row.isVeto ? "有" : "无" } },
+						{
+	                        title: "操作",
+	                        align: "center",
+	                        width: "10%",
+	                        events: {
+	                        	'click .view': function(e, value, row, index){
+	                        		view(row);
+	                            },
+	                            'click .score': function(e, value, row, index){
+	                            	score(row);
+                                },
+                                'click .assess': function(e, value, row, index){
+                                	assess(row);
+                                },
+                                'click .viewAssess': function(e, value, row, index){
+                                	viewAssess(row);
+                                }
+	                        },
+	                        formatter: operateFormatter
+						}
+                  ]
+               ],
+               url: '/console/assess/quantitative/user/detail',
+               pageSize: limit || undefined,
+               pageNumber: page || 1,
+               searchbar: '#searchbar',
+               pagination: true,
+               toolbar: "#toolbar",
+               showRefresh: true,
+              // showToggle : true,
+               clickToSelect:true,
+               showColumns:true
+        })
+    
     }
-
+    
+    function operateFormatter(value,row,index) {
+    	if(isView != 1){
+    		return [
+                    '<button class="view btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-cog"></i>查看' ,
+                    '</button>',
+                    '<button class="score btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-cog"></i>评分' ,
+                    '</button>',
+                    '<button class="assess btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-cog"></i>量化考评' ,
+                    '</button>',
+                    '<button class="viewAssess btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-cog"></i>查看考评结果',
+                    '</button>'
+                    ].join('');
+    	}else{
+    		return [
+                    '<button class="assess btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-cog"></i>查看' ,
+                    '</button>',
+                    '<button class="viewAssess btn btn-xs btn-info" style="margin-right:10px">' ,
+                    '<i class="glyphicon glyphicon-cog"></i>查看考评结果',
+                    '</button>'
+                    ].join('');
+    	}
+    }
+    
     function score(row) {
-    	var row = getSelectRow();
-    	if (row) {
     		$.locationPost("/console/assess/quantitative/department/user/score/index", {
                 userId: userId,
                 cycleId: $('[name="cycleId"]').val(),
                 prizePunishId: row.id
             });
-		} else {
-			$.errorMessage("请选中一条业务数据！");
-		}
     }
 
     function getAssessLayerContent(isView) {
@@ -183,9 +227,7 @@
         return content;
     }
 
-    function view() {
-    	var row = getSelectRow();
-    	if (row) {
+    function view(row) {
     		layer.open({
                 type: 2,
                 title: ' ',
@@ -193,10 +235,6 @@
                 area: $.getOpenLayerSize(800, 700),
                 content: '/console/peacet/view?id=' + row.id
             });
-		} else {
-		    $.errorMessage("请选中一条业务数据！");
-		}
-        
     }
 
     function assess() {

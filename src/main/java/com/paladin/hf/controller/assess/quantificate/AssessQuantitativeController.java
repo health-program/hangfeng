@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.utils.StringUtil;
 import com.paladin.framework.web.response.CommonResponse;
@@ -93,7 +92,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 			model.addAttribute("assessCycleName", assessCycle.getCycleName());
 		}
 
-		return "console/assessQuantitative/department_index";
+		return "/hf/assess/quantificate/department_quantificate_index";
 	}
 
 	@RequestMapping(value = "/agency/index")
@@ -133,7 +132,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 	public Object findUser(AssessQuantitativeUserQuery query, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		session.setAttribute(AssessQuantitativeUserQuery.class.getName(), query);
-		return CommonResponse.getSuccessResponse(new PageResult(assessQuantitativeService.findUserAssess(query)));
+		return CommonResponse.getSuccessResponse(assessQuantitativeService.findUserAssess(query));
 	}
 
 	@RequestMapping(value = "/department/user/index")
@@ -144,7 +143,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 		model.addAttribute("assessCycleName", assessCycle.getCycleName());
 		model.addAttribute("userId", userId);
 
-		return "console/assessQuantitative/department_user_index";
+		return "/hf/assess/quantificate/department_quantificate_user_index";
 	}
 
 	@RequestMapping(value = "/department/user/view")
@@ -156,7 +155,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 		model.addAttribute("userId", userId);
 		model.addAttribute("isView", 1);
 
-		return "console/assessQuantitative/department_user_index";
+		return "/hf/assess/quantificate/department_quantificate_user_index";
 	}
 
 	@RequestMapping(value = "/agency/user/index")

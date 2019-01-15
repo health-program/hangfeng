@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.paladin.framework.common.Condition;
+import com.paladin.framework.common.PageResult;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
@@ -47,11 +48,11 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 	 * @param query
 	 * @return
 	 */
-	public Page<OrgUserAssess> findUserAssess(AssessQuantitativeUserQuery query) {
+	public PageResult<OrgUserAssess> findUserAssess(AssessQuantitativeUserQuery query) {
 		Page<OrgUserAssess> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
 		assessQuantitativeMapper.findUserAssess(query, unitQuery);
-		return page;
+		return new PageResult<>(page);
 	}
 
 	/**

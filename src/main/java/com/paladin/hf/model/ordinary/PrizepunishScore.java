@@ -46,11 +46,11 @@ public class PrizepunishScore {
 		return prizepunish.getCheckPeople();
 	}
 
-	public String getOperationState() {
+	public Integer getOperationState() {
 		return prizepunish.getOperationState();
 	}
 
-	public String getExamineState() {
+	public Integer getExamineState() {
 		return prizepunish.getExamineState();
 	}
 

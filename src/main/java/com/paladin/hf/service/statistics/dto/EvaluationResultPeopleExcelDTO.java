@@ -8,7 +8,7 @@ import com.paladin.hf.core.UnitContainer;
  * @author 黄伟华
  * @version 2018年10月8日 下午2:56:54 
  */
-public class EvaluationResultExcelDTO
+public class EvaluationResultPeopleExcelDTO
 {
     private String Id;
     private String unitId;

@@ -132,6 +132,9 @@
         successAlert: function(msg, fun, top) {
             $.doAlert(msg, 1, fun, top);
         },
+        warnAlert: function(msg, fun, top) {
+            $.doAlert(msg, 3, fun, top);
+        },
         failAlert: function(msg, fun, top) {
             $.doAlert(msg, 2, fun, top);
         },
@@ -529,7 +532,7 @@
 
         $("select").each(function() {
             $(this).find("option:first").prop("selected", 'selected');
-        })
+        });
     });
 
 })(jQuery);
@@ -875,8 +878,6 @@ function _initUnitComponment(container) {
             }
         });
     }
-
-
 }
 
 
@@ -944,16 +945,45 @@ function _createAssessCycleComponment(input, _options, callback) {
         valueInput: $hideinput,
         setCurrent: function(row) {
             var that = this;
-            if (row) {
-                that.input.val(row.cycleName);
-                that.valueInput.val(row.id);
+
+            if (row && row.id) {
+                that.current = {
+                    id: row.id,
+                    cycleName: row.cycleName
+                }
+            } else {
+                that.current = null;
+            }
+
+            if (that.current) {
+                that.input.val(that.current.cycleName);
+                that.valueInput.val(that.current.id);
             } else {
                 that.input.val("");
                 that.valueInput.val("");
             }
 
             if (that.callback)
-                that.callback(row);
+                that.callback(that.current);
+        },
+        getCurrent: function() {
+            var that = this;
+            if (!that.valueInput.val()) {
+                that.current = null;
+                return null;
+            }
+            return that.current;
+        },
+        setEnabled: function(enabled) {
+            if (enabled) {
+                this.input.attr('disabled', false);
+                this.valueInput.attr('disabled', false);
+                this.input.css("background", "#fff");
+            } else {
+                this.input.attr('disabled', true);
+                this.valueInput.attr('disabled', true);
+                this.input.css("background", "#eee");
+            }
         },
         open: function() {
 
@@ -1002,14 +1032,13 @@ function _createAssessCycleComponment(input, _options, callback) {
                         sortOrder: 'desc',
                         pagination: true,
                         toolbar: "#_tontoCycleTableTooler",
-                        showRefresh: true,
                         onClickRow: function(row, element) {
                             com.setCurrent(row);
                             layer.close(index);
                         }
                     });
 
-                    var unitInput = $(layero).find('[name="unitId"]');
+                    // var unitInput = $(layero).find('[name="unitId"]');
                     // if (type == 4) {
                     //     // $.getAjax("/org/unit/self/agency", function(data) {
                     //     //     unitInput.attr("readonly", true);
@@ -1057,7 +1086,8 @@ function _createAssessCycleComponment(input, _options, callback) {
     }
 
 
-
+    $input.data("cycleComponment", com);
+    $hideinput.data("cycleComponment", com);
     $input[0].cycleComponment = com;
 
     return com;
@@ -1642,7 +1672,24 @@ function _initTable() {
                                 }
                                 return "";
                             }
+                        } else if (col.formatter == 'assess-grade') {
+                            col.formatter = function(value, row, index) {
+                                if (value == 1) {
+                                    return '<span class="label label-success">优秀</span>';
+                                } else if (value == 2) {
+                                    return '<span class="label label-info">良好</span>';
+                                } else if (value == 3) {
+                                    return '<span class="label label-warning">合格</span>';
+                                } else if (value == 4) {
+                                    return '<span class="label label-danger">不合格</span>';
+                                } else if (value == 5) {
+                                    return '<span class="label label-primary">不定等次</span>';
+                                }
+                            }
+
                         }
+
+
                     }
 
                     // 枚举情况
@@ -1969,7 +2016,7 @@ function _initEnumConstant(container, enumcodes, callback) {
             } else if ($s.is("p")) {
                 var code = $s.attr("enum-code-value");
                 if (code) {
-                    $s.html($.getConstantEnumValue(enumcode, code));
+                    $s.html($.getConstantEnumValue(enumcode, code) || "无");
                 }
             }
         }
@@ -2182,6 +2229,7 @@ function _initForm(container) {
                     } else if (status.FAIL === resStatus) {
                         $.errorMessage(data.message || "操作失败");
                     } else if (status.FAIL_VALID === resStatus) {
+                        $.errorMessage(data.message || "数据验证异常");
                         error = data.result;
                         if ($.isArray(error)) {
                             error.forEach(function(item) {
@@ -2296,7 +2344,7 @@ function _initAttachment() {
 
 // ------------------------------------------
 //
-// 页面处理
+// HANGFENG 特有
 //
 // -----------------------------------------
 

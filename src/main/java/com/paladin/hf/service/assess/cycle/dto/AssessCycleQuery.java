@@ -1,4 +1,4 @@
-package com.paladin.hf.service.assess.cycle.pojo;
+package com.paladin.hf.service.assess.cycle.dto;
 
 import java.util.Date;
 

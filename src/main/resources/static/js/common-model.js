@@ -1666,6 +1666,126 @@ var _unitFieldBuilder = new _FieldBuilder("UNIT", {
     }
 });
 
+// 考核周期域构建器
+var _cycleFieldBuilder = new _FieldBuilder("CYCLE", {
+    dependTrigger: function(column, model) {
+        // 依赖域变化注册，监听依赖域变更
+        if (typeof column.dependTrigger === 'function') {
+            return column.dependTrigger(column, model);
+        }
+        column.cycleComponment && column.cycleComponment.addUnitChangedListener(function() {
+            if (model.filling === false) {
+                model.checkEditDependency();
+            }
+        });
+    },
+    getEditValue: function(column, model) {
+        // 获取域EDIT页面值
+        if (typeof column.getEditValue === 'function') {
+            return column.getEditValue(column, model);
+        }
+
+        var cycle = column.cycleComponment && column.cycleComponment.getCurrent();
+        return cycle ? cycle.id : null;
+    },
+    fillView: function(column, data, model) {
+        // VIEW页面填充值时候调用
+        if (typeof column.fillView === 'function') {
+            return column.fillView(column, data, model);
+        }
+
+        var p = model.viewBody.find("[name='" + column.name + "']");
+        if (!p || p.length == 0) return;
+        var v = data ? data[column.viewName] : null;
+
+        if (v) {
+            p.removeClass("text-muted");
+            p.text(v);
+        } else {
+            p.addClass("text-muted");
+            p.text("无");
+        }
+    },
+    hideEdit: function(column, model) {
+        if (column.editDisplay === "hide") {
+            return;
+        }
+
+        // EDIT页面列隐藏时候调用
+        if (typeof column.hideEdit === 'function') {
+            column.hideEdit(column, model);
+            column.editDisplay = "hide";
+            return;
+        }
+
+        var p = model.editBody.find("[name='" + column.name + "']");
+        if (!p || p.length == 0) return;
+        var d = p.parent().parent(),
+            f = d.parent();
+        d.hide();
+        d.prev().hide();
+        if (f.children(":visible").length == 0) {
+            f.hide();
+        }
+        column.editDisplay = "hide";
+    },
+    showEdit: function(column, model) {
+        if (column.editDisplay === "show") {
+            return;
+        }
+
+        // EDIT页面列隐藏时候调用
+        if (typeof column.showEdit === 'function') {
+            column.showEdit(column, model);
+            column.editDisplay = "show";
+            return;
+        }
+
+        var p = model.editBody.find("[name='" + column.name + "']");
+        if (!p || p.length == 0) return;
+        var d = p.parent().parent();
+        d.show();
+        d.prev().show();
+        d.parent().show();
+        column.editDisplay = "show";
+    },
+    fillEdit: function(column, data, model) {
+        // EDIT页面填充值时候调用
+        if (typeof column.fillEdit === 'function') {
+            return column.fillEdit(column, data, model);
+        }
+
+        if (!column.cycleComponment) {
+            column.cycleComponment = model.editBody.find("[name='" + column.name + "']").data("cycleComponment");
+        }
+
+        column.cycleComponment && column.cycleComponment.setCurrent(data ? {
+            id: data[column.name],
+            cycleName: data[column.viewName]
+        } : null);
+    },
+    generateEditFormColspan: function(column, options) {
+        if (typeof column.generateEditFormColspan === 'function') {
+            return column.generateEditFormColspan(column, options);
+        }
+        return column.colspan || 1;
+    },
+    generateEditFormHtml: function(column, isFirst, options) {
+        if (typeof column.generateEditFormHtml === 'function') {
+            return column.generateEditFormHtml(column, isFirst, options);
+        }
+        var colspan = column.colspan || 1,
+            html = '<label for="' + column.name + '" class="col-sm-' + (isFirst ? options.firstLabelSize : options.labelSize) + ' control-label">' + column.title + '：</label>\n';
+        html += '<div class="col-sm-' + ((colspan - 1) * (options.inputSize + options.labelSize) + options.inputSize) + '">\n';
+        html += '<input type="text" class="form-control ' + (column.cycleType || 'tonto-select-assess-cycle') + '" name="' + column.name + '" placeholder="请选择' + column.title + '"></input>\n';
+        html += '</div>\n';
+        return {
+            colspan: colspan,
+            html: html
+        };
+    }
+});
+
 if (!window.toton) window.toton = {};
 window.tonto.Model = _Model;
 window.tonto.FieldBuilder = _FieldBuilder;

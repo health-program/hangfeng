@@ -1,269 +1,263 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper">
-
-	<sql id="listSelectItems">
-		pca.id AS id,
-		pca.org_user_id AS orgUserId,
-		pca.assess_cycle_id AS assessCycleId,
-		pca.self_ass_grade AS selfAssGrade,
-		pca.self_ass_time AS selfAssTime,
-		pca.depart_grade AS departGrade,
-		pca.depart_ass_time AS departAssTime,
-		pca.unit_ass_grade AS unitAssGrade,
-		pca.unit_ass_time AS unitAssTime,
-		pca.confirmed_result AS confirmedResult,
-		pca.confirmed_time AS confirmedTime,
-		pca.remarks AS remarks,
-		pca.operate_state AS operateState,
-		pca.assessed_sign AS assessedSign,
-		pca.dep_assessor_sign AS depAssessorSign,
-		pca.unit_assessor_sign AS unitAssessorSign,
-		pca.assessed_confirm_sign AS assessedConfirmSign,
-		pca.unit_id AS unitId,
-		pca.agency_id AS agencyId,
-		pca.assess_team_id AS assessTeamId,
-		pca.create_time AS createTime,
-		pca.create_user_id AS createUserId,
-		pca.update_time AS updateTime,
-		pca.update_user_id AS updateUserId
-	</sql>
-
-	<select id="getCycleAssessExt" parameterType="string" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		pca.*,
-		ac.cycle_name AS assessCycName,
-		our.`name` AS userName
-		FROM
-		person_cyc_assess pca
-		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
-		INNER JOIN org_user our ON our.id = pca.org_user_id
-		where pca.id = #{_parameter}
-	</select>
-
-	<!-- 加载首页列表数据及条件查询 -->
-	<select id="associationQueryAll" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery" 
-		  resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		<include refid="listSelectItems" />
-		,
-		ac.cycle_name AS assessCycName,
+    <select id="findPersonal" parameterType="com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO">
+        SELECT
+        pca.id AS id,
+        pca.org_user_id AS userId,
+        pca.assess_cycle_id AS assessCycleId,
+        pca.self_ass_grade AS selfAssGrade,
+        pca.depart_grade AS departGrade,
+        pca.unit_ass_grade AS unitAssGrade,
+        pca.confirmed_result AS confirmedResult,
+        pca.operate_state AS operateState,
+        pca.unit_id AS unitId,
+        pca.agency_id AS agencyId,
+        ac.cycle_name AS assessCycName,
         our.`name` AS userName
-		FROM
-		person_cyc_assess pca
-		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
-		INNER JOIN org_user our ON our.id = pca.org_user_id
-		where pca.org_user_id=#{orgUserId}
-		<if test="assessCycleId!=null and assessCycleId!=''">
-			and pca.assess_cycle_id=#{assessCycleId}
-		</if>
-		ORDER BY ac.cycle_start_time DESC
-	</select>
-
-	<!-- 医德医风档案管理-查看-考评情况 -->
-	<select id="viewAssessSituation" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery" 
-		  resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		<include refid="listSelectItems" />
-		,
-		ac.cycle_name AS assessCycName,
+        FROM person_cyc_assess pca
+        INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
+        INNER JOIN org_user our ON our.id = pca.org_user_id
+        WHERE pca.org_user_id=#{userId}
+        <if test="assessCycleId!=null and assessCycleId!=''">
+            and pca.assess_cycle_id=#{assessCycleId}
+        </if>
+        ORDER BY ac.cycle_start_time DESC
+    </select>
+    
+    <select id="findDepartment" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO">
+        SELECT
+        pca.id AS id,
+        pca.org_user_id AS userId,
+        pca.assess_cycle_id AS assessCycleId,
+        pca.self_ass_grade AS selfAssGrade,
+        pca.depart_grade AS departGrade,
+        pca.unit_ass_grade AS unitAssGrade,
+        pca.confirmed_result AS confirmedResult,
+        pca.operate_state AS operateState,
+        pca.unit_id AS unitId,
+        pca.agency_id AS agencyId,
+        ac.cycle_name AS assessCycName,
         our.`name` AS userName
-		FROM
-		person_cyc_assess pca
-		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
-		INNER JOIN org_user our ON our.id = pca.org_user_id
-		where
-		pca.org_user_id=#{orgUserId} and
-		pca.operate_state != '0'
-	</select>
+        FROM person_cyc_assess pca
+        INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
+        INNER JOIN org_user our ON our.id = pca.org_user_id
+        WHERE our.is_delete = 0 
+        	AND pca.assess_cycle_id = #{query.cycleId}
+        	AND pca.operate_state > 0
+        <if test="unitParam.unitId!=null">
+            AND pca.unit_id=#{unitParam.unitId}
+        </if>
+        <if test="unitParam.assessTeamId!=null">
+            AND pca.assess_team_id=#{unitParam.assessTeamId}
+        </if>
+        <if test="unitParam.unitIds!=null">
+            AND pca.unit_id in
+            <foreach collection="unitParam.unitIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="unitParam.agencyId!=null">
+            AND pca.agency_id=#{unitParam.agencyId}
+        </if>
+        <if test="unitParam.agencyIds!=null">
+            AND pca.agency_id in
+            <foreach collection="unitParam.agencyIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="query.name!=null and query.name!=''">
+            AND our.name like CONCAT('%',#{query.name},'%')
+        </if>
+        <if test="query.status!=null and query.status==1">
+            AND pca.operate_state = 1
+        </if>
+        <if test="query.status!=null and query.status==2">
+            AND pca.operate_state = 2
+        </if>
+        <if test="query.status!=null and query.status== 3">
+            AND pca.operate_state >= 3
+        </if>
+    </select>
 
-
-	<!--根据操作状态筛选周期考评-科室的首页数据及条件查询 -->
-	<select id="screenAllByOperate" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		<include refid="listSelectItems" />
-		,
-		ac.cycle_name AS assessCycName,
+    <select id="findAgency" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO">
+        SELECT
+        pca.id AS id,
+        pca.org_user_id AS userId,
+        pca.assess_cycle_id AS assessCycleId,
+        pca.self_ass_grade AS selfAssGrade,
+        pca.depart_grade AS departGrade,
+        pca.unit_ass_grade AS unitAssGrade,
+        pca.confirmed_result AS confirmedResult,
+        pca.operate_state AS operateState,
+        pca.unit_id AS unitId,
+        pca.agency_id AS agencyId,
+        ac.cycle_name AS assessCycName,
         our.`name` AS userName
-		FROM
-		person_cyc_assess pca
-		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
-		INNER JOIN org_user our ON our.id = pca.org_user_id
-		WHERE our.is_delete = 0 AND pca.operate_state in
-		<foreach collection="states" index="index" item="item" open="("
-			separator="," close=")">
-			#{item}
-		</foreach>
-		<if test="unitParam.unitId!=null">
-			and pca.unit_id=#{unitParam.unitId}
-		</if>
+        FROM person_cyc_assess pca
+        INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
+        INNER JOIN org_user our ON our.id = pca.org_user_id
+        WHERE our.is_delete = 0 
+        	AND pca.assess_cycle_id = #{query.cycleId}
+        	AND pca.operate_state > 2
+        <if test="unitParam.unitId!=null">
+            AND pca.unit_id=#{unitParam.unitId}
+        </if>
+        <if test="unitParam.assessTeamId!=null">
+            AND pca.assess_team_id=#{unitParam.assessTeamId}
+        </if>
+        <if test="unitParam.unitIds!=null">
+            AND pca.unit_id in
+            <foreach collection="unitParam.unitIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="unitParam.agencyId!=null">
+            AND pca.agency_id=#{unitParam.agencyId}
+        </if>
+        <if test="unitParam.agencyIds!=null">
+            AND pca.agency_id in
+            <foreach collection="unitParam.agencyIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="query.name!=null and query.name!=''">
+            AND our.name like CONCAT('%',#{query.name},'%')
+        </if>
+        <if test="query.status!=null and query.status ==1">
+            AND pca.operate_state = 3
+        </if>
+        <if test="query.status!=null and query.status ==2">
+            AND pca.operate_state = 4
+        </if>
+        <if test="query.status!=null and query.status ==3">
+            AND pca.operate_state >= 5
+        </if>
+    </select>
 
-		<if test="unitParam.assessTeamId!=null">
-			and pca.assess_team_id=#{unitParam.assessTeamId}
-		</if>
+    <select id="getDetailByUserAndCycle" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleDetailVO">
+        SELECT
+        pca.id AS id,
+        pca.org_user_id AS userId,
+        pca.assess_cycle_id AS assessCycleId,
+        pca.self_ass_grade AS selfAssGrade,
+        pca.self_ass_time AS selfAssTime,
+        pca.depart_grade AS departGrade,
+        pca.depart_ass_time AS departAssTime,
+        pca.unit_ass_grade AS unitAssGrade,
+        pca.unit_ass_time AS unitAssTime,
+        pca.confirmed_result AS confirmedResult,
+        pca.confirmed_time AS confirmedTime,
+        pca.remarks AS remarks,
+        pca.operate_state AS operateState,
+        pca.assessed_sign AS assessedSign,
+        pca.dep_assessor_sign AS depAssessorSign,
+        pca.unit_assessor_sign AS unitAssessorSign,
+        pca.assessed_confirm_sign AS assessedConfirmSign,
+        pca.unit_id AS unitId,
+        pca.agency_id AS agencyId,
+        pca.assess_team_id AS assessTeamId,
+        pca.work_summary AS workSummary,
+        pca.self_ass_opinion AS selfAssOpinion,
+        pca.depart_opinion AS departOpinion,
+        pca.unit_group_opinion AS unitGroupOpinion,
+        pca.reject_reason AS rejectReason,
+        ac.cycle_name AS assessCycName,
+        our.`name`AS userName,
+        our.sex,
+        our.birthday,
+        our.job_duties AS jobDuties,
+        aqr.base_score AS baseScore,
+        aqr.add_score AS addScore,
+        aqr.reduce_score AS reduceScore,
+        aqr.is_veto AS isVeto
+        FROM person_cyc_assess pca
+        INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
+        INNER JOIN org_user our ON our.id = pca.org_user_id
+        LEFT JOIN assess_quantitative_result aqr ON aqr.user_id = pca.org_user_id AND aqr.cycle_id = pca.assess_cycle_id
+        WHERE pca.org_user_id=#{userId} AND pca.assess_cycle_id=#{cycleId}
+    </select>
+    
+    <select id="getDetailById" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleDetailVO">
+        SELECT
+        pca.id AS id,
+        pca.org_user_id AS userId,
+        pca.assess_cycle_id AS assessCycleId,
+        pca.self_ass_grade AS selfAssGrade,
+        pca.self_ass_time AS selfAssTime,
+        pca.depart_grade AS departGrade,
+        pca.depart_ass_time AS departAssTime,
+        pca.unit_ass_grade AS unitAssGrade,
+        pca.unit_ass_time AS unitAssTime,
+        pca.confirmed_result AS confirmedResult,
+        pca.confirmed_time AS confirmedTime,
+        pca.remarks AS remarks,
+        pca.operate_state AS operateState,
+        pca.assessed_sign AS assessedSign,
+        pca.dep_assessor_sign AS depAssessorSign,
+        pca.unit_assessor_sign AS unitAssessorSign,
+        pca.assessed_confirm_sign AS assessedConfirmSign,
+        pca.unit_id AS unitId,
+        pca.agency_id AS agencyId,
+        pca.assess_team_id AS assessTeamId,
+        pca.work_summary AS workSummary,
+        pca.self_ass_opinion AS selfAssOpinion,
+        pca.depart_opinion AS departOpinion,
+        pca.unit_group_opinion AS unitGroupOpinion,
+        pca.reject_reason AS rejectReason,
+        ac.cycle_name AS assessCycName,
+        our.`name`AS userName,
+        our.sex,
+        our.birthday,
+        our.job_duties AS jobDuties,
+        aqr.base_score AS baseScore,
+        aqr.add_score AS addScore,
+        aqr.reduce_score AS reduceScore,
+        aqr.is_veto AS isVeto
+        FROM person_cyc_assess pca
+        INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
+        INNER JOIN org_user our ON our.id = pca.org_user_id
+        LEFT JOIN assess_quantitative_result aqr ON aqr.user_id = pca.org_user_id AND aqr.cycle_id = pca.assess_cycle_id
+        WHERE pca.id=#{id}
+    </select>
+    
+    <select id="getCountByUserAndCycle" resultType="int">
+        SELECT COUNT(1) FROM person_cyc_assess pca WHERE pca.org_user_id=#{userId} AND pca.assess_cycle_id=#{cycleId}
+    </select>
+    
+    <delete id="deletePersonalCycleAssess">
+        DELETE FROM person_cyc_assess WHERE id= #{id} AND operate_state = 0
+    </delete>
+    
+    <update id="updateConfirmResult">
+        UPDATE person_cyc_assess
+        SET confirmed_result=#{confirmedResult}, confirmed_time = now(), assessed_confirm_sign = #{assessedConfirmSign}, operate_state = 6
+        WHERE id = #{id} AND operate_state = 5
+    </update>
+    
+    <update id="submitDepartment">
+        UPDATE person_cyc_assess
+        SET operate_state = 3, depart_ass_time = now()
+        WHERE id = #{id} AND operate_state = 2
+    </update>
+    
+    <update id="rejectDepartment">
+        UPDATE person_cyc_assess
+        SET operate_state = -1,reject_reason = #{rejectReason}
+        WHERE id = #{id} AND (operate_state = 1 OR operate_state = 2)
+    </update>
+    
+    <update id="submitAgency">
+        UPDATE person_cyc_assess
+        SET operate_state = 5, unit_ass_time = now()
+        WHERE id = #{id} AND operate_state = 4
+    </update>
+    
+    <update id="rejectAgency">
+        UPDATE person_cyc_assess
+        SET operate_state = -1,reject_reason = #{rejectReason}
+        WHERE id = #{id}
+    </update>
 
-		<if test="unitParam.unitIds!=null">
-			and pca.unit_id in
-			<foreach collection="unitParam.unitIds" index="index" item="item"
-				open="(" separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-
-		<if test="unitParam.agencyId!=null">
-			and pca.agency_id=#{unitParam.agencyId}
-		</if>
-		<if test="unitParam.agencyIds!=null">
-			and pca.agency_id in
-			<foreach collection="unitParam.agencyIds" index="index" item="item"
-				open="(" separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-
-		<if test="params.assessCycleId!='' and params.assessCycleId!=null">
-			and pca.assess_cycle_id=#{params.assessCycleId}
-		</if>
-		<if test="params.orgUserId!='' and params.orgUserId!=null">
-			and pca.org_user_id=#{params.orgUserId}
-		</if>
-
-		<if test="params.userName!='' and params.userName!=null ">
-			and our.name like CONCAT('%',#{params.userName},'%')
-		</if>
-
-
-	</select>
-
-	<!--根据考评周期id查询对应考评信息来做判断 -->
-	<select id="searchBaseInfo" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		pca.*
-		FROM
-		person_cyc_assess pca
-		WHERE
-		pca.assess_cycle_id =#{assessCycleId} and pca.org_user_id=#{userId}
-	</select>
-
-
-
-	<!-- 未考评 -->
-	<select id="noAssessment" parameterType="Map" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		ou.org_agency_id AS agencyId,
-		ou.org_assess_team_id AS assessTeamId,
-		ou.org_unit_id AS unitId,
-		ou.`name` AS userName,
-		pca.operate_state AS operateState
-		FROM
-		org_user ou
-		LEFT JOIN person_cyc_assess pca ON ou.id = pca.org_user_id AND
-		pca.assess_cycle_id = #{assessCycleId}
-		WHERE ou.is_delete = 0
-		<if test="unitQuery.unitId!=null">
-			AND ou.org_unit_id=#{unitQuery.unitId}
-		</if>
-		<if test="unitQuery.assessTeamId!=null">
-			AND ou.org_assess_team_id=#{unitQuery.assessTeamId}
-		</if>
-		<if test="unitQuery.unitIds!=null">
-			AND ou.org_unit_id in
-			<foreach collection="unitQuery.unitIds" index="index" item="item"
-				open="(" separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-		<if test="unitQuery.agencyId!=null">
-			AND ou.org_agency_id=#{unitQuery.agencyId}
-		</if>
-		<if test="unitQuery.agencyIds!=null">
-			AND ou.org_agency_id in
-			<foreach collection="unitQuery.agencyIds" index="index" item="item"
-				open="(" separator="," close=")">
-				#{item}
-			</foreach>
-		</if>
-		AND (pca.id IS NULL OR
-		<if test="isAgency == 1">
-			pca.operate_state in ('0','1','2'))
-		</if>
-		<if test="isAgency == 0">
-			pca.operate_state = '0')
-		</if>
-		ORDER BY ou.org_unit_id ASC
-	</select>
-
-	<select id="findThisYearAssessSituationList" resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		pca.id AS id,
-		pca.org_user_id AS orgUserId,
-		pca.assess_cycle_id AS assessCycleId,
-		pca.self_ass_grade AS selfAssGrade,
-		pca.depart_grade AS departGrade,
-		pca.unit_ass_grade AS unitAssGrade,
-		pca.operate_state AS operateState,
-		ac.cycle_name as assessCycName,
-		our.`name` as userName
-		FROM
-		person_cyc_assess pca
-		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
-		INNER
-		JOIN org_user our ON our.id = pca.org_user_id
-		WHERE
-		pca.org_user_id = #{userId}
-		AND ac.cycle_start_time  <![CDATA[>=]]> #{start}    
-        AND ac.cycle_start_time  <![CDATA[<]]> #{end} 
-		AND pca.operate_state != '0'
-		ORDER BY ac.cycle_start_time DESC;
-	</select>
-
-	<select id="getAssessRegistrationForm" parameterType="com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery" 
-	   resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
-		SELECT
-		ot.unit_name as unitName,
-		our.`name`,
-		our.sex,
-		our.birthday,
-		our.partisan,
-		our.oeducation,
-		our.job_duties as jobDuties,
-		our.come_unit_time as comeUnitTime,
-		our.user_property as userProperty,
-		ac.cycle_name,
-		pca.id AS id,
-		pca.org_user_id AS orgUserId,
-		pca.assess_cycle_id AS assessCycleId,
-		pca.work_summary,
-		pca.self_ass_opinion,
-		pca.self_ass_grade AS selfAssGrade,
-		pca.self_ass_time AS selfAssTime,
-		pca.assessed_sign AS assessedSign,
-		pca.depart_opinion,
-		pca.depart_grade AS departGrade,
-		pca.depart_ass_time AS departAssTime,
-		pca.dep_assessor_sign AS depAssessorSign,
-		pca.unit_group_opinion,
-		pca.unit_ass_grade AS unitAssGrade,
-		pca.unit_ass_time AS unitAssTime,
-		pca.unit_assessor_sign AS unitAssessorSign,
-		pca.confirmed_result AS confirmedResult,
-		pca.assessed_confirm_sign AS assessedConfirmSign,
-		pca.confirmed_time AS confirmedTime,
-		pca.unit_id AS unitId,
-		pca.agency_id AS agencyId,
-		pca.assess_team_id AS assessTeamId
-		FROM
-		person_cyc_assess pca
-		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
-		INNER
-		JOIN org_user our ON our.id = pca.org_user_id
-		INNER JOIN org_unit ot on
-		ot.uid = pca.agency_id
-		WHERE
-		pca.org_user_id = #{orgUserId}
-		AND pca.operate_state != '0'
-		AND ac.id = #{assessCycleId};
-	</select>
-
-
+    
 </mapper>

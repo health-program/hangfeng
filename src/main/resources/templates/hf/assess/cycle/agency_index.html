@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+    <tt:constant enumcode="ass-grades,operate-state,assess-status" />
+    <section class="content-header">
+        <h1>周期考评-机构</h1>
+    </section>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-search"></i>
+                <h3 class="box-title">查询</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label style="width: 100px" for="unitId" class="col-sm-1 control-label">单位名称</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control tonto-select-unit" name="unitId" th:attr="unitid=${query?.unitId}" placeholder="请选择科室"></input>
+                            </div>
+                            <label style="width: 100px" for="assessCycleId" class="col-sm-1 control-label">考评周期</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${query?.cycleId},cyclename=${query?.cycleName}" name="cycleId" placeholder="请选择周期"></input>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="width: 100px" for="unitId" class="col-sm-1 control-label">考评状态</label>
+                            <div class="col-sm-3">
+                                <select class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.status}" name="status" enumcode="assess-status">
+                                    <option value="">全部</option>
+                                </select>
+                            </div>
+                            <label style="width: 100px" for="assessCycleId" class="col-sm-1 control-label">姓名</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="name" th:value="${query?.name}" placeholder="请输入姓名"></input>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                    </div>
+                </div>
+                <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+                <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+            </div>
+        </div>
+        <div class="box box-solid" style="margin-top:20px">
+            <div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <table id="dataGrid"></table>
+                <div id="toolbar">
+                    <div class="btn-group">
+                        <a onclick="viewUnAssessUser()" class="btn btn-success"><i class="glyphicon glyphicon-search"></i>查看未考评人员</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+
+    var table;
+    $(function() {
+        initDataGrid();
+    })
+
+    function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { title: "单位名称", field: "agencyName" },
+                    { title: "被考评科室", field: "agencyName" },
+                    { title: "姓名", field: "userName" },
+                    { title: "考评周期", field: "assessCycName" },
+                    { title: "自评等级", field: "selfAssGrade", formatter: "assess-grade" },
+                    { title: "科室考评等级", field: "departGrade", formatter: "assess-grade" },
+                    { title: "医院考评等级", field: "unitAssGrade", formatter: "assess-grade" },
+                    { title: "操作状态", field: "operateState", enumcode: "operate-state" },
+                    {
+                        title: "操作",
+                        align: "center",
+                        width: "20%",
+                        events: {
+                            'click .detail': function(e, value, row, index) {
+                                detail(row);
+                            },
+                            'click .assess': function(e, value, row, index) {
+                                assess(row);
+                            },
+                            'click .back': function(e, value, row, index) {
+                                reject(row);
+                            },
+                            'click .submit': function(e, value, row, index) {
+                                submit(row);
+                            }
+                        },
+                        formatter: function(value, row, index) {
+                            var html = '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
+                            if (row.operateState == 3) {
+                                html += '<button class="assess btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>考核</button>';
+                            } else if (row.operateState == 4) {
+                                html += '<button class="assess btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>考核</button>' +
+                                    '<button class="submit btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>提交</button>';
+                            } else {
+
+                            }
+
+                            html += '<button class="back btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>驳回</button>';
+
+                            return html;
+                        }
+                    }
+                ]
+            ],
+            url: '/assess/cycle/agency/find',
+            searchbar: '#searchbar',
+            sortName: 'createTime',
+            queryParams: function() {
+                var o = $("[name='cycleId']").data("cycleComponment").getCurrent();
+                return o ? {
+                    cycleName: o.cycleName
+                } : null;
+            },
+            sortOrder: 'asc',
+            pagination: true,
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pageSize: 10,
+            clickToSelect: true,
+            showColumns: true
+        })
+    }
+
+    function detail(row) {
+        window.location = '/assess/cycle/agency/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId;
+    }
+
+    function assess(row) {
+        window.location = '/assess/cycle/agency/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId + "&isEdit=1";
+    }
+
+    function submit(row) {
+        $.infoAlert('确定提交吗?', function() {
+            $.getAjax('/assess/cycle/agency/submit?id=' + row.id, function() {
+                $.successMessage("提交成功");
+                table.refresh();
+            });
+        });
+    }
+
+    var content = '<div class="container-fluid"><form class="form-horizontal" style="padding:10px">' +
+        '    <div class="form-group">' +
+        '        <label for="unitId" class="col-xs-3 control-label">驳回原因</label>' +
+        '        <div class="col-xs-8">' +
+        '            <input type="text" class="form-control" id="reason" placeholder="请输入原因"></input>' +
+        '        </div>' +
+        '    </div>' +
+        '    <div class="form-group">' +
+        '        <label for="file" class="col-xs-3 control-label"></label>' +
+        '        <div class="col-xs-6">' +
+        '            <button type="button" id="rejectBtn" style="width:120px"  class="btn btn-primary">确定</button>' +
+        '        </div>' +
+        '    </div>' +
+        '</form></div>';
+
+    function reject(row) {
+        $.openPageLayer(content, {
+            width: 600,
+            height: 200,
+            title: '驳回周期考核',
+            success: function(layero, index) {
+                $("#rejectBtn").click(function() {
+                    $.postAjax("/assess/cycle/agency/reject", {
+                        id: row.id,
+                        reason: $("#reason").val()
+                    }, function() {
+                        $.successMessage("驳回成功");
+                        layer.close(index);
+                    })
+                });
+            }
+        });
+    }
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

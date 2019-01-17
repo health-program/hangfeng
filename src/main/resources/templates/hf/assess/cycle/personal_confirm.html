@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header" />
+<style type="text/css">
+    legend{
+        font-weight: 600;
+    }
+</style>
+<body>
+    <input type="hidden" id="id" th:value="${id}" />
+    <input type="hidden" id="name" th:value="${name}" />
+    <tt:constant enumcode="ass-grades,confirmed-result,sex-type,job-duties-type" />
+    <div class="container">
+        <section class="content-header">
+            <h1>周期考评-个人</h1>
+            <ol class="breadcrumb">
+                <li><a href="/assess/cycle/personal/index"><i class="fa fa-list-alt"></i>列表</a></li>
+                <li class="active">详情</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-body">
+                    <fieldset id="user_view">
+                        <legend>个人基本信息</legend>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">姓名：</label>
+                                <div class="col-sm-3">
+                                    <p name="userName" class="form-control-static description"></p>
+                                </div>
+                                <label class="col-sm-2 control-label">性别：</label>
+                                <div class="col-sm-3">
+                                    <p name="sex" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">出生日期：</label>
+                                <div class="col-sm-3">
+                                    <p name="birthday" class="form-control-static description"></p>
+                                </div>
+                                <label class="col-sm-2 control-label">职务：</label>
+                                <div class="col-sm-3">
+                                    <p name="jobDuties" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset>
+                        <legend>考评周期</legend>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="cycleName" class="col-sm-3 control-label">考评周期：</label>
+                                <div class="col-sm-3">
+                                    <p id="assessCycleName" class="form-control-static description"></p>
+                                </div>
+                                <label for="cycleName" class="col-sm-2 control-label">量化评分：</label>
+                                <div class="col-sm-3">
+                                    <p id="score" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset id="self_view">
+                        <legend>自我总结</legend>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <div class="alert alert-danger" id="rejectDiv" style="display: none"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="workSummary" class="col-sm-3 control-label">工作总结：</label>
+                                <div class="col-sm-8">
+                                    <pre name="workSummary" class="form-control-static description" style="min-height:150px"></pre>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="selfAssOpinion" class="col-sm-3 control-label">自评意见：</label>
+                                <div class="col-sm-8">
+                                    <pre name="selfAssOpinion" class="form-control-static description" style="min-height:150px"></pre>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="selfAssGrade" class="col-sm-3 control-label">自评等次：</label>
+                                <div class="col-sm-3">
+                                    <p name="selfAssGrade" class="form-control-static description"></p>
+                                </div>
+                                <label for="assessedSign" class="col-sm-2 control-label">自评签字：</label>
+                                <div class="col-sm-3">
+                                    <p name="assessedSign" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="selfAssTime" class="col-sm-3 control-label">自评时间：</label>
+                                <div class="col-sm-3">
+                                    <p name="selfAssTime" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                        </form>                       
+                    </fieldset>
+                    <fieldset id="department_view">
+                        <legend>科室（病区）意见</legend>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="departOpinion" class="col-sm-3 control-label">科室（病区）意见：</label>
+                                <div class="col-sm-8">
+                                    <pre name="departOpinion" class="form-control-static description" style="min-height:150px"></pre>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="departGrade" class="col-sm-3 control-label">考评等次：</label>
+                                <div class="col-sm-3">
+                                    <p name="departGrade" class="form-control-static description"></p>
+                                </div>
+                                <label for="depAssessorSign" class="col-sm-2 control-label">科室签字：</label>
+                                <div class="col-sm-3">
+                                    <p name="depAssessorSign" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="departAssTime" class="col-sm-3 control-label">考评时间：</label>
+                                <div class="col-sm-3">
+                                    <p name="departAssTime" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset id="agency_view">
+                        <legend>考评领导小组评价意见</legend>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="unitGroupOpinion" class="col-sm-3 control-label">考评领导小组评价意见：</label>
+                                <div class="col-sm-8">
+                                    <pre name="unitGroupOpinion" class="form-control-static description" style="min-height:150px"></pre>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitAssGrade" class="col-sm-3 control-label">考评等次：</label>
+                                <div class="col-sm-3">
+                                    <p name="unitAssGrade" class="form-control-static description"></p>
+                                </div>
+                                <label for="unitAssessorSign" class="col-sm-2 control-label">小组签字：</label>
+                                <div class="col-sm-3">
+                                    <p name="unitAssessorSign" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitAssTime" class="col-sm-3 control-label">考评时间：</label>
+                                <div class="col-sm-3">
+                                    <p name="unitAssTime" class="form-control-static description"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset>
+                        <legend>被考核人对考评等次的确认</legend>
+                        <div id="confirm_edit" class="box-body">
+                            <form id="confirm_form" action="/assess/cycle/personal/confirm" method="post" class="form-horizontal edit-body">
+                                <div class="form-group">
+                                    <label for="confirmedResult" class="col-sm-3 control-label">被考核人对考评等次的确认：</label>
+                                    <div class="col-sm-3">
+                                        <div name="confirmedResult" class="tonto-radio-constant" enumcode="confirmed-result"></div>
+                                    </div>
+                                    <label for="assessedConfirmSign" class="col-sm-2 control-label">自评确认签字：</label>
+                                    <div class="col-sm-3">
+                                        <input name="assessedConfirmSign" placeholder="请输入自评确认签字" type="text" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-2 col-sm-offset-3">
+                                        <button type="submit" id="confirm_form_submit_btn" class="btn btn-primary btn-block">提交</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </fieldset>
+                </div>
+        </section>
+    </div>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+
+    var options_user = {
+        id: "user",
+        name: "详情",
+        columns: [
+            { title: "姓名", name: "userName", inputType: "TEXT" },
+            { title: "性别", name: "sex", inputType: "SELECT", enum: "sex-type" },
+            { title: "出生日期", name: "birthday", inputType: "DATE" },
+            { title: "职务", name: "jobDuties", inputType: "SELECT", enum: "job-duties-type" }
+        ]
+    }
+
+    var options_self = {
+        id: "self",
+        name: "详情",
+        columns: [
+            { title: "工作总结", name: "workSummary", inputType: "TEXTAREA", colspan: 2 },
+            { title: "自评意见", name: "selfAssOpinion", inputType: "TEXTAREA", colspan: 2 },
+            { title: "自评等次", name: "selfAssGrade", inputType: "SELECT", enum: "ass-grades" },
+            { title: "自评签字", name: "assessedSign", inputType: "TEXT" },
+            { title: "自评时间", name: "selfAssTime", inputType: "DATE" }
+        ]
+    }
+
+    var options_department = {
+        id: "department",
+        name: "详情",
+        columns: [
+            { title: "科室（病区）意见", name: "departOpinion", inputType: "TEXTAREA", colspan: 2 },
+            { title: "考评等次", name: "departGrade", inputType: "SELECT", enum: "ass-grades" },
+            { title: "科室签字", name: "depAssessorSign", inputType: "TEXT" },
+            { title: "考评时间", name: "departAssTime", inputType: "DATE" }
+        ]
+    }
+
+    var options_agency = {
+        id: "agency",
+        name: "详情",
+        columns: [
+            { title: "考评领导小组评价意见", name: "unitGroupOpinion", inputType: "TEXTAREA", colspan: 2 },
+            { title: "考评等次", name: "unitAssGrade", inputType: "SELECT", enum: "ass-grades" },
+            { title: "小组签字", name: "unitAssessorSign", inputType: "TEXT" },
+            { title: "考评时间", name: "unitAssTime", inputType: "DATE" }
+        ]
+    }
+
+    var options_confirm = {
+        id: "confirm",
+        name: "详情",
+        columns: [
+            { title: "被考核人对考评等次的确认", name: "confirmedResult", inputType: "RADIO", enum: "confirmed-result" },
+            { title: "自评确认签字", name: "assessedConfirmSign", inputType: "TEXT" },
+            { title: "确认时间", name: "confirmedTime", inputType: "DATE" }
+        ]
+    }
+
+    var model_user, model_self, model_department, model_agency, model_confirm, assessId, assessData, assessName;
+
+    $(function() {
+        assessId = $("#id").val();
+        assessName = $("#name").val();
+        $.getAjax("/assess/cycle/personal/get?id=" + assessId, function(data) {
+            model_user = new tonto.Model("user", options_user.columns);
+            model_self = new tonto.Model("self", options_self.columns);
+            model_department = new tonto.Model("department", options_department.columns);
+            model_agency = new tonto.Model("agency", options_agency.columns);
+            model_confirm = new tonto.Model("confirm", options_confirm.columns, {
+                pattern:"edit",
+                extraParam: {
+                    id: assessId
+                },
+                successCallback: function(data) {
+                    $.successAlert("保存成功", function() {
+                        window.location = "/assess/cycle/personal/index";
+                    });
+                }
+            });
+
+            init(data);
+        });
+    });
+
+    function init(data) {
+        if (!data.assessedConfirmSign) data.assessedConfirmSign = assessName;
+
+        if (data.operateState == -1) {
+            $("#rejectDiv").show();
+
+            var info = "<p>周期考评被驳回，请点击编辑重新提交</p>";
+            if (data.rejectReason) {
+                info += "<p>驳回原因：" + data.rejectReason + "</p>";
+            }
+
+            $("#rejectDiv").html(info);
+        } else {
+            $("#rejectDiv").hide();
+        }
+
+        if (data.operateState != 0 && data.operateState != -1) {
+            $("#self_edit_btn").hide();
+        }
+
+        model_user.setData(data);
+        model_self.setData(data);
+        model_department.setData(data);
+        model_agency.setData(data);
+        model_confirm.setData(data);
+
+        $("#assessCycleName").text(data.assessCycName);
+
+        var score = "";
+        if (data.isVeto == 1) {
+            score = "一票否决"
+        } else {
+            if (!data.baseScore) {
+                score = "还未量化考评"
+            } else {
+                score = data.baseScore + (data.addScore ? data.addScore : 0) - (data.reduceScore ? data.reduceScore : 0) + "分";
+            }
+        }
+
+        $("#score").text(score);
+        assessData = data;
+    }
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

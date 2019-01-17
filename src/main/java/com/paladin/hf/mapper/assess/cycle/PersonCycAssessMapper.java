@@ -1,62 +1,42 @@
 package com.paladin.hf.mapper.assess.cycle;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
-import com.paladin.hf.service.assess.cycle.dto.PersonCycAssessExt;
-import com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO;
-import com.paladin.hf.service.assess.cycle.pojo.PersonCycAssessQuery;
-
-
+import com.paladin.hf.service.assess.cycle.dto.AgencyQueryDTO;
+import com.paladin.hf.service.assess.cycle.dto.DepartmentQueryDTO;
+import com.paladin.hf.service.assess.cycle.dto.PersonalCycleAssessConfirmDTO;
+import com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO;
+import com.paladin.hf.service.assess.cycle.vo.AssessCycleDetailVO;
+import com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO;
 
 public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
-    
-    /*
-     * 加载首页列表数据及条件查询
-     */
-    List<PersonnelCycleAssessDTO> associationQueryAll(PersonCycAssessQuery perCycAssQuery);
-    
-    
-    List<PersonnelCycleAssessDTO> viewAssessSituation(PersonCycAssessQuery perCycAssQuery);
 
-    
-    /**
-     * 
-     * 根据操作状态筛选科室周期考评首页数据
-     * @param states 操作状态数组
-     * @param perCycAssQuery 查询参数所在实体类
-     * @return PersonCycAssessExt
-     * 
-     */
-    List<PersonnelCycleAssessDTO> screenAllByOperate(@Param("states") String[] queryState,@Param("params") PersonCycAssessQuery perCycAssQuery, @Param("unitParam") UnitQuery query);
+	public List<AssessCycleSimpleVO> findPersonal(PersonalQueryDTO query);
+	
+	public List<AssessCycleSimpleVO> findDepartment(@Param("unitParam") UnitQuery unitParam, @Param("query") DepartmentQueryDTO query);
 
-    PersonnelCycleAssessDTO getCycleAssessExt(String id);
+	public List<AssessCycleSimpleVO> findAgency(@Param("unitParam") UnitQuery unitParam, @Param("query") AgencyQueryDTO query);
+	
+	public AssessCycleDetailVO getDetailByUserAndCycle(@Param("userId") String userId, @Param("cycleId") String cycleId);
 
-    PersonnelCycleAssessDTO searchBaseInfo(@Param("assessCycleId") String assessCycleId, @Param("userId")  String userId);
-    
+	public int getCountByUserAndCycle(@Param("userId") String userId, @Param("cycleId") String cycleId);
+	
+	public int updateConfirmResult(PersonalCycleAssessConfirmDTO personalCycleAssessConfirm);
 
-    //未考评按钮
-    List<PersonnelCycleAssessDTO> noAssessment(Map<String, Object> map);
+	public AssessCycleDetailVO getDetailById(@Param("id") String id);
 
-
-    PersonnelCycleAssessDTO getAssessRegistrationForm(PersonCycAssessQuery perCycAssQuery);
-
-
-    List<PersonnelCycleAssessDTO> findThisYearAssessSituationList(@Param("userId") String orgUserId,  @Param("start")  Date startTime,@Param("end") Date endTime);
-
-
-
-
-    
-
-
-
-    
-    
+	public int deletePersonalCycleAssess(@Param("id") String id);
+	
+	public int submitDepartment(@Param("id") String id);
+	
+	public int submitAgency(@Param("id") String id);
+	
+	public int rejectDepartment(@Param("id") String id, @Param("rejectReason") String rejectReason);
+	
+	public int rejectAgency(@Param("id") String id, @Param("rejectReason") String rejectReason);
 }

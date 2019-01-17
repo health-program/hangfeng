@@ -6,7 +6,7 @@ public class AssessQuantitativeUserDetailQuery {
 	
 	private String userId;
 	private String cycleId;
-	private String eventType;
+	private Integer eventType;
 	private Date startHappenTime;
 	private Date endHappenTime;
 	public Date getEndHappenTime() {
@@ -27,13 +27,14 @@ public class AssessQuantitativeUserDetailQuery {
 	public void setCycleId(String cycleId) {
 		this.cycleId = cycleId;
 	}
-	public String getEventType() {
-		return eventType;
-	}
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
-	public Date getStartHappenTime() {
+	
+	public Integer getEventType() {
+            return eventType;
+    }
+    public void setEventType(Integer eventType) {
+            this.eventType = eventType;
+    }
+    public Date getStartHappenTime() {
 		return startHappenTime;
 	}
 	public void setStartHappenTime(Date startHappenTime) {

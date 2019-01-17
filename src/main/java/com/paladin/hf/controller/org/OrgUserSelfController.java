@@ -33,7 +33,7 @@ public class OrgUserSelfController extends ControllerSupport {
 	public String index(Model model) {
 		HfUserSession session = HfUserSession.getCurrentUserSession();
 		if (session.isSystemAdmin() || session.isAdminUser()) {
-			return "no_business";
+			return "/hf/no_business";
 		} else {
 			model.addAttribute("id", session.getUserId());
 		}

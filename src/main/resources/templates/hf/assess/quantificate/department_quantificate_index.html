@@ -73,6 +73,9 @@
 	                 </div>
                 </form>
             </div>
+            
+                <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+                <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
          </div>
          
          <div class="box box-solid" style="margin-top:20px">
@@ -131,11 +134,8 @@
                 ]
             ],
             url: '/console/assess/quantitative/user',
-            pageSize: limit || undefined,
-            pageNumber: page || 1,
             searchbar: '#searchbar',
             pagination: true,
-            toolbar: "#toolbar",
             showRefresh: true,
            // showToggle : true,
             clickToSelect:true,

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.paladin.framework.common.Condition;
@@ -14,7 +14,6 @@ import com.paladin.framework.common.PageResult;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
-import com.paladin.framework.utils.StringUtil;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.mapper.assess.quantificate.AssessQuantitativeMapper;
@@ -26,6 +25,7 @@ import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.model.ordinary.PrizepunishScore;
 import com.paladin.hf.model.org.OrgUserAssess;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
+import com.paladin.hf.service.assess.quantificate.dto.QuantificatedOrgUserDTO;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserDetailQuery;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;
 import com.paladin.hf.service.ordinary.PrizepunishService;
@@ -68,7 +68,7 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 		String userId = query.getUserId();
 		Date startTime = query.getStartHappenTime();
 		Date endTime = query.getEndHappenTime();
-		String eventType = query.getEventType();
+		Integer eventType = query.getEventType();
 
 		AssessCycle assessCycle = assessCycleService.get(cycleId);
 
@@ -85,12 +85,12 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 
 		List<Condition> conditions = new ArrayList<>();
 		conditions.add(new Condition(Prizepunish.COLUMN_OPERATION_STATE, QueryType.IN,
-				new int[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
+				new Integer[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
 		conditions.add(new Condition(Prizepunish.COLUMN_ORG_USER_ID, QueryType.EQUAL, userId));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.GREAT_EQUAL, startTime));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.LESS_EQUAL, endTime));
 
-		if (StringUtil.isNotEmpty(eventType)) {
+		if (eventType != null) {
 			conditions.add(new Condition(Prizepunish.COLUMN_DICT_CODE, QueryType.EQUAL, eventType));
 		}
 

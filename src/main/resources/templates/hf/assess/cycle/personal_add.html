@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+<style type="text/css">
+.edit-body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #fff;
+}
+</style>
+
+<body>
+    <tt:constant enumcode="ass-grades,job-duties-type,sex-type" />
+    <div class="container">
+        <section class="content-header">
+            <h1>周期考评-个人</h1>
+            <ol class="breadcrumb">
+                <li><a href="/person/cyc/index"><i class="fa fa-list-alt"></i>列表</a></li>
+                <li class="active">新增</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-body">
+                    <fieldset>
+                        <legend>个人基本信息</legend>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">姓名</label>
+                                <div class="col-sm-3">
+                                    <p name="name" class="form-control-static description" th:text="${user.name}" />
+                                </div>
+                                <label class="col-sm-2 control-label">性别</label>
+                                <div class="col-sm-3">
+                                    <p name="sex" class="tonto-select-constant form-control-static description" th:attr="enum-code-value=${user.sex}" enumcode="sex-type" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">出生日期</label>
+                                <div class="col-sm-3">
+                                    <p name="birthday" class="form-control-static description" th:text="${#dates.format(user.birthday, 'yyyy-MM-dd')}" />
+                                </div>
+                                <label class="col-sm-2 control-label">职务</label>
+                                <div class="col-sm-3">
+                                    <p name="jobDuties" class="tonto-select-constant form-control-static description" th:attr="enum-code-value=${user.jobDuties}" enumcode="job-duties-typ" />
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset>
+                        <legend>自我总结</legend>
+                        <form id="model_form" action="" method="post" class="form-horizontal edit-body">
+                            <div class="form-group">
+                                <label for="assessCycleId" class="col-sm-3 control-label">考评周期：</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control tonto-select-assess-cycle-self-enabled" name="assessCycleId" placeholder="请选择考评周期"></input>
+                                </div>
+                                <div class="col-sm-3">
+                                    <button onclick="viewQuantificateScore()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看量化考评分数</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="workSummary" class="col-sm-3 control-label">工作总结：</label>
+                                <div class="col-sm-8">
+                                    <textarea name="workSummary" rows="12" placeholder="请输入工作总结" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="selfAssOpinion" class="col-sm-3 control-label">自评意见：</label>
+                                <div class="col-sm-8">
+                                    <textarea name="selfAssOpinion" rows="5" placeholder="请输入自评意见" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="selfAssGrade" class="col-sm-3 control-label">自评等次：</label>
+                                <div class="col-sm-3">
+                                    <select name="selfAssGrade" class="form-control tonto-select-constant" enumcode="ass-grades">
+                                        <option value="">请选择</option>
+                                    </select>
+                                </div>
+                                <label for="assessedSign" class="col-sm-2 control-label">自评签字：</label>
+                                <div class="col-sm-3">
+                                    <input name="assessedSign" placeholder="请输入自评签字" th:value="${user.name}" type="text" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" style="display: none" id="submitBtn" />
+                                <div class="col-sm-2 col-sm-offset-3">
+                                    <button type="button" onclick="submitAssess()" class="btn btn-primary btn-block">提交</button>
+                                </div>
+                                <div class="col-sm-2 col-sm-offset-1">
+                                    <button type="button" onclick="temporaryAssess()" class="btn btn-success btn-block">暂存</button>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    var options = {
+        id: "model",
+        name: "详情",
+        url: "/assess/cycle/personal/save",
+        columns: [
+            { title: "考评周期", name: "assessCycleId", inputType: "CYCLE", viewName: "assessCycName", cycleType: "tonto-select-assess-cycle-self-enabled" },
+            { title: "工作总结", name: "workSummary", inputType: "TEXTAREA", colspan: 2 },
+            { title: "自评意见", name: "selfAssOpinion", inputType: "TEXTAREA", colspan: 2 },
+            { title: "自评等次", name: "selfAssGrade", inputType: "SELECT", enum: "ass-grades" },
+            { title: "自评签字", name: "assessedSign", inputType: "TEXT" }
+        ]
+    }
+
+    function submitAssess() {
+        $('#model_form').attr('action', '/assess/cycle/personal/save/submit ');
+        $.warnAlert('<span style="color:red;">提交后该记录会抄送到下一级，无法修改，确定提交吗？</span>', function() {
+            $('#submitBtn').click();
+        })
+    }
+
+    function temporaryAssess() {
+        $('#model_form').attr('action', '/assess/cycle/personal/save/temporary');
+        $('#submitBtn').click();
+    }
+
+    $(function() {
+        var model = new tonto.Model("model", options.columns, {
+            pattern: "edit",
+            successCallback: function() {
+                $.successAlert("保存成功", function() {
+                    window.location = "/assess/cycle/personal/index";
+                });
+            }
+        });
+        model.setData(null);
+    });
+
+
+    function viewQuantificateScore() {
+        var ncycleId = $('input[name="assessCycleId"]').val();
+        if (ncycleId == '') {
+            $.errorMessage("请选择考评周期！");
+            return;
+        }
+
+        //TODO
+        layer.open({
+            type: 2,
+            title: '等级配置 ',
+            maxmin: true, //开启最大化最小化按钮
+            area: $.getOpenLayerSize(900, 450),
+            content: "/console/assess/level/searchTemplateIdByCycleId?cycleId=" +
+                ncycleId + "&buserId=" + userId
+        });
+    }
+    /*]]>*/
+    </script>
+</body>
+
+</html>

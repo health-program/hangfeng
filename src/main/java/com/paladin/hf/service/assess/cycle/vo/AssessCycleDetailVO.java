@@ -1,45 +1,13 @@
-package com.paladin.hf.model.assess.cycle;
+package com.paladin.hf.service.assess.cycle.vo;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
-import com.paladin.framework.common.BaseModel;
 
-/**
- * 
- * 个人周期考评实体类
- * 
- * @author jisanjie
- * @version [版本号, 2018年1月22日]
- */
+public class AssessCycleDetailVO {
 
-public class PersonCycAssess extends BaseModel {
-
-	/** 被退回 */
-	public static final Integer STATUS_BACKWORD = -1;
-	/** 被评人暂存 */
-	public static final Integer STATUS_ASSESSED_TEMPORARY = 0;
-	/** 被评人提交 */
-	public static final Integer STATUS_ASSESSED_SUBMIT = 1;
-	/** 科室暂存 */
-	public static final Integer STATUS_DEPART_TEMPORARY = 2;
-	/** 科室提交 */
-	public static final Integer STATUS_DEPART_SUBMIT = 3;
-	/** 考评小组暂存 */
-	public static final Integer STATUS_UNIT_GROUP_TEMPORARY = 4;
-	/** 考评小组提交 */
-	public static final Integer STATUS_UNIT_GROUP_SUBMIT = 5;
-	/** 被考评人已确认 */
-	public static final Integer STATUS_ASSESSSED_CONFIRMED = 6;
-
-	
-
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(generator = "UUID")
 	private String id;
 
 	private String orgUserId;
@@ -81,14 +49,92 @@ public class PersonCycAssess extends BaseModel {
 	private String unitAssessorSign;
 
 	private String assessedConfirmSign;
-	
-	private String rejectReason;
 
 	private String unitId;
 
 	private String agencyId;
 
-	private String assessTeamId;
+	private String assessCycName;
+
+	private String userName;
+
+	private Integer sex;
+
+	private Date birthday;
+
+	private Integer jobDuties;
+
+	private Integer userProperty;
+	
+	private Double baseScore;
+	
+	private Double addScore;
+	
+	private Double reduceScore;
+	
+	private Integer isVeto;
+	
+	private String rejectReason;
+
+	/*
+	 * 扩展显示单位名称
+	 */
+
+	public Integer getSelfAssGrade() {
+		return selfAssGrade;
+	}
+
+	public void setSelfAssGrade(Integer selfAssGrade) {
+		this.selfAssGrade = selfAssGrade;
+	}
+
+	public Integer getDepartGrade() {
+		return departGrade;
+	}
+
+	public void setDepartGrade(Integer departGrade) {
+		this.departGrade = departGrade;
+	}
+
+	public Integer getUnitAssGrade() {
+		return unitAssGrade;
+	}
+
+	public void setUnitAssGrade(Integer unitAssGrade) {
+		this.unitAssGrade = unitAssGrade;
+	}
+
+	public Integer getConfirmedResult() {
+		return confirmedResult;
+	}
+
+	public void setConfirmedResult(Integer confirmedResult) {
+		this.confirmedResult = confirmedResult;
+	}
+
+	public Integer getOperateState() {
+		return operateState;
+	}
+
+	public void setOperateState(Integer operateState) {
+		this.operateState = operateState;
+	}
+
+	public String getDepartmentName() {
+		try {
+			return UnitContainer.getUnitName(unitId);
+		} catch (BusinessException e) {
+			return "";
+		}
+	}
+
+	public String getAgencyName() {
+		try {
+			return UnitContainer.getUnitName(agencyId);
+		} catch (BusinessException e) {
+			return "";
+		}
+	}
 
 	public String getId() {
 		return id;
@@ -130,14 +176,6 @@ public class PersonCycAssess extends BaseModel {
 		this.selfAssOpinion = selfAssOpinion;
 	}
 
-	public Integer getSelfAssGrade() {
-		return selfAssGrade;
-	}
-
-	public void setSelfAssGrade(Integer selfAssGrade) {
-		this.selfAssGrade = selfAssGrade;
-	}
-
 	public Date getSelfAssTime() {
 		return selfAssTime;
 	}
@@ -152,14 +190,6 @@ public class PersonCycAssess extends BaseModel {
 
 	public void setDepartOpinion(String departOpinion) {
 		this.departOpinion = departOpinion;
-	}
-
-	public Integer getDepartGrade() {
-		return departGrade;
-	}
-
-	public void setDepartGrade(Integer departGrade) {
-		this.departGrade = departGrade;
 	}
 
 	public Date getDepartAssTime() {
@@ -178,28 +208,12 @@ public class PersonCycAssess extends BaseModel {
 		this.unitGroupOpinion = unitGroupOpinion;
 	}
 
-	public Integer getUnitAssGrade() {
-		return unitAssGrade;
-	}
-
-	public void setUnitAssGrade(Integer unitAssGrade) {
-		this.unitAssGrade = unitAssGrade;
-	}
-
 	public Date getUnitAssTime() {
 		return unitAssTime;
 	}
 
 	public void setUnitAssTime(Date unitAssTime) {
 		this.unitAssTime = unitAssTime;
-	}
-
-	public Integer getConfirmedResult() {
-		return confirmedResult;
-	}
-
-	public void setConfirmedResult(Integer confirmedResult) {
-		this.confirmedResult = confirmedResult;
 	}
 
 	public Date getConfirmedTime() {
@@ -216,14 +230,6 @@ public class PersonCycAssess extends BaseModel {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
-	}
-
-	public Integer getOperateState() {
-		return operateState;
-	}
-
-	public void setOperateState(Integer operateState) {
-		this.operateState = operateState;
 	}
 
 	public String getAssessedSign() {
@@ -274,12 +280,84 @@ public class PersonCycAssess extends BaseModel {
 		this.agencyId = agencyId;
 	}
 
-	public String getAssessTeamId() {
-		return assessTeamId;
+	public String getAssessCycName() {
+		return assessCycName;
 	}
 
-	public void setAssessTeamId(String assessTeamId) {
-		this.assessTeamId = assessTeamId;
+	public void setAssessCycName(String assessCycName) {
+		this.assessCycName = assessCycName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+
+	public Integer getJobDuties() {
+		return jobDuties;
+	}
+
+	public void setJobDuties(Integer jobDuties) {
+		this.jobDuties = jobDuties;
+	}
+
+	public Integer getUserProperty() {
+		return userProperty;
+	}
+
+	public void setUserProperty(Integer userProperty) {
+		this.userProperty = userProperty;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public Double getBaseScore() {
+		return baseScore;
+	}
+
+	public void setBaseScore(Double baseScore) {
+		this.baseScore = baseScore;
+	}
+
+	public Double getAddScore() {
+		return addScore;
+	}
+
+	public void setAddScore(Double addScore) {
+		this.addScore = addScore;
+	}
+
+	public Double getReduceScore() {
+		return reduceScore;
+	}
+
+	public void setReduceScore(Double reduceScore) {
+		this.reduceScore = reduceScore;
+	}
+
+	public Integer getIsVeto() {
+		return isVeto;
+	}
+
+	public void setIsVeto(Integer isVeto) {
+		this.isVeto = isVeto;
 	}
 
 	public String getRejectReason() {
@@ -289,5 +367,4 @@ public class PersonCycAssess extends BaseModel {
 	public void setRejectReason(String rejectReason) {
 		this.rejectReason = rejectReason;
 	}
-
 }

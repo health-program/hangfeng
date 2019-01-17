@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,31 +21,27 @@ import com.paladin.hf.service.assess.quantificate.AssessQuantitativeResultServic
 import com.paladin.hf.service.org.OrgUserService;
 
 @Controller
-@RequestMapping("/console/assess/item")
+@RequestMapping("/assess/template/item")
 public class AssessItemController extends ControllerSupport{
 	
 	@Autowired
-	AssessItemService assessItemService;
+	private AssessItemService assessItemService;
 	
 	@Autowired
-	AssessItemExtraService assessItemExtraService;
+	private AssessItemExtraService assessItemExtraService;
 	
 	@Autowired
-	AssessCycleTemplateService assessCycleTemplateService;
+	private AssessCycleTemplateService assessCycleTemplateService;
 	
 	@Autowired
-	OrgUserService orgUserService;
+	private OrgUserService orgUserService;
 	
 	@Autowired
-    AssessQuantitativeResultService assessQuantitativeResultService;
+	private AssessQuantitativeResultService assessQuantitativeResultService;
 	
-	@RequestMapping(value = "/index")
-	public String index(Model model) {
-		return "/hf/assess/quantificate/index";
-	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/template")
+	@RequestMapping(value = "/get")
 	public Object getTemplateItems(@RequestParam(required = true) String id) {		
 		return CommonResponse.getSuccessResponse(assessItemService.findTemplateAssessItem(id));
 	}
@@ -69,7 +64,7 @@ public class AssessItemController extends ControllerSupport{
 	
 	
 	@ResponseBody
-	@RequestMapping(value = "/extra/template")
+	@RequestMapping(value = "/extra/get")
 	public Object getTemplateExtraItems(@RequestParam(required = true) String id) {		
 		return CommonResponse.getSuccessResponse(assessItemExtraService.findTemplateAssessExtraItem(id));
 	}
@@ -92,7 +87,6 @@ public class AssessItemController extends ControllerSupport{
 		} else {
 			return CommonResponse.getResponse(assessItemExtraService.updateSelective(assessItemExtra));
 		}		
-		
 	}
 	
 	@RequestMapping("/extra/delete")

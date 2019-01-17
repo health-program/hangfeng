@@ -16,7 +16,7 @@ import com.paladin.hf.service.assess.quantificate.AssessLevelService;
 
 
 @Controller
-@RequestMapping("/console/assess/level")
+@RequestMapping("/assess/template/level")
 public class AssessLevelController extends ControllerSupport {
 
 	@Autowired
@@ -36,14 +36,14 @@ public class AssessLevelController extends ControllerSupport {
     }
 	
 	@ResponseBody
-	@RequestMapping(value = "/template")
+	@RequestMapping(value = "/get")
 	public Object get(@RequestParam(required = true) String id) {
 		return CommonResponse.getSuccessResponse(assessLevelService.findTemplateAssessLevel(id));
 	}
 	
 	
 	@ResponseBody
-	@RequestMapping(value = "/template/save")
+	@RequestMapping(value = "/save")
 	public Object save(@RequestBody AssessLevel[] assessLevels) {
 		return CommonResponse.getResponse(assessLevelService.saveTemplateAssessLevel(assessLevels));
 	}

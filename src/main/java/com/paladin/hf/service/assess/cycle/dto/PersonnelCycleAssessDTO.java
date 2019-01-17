@@ -354,6 +354,11 @@ public class PersonnelCycleAssessDTO extends BaseModel {
             this.operateState = operateState;
       }
 
+      
+      /*
+       * 扩展显示用字段
+       */
+      
       public String getDepartmentName() {
           try {
               return UnitContainer.getUnitName(getUnitId());

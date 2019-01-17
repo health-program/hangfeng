@@ -617,16 +617,11 @@ function _createUnitComponment(input, type, callback) {
             }
         },
         setData: function(data) {
-            var that = this;
-            var treedata;
-            var defaultValue = that.defaultValue;
-            var type = that.type;
-            var callback = that.callback;
-            var current;
-            var ownunit;
-            var isAgency;
-
-            var required = ((that.input.hasClass("required") || that.input.attr("required") == "required"));
+            var that = this,
+                treedata, defaultValue = that.defaultValue,
+                type = that.type,
+                callback = that.callback,
+                current, ownunit, isAgency;
 
             if (type == 'department' || type == "unit") {
 
@@ -677,7 +672,7 @@ function _createUnitComponment(input, type, callback) {
                 } else if (data.departments) {
                     treedata = g(data.departments, false);
 
-                    if (!current && required && ownunit.length == 1) {
+                    if (!current && ownunit.length == 1) {
                         // 如果必填并且只有一个值，默认填入
                         current = uniqueUnit;
                         isUnique = true;
@@ -726,7 +721,7 @@ function _createUnitComponment(input, type, callback) {
                     }
                 });
 
-                if (!current && required && data.length == 1) {
+                if (!current && data.length == 1) {
                     // 如果必填并且只有一个值，默认填入
                     current = data[0];
                     isUnique = true;

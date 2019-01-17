@@ -1,4 +1,4 @@
-package com.paladin.hf.service.assess.quantificate.pojo;
+package com.paladin.hf.service.assess.quantificate.dto;
 
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.QueryCondition;

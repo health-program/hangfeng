@@ -2,8 +2,6 @@ package com.paladin.hf.service.assess.quantificate;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
+import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.utils.uuid.UUIDUtil;
 import com.paladin.hf.mapper.assess.quantificate.TemplateMapper;
@@ -18,7 +17,6 @@ import com.paladin.hf.model.assess.quantificate.AssessItem;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
 import com.paladin.hf.model.assess.quantificate.Template;
 import com.paladin.hf.service.assess.quantificate.dto.TemplateDTO;
-
 
 /**
  * @author 吉三杰
@@ -29,20 +27,13 @@ import com.paladin.hf.service.assess.quantificate.dto.TemplateDTO;
 public class TemplateService extends ServiceSupport<Template> {
 
 	@Autowired
-	AssessItemService assessItemService;
+	private AssessItemService assessItemService;
 
 	@Autowired
-	AssessItemExtraService assessItemExtraService;
-	
-	@Autowired
-	TemplateMapper templateMapper;
+	private AssessItemExtraService assessItemExtraService;
 
-	public int updateTemplateState(String id, Integer state) {
-		Template template = new Template();
-		template.setId(id);
-		template.setEnableState(state);
-		return updateSelective(template);
-	}
+	@Autowired
+	private TemplateMapper templateMapper;
 
 	public List<Template> findStartedTemplateByUnit(String unitId) {
 		return searchAll(new Condition[] { new Condition(Template.COLUMN_ORG_UNIT_ID, QueryType.EQUAL, unitId),
@@ -51,6 +42,7 @@ public class TemplateService extends ServiceSupport<Template> {
 
 	/**
 	 * 迭代保存树形结构的考评项目
+	 * 
 	 * @param templateId
 	 * @param item
 	 * @param items
@@ -72,9 +64,16 @@ public class TemplateService extends ServiceSupport<Template> {
 		}
 	}
 
+	/**
+	 * 复制模板
+	 * 
+	 * @param templateDTO
+	 * @return
+	 */
 	@Transactional
-	public int copyTemplate(Template template) {
-
+	public boolean copyTemplate(TemplateDTO templateDTO) {
+		Template template = new Template();
+		SimpleBeanCopyUtil.simpleCopy(templateDTO, template);
 		template.setEnableState(Template.STATE_DRAFT);
 
 		String newTemplateId = UUIDUtil.createUUID();
@@ -101,44 +100,80 @@ public class TemplateService extends ServiceSupport<Template> {
 			assessItemExtraService.save(extra);
 		}
 
-		return 1;
+		return true;
 	}
 
+	/**
+	 * 停用模板
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean stopTemplate(String id) {
+		if (templateMapper.countAssessCycleByTemplate(id) > 0) {
+			throw new BusinessException("该模板已经被其他考评周期引用，无法停用");
+		}
+		Template template = new Template();
+		template.setId(id);
+		template.setEnableState(Template.STATE_STOP);
+		return updateSelective(template) > 0;
+	}
+
+	/**
+	 * 启用模板
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean startTemplate(String id) {
+		if (hasConfiguredlevel(id) && hasConfiguredItem(id)) {
+			Template template = new Template();
+			template.setId(id);
+			template.setEnableState(Template.STATE_START);
+			return updateSelective(template) > 0;
+		} else {
+			throw new BusinessException("模板必须配置完成项目和等级后才能启用");
+		}
+	}
+
+	/**
+	 * 删除模板
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@Transactional
-	public int removeTemplate(String id) {
-		assessItemService.removeTemplateItem(id);
-		assessItemExtraService.removeTemplateItemExtra(id);
-		return removeByPrimaryKey(id);
+	public boolean removeTemplate(String id) {
+		Template template = get(id);
+		if (template.getEnableState() == Template.STATE_DRAFT) {
+			assessItemService.removeTemplateItem(id);
+			assessItemExtraService.removeTemplateItemExtra(id);
+			removeByPrimaryKey(id);
+		} else {
+			throw new BusinessException("不能删除已经启用过的模板");
+		}
+
+		return true;
 	}
 
-      public int selectAssessCycleByTemplateId(String id) {
-            return templateMapper.selectAssessCycleByTemplateId(id) ;
-      }
-      
-      
-      
-      /**
-       * <模板启用时判断是否等级配置>
-       * @param id
-       * @return
-       * @see [类、类#方法、类#成员]
-       */
-     public int levelCount(String id){
-         return this.templateMapper.levelCount(id);
-     };
-      
-      /**
-       * <模板启用时判断是否项目配置>
-       * @param id
-       * @return
-       * @see [类、类#方法、类#成员]
-       */
-      public int itemCount(String id){
-          return this.templateMapper.itemCount(id);
-      }
+	/**
+	 * 是否配置了等级
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean hasConfiguredlevel(String id) {
+		return templateMapper.levelCount(id) > 0;
+	}
 
-      public TemplateDTO getOneByPrimaryKey(String id) {
-            return templateMapper.getOneByPrimaryKey(id);
-      };
+	/**
+	 * 是否配置了项目
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean hasConfiguredItem(String id) {
+		return templateMapper.itemCount(id) > 0;
+	}
 
 }

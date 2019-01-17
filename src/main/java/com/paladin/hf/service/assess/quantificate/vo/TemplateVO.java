@@ -1,21 +1,26 @@
-package com.paladin.hf.service.assess.quantificate.dto;
+package com.paladin.hf.service.assess.quantificate.vo;
 
-import javax.validation.constraints.NotEmpty;
-
-import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.hf.core.UnitContainer;
 
-public class TemplateDTO {
-
+public class TemplateVO {
+	
 	private String id;
 
-	@NotEmpty(message = "单位不能为空！")
 	private String orgUnitId;
 
-	@NotEmpty(message = "模板名称不能为空！")
 	private String templateName;
 
 	private String templateDescribe;
+
+	private Integer enableState;
+	
+	public String getUnitName() {
+		try {
+			return UnitContainer.getUnitName(orgUnitId);
+		} catch(Exception e) {
+			return "";
+		}
+	}
 
 	public String getId() {
 		return id;
@@ -49,16 +54,11 @@ public class TemplateDTO {
 		this.templateDescribe = templateDescribe;
 	}
 
-	/*
-	 * 扩展显示用字段
-	 */
-
-	public String getUnitName() {
-		try {
-			return UnitContainer.getUnitName(orgUnitId);
-		} catch (BusinessException e) {
-			return "";
-		}
+	public Integer getEnableState() {
+		return enableState;
 	}
 
+	public void setEnableState(Integer enableState) {
+		this.enableState = enableState;
+	}
 }

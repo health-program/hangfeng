@@ -3,11 +3,8 @@ package com.paladin.hf.model.assess.quantificate;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotEmpty;
 
 import com.paladin.framework.common.BaseModel;
-import com.paladin.framework.core.exception.BusinessException;
-import com.paladin.hf.core.UnitContainer;
 
 /**
  * 模板
@@ -39,10 +36,8 @@ public class Template extends BaseModel {
 	@GeneratedValue(generator = "UUID")
 	private String id;
 
-	@NotEmpty(message = "单位不能为空！")
 	private String orgUnitId;
 
-	@NotEmpty(message = "模板名称不能为空！")
 	private String templateName;
 
 	private String templateDescribe;
@@ -81,26 +76,14 @@ public class Template extends BaseModel {
 		this.templateDescribe = templateDescribe;
 	}
 
-	
-	
-	/*
-	 * 扩展显示用字段
-	 */
-
 	public Integer getEnableState() {
-            return enableState;
-      }
-
-      public void setEnableState(Integer enableState) {
-            this.enableState = enableState;
-      }
-
-      public String getUnitName() {
-		try {
-			return UnitContainer.getUnitName(orgUnitId);
-		} catch (BusinessException e) {
-			return "";
-		}
+		return enableState;
 	}
+
+	public void setEnableState(Integer enableState) {
+		this.enableState = enableState;
+	}
+
+	
 
 }

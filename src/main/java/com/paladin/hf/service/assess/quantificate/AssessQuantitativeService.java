@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.paladin.framework.common.Condition;
+import com.paladin.framework.common.PageResult;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.exception.BusinessException;
@@ -47,11 +48,11 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 	 * @param query
 	 * @return
 	 */
-	public Page<OrgUserAssess> findUserAssess(AssessQuantitativeUserQuery query) {
+	public PageResult<OrgUserAssess> findUserAssess(AssessQuantitativeUserQuery query) {
 		Page<OrgUserAssess> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
 		assessQuantitativeMapper.findUserAssess(query, unitQuery);
-		return page;
+		return new PageResult<>(page);
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 
 		List<Condition> conditions = new ArrayList<>();
 		conditions.add(new Condition(Prizepunish.COLUMN_OPERATION_STATE, QueryType.IN,
-				new String[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
+				new int[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
 		conditions.add(new Condition(Prizepunish.COLUMN_ORG_USER_ID, QueryType.EQUAL, userId));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.GREAT_EQUAL, startTime));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.LESS_EQUAL, endTime));

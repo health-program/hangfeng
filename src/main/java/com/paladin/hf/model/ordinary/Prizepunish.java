@@ -10,13 +10,17 @@ import com.paladin.framework.common.BaseModel;
 public class Prizepunish  extends BaseModel {
     
 	
-	public static final String OPERATION_STATE_SELF_TEMPORARY = "0";
-	public static final String OPERATION_STATE_DEPARTMENT_TEMPORARY = "1";
-	public static final String OPERATION_STATE_AGENCY_TEMPORARY = "2";
-	public static final String OPERATION_STATE_SELF_SUBMIT = "3";
-	public static final String OPERATION_STATE_DEPARTMENT_SUBMIT = "4";
-	public static final String OPERATION_STATE_AGENCY_SUBMIT = "5";
+	public static final int OPERATION_STATE_SELF_TEMPORARY = 0;
+	public static final int OPERATION_STATE_DEPARTMENT_TEMPORARY = 1;
+	public static final int OPERATION_STATE_AGENCY_TEMPORARY = 2;
+	public static final int OPERATION_STATE_SELF_SUBMIT = 3;
+	public static final int OPERATION_STATE_DEPARTMENT_SUBMIT = 4;
+	public static final int OPERATION_STATE_AGENCY_SUBMIT = 5;
 
+	public static final int EXAMINE_WAIT = 0;//待审核
+	public static final int EXAMINE_SUCCESS = 1;//成功
+	public static final int EXAMINE_FAILURE = 2;//失败
+	
 	
 	public static final String COLUMN_ORG_USER_ID = "orgUserId";
 	public static final String COLUMN_HAPPEN_TIME = "happenTime";
@@ -43,13 +47,15 @@ public class Prizepunish  extends BaseModel {
 
     private String checkPeople;
 
-    private String operationState;
+    private Integer operationState;
 
-    private String examineState;
+    private Integer examineState;
 
     private String examinePeople;
 
     private String remarks;
+    
+    private String attachments; 
     
     @Transient
     private String endhappenTime;
@@ -248,20 +254,20 @@ public class Prizepunish  extends BaseModel {
         this.checkPeople = checkPeople == null ? null : checkPeople.trim();
     }
 
-    public String getOperationState() {
+    public Integer getOperationState() {
         return operationState;
     }
 
-    public void setOperationState(String operationState) {
-        this.operationState = operationState == null ? null : operationState.trim();
+    public void setOperationState(Integer operationState) {
+        this.operationState = operationState == null ? null : operationState;
     }
 
-    public String getExamineState() {
+    public Integer getExamineState() {
         return examineState;
     }
 
-    public void setExamineState(String examineState) {
-        this.examineState = examineState == null ? null : examineState.trim();
+    public void setExamineState(Integer examineState) {
+        this.examineState = examineState == null ? null : examineState;
     }
 
     public String getExaminePeople() {
@@ -290,5 +296,14 @@ public class Prizepunish  extends BaseModel {
         this.happenTime = happenTime;
     }
 
+    public String getAttachments()
+    {
+        return attachments;
+    }
+
+    public void setAttachments(String attachments)
+    {
+        this.attachments = attachments;
+    }
     
 }

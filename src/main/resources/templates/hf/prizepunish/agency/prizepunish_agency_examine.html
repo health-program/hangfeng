@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="/hf/header">
+</head>
+<body>
+ <tt:constant enumcode="event_type,operation,examine" />
+ <input type="hidden" name="orgUserId" id="orgUserId" th:value="${orgUserId}"/>
+  <div class="container">
+<section class="content-header">
+        <h1>奖惩事件</h1>
+        <ol class="breadcrumb">
+            <li><a th:href="@{/prizepunish/agency/detail/index(orgUserId=${orgUserId})}"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">审核</li>
+        </ol>
+    </section>
+    <section class="content">
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">详情</h3>
+            </div>
+            <div id="model_view" class="box-body">
+            <form class="form-horizontal" >
+					<div class="form-group">
+						<label class="col-sm-3 control-label">事件类型:</label>
+						<div class="col-sm-5">
+					      <p name="dictCode" class="form-control-static description"></p>
+						</div>
+						</div>
+						<div class="form-group">
+						<label class="col-sm-3 control-label">发生时间:</label>
+						<div class="col-sm-3">
+						 <p name="happenTime" class="form-control-static description"></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="content" class="col-sm-3 control-label">内容:</label>
+						<div class="col-sm-7">
+						<textarea name="content" class="form-control" rows="8"
+								style="resize: none;" readonly="readonly"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="place" class="col-sm-3 control-label">地点:</label>
+						<div class="col-sm-7">
+						<p name="place" class="form-control-static description"></p>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="check" class="col-sm-3 control-label">考核情况:</label>
+						<div class="col-sm-7">
+						<p name="checks" class="form-control-static description"></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="checkPeople" class="col-sm-3 control-label">核定部门(人):</label>
+						<div class="col-sm-2">
+						<p name="checkPeople" class="form-control-static description"></p>
+						</div>
+						<label for="checkPeople" class="col-sm-2 control-label">操作状态:</label>
+						<div class="col-sm-3">
+						<p name="operationState" class="form-control-static description"></p>
+						</div>
+					</div>
+					<div class="form-group">
+                        <label for="workContent" class="col-sm-3 control-label">附件:</label>
+                        <div name="attachments">
+                        </div>
+                    </div>
+				</form>
+				</div>
+				<div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">审核</h3>
+            </div>
+				<div id="prize_edit" class="box-body">
+				<form id="prize_form" class="form-horizontal"  action="/prizepunish/agency/examine/update" method="post">
+				 <input type="hidden" name="id" id="id" th:value="${id}"/>
+				<div class="form-group">
+                    <label for="checkPeople" class="col-sm-3 control-label">审核结果:</label>
+                    <div class="col-sm-4">
+                    <select required="required" id="examineState" name="examineState" class="form-control tonto-select-constant" enumcode="examine"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+				<div class="col-sm-2 col-sm-offset-3">
+						<button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+					</div>
+					<div class="col-sm-2 col-sm-offset-1">
+						<a th:href="@{/prizepunish/agency/detail/index(orgUserId=${orgUserId})}" class="btn btn-default btn-block">取消</a>
+					</div> 
+				</div>
+				</form>
+				</div>
+            </div>
+		</div>
+	</section>
+</div>
+<div th:include="/hf/footer"></div>
+</body>
+<script type="text/javascript">
+var options = {
+        id: "model",
+        name: "新增",
+        url: "/prizepunish/agency/examine/update",
+        columns: [
+            { name: "dictCode", inputType: "SELECT",enum: "event_type", title: "事件类型:" },
+            { name: "happenTime", inputType: "DATE", title: "发生时间:" },
+            { name: "content", inputType: "TEXT", title: "内容:" },
+            { name: "place", inputType: "TEXT", title: "地点:" },
+            { name: "checks", inputType: "TEXT", title: "考核情况:" },
+            { name: "attachments", inputType: "ATTACHMENT", fileName: "attachmentFiles", title: "附件" },
+            { name: "checkPeople", inputType: "TEXT", title: "核定部门(人):" },
+            { name: "operationState", inputType: "SELECT",enum: "operation", title: "操作状态:" }
+        ]
+    };
+
+var options1 = {
+        id: "prize",
+        name: "新增",
+        url: "/prizepunish/dept/examine/update",
+        columns: [
+            { name: "examineState", inputType: "SELECT",enum: "examine", title: "审核结果:" }
+        ]
+    };
+
+$(function() {
+	id = $("#id").val();
+	var orgUserId = $("#orgUserId").val();
+	 $.getAjax("/prizepunish/agency/get?id="+id, function(data) {
+           var model = new tonto.Model("model", options.columns, {
+           });
+           model.setData(data);
+       });
+	 
+	  var model = new tonto.Model("prize", options1.columns, {
+          pattern: "edit",
+          successCallback: function() {
+              $.successAlert("保存成功", function() {
+                  window.location = "/prizepunish/agency/detail/index?orgUserId="+orgUserId;
+              });
+          }
+      });
+      model.setData(null);
+	}); 
+
+
+
+</script>
+</html>

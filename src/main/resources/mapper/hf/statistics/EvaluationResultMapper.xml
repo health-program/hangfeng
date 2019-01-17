@@ -140,7 +140,7 @@
 
 
 
-<select id="excelPeople"  resultType="com.paladin.hf.service.statistics.dto.EvaluationResultExcelDTO">
+<select id="excelPeople"  resultType="com.paladin.hf.service.statistics.vo.EvaluationResultVO">
  SELECT ou.`id` AS id,
        ou.`name` ,
        ou.org_agency_id AS agencyId,

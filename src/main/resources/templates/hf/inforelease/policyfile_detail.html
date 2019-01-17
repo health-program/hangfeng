@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/hf/header">
+</head>
+<body>
+<tt:constant enumcode="is_release,importance" />
+<input type="hidden" id="id" th:value="${info.id}"/>
+    <section class="content-header">
+        <h1>政策文件详情</h1>
+        <ol class="breadcrumb">
+            <li><a href="/console/infore/policy/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">详情</li>
+        </ol>
+    </section>
+	<section class="content">
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">详情</h3>
+                <div class="pull-right box-tools">
+                     <a class="btn" id="model_edit_btn" href="javascript:void(0)"><i class="fa fa-edit"></i>编辑</a>
+                </div>
+            </div>
+             <div id="model_view" class="box-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="title" class="col-sm-3 control-label">标题：</label>
+                        <div class="col-sm-5">
+                            <p name="title" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                    	<label for="unitName" class="col-sm-3 control-label">内容：</label>
+						<div class="col-sm-5">
+							<textarea name="content" class="form-control" rows="8"
+								style="resize: none;background: white;" readonly="readonly"></textarea>
+						</div>
+                    </div>
+                    <div class="form-group">
+                       <label for="unitContacts" class="col-sm-3 control-label">是否发布：</label>
+                        <div class="col-sm-5">
+                            <p name="isRelease" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <label for="unitPhone" class="col-sm-3 control-label">重要程度：</label>
+                        <div class="col-sm-5">
+                            <p name="importance" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <label for="orgUnitId" class="col-sm-3 control-label">被通知科室：</label>
+                        <div class="col-sm-5">
+                            <p name="orgUnitId" class="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div class="form-group" id="publishTargetViewGroup">
+                        <label for="unitAddress" class="col-sm-3 control-label">发布时间：</label>
+                        </label>
+                        <div class="col-sm-8">
+                            <p name="releaseTime" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <label for="unitPhone" class="col-sm-3 control-label">附件：</label>
+                        <div class="col-sm-5">
+                            <p name="accessory" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="model_edit" class="box-body" style="display: none">
+                <form id="model_form" class="form-horizontal form-horizontal edit-body" action="/console/infore/save" method="post">
+                <input type="hidden" name="types" th:value="${info.types}"/>
+                <input type="hidden" name="id" th:value="${info.id}"/>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">标题</label>
+								<div class="col-sm-3">
+									<input required="required" type="text" name="title"
+										class="form-control" id="title"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitName" class="col-sm-3 control-label">内容</label>
+								<div class="col-sm-5">
+									<textarea name="content" class="form-control" rows="8"
+										style="resize: none;"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitContacts" class="col-sm-3 control-label">是否发布</label>
+								<div class="col-sm-3">
+								<select id="isRelease" name="isRelease"
+									class="form-control tonto-select-constant" enumcode="is_release">
+								</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitPhone" class="col-sm-3 control-label">重要程度</label>
+								<div class="col-sm-3">
+								<select id="importance" name="importance"class="form-control tonto-select-constant" enumcode="importance">
+								</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitId" class="col-sm-3 control-label">被通知科室</label>
+								<div class="col-sm-3">
+									<input type="text"
+										class="form-control tonto-select-unit" name="orgUnitId" placeholder="请选择科室"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="unitAddress" class="col-sm-3 control-label">发布时间</label>
+								<div class="col-sm-3">
+									<input required="required" type="text" id="datepicker"name="releaseTime" 
+									class="form-control tonto-datepicker-date" placeholder="请选择日期" />
+								</div>
+							</div>
+							<div class="form-group" style="margin-bottom: 0px;">
+								<label for="unitAddress" class="col-sm-3 control-label">附件</label>
+								<div class="col-sm-3">
+									<input type="file" id="test" name="test" class="form-control" />
+								</div>
+								</div>
+								<div class="form-group" style="margin-top: 8px;">
+								<label for="unitAddress" class="col-sm-3 control-label"></label>
+								 <div class="col-sm-3">
+									<input id="file2" style="display: none;" name="file"
+										th:value="${info.accessory}" /> 
+										<a id="files"style="cursor: pointer;" th:text="${info.accessory}"></a><i th:if=" ${info.accessory} !=null "
+										style="color: red; cursor: pointer;" id="remove"
+										class="glyphicon glyphicon-remove"></i>
+								</div>
+							</div>
+							<div class="form-group">
+		                        <div class="col-sm-2 col-sm-offset-3">
+		                            <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+		                        </div>
+		                        <div class="col-sm-2 col-sm-offset-1">
+		                            <button type="button" id="model_form_cancel_btn" class="btn btn-default btn-block">取消</button>
+		                        </div>
+		                    </div>
+						</form>
+                </div>
+		</div>
+	</section>
+	<div th:include="/hf/footer"></div>
+	<script type="text/javascript">
+	var options = {
+	        id: "model",
+	        name: "详情",
+	        url: "/console/infore/save",
+	        columns: [
+	            { name: "title", inputType: "TEXT", title: "标题" },
+	            { name: "content", inputType: "TEXT", title: "内容" },
+	            { name: "isRelease", inputType: "SELECT", enum: "is_release", title: "是否发布" },
+	            { name: "importance", inputType: "SELECT", enum: "importance", title: "重要程度" },
+	            { name: "orgUnitId", inputType: "UNIT", title: "被通知科室" ,viewName: "unitName",unitType: "tonto-select-department"},
+	            { name: "releaseTime", inputType: "DATE", title: "发布时间" },
+	            { name: "accessory", inputType: "TEXT", title: "附件" }
+	        ]
+	    };
+	
+	$(function(){
+		id = $("#id").val();
+		 $.postAjax("/console/infore/policyfile/get?id=" +id, function(data) {
+			 debugger;
+	            var model = new tonto.Model("model", options.columns, {
+	            });
+	            model.setData(data);
+	        });
+	})
+	
+	$("#remove").click(function(){
+		layer.confirm('确定是删除此附件吗?', {
+			  btn: ['确定','取消']
+			}, function(){
+				$("#files").text("");
+				$("#file2").attr("value","");
+				$("#remove").hide();
+			  layer.msg('删除成功', {icon: 1});
+			});
+	});
+	
+	</script>
+</body>
+</html>

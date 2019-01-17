@@ -1,34 +1,54 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="console/header">
+<head th:include="/hf/header">
 </head>
 <body>
- <section class="content-header" style="padding: 15px 15px 15px 15px;">
-        <h1>科室结果查看</h1>
-        <div>
-	 		<div style="margin-top: -28px;" class="pull-right">
-				<a href="/console/result/index" class="btn btn-warning"><i class="glyphicon glyphicon-share-alt"></i>返回</a>
-	 		</div>  
-	  	</div> 
-    </section>
-	<section class="content table-content">
-		<input type="hidden" id="assessCycleId" th:value="${assessCycleId}" />
-		<input type="hidden" id="unitId" th:value="${unitId}" />
-		<table id="dataGrid"></table>
-	</section>
-	<div id="toolbar">
-        <div class="btn-group">
-		    <a id="viewPeacet" onclick="viewUser()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查看下属人员</a>
-		     <a onclick="exprot()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>导出</a>	
+	 <section class="content-header">
+	        <h1>考评结果查看</h1>
+	        <ol class="breadcrumb">
+            <li><a href="/console/result/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">下属科室</li>
+        </ol>
+	    </section>
+	<section class="content">
+		<!-- <div class="box box-solid">
+			<div class="box-header with-border">
+				<i class="fa fa-search"></i>
+				<h3 class="box-title">查询</h3>
+			</div>
+			<div class="box-body">
+				<form id="searchbar" class="form-horizontal">
+				
+				</form>
+				<input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+				<input type ="hidden" id="pageOffset" th:value="${query?.offset}" />
+			</div>
+		</div> -->
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <div id="toolbar">
+			        <div class="btn-group">
+			            <div class="btn-group">
+						     <a onclick="exprot()" class="btn btn-success"><i class="fa fa-file-excel-o"></i>导出</a>	
+						</div>
+			        </div>
+			    </div>
+			    <input type="hidden" id="assessCycleId" th:value="${assessCycleId}" />
+				<input type="hidden" id="unitId" th:value="${unitId}" />
+                <table id="dataGrid"></table>
+            </div>
 		</div>
-    </div>
-	<div th:include="console/footer"></div>
+	</section>
+	<div th:include="/hf/footer"></div>
 	<script type="text/javascript">
 		//<![CDATA[
 		var table;
 		$(function() {
 			initDataGrid()
-			//$.getConstantEnum(initDataGrid);
 		});
 		
 		 function initDataGrid() {
@@ -38,12 +58,24 @@
 		            idField: "id",
 		             columns: [
 		                [
-							{ radio:true },
 							{ title: "所属机构", field: "agencyName" },
 		                    { title: "被考评科室", field: "unitName" },
 		                    { title: "已考评", field: "unitAssGradeCOUNT" },
                           	{ title: "未考评", field: "notUnitAssGradeCOUNT" },
                           	{ title: "总人数", field: "total" },
+                          	{
+                                title: "操作",
+                                align: "center",
+                                width: "200px",
+                                events: {
+                                    'click .view': function(e, value, row, index) {
+                                    	viewUser(row);
+                                    }
+                                },
+                                formatter: function operateFormatter(value, row, index) {
+                                    return '<button class="view btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>查看下属人员</button>';
+                                }
+                            }
 		                ]
 		            ],
 		            url: '/console/result/evaluation/info?unitId='+unitId+"&assessCycleId="+assessCycleId,
@@ -93,15 +125,14 @@
 		     var table2;
 		     var unitId;
 		     var assessCycleId;
-		     function viewUser() {
-		     	var row = getSelectRow();
+		     function viewUser(row) {
+		    	 debugger;
 		     	unitId=row.unitId;
 		     	assessCycleId=row.assessCycleId;
-		     	if(row){
 		     		 var content = '<section class="tonto-layer-div content table-content">' +
 		     		   ' <div id="toolbar2"> '+
 		               '<div class="btn-group">'+
-		               ' <a onclick="exportPeople()" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>导出</a>'+
+		               ' <a onclick="exportPeople()" class="btn btn-success"><i class="fa fa-file-excel-o"></i>导出</a>'+
 		               '</div>'+
 		       		 '</div>'+ 
 		     		 '    <table id="dataGrid2" class="table table-hover"></table>' +
@@ -140,10 +171,6 @@
 		    		        }); 
 		                }
 		            });
-		     		
-		     	}else{
-		     		$.errorMessage("请选中一条业务数据");
-		     	}
 		     }
 		      
 		     function getSelectRow(){

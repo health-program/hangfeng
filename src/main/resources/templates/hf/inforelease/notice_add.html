@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/hf/header">
+</head>
+<body>
+ <div class="container">
+<tt:constant enumcode="is_release,importance" />
+    <section class="content-header">
+        <h1>通知公告新增</h1>
+        <ol class="breadcrumb">
+            <li><a href="/console/infore/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">新增</li>
+        </ol>
+    </section>
+    <section class="content">
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-edit"></i>
+                <h3 class="box-title">新增</h3>
+                <div class="pull-right box-tools">
+                    <a class="btn btn-default btn-sm" href="/console/infore/index">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div id="model_edit" class="box-body">
+            <form id="model_form" class="form-horizontal edit-body"  action="/console/infore/save" method="post">
+            <input type="hidden" name="types" value="0" />
+	            <div class="form-group">
+					<label class="col-sm-3 control-label">标题:</label>
+					<div class="col-sm-8">
+						<input required="required" type="text" name="title" class="form-control" id="title" placeholder="请输入标题"  />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="unitName" class="col-sm-3 control-label">内容:</label>
+					<div class="col-sm-8">
+						<textarea name="content" class="form-control" rows="8" style="resize: none;"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="unitContacts" class="col-sm-3 control-label">是否发布:</label>
+					<div class="col-sm-3">
+						<select id="isRelease" name="isRelease"
+							class="form-control tonto-select-constant" enumcode="is_release">
+						</select>
+					</div>
+					<label for="unitPhone" class="col-sm-2 control-label">重要程度:</label>
+					<div class="col-sm-3">
+						<select id="importance" name="importance"class="form-control tonto-select-constant" enumcode="importance">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="unitId" class="col-sm-3 control-label">被通知科室</label>
+					<div class="col-sm-3">
+						<input type="text"
+							class="form-control tonto-select-unit" name="orgUnitId" placeholder="请选择科室"></input>
+					</div>
+					<label for="unitAddress" class="col-sm-2 control-label">发布时间:</label>
+					<div class="col-sm-3">
+						<input required="required" type="text" id="datepicker"name="releaseTime" class="form-control tonto-datepicker-date" placeholder="请选择日期" />
+					</div>
+				</div>
+				<div class="form-group">
+                            <label for="" class="col-sm-3 control-label">附件上传：</label>
+                            <div class="col-sm-8">
+                                <input type="file" name="attachmentFiles" multiple>
+                            </div>
+                        </div>
+				<div class="form-group">
+                      <div class="col-sm-2 col-sm-offset-3">
+                          <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+                      </div>
+                      <div class="col-sm-2 col-sm-offset-1">
+                         <a href="/console/infore/index" class="btn btn-default btn-block">取消</a>
+                      </div>
+                  </div>
+            </form>
+            </div>
+		</div>
+	</section>
+	</div>
+	<div th:include="/hf/footer"></div>
+	<script type="text/javascript">
+	
+	 var options = {
+		        id: "model",
+		        name: "新增",
+		        url: "/console/infore/save",
+		        columns: [
+		            { name: "title", inputType: "TEXT", title: "标题" },
+		            { name: "content", inputType: "TEXT", title: "内容" },
+		            { name: "isRelease", inputType: "SELECT", enum: "is_release", title: "是否发布" },
+		            { name: "importance", inputType: "SELECT", enum: "importance", title: "重要程度" },
+		            { name: "releaseTime", inputType: "DATE", title: "发布时间" },
+		            { name: "attachments",allowedFileExtensions:"['txt', 'doc', 'xls', 'ppt','docx','xlsx','pptx']", inputType: "ATTACHMENT", fileName: "attachmentFiles", title: "附件" }
+		        ]
+		    };
+	
+	 $(function() {
+        var model = new tonto.Model("model", options.columns, {
+            pattern: "edit",
+            successCallback: function() {
+                $.successAlert("保存成功", function() {
+                    window.location = "/console/infore/index";
+                });
+            }
+        });
+        model.setData(null);
+    });
+	
+</script>
+</body>
+</html>

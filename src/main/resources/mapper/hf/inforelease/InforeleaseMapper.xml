@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.paladin.hf.mapper.inforelease.InforeleaseMapper">
+
+    <resultMap id="BaseResultMap" type="com.paladin.hf.model.inforelease.Inforelease">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="is_release" jdbcType="VARCHAR" property="isRelease" />
+        <result column="importance" jdbcType="VARCHAR" property="importance" />
+        <result column="release_time" jdbcType="DATE" property="releaseTime" />
+        <result column="accessory" jdbcType="VARCHAR" property="accessory" />
+        <result column="types" jdbcType="VARCHAR" property="types" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_adminid" jdbcType="VARCHAR" property="createAdminid" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_adminid" jdbcType="VARCHAR" property="updateAdminid" />
+        <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+
+        <result column="org_unit_id" jdbcType="VARCHAR" property="orgUnitId" />
+        <result column="org_agency_id" jdbcType="VARCHAR" property="orgAgencyId" />
+        <result column="org_assess_team_id" jdbcType="VARCHAR"
+            property="orgAssessTeamId" />
+    </resultMap>
+
+      <select id="selectInforeleaseAll" resultType="com.paladin.hf.service.inforelease.vo.InforeleaseVO">
+        SELECT
+		`id` AS id,
+		`title` AS title,
+		`content` AS content,
+		`is_release` AS isRelease,
+		`importance` AS importance,
+		`release_time` AS releaseTime,
+		`accessory` AS accessory
+		FROM inforelease WHERE 1=1 AND `types`=#{type}
+		       
+        <if test="isRelease !=null and isRelease !='' ">
+            and is_release=#{isRelease}
+        </if>
+        
+        <if test="importance !=null and importance !='' ">
+            and importance=#{importance}
+        </if>
+        
+        <if test="title !=null and title !='' ">
+            and title like concat('%',#{title},'%')
+        </if>
+        
+        <if test="releaseTime !=null and releaseTime !='' ">
+            and release_time <![CDATA[>=]]> #{releaseTime}
+        </if>
+        
+        <if test="endreleaseTime !=null and endreleaseTime !='' ">
+            and release_time <![CDATA[<=]]> #{endreleaseTime}
+        </if>
+    </select>
+    
+
+      <select id="noticyandpolicyfileAll" resultType="com.paladin.hf.service.inforelease.vo.InforeleaseVO">
+                  (SELECT
+            `id`,
+            `title`,
+            `content`,
+            `is_release`,
+            `importance`,
+            `release_time`,
+            `accessory`,
+            `create_time`,
+            TYPES
+        FROM
+            inforelease
+        WHERE
+            1 = 1
+        AND is_release = '0'
+        AND TYPES = '1'
+        ORDER BY
+            create_time DESC
+        LIMIT 0,5) UNION (
+        SELECT
+            `id`,
+            `title`,
+            `content`,
+            `is_release`,
+            `importance`,
+            `release_time`,
+             `accessory`,
+            `create_time`,
+            TYPES
+        FROM
+            inforelease
+        WHERE
+            1 = 1
+        AND is_release = '0'
+        AND TYPES = '0'
+        ORDER BY
+            create_time DESC LIMIT 0,5
+        )
+  </select>
+
+<select id="showAssigned" resultMap="BaseResultMap">
+    (SELECT
+    `id`,
+    `title`,
+    `content`,
+    `is_release`,
+    `importance`,
+    `release_time`,
+    `accessory`,
+    `create_time`,
+    `types`
+    FROM inforelease
+    WHERE is_release = '0'
+    AND types = '1'
+    AND (org_unit_id IS NULL
+    <if test="uid != null and uid != ''">
+        OR org_unit_id = #{uid}
+    </if>
+    <if test="aid != null and aid != ''">
+        OR org_agency_id = #{aid}
+    </if>
+    <if test="tid != null and tid != ''">
+        OR org_assess_team_id = #{tid}
+    </if>
+    )
+    ORDER BY release_time 
+    DESC LIMIT 0,5
+    )
+    UNION (
+    SELECT
+    `id`,
+    `title`,
+    `content`,
+    `is_release`,
+    `importance`,
+    `release_time`,
+    `accessory`,
+    `create_time`,
+    `types`
+    FROM inforelease
+    WHERE is_release = '0'
+    AND types = '0'
+    
+    <!--org_unit_id 为空时，系统消息所有人可见  -->
+    AND (org_unit_id IS NULL
+    
+      <if test="uid != null and uid != ''">
+          OR org_unit_id = #{uid}
+      </if>
+      <if test="aid != null and aid != ''">
+          OR org_agency_id = #{aid}
+      </if>
+      <if test="tid != null and tid != ''">
+          OR org_assess_team_id = #{tid}
+      </if>
+      )
+    ORDER BY release_time 
+    DESC LIMIT 0,5
+    )
+</select>
+
+
+   <select id="getList" resultMap="BaseResultMap">
+        SELECT
+        `id`,`title`,`content`,`is_release`,`importance`,`release_time`,`accessory`
+        FROM inforelease
+        WHERE 1=1
+        AND types=#{info.id}
+        <if test="info.isRelease !=null and info.isRelease !='' ">
+            AND is_release=#{info.isRelease}
+        </if>
+        <if test="info.importance !=null and info.importance !='' ">
+            AND importance=#{info.importance}
+        </if>
+        <if test="info.title !=null and info.title !='' ">
+            AND title like concat('%',#{info.title},'%')
+        </if>
+        <if test="info.releaseTime !=null and info.releaseTime !='' ">
+            AND release_time <![CDATA[>=]]>
+            #{info.releaseTime}
+        </if>
+        <if test="info.endreleaseTime !=null and info.endreleaseTime !='' ">
+            AND release_time <![CDATA[<=]]>
+            #{info.endreleaseTime}
+        </if>
+        
+	     
+	    <if test="query.unitId != null and query.unitId != ''">
+	        AND org_unit_id = #{query.unitId}
+	    </if>
+	    <if test="query.assessTeamId != null and query.assessTeamId != ''">
+	        AND org_assess_team_id = #{query.assessTeamId}
+	    </if>
+	    <if test="query.agencyId != null and query.agencyId != ''">
+	        AND org_agency_id = #{query.agencyId}
+	    </if>
+	   
+    </select> 
+    
+       <select id="findListMore"  resultMap="BaseResultMap">
+        SELECT
+        `id`,`title`,`content`,`is_release`,`importance`,`release_time`,`accessory`
+        FROM inforelease
+        WHERE 1=1
+        AND types=#{info.id}
+        AND is_release= '0'
+        
+    <!--org_unit_id 为空时，系统消息所有人可见  -->
+        AND (org_unit_id IS NULL
+        
+        <if test="uid != null and uid != ''">
+            OR org_unit_id = #{uid}
+        </if>
+        <if test="aid != null and aid != ''">
+            OR org_agency_id = #{aid}
+        </if>
+        <if test="tid != null and tid != ''">
+            OR org_assess_team_id = #{tid}
+        </if>
+        )
+    </select>
+
+</mapper>

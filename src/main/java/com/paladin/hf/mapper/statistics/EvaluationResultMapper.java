@@ -7,7 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.service.statistics.dto.AppraisalSummaryQueryDTO;
-import com.paladin.hf.service.statistics.dto.EvaluationResultExcelDTO;
+import com.paladin.hf.service.statistics.dto.EvaluationResultDeptExcelDTO;
+import com.paladin.hf.service.statistics.dto.EvaluationResultPeopleExcelDTO;
 import com.paladin.hf.service.statistics.vo.EvaluationResultVO;
 
 /**
@@ -22,6 +23,7 @@ public interface EvaluationResultMapper extends CustomMapper<EvaluationResultVO>
     
     List<EvaluationResultVO> evaluationPeople(AppraisalSummaryQueryDTO query);
     
-    List<EvaluationResultExcelDTO> excelPeople(AppraisalSummaryQueryDTO query);
+    List<EvaluationResultPeopleExcelDTO> excelPeople(AppraisalSummaryQueryDTO query);
     
+    List<EvaluationResultDeptExcelDTO> excelDept(AppraisalSummaryQueryDTO query);
 }

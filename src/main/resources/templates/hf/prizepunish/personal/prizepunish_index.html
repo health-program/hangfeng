@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org" 
+>
+<head th:include="/hf/header">
+</head>
+<body>
+<tt:constant enumcode="examine,operation,event_type" />
+	<section class="content-header">
+	     <h1>奖惩事件管理</h1>
+	        <ol class="breadcrumb">
+	            <li><a href="/console/prize/index"><i class="fa fa-list-alt"></i>列表</a></li>
+	            <li class="active">详情</li>
+	        </ol>
+	</section>
+	<section class="content">
+		<div class="box box-solid">
+			<div class="box-header with-border">
+				<i class="fa fa-search"></i>
+				<h3 class="box-title">查询</h3>
+			</div>
+			<div class="box-body">
+            	<form id="searchbar" class="form-horizontal">
+            		<div class="form-group">
+					<label style="width:110px" class="col-sm-2 control-label"  for="dictCode">事件类型:</label>
+					<div  class="col-sm-2">
+					    	<select id="dictCode" th:value="${query?.dictCode}" name="dictCode" class="form-control tonto-select-constant" enumcode="event_type">
+					           <option value="">请选择</option>
+					      </select>
+					 </div>
+					 <label style="width:110px" class="col-sm-2 control-label" for="operationState" >操作状态:</label>
+					 <div  class="col-sm-2">
+				    	<select id="operationState" th:value="${query?.operationState}" name="operationState" class="form-control tonto-select-constant" enumcode="operation">
+				           <option value="">请选择</option>
+				      </select>
+				    </div>
+				    <label style="width:110px" class="col-sm-2 control-label" for="examineState">审核状态:</label>
+				     <div class="col-sm-2">
+				     <select id="examineState" th:value="${query?.examineState}" name="examineState" class="form-control tonto-select-constant" enumcode="examine">
+						  <option value="">请选择</option>
+				      </select>
+				    </div>
+				</div>
+				<div class="form-group">
+				<label style="width:110px" class="col-sm-2 control-label" for="startHappenTime" >发生时间:</label>
+			    <div  class="col-sm-2">
+			    	<input type="text" id="datepicker1" th:value="${query?.startHappenTime}" name="startHappenTime" class="form-control tonto-datepicker-date" placeholder="请选择日期" />
+			    </div>
+			    <label style="width:110px" class="col-sm-2 control-label" for="endhappenTime" >至:</label>
+			    <div  class="col-sm-2">
+			    	<input type="text" id="datepicker2" th:value="${query?.endhappenTime}" name="endhappenTime" class="form-control tonto-datepicker-date" placeholder="请选择日期" />
+			    </div>
+			</div>
+			<div class="col-md-12">
+              <div class="pull-right">
+                  <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="query()"><i class="fa fa-search"></i>查询</button>
+                  <button type="reset" style="width:100px" class="btn btn-default"><i class="fa fa-repeat"></i>重置</button>
+              </div>
+         	</div>
+            	</form>
+            	<input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+				<input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+            </div>
+		</div>
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <div id="toolbar">
+                	<div class="btn-group">
+                        <a onclick="add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                    </div>
+                </div>
+                <table id="dataGrid"></table>
+            </div>
+		</div>
+	</section>
+<div  th:include="/hf/footer"></div>
+<script type="text/javascript">
+//<![CDATA[
+		function query() {table.refresh();}
+		
+		$(function () {initDataGrid();});
+		
+		
+		 function initDataGrid() {
+				var limit = $("#pageLimit").val();
+		        var offset = $("#pageOffset").val();
+		        var page = (limit && offset) ? offset / limit + 1 : 1;
+		        table = $.createTable("#dataGrid", {
+		            idField: "id",
+		            columns: [
+		                [
+							{title: "事件类型", field: "dictCode" ,enumcode: "event_type" },
+							{title: "发生时间", field: "happenTime",sortable: true},
+							{title: "核定部门(人)", field: "checkPeople"},
+							{title: "操作状态", field: "operationState",enumcode:"operation" },
+							{title: "审核状态", field: "examineState",enumcode:"examine" },
+							{title: "审核人", field: "examinePeople"},
+		                    {
+		                        title: "操作",
+		                        align: "center",
+		                        width: "200px",
+		                        events: {
+		                            'click .view': function(e, value, row, index) {
+		                            	view(row);
+		                            },
+		                            'click .remove': function(e, value, row, index) {
+		                            	remove(row);
+		                            }
+		                        },
+		                        formatter: function operateFormatter(value, row, index) {
+		                            return '<button class="view btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>查看</button>' +
+		                                '<button class="remove btn btn-xs btn-danger "><i class="glyphicon glyphicon-remove"></i>删除</button>';
+
+		                        }
+		                    }
+		                ]
+		            ],
+		            url: '/prizepunish/find',
+		            searchbar: '#searchbar',
+		            sortName: 'happenTime',
+		            sortOrder: 'desc',
+		            pageSize: limit || undefined,
+		            pageNumber: page || 1,
+		            pagination: true,
+		            toolbar: "#toolbar",
+		            showRefresh: true,
+		            clickToSelect:true,
+		            showColumns:true
+		        });
+		 }
+
+		 
+		 function add(){
+			 window.location.href="/prizepunish/add";
+		 }
+		 
+		 function view(row){
+			 window.location.href="/prizepunish/view?id="+row.id;
+		 }
+		 
+		 
+		 function remove(row){
+			 if(row.operationState != 0){
+				 $.errorMessage("已审核不能删除！");
+				 return false;
+			 }
+			 layer.confirm('确定删除吗?', function() {
+			 $.getAjax('/prizepunish/delete?id=' + row.id, function() {
+					$.successMessage("删除成功");
+					table.refresh();
+				});
+			 });
+		 }
+		 
+    	function getSelectRow(){
+    	var rows = $table.bootstrapTable('getSelections');
+		return rows.length>0?rows[0]:null;
+    }
+    	
+    	// 关键词搜索框添加绑定回车函数
+        $('body').bind('keypress', function(event) {
+            if (event.keyCode == "13") {
+            	query();
+            }
+        });
+    	//]]> 
+</script>
+</body>
+</html>

@@ -5,17 +5,16 @@
   <select id="prizeCountQueryAll" resultType="com.paladin.hf.service.statistics.vo.PrizepunishCountVO">
 		SELECT
 		  COUNT(0) AS count,
-		  d.dict_name as dictName,
+		  d.name as dictName,
 		  u.`org_agency_id`,
 		  u.`org_unit_id` 
 		FROM
 		  `prizepunish` AS p 
-		  LEFT JOIN dict AS d 
-		    ON p.dict_code = d.sort 
+		  LEFT JOIN sys_constant AS d 
+		    ON p.dict_code = d.`code` 
 		  LEFT JOIN org_user AS u
 		  ON p.org_user_id=u.id
-		WHERE d.dict_code = 'SJLX' 
-		  AND d.status = 0 
+		WHERE d.type = 'event_type' 
 	 	 AND ( p.`operation_state`='5' OR p.`operation_state`='4') 	  	 
 	 <if test="unitParam.unitId!=null">
 		        and u.org_unit_id=#{unitParam.unitId}

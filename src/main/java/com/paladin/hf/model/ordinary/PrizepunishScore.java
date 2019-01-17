@@ -22,7 +22,7 @@ public class PrizepunishScore {
 		return prizepunish.getOrgUserId();
 	}
 
-	public String getDictCode() {
+	public Integer getDictCode() {
 		return prizepunish.getDictCode();
 	}
 

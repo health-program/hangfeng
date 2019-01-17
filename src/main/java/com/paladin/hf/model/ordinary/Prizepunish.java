@@ -14,12 +14,13 @@ public class Prizepunish  extends BaseModel {
 	public static final int OPERATION_STATE_DEPARTMENT_TEMPORARY = 1;
 	public static final int OPERATION_STATE_AGENCY_TEMPORARY = 2;
 	public static final int OPERATION_STATE_SELF_SUBMIT = 3;
-	public static final int OPERATION_STATE_DEPARTMENT_SUBMIT = 4;
-	public static final int OPERATION_STATE_AGENCY_SUBMIT = 5;
+	public static final Integer OPERATION_STATE_DEPARTMENT_SUBMIT = 4;
+	public static final Integer OPERATION_STATE_AGENCY_SUBMIT = 5;
 
 	public static final int EXAMINE_WAIT = 0;//待审核
 	public static final int EXAMINE_SUCCESS = 1;//成功
 	public static final int EXAMINE_FAILURE = 2;//失败
+	
 	
 	
 	public static final String COLUMN_ORG_USER_ID = "orgUserId";
@@ -35,7 +36,7 @@ public class Prizepunish  extends BaseModel {
 
     private String orgUserId;
     
-    private String dictCode;
+    
 
     private String happenTime;
 
@@ -46,8 +47,10 @@ public class Prizepunish  extends BaseModel {
     private String checks;
 
     private String checkPeople;
-
-    private Integer operationState;
+    
+    private  Integer operationState;
+    
+    private  Integer dictCode;
 
     private Integer examineState;
 
@@ -210,18 +213,8 @@ public class Prizepunish  extends BaseModel {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getDictCode()
-    {
-        return dictCode;
-    }
-
-    public void setDictCode(String dictCode)
-    {
-        this.dictCode = dictCode;
-    }
-
     public String getContent() {
-        return content;
+            return content;
     }
 
     public void setContent(String content) {
@@ -255,19 +248,27 @@ public class Prizepunish  extends BaseModel {
     }
 
     public Integer getOperationState() {
-        return operationState;
+      return operationState;
     }
 
     public void setOperationState(Integer operationState) {
-        this.operationState = operationState == null ? null : operationState;
+          this.operationState = operationState;
     }
-
+    
+    public Integer getDictCode() {
+          return dictCode;
+    }
+    
+    public void setDictCode(Integer dictCode) {
+          this.dictCode = dictCode;
+    }
+    
     public Integer getExamineState() {
-        return examineState;
+          return examineState;
     }
-
+    
     public void setExamineState(Integer examineState) {
-        this.examineState = examineState == null ? null : examineState;
+          this.examineState = examineState;
     }
 
     public String getExaminePeople() {

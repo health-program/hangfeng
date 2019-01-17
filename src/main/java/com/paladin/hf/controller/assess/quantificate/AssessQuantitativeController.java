@@ -124,7 +124,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 			model.addAttribute("assessCycleName", assessCycle.getCycleName());
 		}
 
-		return "console/assessQuantitative/agency_index";
+		return "/hf/assess/quantificate/agency_quantificate_index";
 	}
 
 	@RequestMapping("/user")
@@ -166,7 +166,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 		model.addAttribute("assessCycleName", assessCycle.getCycleName());
 		model.addAttribute("userId", userId);
 
-		return "console/assessQuantitative/agency_user_index";
+		return "/hf/assess/quantificate/agency_quantificate_user_index";
 	}
 
 	@RequestMapping(value = "/agency/user/view")
@@ -183,7 +183,7 @@ public class AssessQuantitativeController extends ControllerSupport {
 		model.addAttribute("userId", userId);
 		model.addAttribute("isView", 1);
 
-		return "console/assessQuantitative/agency_user_index";
+		return "/hf/assess/quantificate/agency_quantificate_user_index";
 	}
 
 	@ResponseBody

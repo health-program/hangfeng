@@ -1589,7 +1589,7 @@ function _initTable() {
                 url: options
             };
 
-        if (!options.ajax) {
+        if (!options.ajax && options.url !== false) {
             options.ajax = function(request) {
                 if (typeof url === 'function') {
                     request.url = request.url();

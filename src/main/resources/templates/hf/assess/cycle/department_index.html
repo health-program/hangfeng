@@ -134,9 +134,8 @@
             sortName: 'createTime',
             queryParams: function() {
                 var o = $("[name='cycleId']").data("cycleComponment").getCurrent();
-                return o ? {
-                    cycleName: o.cycleName
-                } : null;
+                if(o)params.cycleName = o.cycleName;
+                return params;
             },
             sortOrder: 'asc',
             pagination: true,

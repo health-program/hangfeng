@@ -12,6 +12,8 @@ import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.framework.utils.uuid.UUIDUtil;
+import com.paladin.hf.mapper.assess.quantificate.AssessItemExtraMapper;
+import com.paladin.hf.mapper.assess.quantificate.AssessItemMapper;
 import com.paladin.hf.mapper.assess.quantificate.TemplateMapper;
 import com.paladin.hf.model.assess.quantificate.AssessItem;
 import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
@@ -33,6 +35,12 @@ public class TemplateService extends ServiceSupport<Template> {
 	private AssessItemExtraService assessItemExtraService;
 
 	@Autowired
+	private AssessItemExtraMapper assessItemExtraMapper;
+	
+	@Autowired
+	private AssessItemMapper assessItemMapper;
+	
+	@Autowired
 	private TemplateMapper templateMapper;
 
 	public List<Template> findStartedTemplateByUnit(String unitId) {
@@ -53,7 +61,7 @@ public class TemplateService extends ServiceSupport<Template> {
 
 		item.setTemplateId(templateId);
 		item.setId(newId);
-		assessItemService.save(item);
+		assessItemMapper.insert(item);
 
 		for (int i = 0; i < items.size(); i++) {
 			AssessItem a = items.get(i);
@@ -97,7 +105,7 @@ public class TemplateService extends ServiceSupport<Template> {
 		for (AssessItemExtra extra : extras) {
 			extra.setTemplateId(newTemplateId);
 			extra.setId(UUIDUtil.createUUID());
-			assessItemExtraService.save(extra);
+			assessItemExtraMapper.insert(extra);
 		}
 
 		return true;

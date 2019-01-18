@@ -4,7 +4,7 @@
 <head th:include="/hf/header" />
 
 <body>
-    <tt:constant enumcode="enable-state," />
+    <tt:constant enumcode="enable-state,grade-names" />
     <section class="content-header">
         <h1>考评模板管理</h1>
         <ol class="breadcrumb">
@@ -16,7 +16,7 @@
         <div class="box box-solid">
             <div class="box-header with-border">
                 <i class="fa fa-list-alt"></i>
-                <h3 class="box-title">详情</h3>
+                <h3 class="box-title">考评模板</h3>
                 <div class="box-tools pull-right">
                     <a class="btn" id="model_edit_btn" href="javascript:void(0)"><i class="fa fa-edit"></i>编辑</a>
                 </div>
@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label for="templateDescribe" class="col-sm-3 control-label">模板描述：</label>
                         <div class="col-sm-8">
-                            <pre name="templateDescribe" style="min-height:200px" class="form-control-static description"></pre>
+                            <pre name="templateDescribe" style="min-height:150px" class="form-control-static description"></pre>
                         </div>
                     </div>
                 </form>
@@ -76,9 +76,28 @@
                 </form>
             </div>
         </div>
+        <div class="box box-solid">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab1" data-toggle="tab" aria-expanded="true">考评项目</a></li>
+                    <li class=""><a href="#tab2" data-toggle="tab" aria-expanded="false">考评等级</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab1">
+                        <div class="tab-pane active" id="tab11">
+                            <table id="dataGrid1" class="table table-bordered"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab2">
+                        <table id="dataGridLevel"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     <input type="hidden" id="id" th:value="${id}" />
     <div th:include="/hf/footer" />
+    <script type="text/javascript" src="/static/js/treetable.js"></script>
     <script type="text/javascript">
     $(function() {
         var options = {
@@ -95,13 +114,273 @@
         $.getAjax("/assess/template/get?id=" + $("#id").val(), function(data) {
             if (data.enableState != 2) $("#model_edit_btn").hide();
             var model = new tonto.Model("model", options.columns, {
-                extraParam:{
-                    id:$("#id").val()
+                extraParam: {
+                    id: $("#id").val()
                 }
             });
             model.setData(data);
         });
+
+        $.getAjax("/assess/template/config/detail?id=" + $("#id").val(), initItem);
     });
+
+    function initItem(data) {
+        // 初始化树数据
+        if (data.extras) {
+            createExtras(data.extras);
+        }
+
+        if (data.items) {
+            var items = data.items;
+
+            var roots = $.grep(items, function(row, index) {
+                return row.parentItemId == null;
+            });
+
+            var treedata = g(roots, items, 0);
+
+            createTable(treedata);
+
+            table = $.createTable("#dataGrid2", {
+                columns: [
+                    [
+                        { title: "考评项名称", field: "itemName" },
+                        { title: "基础得分", field: "basicScore" },
+                        { title: "考评项内容", field: "itemDescription" }
+                    ]
+                ],
+                data: data.items,
+                pagination: false, //分页请设置为false
+                treeView: true, //是否开启树视图
+                treeId: "id", //id字段
+                treeParentFilter: true, //过滤掉父节点不正确的（置为空）
+                treeParentField: "parentItemId", //父ID字段
+                treeField: "itemName" //展示树的字段
+            });
+
+            $("#dataGrid3").html(
+                "<thead><tr><th>加分项目</th><th>扣分项目</th><th>一票否决</th></tr></thead>" +
+                "<tbody><td>" + addExtra + "</td><td>" + lessExtra + "</td><td>" + voteExtra + "</td></tr></tbody>"
+            );
+        }
+    }
+
+
+    var g = function(nodeItems, data, depth) {
+
+        var nodes = [];
+
+        if ($.isArray(nodeItems)) {
+            nodeItems.forEach(function(item) {
+                var node = {
+                    text: item.itemName,
+                    data: item,
+                    depth: depth
+                };
+
+                var children = $.grep(data, function(row, index) {
+                    return item.id == row.parentItemId;
+                });
+
+                if (children && children.length > 0) {
+                    node.nodes = g(children, data, depth + 1);
+                }
+
+                nodes.push(node);
+            })
+        }
+        return nodes;
+    }
+
+    var addExtra = "";
+    var lessExtra = "";
+    var voteExtra = "";
+
+    function createExtras(extras) {
+
+        addExtra = "<ol>";
+        lessExtra = "<ol>";
+        voteExtra = "<ol>";
+
+        if (extras) {
+            for (var y = 0; y < extras.length; y++) {
+                var extraItem = extras[y];
+                if (extraItem.extraType == '1') {
+                    addExtra += "<li><p>" + extraItem.extraDescription + "</p>";
+                    addExtra += "<p>【加分下限：" + extraItem.alterLower + "，加分上限：" + extraItem.alterUpper + "，累计上限：" + (extraItem.accumulateUpper || "不计上限") + "】<p></li>";
+                }
+                if (extraItem.extraType == '2') {
+                    lessExtra += "<li><p>" + extraItem.extraDescription + "</p>";
+                    lessExtra += "<p>【扣分下限：" + extraItem.alterLower + "，扣分上限：" + extraItem.alterUpper + "，累计上限：" + (extraItem.accumulateUpper || "不计上限") + "】<p></li>";
+                }
+                if (extraItem.extraType == '3') {
+                    voteExtra += "<li>" + extraItem.extraDescription + "</li>";
+                }
+            }
+        }
+        addExtra += "</ol>";
+        lessExtra += "</ol>";
+        voteExtra += "</ol>";
+    }
+
+    // ----------------------------------------
+    // 画表格
+    // ----------------------------------------
+
+
+    function createTable(treedata) {
+
+        var trs = [];
+        for (var i = 0; i < treedata.length; i++) {
+            getRow(treedata[i], null, trs);
+        }
+
+        var html = "<tbody>";
+        var maxDepth = 1;
+        var maxDepthIndex = 0;
+        var j = 0
+        for (; j < trs.length; j++) {
+            if (trs[j].length > maxDepth) {
+                maxDepth = trs[j].length;
+                maxDepthIndex = j;
+            }
+        }
+        for (j = 0; j <
+            trs.length; j++) {
+            var tr = trs[j];
+            html += "<tr>";
+            var x = 0
+            for (; x < tr.length; x++) {
+                var td = tr[x];
+                var data = td.data;
+                var rowspan = td.rowspan;
+                html += "<td valign='middle' style='vertical-align:middle' rowspan='" + rowspan + "'>" + data.itemName + "</td>";
+                html += "<td valign='middle' style='vertical-align:middle' rowspan='" + rowspan + "'>" + (data.itemDescription || "") + "</td>";
+                html += "<td valign='middle' style='vertical-align:middle;text-align:center;width:50px' align='center' rowspan='" + rowspan + "'>" + data.basicScore + "</td>";
+            }
+            var depth = (tr.length > 0 ? tr[tr.length - 1].depth : 0);
+            var d = maxDepth - depth - 1;
+            if (d > 0) {
+                html += "<td colspan='" + (d * 3) + "'> </td>";
+            }
+            if (j == 0) {
+                html += "<td rowspan='" + trs.length + "'>" + addExtra + "</td>";
+                html += "<td rowspan='" + trs.length + "'>" + lessExtra + "</td>";
+                html += "<td rowspan='" + trs.length + "'>" + voteExtra + "</td>";
+            }
+        }
+        html += "</tbody>";
+        var thead = "<thead><tr>" + "<th align='center' style='text-align:center' colspan='" + (maxDepth * 3) + "'>考评项目</th>" +
+            "<th align='center' style='text-align:center' rowspan='2'>加分</th>" +
+            "<th align='center' style='text-align:center' rowspan='2'>扣分</th>" +
+            "<th align='center' style='text-align:center' rowspan='2'>一票否决</th></tr>";
+
+        thead += "<tr>";
+
+        for (j = 0; j < maxDepth; j++) {
+            thead += "<th align='center' style='text-align:center'>名称</th>";
+            thead += "<th align='center' style='text-align:center'>描述</th>";
+            thead += "<th align='center' style='text-align:center'>分数</th>";
+        }
+
+        thead += "</tr></thead>";
+        $("#dataGrid1").html(thead + html);
+    }
+
+    function getRowspan(node) {
+        if (node.nodes) {
+            var s = 0;
+            for (var i = 0; i < node.nodes.length; i++) {
+                var subnode = node.nodes[i];
+                s += getRowspan(subnode);
+            }
+            return s;
+        }
+        return 1;
+    }
+
+    function getRow(node, tr, trs) {
+        if (!tr) {
+            tr = [];
+            trs.push(tr);
+        }
+        var rowspan = getRowspan(node);
+        tr.push({
+            data: node.data,
+            rowspan: rowspan,
+            depth: node.depth
+        });
+        var nodes = node.nodes;
+        if (nodes && nodes.length > 0) {
+            var first = nodes[0];
+            getRow(first, tr, trs);
+            for (var i = 1; i < nodes.length; i++) {
+                getRow(nodes[i], null, trs);
+            }
+        }
+    }
+
+    //-------------- 等级部分 -----------------
+    var levelTable;
+
+    function initLevelData(data, rows) {
+        if (data) {
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                var key = item.key;
+                var row;
+                if (rows) {
+                    for (var j = 0; j < rows.length; j++) {
+                        if (rows[j].levelCode == key) {
+                            row = rows[j];
+                        }
+                    }
+                }
+                if (row) {
+                    $.extend(item, row);
+                } else {
+                    item.totalUpper = null;
+                    item.totalLower = null;
+                    item.addUpper = null;
+                    item.addLower = null;
+                    item.lessUpper = null;
+                    item.lessLower = null;
+                }
+            }
+        }
+    }
+
+    $(function() {
+        var data = window._constant_cache["grade-names"];
+        $.getAjax("/assess/template/level/get?id=" + $("#id").val(), function(rows) {
+            initLevelData(data, rows);
+            initLevelDataGrid(data);
+        });
+    });
+
+    function initLevelDataGrid(data) {
+        levelTable = $.createTable("#dataGridLevel", {
+            idField: "id",
+            columns: [
+                [
+                    { title: "等级名称", field: "value" },
+                    { title: "总分上限", field: "totalUpper" },
+                    { title: "总分下限", field: "totalLower" },
+                    { title: "加分上限", field: "addUpper" },
+                    { title: "加分下限", field: "addLower" },
+                    { title: "扣分上限", field: "lessUpper" },
+                    { title: "扣分下限", field: "lessLower" }
+                ]
+            ],
+            data: data,
+            url: false,
+            pagination: false,
+
+        });
+
+
+
+    }
     </script>
 </body>
 

@@ -132,11 +132,10 @@
             url: '/assess/cycle/agency/find',
             searchbar: '#searchbar',
             sortName: 'createTime',
-            queryParams: function() {
+            queryParams: function(params) {
                 var o = $("[name='cycleId']").data("cycleComponment").getCurrent();
-                return o ? {
-                    cycleName: o.cycleName
-                } : null;
+                if(o)params.cycleName = o.cycleName;
+                return params;
             },
             sortOrder: 'asc',
             pagination: true,

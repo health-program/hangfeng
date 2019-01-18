@@ -53,36 +53,22 @@ public class AssessCycleController extends ControllerSupport {
 
 	@RequestMapping(value = "/index")
 	public String index(Model model) {
-
-		HfUserSession session = HfUserSession.getCurrentUserSession();
-
-		Unit agency = null;
-
-		if (!session.isAdminRoleLevel()) {
-			if (session.isAssessTeamRole()) {
-				agency = session.getOwnUnit().getAgency();
-			} else {
-				List<Unit> agencys = DataPermissionUtil.getOwnAgency();
-				int size = agencys.size();
-				if (size == 1) {
-					agency = agencys.get(0);
-				} else if (size == 0) {
-					agency = session.getUserAgency();
-				}
-			}
-
-			if (agency != null) {
-				model.addAttribute("agencyId", agency.getId());
-				model.addAttribute("agencyName", agency.getName());
-			}
-		}
-
 		return "/hf/assess/cycle/cycle_index";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/list")
 	public Object listPage(AssessCycleQuery assessCycleQuery) {
+		List<String> agencyIds = DataPermissionUtil.getOwnAgencyId();
+		if (agencyIds == null || agencyIds.size() == 0) {
+			return CommonResponse.getSuccessResponse(templateService.getEmptyPageResult(assessCycleQuery));
+		} else {
+			if (agencyIds.size() == 1) {
+				assessCycleQuery.setUnitId(agencyIds.get(0));
+			} else {
+
+			}
+		}
 		return CommonResponse.getSuccessResponse(assessCycleService.searchPage(assessCycleQuery));
 	}
 
@@ -113,8 +99,7 @@ public class AssessCycleController extends ControllerSupport {
 	@ResponseBody
 	@RequestMapping(value = "/select/assess")
 	public Object assessListPage(AssessCycleSelectQuery query) {
-		return CommonResponse
-				.getSuccessResponse(assessCycleService.findAvailableAssessCyclePage(query, query.getUnitId()));
+		return CommonResponse.getSuccessResponse(assessCycleService.findAvailableAssessCyclePage(query, query.getUnitId()));
 	}
 
 	@ResponseBody
@@ -368,8 +353,7 @@ public class AssessCycleController extends ControllerSupport {
 	@RequestMapping("/template/config/set")
 	@ResponseBody
 	public Object setTemplateConfig(AssessCycleTemplateRequest request) {
-		return CommonResponse.getResponse(assessCycleService.configTemplate(request.getCycleId(),
-				request.getTemplateId(), request.getUnitIds().split(",")));
+		return CommonResponse.getResponse(assessCycleService.configTemplate(request.getCycleId(), request.getTemplateId(), request.getUnitIds().split(",")));
 	}
 
 	/**

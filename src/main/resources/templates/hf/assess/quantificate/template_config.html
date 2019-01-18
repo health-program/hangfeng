@@ -23,13 +23,10 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab1">
-                    <div class="box-body">               
-                    <div class="col-md-5" id="itemTree" style="height: 800px; overflow: auto;">
-                    </div>
-                    <div class="col-md-7" id="itemEditor">                          
-                        <div class="box-body" style="height:800px">
-                            <ol class="breadcrumb" id="itemBreadcrumb">
-                            </ol>
+                    <div class="box-body">
+                        <div class="col-md-5" id="itemTree" style="height: 800px; overflow: auto;">
+                        </div>
+                        <div class="col-md-7" id="itemEditor">
                             <form class="form-horizontal tonto-form-validate" id="itemForm" action="/assess/template/item/save" method="post">
                                 <input type="hidden" name="templateId" />
                                 <input type="hidden" name="id" id="itemId" />
@@ -62,7 +59,6 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
                     </div>
                 </div>
                 <div class="tab-pane" id="tab2">
@@ -121,19 +117,20 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tab3">
-                        <div class="box-body">
-                            <table id="dataGridLevel"></table>
-                            <div style="margin-top:10px; text-align:right">
-                                <a onclick="save()" class="btn btn-primary">提交</a>
-                                <a onclick="reset()" class="btn btn-default">重置</a>
-                            </div>
+                    <div class="box-body">
+                        <table id="dataGridLevel"></table>
+                        <div style="margin-top:10px; text-align:right">
+                            <a onclick="save()" class="btn btn-primary">提交</a>
+                            <a onclick="reset()" class="btn btn-default">重置</a>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
     <div th:include="/hf/footer"></div>
     <script src="/static/assets/adminLTE/js/bootstrap-editable.min.js"></script>
+    <script src="/static/assets/adminLTE/js/bootstrap-table-editable.min.js"></script>
     <script type="text/javascript">
     /*<![CDATA[*/
     var templateId;
@@ -336,6 +333,7 @@
 
     //-------------- 附加部分 -----------------
     var extraTable;
+
     function initItemExtra() {
         $("#extraItemForm")[0].submitHandler = function() {
             layer.msg("保存成功", { icon: 1 });
@@ -348,12 +346,12 @@
     }
 
     function initItemExtraTable(enumMap) {
-       extraTable = $.createTable("#extraDataGrid", {
+        extraTable = $.createTable("#extraDataGrid", {
             idField: "id",
             columns: [
                 [
-                    { title: "附加描述", field: "extraDescription",align:"left",width:"70%" },
-                    { title: "附加类型", field: "extraType", enumcode: "extra-item-type"},
+                    { title: "附加描述", field: "extraDescription", align: "left", width: "70%" },
+                    { title: "附加类型", field: "extraType", enumcode: "extra-item-type" },
                     { title: "加扣分上限", field: "alterUpper" },
                     { title: "加扣分下限", field: "alterLower" },
                     { title: "累计上限", field: "accumulateUpper" },
@@ -377,7 +375,7 @@
                     }
                 ]
             ],
-            url: '/assess/template/item/extra/template?id=' + templateId,
+            url: '/assess/template/item/extra/get?id=' + templateId,
             pagination: false,
             toolbar: "#toolbar"
         });
@@ -440,13 +438,13 @@
             $.getAjax('/assess/template/item/extra/delete?id=' + row.id, function() {
                 $.successMessage("删除成功");
                 toTableExtra();
-                table.refresh();
+                extraTable.refresh();
 
             });
         });
     }
 
-//-------------- 等级部分 -----------------
+    //-------------- 等级部分 -----------------
     var levelTable;
 
     function initLevelData(data, rows) {
@@ -478,14 +476,14 @@
 
     function save() {
         var requestData = [];
-        for (var i = 0; i < table.data.length; i++) {
-            var item = table.data[i];
-            if (item.totalUpper==null || !$.trim(item.totalUpper)) {
+        for (var i = 0; i < levelTable.data.length; i++) {
+            var item = levelTable.data[i];
+            if (item.totalUpper == null || !$.trim(item.totalUpper)) {
                 $.failMessage("请输入总分上限");
                 return;
             }
 
-            if (item.totalLower==null || !$.trim(item.totalLower)) {
+            if (item.totalLower == null || !$.trim(item.totalLower)) {
                 $.failMessage("请输入总分下限");
                 return;
             }
@@ -511,8 +509,8 @@
     }
 
     function reset() {
-        for (var i = 0; i < table.data.length; i++) {
-            var item = table.data[i];
+        for (var i = 0; i < levelTable.data.length; i++) {
+            var item = levelTable.data[i];
             item.totalUpper = null;
             item.totalLower = null;
             item.addUpper = null;
@@ -521,7 +519,7 @@
             item.lessLower = null;
         }
 
-        table.load(table.data);
+        levelTable.load(levelTable.data);
     }
 
     $(function() {
@@ -575,7 +573,7 @@
             }
         }
 
-        levelTable = $.createTable("#dataGrid", {
+        levelTable = $.createTable("#dataGridLevel", {
             idField: "id",
             columns: [
                 [
@@ -588,8 +586,14 @@
                     { title: "扣分下限", field: "lessLower", editable: editableConfig },
                 ]
             ],
-            data: data
+            data: data,
+            url: false,
+            pagination: false,
+
         });
+
+
+
     }
 
     /*]]>*/

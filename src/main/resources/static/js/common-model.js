@@ -756,7 +756,7 @@ var _textAreaFieldBuilder = new _FieldBuilder("TEXTAREA", {
         var colspan = column.colspan || options.maxColspan;
         html = '<label for="' + column.name + '" class="col-sm-' + (isFirst ? options.firstLabelSize : options.labelSize) + ' control-label">' + column.title + '：</label>\n';
         html += '<div class="col-sm-' + ((colspan - 1) * (options.inputSize + options.labelSize) + options.inputSize) + '">\n';
-        html += '<pre name="' + column.name + '" style="min-height:200px" class="form-control-static description"></pre>\n';
+        html += '<pre name="' + column.name + '" style="min-height:150px" class="form-control-static description"></pre>\n';
         html += '</div>\n';
         return {
             colspan: colspan,

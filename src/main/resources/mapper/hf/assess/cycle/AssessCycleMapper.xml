@@ -3,27 +3,20 @@
 <mapper namespace="com.paladin.hf.mapper.assess.cycle.AssessCycleMapper">
 
 	<update id="startAssessCycle" parameterType="string">
-		UPDATE assess_cycle
-		SET cycle_state = '1' WHERE (cycle_state = '2' OR cycle_state = '4')
-		AND id = #{_parameter}
+		UPDATE assess_cycle SET cycle_state = 1 WHERE (cycle_state = 2 OR cycle_state = 4) AND id = #{_parameter}
 	</update>
 
 	<update id="archiveAssessCycle" parameterType="string">
-		UPDATE
-		assess_cycle SET cycle_state = '3' WHERE cycle_state != '2' AND id =
-		#{_parameter}
+		UPDATE assess_cycle SET cycle_state = 3 WHERE cycle_state != 2 AND id = #{_parameter}
 	</update>
 
 	<update id="stopAssessCycle" parameterType="string">
-		UPDATE assess_cycle
-		SET cycle_state = '4' WHERE cycle_state = '1' AND id = #{_parameter}
+		UPDATE assess_cycle SET cycle_state = 4 WHERE cycle_state = 1 AND id = #{_parameter}
 	</update>
 
 	<delete id="removeAssessCycle" parameterType="string">
-		DELETE FROM
-		assess_cycle WHERE cycle_state = "2" AND id = #{_parameter}
+		DELETE FROM assess_cycle WHERE cycle_state = 2 AND id = #{_parameter}
 	</delete>
-
 
     <!-- TODO 改为DTO接收 -->
 	<select id="getAgencyFirstAssessCycle" parameterType="string"
@@ -52,37 +45,10 @@
 		LIMIT 1
 	</select>
 
-
-	<select id="cycleCount" resultType="Integer">
-		SELECT COUNT(0) FROM `assess_cycle_template` WHERE cycle_id=#{id}
-	</select>
-
-
 	<!-- 根据周期id查询对应的模板id -->
-	<select id="selectTemplateIdByAssessCycleId" resultType="Integer">
+	<select id="countByAssessCycleId" resultType="Integer">
 		select COUNT(0) from assess_cycle_template WHERE cycle_id = #{id}
 	</select>
-	
-	<select id="getOneById" parameterType="String" resultType="com.paladin.hf.service.assess.cycle.dto.AssessCycleDTO">
-		SELECT
-		    id,
-		    unit_id AS unitId,
-		    cycle_name AS cycleName,
-		    cycle_start_time AS cycleStartTime,
-		    cycle_end_time AS cycleEndTime,
-		    assess_start_time AS assessStartTime,
-		    assess_end_time AS assessEndTime,
-		    cycle_state AS cycleState,
-		    assess_type AS assessType,
-		    cycle_describe AS cycleDescribe,
-		    create_time AS createTime,
-		    create_user_id AS createUserId,
-		    update_time AS updateTime,
-		    update_user_id AS updateUserId
-		FROM
-		    assess_cycle
-		WHERE
-		    id = #{id}
-	</select>
+
 
 </mapper>

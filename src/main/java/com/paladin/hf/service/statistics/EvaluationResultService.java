@@ -1,29 +1,16 @@
 package com.paladin.hf.service.statistics;
 
 import java.io.OutputStream;
-import java.util.List;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.PageResult;
-import com.paladin.framework.core.ServiceSupport;
-import com.paladin.framework.core.UserSession;
-import com.paladin.framework.core.exception.BusinessException;
-import com.paladin.framework.excel.write.ExcelWriter;
 import com.paladin.hf.core.DataPermissionUtil;
-import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
-import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.mapper.statistics.EvaluationResultMapper;
-import com.paladin.hf.model.assess.cycle.AssessCycle;
-import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.statistics.dto.AppraisalSummaryQueryDTO;
-import com.paladin.hf.service.statistics.dto.EvaluationResultPeopleExcelDTO;
 import com.paladin.hf.service.statistics.vo.EvaluationResultVO;
 
 
@@ -33,11 +20,10 @@ import com.paladin.hf.service.statistics.vo.EvaluationResultVO;
  */
 @Service
 public class EvaluationResultService {
+	
 	@Autowired
 	private EvaluationResultMapper evaluationResultMapper;
-	@Autowired
-	private AssessCycleService assessCycleService;
-
+	
 	public PageResult<EvaluationResultVO> userAll(AppraisalSummaryQueryDTO query) {
 		Page<EvaluationResultVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
 		evaluationResultMapper.userAll(query, DataPermissionUtil.getUnitQueryDouble(query.getUnitId()));

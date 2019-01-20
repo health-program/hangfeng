@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.PageResult;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
@@ -43,8 +42,7 @@ public class EvaluationDetailedController
     
     @RequestMapping("/search/all")
     @ResponseBody
-    public Object searchAll(PersoncycassessQueryDTO query) {
-        
-        return CommonResponse.getSuccessResponse(new PageResult(evaluationDetailedService.personcycassessDetaileds(query)));
+    public Object searchAll(PersoncycassessQueryDTO query) {       
+        return CommonResponse.getSuccessResponse(new PageResult<>(evaluationDetailedService.personcycassessDetaileds(query)));
     }
 }

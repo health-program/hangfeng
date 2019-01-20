@@ -1,10 +1,10 @@
 package com.paladin.hf.service.statistics;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.hf.mapper.statistics.EvaluationDetailedMapper;
 import com.paladin.hf.service.statistics.dto.PersoncycassessQueryDTO;

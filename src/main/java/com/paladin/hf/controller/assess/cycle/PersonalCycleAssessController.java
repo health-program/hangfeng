@@ -31,7 +31,7 @@ import com.paladin.hf.service.org.OrgUserService;
  */
 @Controller
 @RequestMapping("/assess/cycle/personal")
-public class PersonalAssessCycleController extends ControllerSupport {
+public class PersonalCycleAssessController extends ControllerSupport {
 
 	@Autowired
 	private PersonCycAssessService perCycAssService;

@@ -2,7 +2,6 @@ package com.paladin.hf.mapper.assess.cycle;
 
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
-import com.paladin.hf.service.assess.cycle.dto.AssessCycleDTO;
 
 public interface AssessCycleMapper extends CustomMapper<AssessCycle> {
 
@@ -16,16 +15,6 @@ public interface AssessCycleMapper extends CustomMapper<AssessCycle> {
 
 	public AssessCycle getAgencyFirstAssessCycle(String agencyId);
 	
-	/**
-     * <周期启用时判断是否模板配置>
-     * @param id
-     * @return
-     * @see [类、类#方法、类#成员]
-     */
-	int cycleCount(String id);
-
-    public int selectTemplateIdByAssessCycleId(String id);
-
-    public AssessCycleDTO getOneById(String id);
+    public int countByAssessCycleId(String id);
 
 }

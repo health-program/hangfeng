@@ -25,7 +25,6 @@ import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.model.ordinary.PrizepunishScore;
 import com.paladin.hf.model.org.OrgUserAssess;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
-import com.paladin.hf.service.assess.quantificate.dto.QuantificatedOrgUserDTO;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserDetailQuery;
 import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;
 import com.paladin.hf.service.ordinary.PrizepunishService;

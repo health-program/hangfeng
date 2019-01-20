@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper">
-    <select id="findPersonal" parameterType="com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO">
+    <select id="findPersonal" parameterType="com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO" resultType="com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO">
         SELECT
         pca.id AS id,
         pca.org_user_id AS userId,
@@ -25,7 +25,7 @@
         ORDER BY ac.cycle_start_time DESC
     </select>
     
-    <select id="findDepartment" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO">
+    <select id="findDepartment" resultType="com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO">
         SELECT
         pca.id AS id,
         pca.org_user_id AS userId,
@@ -80,7 +80,7 @@
         </if>
     </select>
 
-    <select id="findAgency" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO">
+    <select id="findAgency" resultType="com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO">
         SELECT
         pca.id AS id,
         pca.org_user_id AS userId,
@@ -135,7 +135,7 @@
         </if>
     </select>
 
-    <select id="getDetailByUserAndCycle" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleDetailVO">
+    <select id="getDetailByUserAndCycle" resultType="com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO">
         SELECT
         pca.id AS id,
         pca.org_user_id AS userId,
@@ -178,7 +178,7 @@
         WHERE pca.org_user_id=#{userId} AND pca.assess_cycle_id=#{cycleId}
     </select>
     
-    <select id="getDetailById" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleDetailVO">
+    <select id="getDetailById" resultType="com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO">
         SELECT
         pca.id AS id,
         pca.org_user_id AS userId,

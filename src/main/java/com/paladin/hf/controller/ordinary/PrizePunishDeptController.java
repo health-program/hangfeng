@@ -26,7 +26,6 @@ import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.service.ordinary.PrizepunishService;
 import com.paladin.hf.service.ordinary.dto.PrizepunishDTO;
 import com.paladin.hf.service.ordinary.dto.PrizepunishQuery;
-import com.paladin.hf.service.org.OrgUserService;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
 
 /** 平时考评科室-奖惩事件  
@@ -39,9 +38,6 @@ public class PrizePunishDeptController extends ControllerSupport{
 
     @Autowired
     private PrizepunishService prizepunishService;
-    
-    @Autowired
-    private OrgUserService orgUserService;
     
     @Autowired
     private SysAttachmentService attachmentService;

@@ -40,24 +40,11 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	@Autowired
 	private OrgUserService orgUserService;
 
-	/**
-	 * 保存或更新
-	 * 
-	 * @param assessCycle
-	 * @return
-	 */
-	public int saveOrUpdateAssessCycle(AssessCycle assessCycle) {
-		if (StringUtil.isEmpty(assessCycle.getId())) {
-			assessCycle.setCycleState(AssessCycle.CYCLE_STATE_DRAFT);
-			return save(assessCycle);
-		} else {
-			assessCycle.setCycleState(null);
-			return updateSelective(assessCycle);
+	public boolean startAssessCycle(String id) {
+		if(assessCycleMapper.countByAssessCycleId(id) == 0) {
+			throw new BusinessException("周期考核模板还未配置完成，不能启用");
 		}
-	}
-
-	public int startAssessCycle(String id) {
-		return assessCycleMapper.startAssessCycle(id);
+		return assessCycleMapper.startAssessCycle(id) >0;
 	}
 
 	public int stopAssessCycle(String id) {
@@ -291,22 +278,6 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 			}, query.getOffset(), query.getLimit(), true);
 		}
 	}
-	
-	
-	public int cycleCount(String id){
-	    return this.assessCycleMapper.cycleCount(id);
-	}
 
-      public int selectTemplateIdByAssessCycleId(String id) {
-            return assessCycleMapper.selectTemplateIdByAssessCycleId(id);
-      }
-
-      public AssessCycleDTO getOneById(String id) {
-            return assessCycleMapper.getOneById(id);
-      }
-
-	
-
-	
 
 }

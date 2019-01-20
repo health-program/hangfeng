@@ -11,24 +11,24 @@ import com.paladin.hf.service.assess.cycle.dto.AgencyQueryDTO;
 import com.paladin.hf.service.assess.cycle.dto.DepartmentQueryDTO;
 import com.paladin.hf.service.assess.cycle.dto.PersonalCycleAssessConfirmDTO;
 import com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO;
-import com.paladin.hf.service.assess.cycle.vo.AssessCycleDetailVO;
-import com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO;
+import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
+import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
 
 public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 
-	public List<AssessCycleSimpleVO> findPersonal(PersonalQueryDTO query);
+	public List<CycleAssessSimpleVO> findPersonal(PersonalQueryDTO query);
 	
-	public List<AssessCycleSimpleVO> findDepartment(@Param("unitParam") UnitQuery unitParam, @Param("query") DepartmentQueryDTO query);
+	public List<CycleAssessSimpleVO> findDepartment(@Param("unitParam") UnitQuery unitParam, @Param("query") DepartmentQueryDTO query);
 
-	public List<AssessCycleSimpleVO> findAgency(@Param("unitParam") UnitQuery unitParam, @Param("query") AgencyQueryDTO query);
+	public List<CycleAssessSimpleVO> findAgency(@Param("unitParam") UnitQuery unitParam, @Param("query") AgencyQueryDTO query);
 	
-	public AssessCycleDetailVO getDetailByUserAndCycle(@Param("userId") String userId, @Param("cycleId") String cycleId);
+	public CycleAssessDetailVO getDetailByUserAndCycle(@Param("userId") String userId, @Param("cycleId") String cycleId);
 
 	public int getCountByUserAndCycle(@Param("userId") String userId, @Param("cycleId") String cycleId);
 	
 	public int updateConfirmResult(PersonalCycleAssessConfirmDTO personalCycleAssessConfirm);
 
-	public AssessCycleDetailVO getDetailById(@Param("id") String id);
+	public CycleAssessDetailVO getDetailById(@Param("id") String id);
 
 	public int deletePersonalCycleAssess(@Param("id") String id);
 	

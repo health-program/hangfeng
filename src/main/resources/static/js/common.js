@@ -994,7 +994,7 @@ function _createAssessCycleComponment(input, _options, callback) {
                 area: ['800px', '650px'],
                 success: function(layero, index) {
 
-                    var url = '/console/asscyc/select/' + (type == 1 ? 'self' : (type == 2 ? 'user' : (type == 3 ? 'unit' : (type == 4 ? 'own' : (type == 9 ? 'assess' : 'selfenabled')))));
+                    var url = '/assess/cycle/select/' + (type == 1 ? 'self' : (type == 2 ? 'user' : (type == 3 ? 'unit' : (type == 4 ? 'own' : (type == 9 ? 'assess' : 'selfenabled')))));
 
                     if (that.userId) {
                         url += "?userId=" + that.userId;
@@ -1073,7 +1073,7 @@ function _createAssessCycleComponment(input, _options, callback) {
                 id: defaultValue
             });
         } else {
-            $.getAjax("/console/asscyc/get?id=" + defaultValue, function(data) {
+            $.getAjax("/assess/cycle/get?id=" + defaultValue, function(data) {
                 com.setCurrent(data);
                 com.defaultValue = data;
             });

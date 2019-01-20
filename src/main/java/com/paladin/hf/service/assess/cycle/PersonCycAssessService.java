@@ -24,8 +24,8 @@ import com.paladin.hf.service.assess.cycle.dto.PersonalCycleAssessConfirmDTO;
 import com.paladin.hf.service.assess.cycle.dto.PersonalCycleAssessSaveDTO;
 import com.paladin.hf.service.assess.cycle.dto.PersonalCycleAssessUpdateDTO;
 import com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO;
-import com.paladin.hf.service.assess.cycle.vo.AssessCycleDetailVO;
-import com.paladin.hf.service.assess.cycle.vo.AssessCycleSimpleVO;
+import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
+import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
 
 @Service
 public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
@@ -40,7 +40,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	 * @param cycleId
 	 * @return
 	 */
-	public AssessCycleDetailVO getDetailByUserAndCycle(String userId, String cycleId) {
+	public CycleAssessDetailVO getDetailByUserAndCycle(String userId, String cycleId) {
 		return perCycAssMapper.getDetailByUserAndCycle(userId, cycleId);
 	}
 
@@ -50,7 +50,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	 * @param id
 	 * @return
 	 */
-	public AssessCycleDetailVO getDetail(String id) {
+	public CycleAssessDetailVO getDetail(String id) {
 		return perCycAssMapper.getDetailById(id);
 	}
 
@@ -71,8 +71,8 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	 * @param query
 	 * @return
 	 */
-	public PageResult<AssessCycleSimpleVO> findPersonalPage(PersonalQueryDTO query) {
-		Page<AssessCycleSimpleVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
+	public PageResult<CycleAssessSimpleVO> findPersonalPage(PersonalQueryDTO query) {
+		Page<CycleAssessSimpleVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
 		query.setUserId(HfUserSession.getCurrentUserSession().getUserId());
 		perCycAssMapper.findPersonal(query);// 条件查询
 		return new PageResult<>(page);
@@ -84,8 +84,8 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	 * @param query
 	 * @return
 	 */
-	public PageResult<AssessCycleSimpleVO> findDepartmentPage(DepartmentQueryDTO query) {
-		Page<AssessCycleSimpleVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
+	public PageResult<CycleAssessSimpleVO> findDepartmentPage(DepartmentQueryDTO query) {
+		Page<CycleAssessSimpleVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
 		perCycAssMapper.findDepartment(unitQuery, query);// 条件查询
 		return new PageResult<>(page);
@@ -97,8 +97,8 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	 * @param query
 	 * @return
 	 */
-	public PageResult<AssessCycleSimpleVO> findAgencyPage(AgencyQueryDTO query) {
-		Page<AssessCycleSimpleVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
+	public PageResult<CycleAssessSimpleVO> findAgencyPage(AgencyQueryDTO query) {
+		Page<CycleAssessSimpleVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
 		perCycAssMapper.findAgency(unitQuery, query);// 条件查询
 		return new PageResult<>(page);

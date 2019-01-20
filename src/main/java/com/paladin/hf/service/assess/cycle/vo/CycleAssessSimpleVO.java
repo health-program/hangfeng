@@ -4,7 +4,7 @@ import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.hf.core.UnitContainer;
 
 
-public class AssessCycleSimpleVO {
+public class CycleAssessSimpleVO {
 
 	private String id;
 

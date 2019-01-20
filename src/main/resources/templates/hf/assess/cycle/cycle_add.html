@@ -9,7 +9,7 @@
     <section class="content-header">
         <h1>周期管理</h1>
         <ol class="breadcrumb">
-            <li><a href="/console/asscyc/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li><a href="/assess/cycle/index"><i class="fa fa-list-alt"></i>列表</a></li>
             <li class="active">新增</li>
         </ol>
     </section>
@@ -21,7 +21,7 @@
                 <h3 class="box-title">新增</h3>
             </div>
             <div id="model_edit" class="box-body">
-                <form id="model_form" action="/console/asscyc/save" method="post" class="form-horizontal edit-body">
+                <form id="model_form" action="/assess/cycle/save" method="post" class="form-horizontal edit-body">
                      <div class="form-group">
                          <label for="unitId" class="col-sm-2 control-label">机构单位</label>
                          <div class="col-sm-4">
@@ -89,7 +89,7 @@
         var options = {
         id: "model",
         name: "新增",
-        url: "/console/asscyc/save",
+        url: "/assess/cycle/save",
         columns: [
             { title: "单位", name: "unitId", inputType: "TEXT" },
             { title: "周期名称", name: "cycleName", inputType: "TEXT" },
@@ -108,7 +108,7 @@
                 pattern: "edit",
                 successCallback: function() {
                     $.successAlert("保存成功", function() {
-                        window.location = "/console/asscyc/index";
+                        window.location = "/assess/cycle/index";
                     });
                 }
             });

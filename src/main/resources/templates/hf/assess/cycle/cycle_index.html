@@ -105,9 +105,6 @@
                         align: "center",
                         width: "25%",
                         events: {
-                            'click .submit': function(e, value, row, index) {
-                                submit(row);
-                            },
                             'click .start': function(e, value, row, index) {
                                 start(row);
                             },
@@ -131,7 +128,7 @@
                     }
                 ]
             ],
-            url: '/console/asscyc/list',
+            url: '/assess/cycle/list',
             searchbar: '#searchbar',
             sortName: 'unitId',
             sortOrder: 'asc',
@@ -146,20 +143,17 @@
     function operateFormatter(value, row, index) {
         if (row.cycleState == "2") {
             return [
-                '<button class="submit btn btn-xs btn-info" style="margin-right:10px">',
-                '<i class="glyphicon glyphicon-edit"></i>提交',
+                '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
+                '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>',
-                '<button class="templateConfig btn btn-xs btn-primary" style="margin-right:10px">',
-                '<i class="glyphicon glyphicon-config"></i>配置',
+                '<button class="config btn btn-xs btn-primary" style="margin-right:10px">',
+                '<i class="glyphicon glyphicon-cog"></i>配置',
                 '</button>',
-                '<button class="edit btn btn-xs btn-success" style="margin-right:10px">',
-                '<i class="glyphicon glyphicon-edit"></i>修改',
+                '<button class="start btn btn-xs btn-success" style="margin-right:10px">',
+                '<i class="glyphicon glyphicon-edit"></i>启用',
                 '</button>',
                 '<button class="remove btn btn-xs btn-danger" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-remove"></i>删除',
-                '</button>',
-                '<button class="archive btn btn-xs btn-info" style="margin-right:10px">',
-                '<i class="glyphicon glyphicon-sort"></i>归档',
                 '</button>'
             ].join('');
         } else if (row.cycleState == "4") {
@@ -167,13 +161,10 @@
                 '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>',
-                '<button class="start btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="start btn btn-xs btn-success" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-edit"></i>启用',
                 '</button>',
-                '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
-                '<i class="glyphicon glyphicon-open"></i>详情',
-                '</button>',
-                '<button class="archive btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="archive btn btn-xs btn-success" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-sort"></i>归档',
                 '</button>'
             ].join('');
@@ -182,10 +173,10 @@
                 '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>',
-                '<button class="start btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="start btn btn-xs btn-danger" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-edit"></i>停用',
                 '</button>',
-                '<button class="archive btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="archive btn btn-xs btn-success" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-sort"></i>归档',
                 '</button>'
             ].join('');
@@ -200,105 +191,54 @@
 
 
     function config(row) {
-        window.location = "/console/asscyc/template/config/index?id=" + row.id;
+        window.location = "/assess/cycle/config/template/index?id=" + row.id;
     }
 
+    function add() {
+        window.location = "/assess/cycle/add";
+    }
+
+    function detail(row) {
+        window.location = "/assess/cycle/detail?id=" + row.id;
+    }
 
     function archive(row) {
-        if (row.cycleState == "2") {
-            $.infoMessage("无法归档暂存的周期");
-            return;
-        } else if (row.cycleState == "3") {
-            $.infoMessage("该周期已经归档！");
-            return;
-        } else {
-            layer.confirm('确定归档吗?', function() {
-                $.getAjax('/console/asscyc/archive?id=' + row.id, function() {
-                    $.successMessage("归档成功");
-                    table.refresh();
-                });
+        $.warnAlert('确定归档吗?',function(){
+            $.getAjax('/assess/cycle/archive?id=' + row.id, function() {
+                $.successMessage("归档成功");
+                table.refresh();
             });
-        }
+        });
     }
 
     function start(row) {
-        $.getAjax('/console/asscyc/is/start?id=' + row.id, function(res) {
-            if (res == 0) {
-                $.errorMessage('该周期还未进行模板配置！');
-            } else {
-                layer.confirm('确定提交吗?', function() {
-                    $.getAjax('/console/asscyc/start?id=' + row.id, function() {
-                        $.successMessage("提交成功");
-                        table.refresh();
-                    });
-                });
-            }
+        $.warnAlert('确定启用吗?',function(){
+            $.getAjax('/assess/cycle/start?id=' + row.id, function() {
+                $.successMessage("启用成功");
+                table.refresh();
+            });
         });
     }
 
     function stop(row) {
-        layer.confirm('确定停用吗?', function() {
-            $.getAjax('/console/asscyc/stop?id=' + row.id, function() {
+        $.warnAlert('确定停用吗?',function(){
+            $.getAjax('/assess/cycle/stop?id=' + row.id, function() {
                 $.successMessage("停用成功");
                 table.refresh();
             });
         });
     }
 
-    function add() {
-        window.location = "/console/asscyc/add/input";
-    }
-
-    function edit(row) {
-        if (row.cycleState == "1" || row.cycleState == "4") {
-            $.infoMessage("该周期已经提交，无法修改");
-            return;
-        }
-
-        if (row.cycleState == "3") {
-            $.infoMessage("该周期已经归档，无法修改");
-            return;
-        }
-
-        window.location = "/console/asscyc/view?id=" + row.id;
-    }
-
     function remove(row) {
-        if (row.cycleState == "1" || row.cycleState == "4") {
-            $.infoMessage("该周期已经提交，无法删除");
-            return;
-        }
-
-        if (row.cycleState == "3") {
-            $.infoMessage("该周期已经归档，无法删除");
-            return;
-        }
-        layer.confirm('确定删除吗?', function() {
-            $.getAjax('/console/asscyc/delete?id=' + row.id, function() {
+         $.warnAlert('确定删除吗?',function(){
+            $.getAjax('/assess/cycle/delete?id=' + row.id, function() {
                 $.successMessage("删除成功");
                 table.refresh();
             });
         });
     }
 
-    function view(row) {
-        window.location = "/console/asscyc/view?id=" + row.id;
-    }
 
-    function getSelectRow(notShowError) {
-        var rows = table.getSelections();
-        var row = rows.length > 0 ? rows[0] : null;
-        if (!notShowError && !row) {
-            $.errorMessage("请选中一条业务数据");
-        }
-        return row;
-    }
-
-    $('body').bind('keypress', function(event) {
-        if (event.keyCode == '13') {
-            table.refresh();
-        }
-    });
     </script>
 </body>
 

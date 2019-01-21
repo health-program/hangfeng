@@ -107,7 +107,7 @@
                             </div>
                             <label for="oeducation" class="col-sm-2 control-label">学历：</label>
                             <div class="col-sm-3">
-                                <p name="oeducation" class="form-control-static description"></p>
+                                <p name="oeducation" class="form-control-static description" enumcode="oeducation-type"></p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -243,7 +243,7 @@
                             </div>
                             <label for="oeducation" class="col-sm-2 control-label">学历：</label>
                             <div class="col-sm-3">
-                                <select name="oeducation" class="form-control tonto-select-constant" enumcode="oeducation-typ">
+                                <select name="oeducation" class="form-control tonto-select-constant" enumcode="oeducation-type">
                                     <option value="">请选择</option>
                                 </select>
                             </div>
@@ -330,7 +330,7 @@
             { title: "职称", name: "jobRank", inputType: "SELECT", enum: "job-rank-type" },
 
             { title: "职级", name: "jobLevel", inputType: "SELECT", enum: "job_level" },
-            { title: "学历", name: "oeducation", inputType: "SELECT", enum: "oeducation-typ" },
+            { title: "学历", name: "oeducation", inputType: "SELECT", enum: "oeducation-type" },
 
             { title: "参加工作时间", name: "startWorkTime", inputType: "DATE" },
             { title: "进单位时间", name: "comeUnitTime", inputType: "DATE" },

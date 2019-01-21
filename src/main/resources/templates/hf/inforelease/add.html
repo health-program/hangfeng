@@ -5,27 +5,39 @@
 <body>
  <div class="container">
 <tt:constant enumcode="is_release,importance" />
-    <section class="content-header">
-        <h1>通知公告新增</h1>
-        <ol class="breadcrumb">
-            <li><a href="/console/infore/index"><i class="fa fa-list-alt"></i>列表</a></li>
-            <li class="active">新增</li>
-        </ol>
-    </section>
+  <section class="content-header" th:if="${type} == '0' ">
+		<h1>通知公告新增</h1>
+		<ol class="breadcrumb">
+			<li><a href="/inforelease/index"><i class="fa fa-list-alt"></i>列表</a></li>
+			<li class="active">详情</li>
+		</ol>
+	</section>
+	<section class="content-header" th:if="${type} == '1' ">
+		<h1>政策文件新增</h1>
+		<ol class="breadcrumb">
+			<li><a href="/inforelease/policy/index"><i class="fa fa-list-alt"></i>列表</a></li>
+			<li class="active">详情</li>
+		</ol>
+	</section>
     <section class="content">
 		<div class="box box-solid">
 			<div class="box-header with-border">
                 <i class="fa fa-edit"></i>
                 <h3 class="box-title">新增</h3>
-                <div class="pull-right box-tools">
-                    <a class="btn btn-default btn-sm" href="/console/infore/index">
+                <div class="pull-right box-tools" th:if="${type} == '0' ">
+                    <a class="btn btn-default btn-sm" href="/inforelease/index">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+                <div class="pull-right box-tools" th:if="${type} == '1' ">
+                    <a class="btn btn-default btn-sm" href="/inforelease/policy/index">
                         <i class="fa fa-times"></i>
                     </a>
                 </div>
             </div>
             <div id="model_edit" class="box-body">
-            <form id="model_form" class="form-horizontal edit-body"  action="/console/infore/save" method="post">
-            <input type="hidden" name="types" value="0" />
+            <form id="model_form" class="form-horizontal edit-body"  action="/inforelease/save" method="post">
+            <input type="hidden" id="types" name="types" th:value="${type}" />
 	            <div class="form-group">
 					<label class="col-sm-3 control-label">标题:</label>
 					<div class="col-sm-8">
@@ -73,7 +85,8 @@
                           <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
                       </div>
                       <div class="col-sm-2 col-sm-offset-1">
-                         <a href="/console/infore/index" class="btn btn-default btn-block">取消</a>
+                         <a th:if="${type} == '0'" href="/inforelease/index" class="btn btn-default btn-block">取消</a>
+                         <a th:if="${type} == '1'" href="/inforelease/policy/index" class="btn btn-default btn-block">取消</a>
                       </div>
                   </div>
             </form>
@@ -87,23 +100,29 @@
 	 var options = {
 		        id: "model",
 		        name: "新增",
-		        url: "/console/infore/save",
+		        url: "/inforelease/save",
 		        columns: [
 		            { name: "title", inputType: "TEXT", title: "标题" },
 		            { name: "content", inputType: "TEXT", title: "内容" },
 		            { name: "isRelease", inputType: "SELECT", enum: "is_release", title: "是否发布" },
 		            { name: "importance", inputType: "SELECT", enum: "importance", title: "重要程度" },
 		            { name: "releaseTime", inputType: "DATE", title: "发布时间" },
-		            { name: "attachments",allowedFileExtensions:"['txt', 'doc', 'xls', 'ppt','docx','xlsx','pptx']", inputType: "ATTACHMENT", fileName: "attachmentFiles", title: "附件" }
+		            { name: "attachments",allowedFileExtensions:['txt','pdf','rar','zip', 'doc', 'xls', 'ppt','docx','xlsx','pptx'], inputType: "ATTACHMENT", fileName: "attachmentFiles", title: "附件" }
 		        ]
 		    };
 	
 	 $(function() {
+		 var type=$("#types").val();
         var model = new tonto.Model("model", options.columns, {
             pattern: "edit",
             successCallback: function() {
                 $.successAlert("保存成功", function() {
-                    window.location = "/console/infore/index";
+                	if(type == 0){
+                	  window.location = "/inforelease/index";
+                	}else{
+                	  window.location = "/inforelease/policy/index";	
+                	}
+                   
                 });
             }
         });

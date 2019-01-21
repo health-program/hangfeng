@@ -8,6 +8,7 @@
 
 .right-tool {
     float: right;
+    color: #999;
 }
 
 .list {
@@ -119,7 +120,7 @@
 				<div class="panel-heading" style="background-color: #3aabec;">
 					<div class="pull-right">
 						<a id="noticys" style="color: white; font-size: 16px;"
-							href="javascript:void(0)">更多>></a>
+							href="/inforelease/more/index?isHomePage=false&type=0">更多>></a>
 					</div>
 					<h3 style="color: white; font-size: 20px" class="panel-title">
 						<i class="glyphicon glyphicon-volume-up panel-title"
@@ -131,7 +132,7 @@
 						<div class="col-sm-9">
 							<ul class="notice-list ul-dashed" th:each="o:${info}" th:if=" ${o.types} == '0' ">
 			                    <li class="notice-li">
-			                    <a class="name" th:text=${o.title}></a>
+			                    <a th:href="@{/inforelease/info/detail?isHomePage=false&(id=${o.id})}" class="name" th:text=${o.title}></a>
 			                        <div class="right-tool">
 			                            <span th:text=${o.releaseTime}></span>
 			                        </div>
@@ -150,7 +151,7 @@
 				<div class="panel-heading" style="background-color: #3aabec;">
 					<div class="pull-right">
 						<a id="policfiles" style="color: white; font-size: 16px;"
-							href="javascript:void(0)">更多>></a>
+							href="/inforelease/more/index?isHomePage=false&type=1">更多>></a>
 					</div>
 					<h3 style="color: white; font-size: 20px" class="panel-title">
 						<i class="glyphicon glyphicon-folder-open panel-title"
@@ -162,7 +163,7 @@
 						<div class="col-sm-9">
 							<ul class="notice-list ul-dashed" th:each="o:${info}" th:if=" ${o.types} == '1' ">
 			                    <li class="notice-li">
-			                    <a class="name" th:text=${o.title}></a>
+			                    <a class="name" th:href="@{/inforelease/info/detail?isHomePage=false&(id=${o.id})}" th:text=${o.title}></a>
 			                        <div class="right-tool">
 			                            <span th:text=${o.releaseTime}></span>
 			                        </div>

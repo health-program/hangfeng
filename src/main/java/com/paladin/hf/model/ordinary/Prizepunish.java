@@ -35,8 +35,6 @@ public class Prizepunish  extends BaseModel {
     private String id;
 
     private String orgUserId;
-    
-    
 
     private String happenTime;
 
@@ -60,97 +58,6 @@ public class Prizepunish  extends BaseModel {
     
     private String attachments; 
     
-    @Transient
-    private String endhappenTime;
-    
-    @Transient
-    private String state;
-    
-    @Transient
-    private String stateUnit;
-    
-    @Transient
-    private String submitname;
-    
-    @Transient
-    private String cz;
-    
-    @Transient
-    private String czgr;
-    
-    @Transient
-    private String fileImage[];
-    
-    
-    
-    public String[] getFileImage() {
-		return fileImage;
-	}
-
-	public void setFileImage(String[] fileImage) {
-		this.fileImage = fileImage;
-	}
-
-	public String getCzgr()
-    {
-        return czgr;
-    }
-
-    public void setCzgr(String czgr)
-    {
-        this.czgr = czgr;
-    }
-
-    public String getCz()
-    {
-        return cz;
-    }
-
-    public void setCz(String cz)
-    {
-        this.cz = cz;
-    }
-
-    public String getSubmitname()
-    {
-        return submitname;
-    }
-
-    public void setSubmitname(String submitname)
-    {
-        this.submitname = submitname;
-    }
-
-    public String getStateUnit()
-    {
-        return stateUnit;
-    }
-
-    public void setStateUnit(String stateUnit)
-    {
-        this.stateUnit = stateUnit;
-    }
-
-    public String getState()
-    {
-        return state;
-    }
-
-    public void setState(String state)
-    {
-        this.state = state;
-    }
-
-    public String getEndhappenTime()
-    {
-        return endhappenTime;
-    }
-
-    public void setEndhappenTime(String endhappenTime)
-    {
-        this.endhappenTime = endhappenTime;
-    }
-
     public String getOrgUserId()
     {
         return orgUserId;

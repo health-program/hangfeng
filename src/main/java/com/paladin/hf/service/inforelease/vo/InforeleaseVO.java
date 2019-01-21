@@ -1,5 +1,9 @@
 package com.paladin.hf.service.inforelease.vo;
 
+import java.util.List;
+
+import com.paladin.common.model.syst.SysAttachment;
+import com.paladin.framework.core.container.AttachmentContainer;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.hf.core.UnitContainer;
 
@@ -32,6 +36,16 @@ public class InforeleaseVO{
     private String orgUnitId;
 
     private String remarks;
+    
+    private String attachments;
+    
+    // 获取附件文件
+    public List<SysAttachment> getAttachmentFiles() {
+        if (attachments != null && attachments.length() != 0) {
+            return AttachmentContainer.getAttachments(attachments.split(","));
+        }
+        return null;
+    }
 
     public String getOrgAgencyId()
     {
@@ -153,6 +167,16 @@ public class InforeleaseVO{
         this.remarks = remarks;
     }
     
+    public String getAttachments()
+    {
+        return attachments;
+    }
+
+    public void setAttachments(String attachments)
+    {
+        this.attachments = attachments;
+    }
+
     public String getUnitName() {
         try {
             return UnitContainer.getUnitName(orgUnitId);

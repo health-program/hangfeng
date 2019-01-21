@@ -15,7 +15,7 @@ public class PrizepunishVO{
 
     private String orgUserId;
     
-    private String dictCode;
+    private Integer dictCode;
 
     private String happenTime;
 
@@ -65,12 +65,12 @@ public class PrizepunishVO{
         this.orgUserId = orgUserId;
     }
 
-    public String getDictCode()
+    public Integer getDictCode()
     {
         return dictCode;
     }
 
-    public void setDictCode(String dictCode)
+    public void setDictCode(Integer dictCode)
     {
         this.dictCode = dictCode;
     }

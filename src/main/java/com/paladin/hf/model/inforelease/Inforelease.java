@@ -4,6 +4,7 @@ package com.paladin.hf.model.inforelease;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
 import com.paladin.framework.common.BaseModel;
 
 public class Inforelease extends BaseModel{
@@ -28,6 +29,8 @@ public class Inforelease extends BaseModel{
     private Integer types;
 
     private String remarks;
+    
+    private String attachments;
     
     /**
      * @author jisanjie 
@@ -142,6 +145,15 @@ public class Inforelease extends BaseModel{
     public void setOrgUnitId(String orgUnitId) {
           this.orgUnitId = orgUnitId;
     }
-    
+
+    public String getAttachments()
+    {
+        return attachments;
+    }
+
+    public void setAttachments(String attachments)
+    {
+        this.attachments = attachments;
+    }
     
 }

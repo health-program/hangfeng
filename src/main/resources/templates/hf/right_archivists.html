@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+</head>
+<link rel="stylesheet" href="/static/css/iconfont.css" />
+<link rel="stylesheet" href="/static/css/iconfontt.css" />
+<style>
+.front_nav_content_s1 {
+	border-radius: 70px;
+	line-height: 80px;
+	background-color: #ff8764;
+	border: 3px solid #ffc3b1;
+	margin-left: 3%;
+}
+
+.front_nav_content_s1 .icon {
+	font-size: 45px;
+	color: #fff;
+}
+
+.front_nav_bg1 {
+	width: 100%;
+}
+
+.front_nav_bg1 img {
+	width: 100%;
+}
+
+.front_con ul {
+	padding-left: 0;
+}
+
+.front_con ul li {
+	display: flex;
+	justify-content: space-between;
+	list-style: none;
+	padding: 0 3%;
+	line-height: 35px;
+}
+
+.front_con ul li a {
+	color: #111111;
+	height: 35px;
+}
+
+.front_con ul li a span {
+	display: inline-block;
+	max-width: 350px;
+	overflow: hidden;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	//
+	文本不换行，这样超出一行的部分被截取，显示
+	...
+}
+
+.content {
+	padding-left: 8%;
+	padding-right: 8%;
+}
+
+.info-box-content {
+	margin-left: 100px;
+}
+
+.info-box {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-top: 0;
+	border-left: 0;
+	box-shadow: 3px 3px 3px #ccc;
+	padding-bottom: 9px;
+}
+
+.info-box-number {
+	line-height: 76px;
+	font-size: 14px;
+}
+
+.info-box-icon {
+	border-radius: 50px;
+}
+
+.ul-dashed {
+	border-bottom: 1px dashed #dddddd;
+	padding-left: 10px;
+	line-height: 25px;
+	margin-right: 21px;
+	list-style: none;
+}
+
+.notice-li {
+	margin-bottom: 6px;
+}
+
+.right-tool {
+	float: right;
+	color: #999;
+	min-width: 72px;
+}
+
+.name {
+	color: #000;
+	text-decoration:underline;
+}
+
+.uldiv {
+	height: 248px;
+}
+
+.front_con ul li a {
+	display: inline-block;
+	max-width: 300px;
+	overflow: hidden;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	//
+	文本不换行，这样超出一行的部分被截取，显示
+	...
+}
+</style>
+<body>
+	<section class="content">
+		<div class="box box-solid" th:if="${isOrgUser} == true ">
+			<div class="box-header with-border">
+				<i class="fa fa-list-ul"></i>
+				<h3 class="box-title">快捷菜单</h3>
+			</div>
+			<div class="box-body">
+				<!-- state -->
+				<div class="col-md-4 col-sm-6 col-xs-12">
+					<div class="info-box">
+						<a href='/prizepunish/index'> <span
+							class="info-box-icon front_nav_content_s1"> <i
+								class="icon iconfont icon-04gerenfill" style="font-size: 43px;"></i></span>
+							<div class="info-box-content">
+								<span class="info-box-number">个人平时考评</span>
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6 col-xs-12">
+					<div class="info-box">
+						<a href='/person/cyc/index'> <span
+							class="info-box-icon front_nav_content_s1"
+							style="background-color: #64b5ed; border: 3px solid #b1daf6">
+								<i class="icon iconfont icon-yejiguanli"
+								style="font-size: 43px;"></i>
+						</span>
+							<div class="info-box-content">
+								<span class="info-box-number">个人周期考评</span>
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6 col-xs-12">
+					<div class="info-box">
+						<a href='/org/user/self/index'> <span
+							class="info-box-icon front_nav_content_s1"
+							style="background-color: #a68cd6; border: 3px solid #d2c5ea">
+								<i class="icon iconfont icon-danganshuju"
+								style="font-size: 43px;"></i>
+						</span>
+							<div class="info-box-content">
+								<span class="info-box-number">个人医德医风档案</span>
+							</div>
+						</a>
+					</div>
+				</div>
+				<!-- end -->
+				<div class="front_nav_bg1">
+					<img src="/static/image/info/frontbg1.png" alt="" />
+				</div>
+			</div>
+		</div>
+		<div class="box box-solid">
+			<div class="box-body front_con">
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="box-header with-border">
+						<i class="fa fa-bullhorn"></i>
+						<h3 class="box-title">通知公告</h3>
+						<a style="float:right" href="/inforelease/more/index?isHomePage=true&type=0">更多<i class="fa fa-angle-double-right "></i> </a>
+					</div>
+					<div class="uldiv">
+						<ul class="notice-list ul-dashed" th:each="o:${list}"
+							th:if=" ${o.types} == '0' ">
+							<li class="notice-li"><a class="name"
+								th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"
+								th:title="${o.title}"><span th:text=${o.title}></span></a>
+								<div class="right-tool">
+									<span th:text=${o.releaseTime}></span>
+								</div></li>
+						</ul>
+					</div>
+					<div class="front_nav_bg1">
+						<img src="/static/image/info/frontbg2.png" alt="" />
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="box-header with-border">
+						<i class="fa fa-folder-open"></i>
+						<h3 class="box-title">政策文件</h3>
+						<a style="float:right" href="/inforelease/more/index?isHomePage=true&type=1">更多<i class="fa fa-angle-double-right "></i></a>
+					</div>
+					<div class="uldiv">
+						<ul class="notice-list ul-dashed" th:each="o:${list}"
+							th:if=" ${o.types} == '1' ">
+							<li class="notice-li"><a class="name"
+								th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
+								th:title="${o.title}" th:text=${o.title}></span></a>
+								<div class="right-tool">
+									<span th:text=${o.releaseTime}></span>
+								</div></li>
+						</ul>
+					</div>
+					<div class="front_nav_bg1" style="margin-top: 10px;">
+						<img src="/static/image/info/frontbg3.png" alt="" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<div th:include="/hf/footer"></div>
+	<script type="text/javascript">
+	//<![CDATA[
+	
+  //]]>
+    </script>
+
+</body>
+</html>

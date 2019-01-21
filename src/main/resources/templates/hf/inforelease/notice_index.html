@@ -121,7 +121,7 @@
                     }
                 ]
             ],
-            url: '/console/infore/list',
+            url: '/inforelease/list',
             searchbar: '#searchbar',
             sortName: 'releaseTime',
             showColumns: true,
@@ -135,34 +135,13 @@
         });
     } 
 		 
-	      function editNotice(id){
-	        	var row = getSelectRow();
-	        	if(row){
-					layer.open({
-						type : 2,
-						title : ' ',
-						maxmin : true, //开启最大化最小化按钮
-			            area: $.getOpenLayerSize(800, 650),
-						content : '/console/infore/edit/input?id=' + row.id,
-						success : function(layero, index) {
-							$.setLayerSubmitHandler(layero, index, function() {
-								layer.close(index);
-								table.refresh();
-							}, "修改成功");
-						}
-					});
-	        	}else{
-	        		 $.errorMessage("请选中一条业务数据");
-	        	}
-				}
-	    
 	    function add(){
-	    	 window.location = '/console/infore/add/notice/input'
+	    	 window.location = '/inforelease/add?type=0'
 	    }
 	        
 	      function remove(row) {
    			layer.confirm('确定删除吗?', function() {
-   				$.getAjax('/console/infore/delete?id=' + row.id, function() {
+   				$.getAjax('/inforelease/delete?id=' + row.id, function() {
    					$.successMessage("删除成功");
    					table.refresh();
    				});
@@ -171,7 +150,7 @@
 	      
 	      function detail(row) {
 	          if (row) {
-	              window.location = '/console/infore/notice/get?id=' + row.id
+	              window.location = '/inforelease/detail?type=0&id=' + row.id
 	          }
 	      }
 	      

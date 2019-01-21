@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/hf/header">
+</head>
+<body>
+	 <tt:constant enumcode="is_release,importance" />
+	<section class="content">
+		<div class="box box-solid">
+		<form id="searchbar" class="form-horizontal">
+		<input type="hidden" id="type" name="type" th:value="${type}"/>
+		</form>
+			<div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+                <div class="pull-right box-tools">
+                      <a th:if="${isHomePage} == true " class="btn btn-warning" id="model_edit_btn" href="/inforelease/info">
+                     <i class="glyphicon glyphicon-share-alt"></i>返回</a>
+                     
+                      <a th:if="${isHomePage} == false " class="btn btn-warning" id="model_edit_btn" href="/inforelease/info/index">
+                     <i class="glyphicon glyphicon-share-alt"></i>返回</a>
+                </div>
+            </div>
+            <div id="result" class="box-body">
+                <table id="dataGrid"></table>
+            </div>
+		</div>
+	</section>
+	<div th:include="/hf/footer"></div>
+	<script type="text/javascript">
+	 /*<![CDATA[*/
+	            
+	 	$(function (){ initDataGrid();});
+		
+		function query() {table.refresh();}
+		
+		function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+		            {title: "标题", field: "title"},
+		            {title: "是否发布", field: "isRelease", enumcode: "is_release" },
+		            {title: "重要程度", field: "importance", enumcode: "importance" },
+		            {title: "发布时间", field: "releaseTime",sortable: false},
+		            {
+                        title: "操作",
+                        align: "center",
+                        width: "200px",
+                        events: {
+                            'click .detail': function(e, value, row, index) {
+                                detail(row);
+                            },
+                            'click .remove': function(e, value, row, index) {
+                                remove(row);
+                            }
+                        },
+                        formatter: function operateFormatter(value, row, index) {
+                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' ;
+                        }
+                    }
+                ]
+            ],
+            url: '/inforelease/more',
+            searchbar: '#searchbar',
+            sortName: 'releaseTime',
+            showColumns: true,
+            sortOrder: 'asc',
+            pageSize: limit || undefined,
+            pageNumber: page || 1,
+            pagination: true,
+            clickToSelect: true,
+            toolbar: "#toolbar",
+            showRefresh: true
+        });
+    } 
+	      function detail(row) {
+	    	  var type = $("#type").val();
+	          if (row) {
+	              window.location = '/inforelease/info/detail?isHomePage=true&type='+type+'&id=' + row.id
+	          }
+	      }
+	      
+    	$('body').bind('keypress',function (event){
+            if(event.keyCode == '13'){query();}
+        }); 
+    	
+ /*]]>*/
+</script>
+</body>
+</html>

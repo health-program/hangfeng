@@ -79,4 +79,5 @@ public class InforeleaseQuery extends OffsetPage{
     {
         this.type = type;
     }
+
 }

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>行风监管系统</title>
+    <title>宣教系统</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -156,6 +156,16 @@
     <script src="/static/js/app/app.min.js"></script>
     <script src="/static/js/app/app_iframe.min.js"></script>
     <script type="text/javascript">
+    $(function() {
+  	  addTabs({
+  	         id: "90011",
+  	         title: "首页",
+  	         icon: "",
+  	         url: "inforelease/info",
+  	         targetType: "iframe-tab"
+  	     });
+     
+  	});
     	$('.sidebar-menu').sidebarMenu({});
     </script>
 </body>

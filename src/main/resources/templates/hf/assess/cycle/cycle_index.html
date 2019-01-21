@@ -91,7 +91,7 @@
             idField: "id",
             columns: [
                 [
-                    { title: "单位名称", field: "unitName", sortName: "unitId", sortable: true },
+                    { title: "单位名称", field: "unitName", sortName: "unitId" },
                     { title: "周期名称", field: "cycleName", sortable: true },
                     { title: "周期开始时间", field: "cycleStartTime", formatter: "date" },
                     { title: "周期截止时间", field: "cycleEndTime", formatter: "date" },
@@ -173,7 +173,7 @@
                 '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>',
-                '<button class="start btn btn-xs btn-danger" style="margin-right:10px">',
+                '<button class="stop btn btn-xs btn-danger" style="margin-right:10px">',
                 '<i class="glyphicon glyphicon-edit"></i>停用',
                 '</button>',
                 '<button class="archive btn btn-xs btn-success" style="margin-right:10px">',
@@ -203,7 +203,7 @@
     }
 
     function archive(row) {
-        $.warnAlert('确定归档吗?',function(){
+        $.warnAlert('确定归档吗?', function() {
             $.getAjax('/assess/cycle/archive?id=' + row.id, function() {
                 $.successMessage("归档成功");
                 table.refresh();
@@ -212,7 +212,7 @@
     }
 
     function start(row) {
-        $.warnAlert('确定启用吗?',function(){
+        $.warnAlert('确定启用吗?', function() {
             $.getAjax('/assess/cycle/start?id=' + row.id, function() {
                 $.successMessage("启用成功");
                 table.refresh();
@@ -221,7 +221,7 @@
     }
 
     function stop(row) {
-        $.warnAlert('确定停用吗?',function(){
+        $.warnAlert('确定停用吗?', function() {
             $.getAjax('/assess/cycle/stop?id=' + row.id, function() {
                 $.successMessage("停用成功");
                 table.refresh();
@@ -230,15 +230,13 @@
     }
 
     function remove(row) {
-         $.warnAlert('确定删除吗?',function(){
+        $.warnAlert('确定删除吗?', function() {
             $.getAjax('/assess/cycle/delete?id=' + row.id, function() {
                 $.successMessage("删除成功");
                 table.refresh();
             });
         });
     }
-
-
     </script>
 </body>
 

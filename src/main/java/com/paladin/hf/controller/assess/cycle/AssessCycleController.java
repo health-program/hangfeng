@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -72,7 +71,7 @@ public class AssessCycleController extends ControllerSupport {
 		}
 		return CommonResponse.getSuccessResponse(assessCycleService.searchPage(assessCycleQuery).convert(AssessCycleVO.class));
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/select/self")
 	public Object selfListPage(OffsetPage offsetPage) {
@@ -118,12 +117,34 @@ public class AssessCycleController extends ControllerSupport {
 	@ResponseBody
 	@RequestMapping(value = "/get")
 	public Object get(@RequestParam(required = true) String id) {
-		return CommonResponse.getSuccessResponse(beanCopy(assessCycleService.get(id),new AssessCycleVO()));
+		return CommonResponse.getSuccessResponse(beanCopy(assessCycleService.get(id), new AssessCycleVO()));
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/get/detail")
+	public Object getDetail(@RequestParam(required = true) String id) {
+		HashMap<String, Object> result = new HashMap<>();
+		result.put("cycle", beanCopy(assessCycleService.get(id), new AssessCycleVO()));
+		result.put("agency", DataPermissionUtil.getOwnAgency());
+
+		List<AssessCycleTemplate> relations = assessCycleTemplateService.findRelationByCycle(id);
+		if(relations != null && relations.size() >0) {
+			result.put("template", templateService.get(relations.get(0).getTemplateId()));
+			result.put("relation",relations);
+		}
+		
+		return CommonResponse.getSuccessResponse(result);
 	}
 
 	@RequestMapping("/add")
 	public String addInput() {
 		return "/hf/assess/cycle/cycle_add";
+	}
+
+	@RequestMapping("/detail")
+	public String detail(@RequestParam(required = true) String id, Model model) {
+		model.addAttribute("id", id);
+		return "/hf/assess/cycle/cycle_detail";
 	}
 
 	@RequestMapping("/save")
@@ -137,7 +158,7 @@ public class AssessCycleController extends ControllerSupport {
 		model.setId(id);
 		model.setCycleState(AssessCycle.CYCLE_STATE_DRAFT);
 		if (assessCycleService.save(model) > 0) {
-			return CommonResponse.getSuccessResponse(beanCopy(assessCycleService.get(id),new AssessCycleVO()));
+			return CommonResponse.getSuccessResponse(beanCopy(assessCycleService.get(id), new AssessCycleVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
@@ -150,13 +171,13 @@ public class AssessCycleController extends ControllerSupport {
 		}
 		String id = assessCycleDTO.getId();
 		AssessCycle model = beanCopy(assessCycleDTO, assessCycleService.get(id));
-		
+
 		if (assessCycleService.update(model) > 0) {
-			return CommonResponse.getSuccessResponse(beanCopy(assessCycleService.get(id),new AssessCycleVO()));
+			return CommonResponse.getSuccessResponse(beanCopy(assessCycleService.get(id), new AssessCycleVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
-	
+
 	@RequestMapping("/start")
 	@ResponseBody
 	public Object start(@RequestParam(required = true) String id) {
@@ -182,8 +203,9 @@ public class AssessCycleController extends ControllerSupport {
 	}
 
 	@RequestMapping("/config/template/index")
-	public Object templateConfigIndex() {
-		return "/hf/assess/quantificate/config";
+	public Object templateConfigIndex(@RequestParam(required = true) String id, Model model) {
+		model.addAttribute("id", id);
+		return "/hf/assess/cycle/cycle_config";
 	}
 
 	@RequestMapping("/config/template/get")

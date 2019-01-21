@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+    <tt:constant enumcode="cycle-state,assess-type" />
+    <section class="content-header">
+        <h1>考评周期管理</h1>
+        <ol class="breadcrumb">
+            <li><a href="/assess/cycle/index"><i class="fa fa-list-alt"></i>周期列表</a></li>
+            <li class="active">详情</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-list"></i>
+                <h3 class="box-title">新增</h3>
+                <div class="box-tools pull-right">
+                    <a class="btn" id="model_edit_btn" href="javascript:void(0)"><i class="fa fa-edit"></i>编辑</a>
+                </div>
+            </div>
+            <div id="model_view" class="box-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="cycleName" class="col-sm-3 control-label">周期名称：</label>
+                        <div class="col-sm-3">
+                            <p name="cycleName" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitId" class="col-sm-3 control-label">单位：</label>
+                        <div class="col-sm-3">
+                            <p name="unitId" class="form-control-static description"></p>
+                        </div>
+                        <label for="assessType" class="col-sm-2 control-label">考评类型：</label>
+                        <div class="col-sm-3">
+                            <p name="assessType" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cycleDescribe" class="col-sm-3 control-label">周期描述：</label>
+                        <div class="col-sm-8">
+                            <pre name="cycleDescribe" style="min-height:150px" class="form-control-static description"></pre>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cycleStartTime" class="col-sm-3 control-label">周期起止时间：</label>
+                        <div class="col-sm-3" style="width: 110px">
+                            <p name="cycleStartTime" class="form-control-static description"></p>
+                        </div>
+                        <label for="cycleEndTime" style="width: 40px" class="col-sm-1 control-label">至</label>
+                        <div class="col-sm-3">
+                            <p name="cycleEndTime" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="assessStartTime" class="col-sm-3 control-label">考评起止时间：</label>
+                        <div class="col-sm-3" style="width: 110px">
+                            <p name="assessStartTime" class="form-control-static description"></p>
+                        </div>
+                        <label for="assessEndTime" style="width: 40px" class="col-sm-1 control-label">至</label>
+                        <div class="col-sm-3">
+                            <p name="assessEndTime" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="model_edit" class="box-body" style="display: none">
+                <form id="model_form" action="/assess/cycle/update" method="post" class="form-horizontal edit-body">
+                    <div class="form-group">
+                        <label for="cycleName" class="col-sm-3 control-label">周期名称</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" name="cycleName" required="required" placeholder="请输入周期名称" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitId" class="col-sm-3 control-label">机构单位</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control tonto-select-agency" required="required" name="unitId" placeholder="请选择机构"></input>
+                        </div>
+                        <label class="col-sm-2 control-label" for="assessType">考评类型</label>
+                        <div class="col-sm-3">
+                            <select name="assessType" class="form-control tonto-select-constant" required="required" enumcode="assess-type">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cycleDescribe" class="col-sm-3 control-label">周期描述</label>
+                        <div class="col-sm-8">
+                            <textarea type="text" class="form-control" rows="3" name="cycleDescribe" placeholder="请输入周期描述"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cycleStartTime" class="col-sm-3 control-label">周期起止时间</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" name="cycleStartTime" required="required" placeholder="请选择" />
+                        </div>
+                        <label for="cycleEndTime" style="width:15px" class="col-sm-1 control-label">至</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" data-type="cycleEnd" name="cycleEndTime" required="required" placeholder="请选择" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="assessStartTime" class="col-sm-3 control-label">考评起止时间:</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" name="assessStartTime" required="required" placeholder="请选择" />
+                        </div>
+                        <label for="assessEndTime" style="width:15px" class="col-sm-1 control-label">至</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" data-type="assessEnd" name="assessEndTime" required="required" placeholder="请选择" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 col-sm-offset-3">
+                            <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+                        </div>
+                        <div class="col-sm-2 col-sm-offset-1">
+                            <button type="button" id="model_form_cancel_btn" class="btn btn-default btn-block">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-cog"></i>
+                <h3 class="box-title">模板配置</h3>
+            </div>
+            <div class="box-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="templateName" class="col-sm-3 control-label">模板名称：</label>
+                        <div class="col-sm-3">
+                            <p name="templateName" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">科室选择：</label>
+                        <div class="col-sm-3" id="unitTree">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <input type="hidden" id="id" th:value="${id}" />
+    <div th:include="/hf/footer"></div>
+</body>
+<script type="text/javascript">
+/*<![CDATA[*/
+var options = {
+    id: "model",
+    name: "详情",
+    url: "/assess/cycle/save",
+    columns: [
+        { title: "单位", name: "unitId", inputType: "UNIT", viewName: "unitName" },
+        { title: "周期名称", name: "cycleName", inputType: "TEXT" },
+        { title: "周期描述", name: "cycleDescribe", inputType: "TEXTAREA" },
+        { title: "考评类型", name: "assessType", inputType: "SELECT", enum: "assess-type" },
+        { title: "周期起止时间", name: "cycleStartTime", inputType: "DATE" },
+        { title: "至", name: "cycleEndTime", inputType: "DATE" },
+        { title: "考评起止时间", name: "assessStartTime", inputType: "DATE" },
+        { title: "至", name: "assessEndTime", inputType: "DATE" }
+    ]
+}
+
+var id, model;
+$(function() {
+    id = $("#id").val();
+    model = new tonto.Model("model", options.columns, {
+        extraParam: {
+            id: id
+        },
+        successCallback: function() {
+            $.successAlert("保存成功", function() {
+                window.location = "/assess/cycle/index";
+            });
+        }
+    });
+
+    $.getAjax("/assess/cycle/get/detail?id=" + id, initData);
+
+    var cycleStart = $("input[name='cycleStartTime']");
+    var assessStart = $("input[name='assessStartTime']");
+
+    $.validator.addMethod("cycleEnd", function(value, element) {
+        var cs = cycleStart.val();
+        if (cs) {
+            return this.optional(element) || cs <= value;
+        }
+        return true;
+    }, "考评周期结束时间必须大于开始时间");
+
+
+    $.validator.addMethod("assessEnd", function(value, element) {
+        var as = assessStart.val();
+        if (as) {
+            return this.optional(element) || as <= value;
+        }
+        return true;
+    }, "考评结束时间必须大于开始时间");
+});
+
+function initData(data) {
+    model.setData(data.cycle);
+    var template = data.template,
+        relations = data.relation,
+        agency = data.agency;
+
+    $("[name='templateName']").text(template.templateName);
+
+    var a = function(units) {
+        if (units) {
+            var nodes = [];
+            units.forEach(function(unit) {
+                var node = {
+                    text: unit.name
+                }
+                var checked = false;
+                if (relations) {
+                    for (var i = 0; i < relations.length; i++) {
+                        if (unit.id == relations[i].unitId) {
+                            checked = true;
+                            break;
+                        }
+                    }
+                }
+
+                node.state = { checked: checked };
+                if (unit.children && unit.children.length > 0) {
+                    node.nodes = a(unit.children);
+                }
+
+                nodes.push(node);
+            });
+            return nodes;
+        }
+    }
+
+    $("#unitTree").treeview({
+        data: a(agency),
+        showCheckbox: true,
+        levels: 5
+    });
+
+}
+/*]]>*/
+</script>
+
+</html>

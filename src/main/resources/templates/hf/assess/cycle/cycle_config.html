@@ -1,0 +1,260 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro ">
+
+<head th:include="/hf/header"></head>
+
+<body>
+    <section class="content-header">
+        <h1>考评周期管理</h1>
+        <ol class="breadcrumb">
+            <li><a href="/assess/cycle/index"><i class="fa fa-list-alt"></i>周期列表</a></li>
+            <li class="active">模板配置</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="col-md-7">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h4 class="box-title">模板列表</h4>
+                </div>
+                <div class="box-body" style="height:600px;">
+                    <table id="dataGrid" class="table table-hover"></table>
+                    <div class="col-sm-2 col-sm-offset-5" style="margin-top: 20px">
+                        <button type="button" onclick="save()" class="btn btn-primary btn-block">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5" id="itemEditor">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h4 class="box-title">科室选择</h4>
+                </div>
+                <div class="box-body" id="unitTree" style="max-height:600px;overflow:auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+    <input th:value="${id}" id="id" type="hidden" />
+    <div th:include="/hf/footer"></div>
+</body>
+<script type="text/javascript">
+/*<![CDATA[*/
+var table, cycleId;
+$(function() {
+    cycleId = $("#id").val();
+    $.getAjax("/assess/cycle/config/template/get?id=" + cycleId, function(data) {
+        var relations = data.relations;
+        var templates = data.templates;
+        var agency = data.agency;
+
+        if (templates) {
+            templates.forEach(function(template) {
+                var tempRelations = [];
+                var templateId = template.id;
+                if (relations) {
+                    relations.forEach(function(relation) {
+                        if (relation.templateId == templateId) {
+                            tempRelations.push(relation);
+                        }
+                    });
+                }
+                template.relations = tempRelations;
+            });
+            createTemplateList(templates);
+        }
+
+        var g = function(unit) {
+            unit.text = unit.name;
+            if (relations) {
+                relations.forEach(function(a) {
+                    if (a.unitId == unit.id) {
+                        unit.checkedTemplate = a.templateId;
+                    }
+                });
+            }
+
+            if (unit.children && unit.children.length > 0) {
+                unit.nodes = unit.children;
+                unit.nodes.forEach(g);
+            }
+        }
+
+        if (agency.children) {
+            g(agency);
+            treedata = new Array(agency);
+        }
+
+    });
+
+    tree = $("#unitTree");
+});
+
+var tree;
+var currentTemplate;
+var treedata;
+var _activeRow;
+
+function createTemplateList(templates) {
+    table = $.createTable("#dataGrid", {
+        idField: "id",
+        columns: [
+            [
+                { title: "模板名称", field: "templateName" },
+                { title: "模板描述", field: "templateDescribe" }
+            ]
+        ],
+        data: templates,
+        pagination: false,
+        url: false,
+        onClickRow: function(row, element) {
+            selectTemplate(row);
+            if (_activeRow) {
+                _activeRow.removeClass("success");
+            }
+            _activeRow = element;
+            _activeRow.addClass("success");
+        }
+    });
+}
+
+function selectTemplate(template) {
+
+    if (!treedata)
+        return;
+
+    currentTemplate = template;
+    var a = function(node) {
+        node.state = { checked: (node.checkedTemplate == currentTemplate.id) }
+        if (node.nodes) {
+            node.nodes.forEach(a);
+        }
+    }
+
+    a(treedata[0]);
+
+    tree.treeview({
+        data: treedata,
+        showCheckbox: true,
+        onNodeChecked: nodeChecked,
+        onNodeUnchecked: nodeUnchecked,
+        levels: 5
+    });
+}
+
+function save() {
+
+    var checkedNodes = tree.treeview("getChecked");
+
+    var units = "";
+
+    if (checkedNodes && $.isArray(checkedNodes)) {
+        checkedNodes.forEach(function(a) {
+            units += a.id + ",";
+        });
+    }
+
+    if (units == "") {
+        $.failMessage("请至少选择一个科室");
+        return;
+    }
+
+    units.length = units.length - 1;
+
+    var data = {
+        cycleId: cycleId,
+        templateId: currentTemplate.id,
+        unitIds: units
+    }
+
+    $.postAjax("/assess/cycle/config/template/save", data, function() {
+        $.successAlert("保存成功", function() {
+            window.location = "/assess/cycle/index";
+        });
+    })
+}
+
+function nodeCheckedChanged(node, checked) {}
+
+var nodeCheckedSilent = false;
+
+function nodeChecked(event, node) {
+    if (nodeCheckedSilent) {
+        return;
+    }
+    nodeCheckedSilent = true;
+    checkAllParent(node);
+    checkAllSon(node);
+    nodeCheckedSilent = false;
+}
+
+var nodeUncheckedSilent = false;
+
+function nodeUnchecked(event, node) {
+    if (nodeUncheckedSilent)
+        return;
+    nodeUncheckedSilent = true;
+    uncheckAllParent(node);
+    uncheckAllSon(node);
+    nodeUncheckedSilent = false;
+}
+
+//选中全部父节点
+function checkAllParent(node) {
+    nodeCheckedChanged(node, true);
+    tree.treeview('checkNode', node.nodeId, { silent: true });
+    var parentNode = tree.treeview('getParent', node.nodeId);
+    if (!("nodeId" in parentNode)) {
+        return;
+    } else {
+        checkAllParent(parentNode);
+    }
+}
+
+//取消全部父节点
+function uncheckAllParent(node) {
+    nodeCheckedChanged(node, false);
+    tree.treeview('uncheckNode', node.nodeId, { silent: true });
+    var siblings = tree.treeview('getSiblings', node.nodeId);
+    var parentNode = tree.treeview('getParent', node.nodeId);
+    if (!("nodeId" in parentNode)) {
+        return;
+    }
+    var isAllUnchecked = true; //是否全部没选中
+    for (var i in siblings) {
+        if (siblings[i].state.checked) {
+            isAllUnchecked = false;
+            break;
+        }
+    }
+    if (isAllUnchecked) {
+        uncheckAllParent(parentNode);
+    }
+}
+
+//级联选中所有子节点
+function checkAllSon(node) {
+    nodeCheckedChanged(node, true);
+    tree.treeview('checkNode', node.nodeId, { silent: true });
+    if (node.nodes != null && node.nodes.length > 0) {
+        for (var i in node.nodes) {
+            checkAllSon(node.nodes[i]);
+        }
+    }
+}
+
+//级联取消所有子节点
+function uncheckAllSon(node) {
+    nodeCheckedChanged(node, false);
+    tree.treeview('uncheckNode', node.nodeId, { silent: true });
+    if (node.nodes != null && node.nodes.length > 0) {
+        for (var i in node.nodes) {
+            uncheckAllSon(node.nodes[i]);
+        }
+    }
+}
+
+/*]]>*/
+</script>
+
+</html>

@@ -5,9 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.paladin.framework.common.BaseModel;
-import com.paladin.framework.core.exception.BusinessException;
-import com.paladin.hf.core.UnitContainer;
-
 
 public class AssessCycleTemplate extends BaseModel {
 
@@ -57,18 +54,4 @@ public class AssessCycleTemplate extends BaseModel {
 	public void setUnitId(String unitId) {
 		this.unitId = unitId;
 	}
-	
-	
-	/*
-	 * 扩展显示用字段
-	 */
-	
-	public String getUnitName() {
-		try {
-    		return UnitContainer.getUnitName(unitId);
-    	}catch(BusinessException e) {
-    		return "";
-    	}
-	}
-
 }

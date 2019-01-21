@@ -33,13 +33,13 @@
                             </div>
                             <label for="sex" class="col-sm-2 control-label">性别：</label>
                             <div class="col-sm-3">
-                                <p name="sex" class="form-control-static description"></p>
+                                <p name="sex" class="form-control-static description" enumcode="sex-type"></p>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="identificationType" class="col-sm-3 control-label">身份证件类型：</label>
                             <div class="col-sm-3">
-                                <p name="identificationType" class="form-control-static description"></p>
+                                <p name="identificationType" class="form-control-static description" enumcode=""certificate-type""></p>
                             </div>
                             <label for="identification" class="col-sm-2 control-label">身份证件号码：</label>
                             <div class="col-sm-3">
@@ -49,7 +49,7 @@
                         <div class="form-group">
                             <label for="userProperty" class="col-sm-3 control-label">人员属性：</label>
                             <div class="col-sm-3">
-                                <p name="userProperty" class="form-control-static description"></p>
+                                <p name="userProperty" class="form-control-static description" enumcode="user_property_type"></p>
                             </div>
                             <label for="orgUnitId" class="col-sm-2 control-label">所属科室：</label>
                             <div class="col-sm-3">
@@ -89,21 +89,21 @@
                         <div class="form-group">
                             <label for="jobDuties" class="col-sm-3 control-label">职务：</label>
                             <div class="col-sm-3">
-                                <p name="jobDuties" class="form-control-static description"></p>
+                                <p name="jobDuties" class="form-control-static description" enumcode="job-duties-type"></p>
                             </div>
                             <label for="jobRank" class="col-sm-2 control-label">职称：</label>
                             <div class="col-sm-3">
-                                <p name="jobRank" class="form-control-static description"></p>
+                                <p name="jobRank" class="form-control-static description" enumcode="job-rank-type"></p>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="jobLevel" class="col-sm-3 control-label">职级：</label>
                             <div class="col-sm-3">
-                                <p name="jobLevel" class="form-control-static description"></p>
+                                <p name="jobLevel" class="form-control-static description" enumcode="job_level"></p>
                             </div>
                             <label for="oeducation" class="col-sm-2 control-label">学历：</label>
                             <div class="col-sm-3">
-                                <p name="oeducation" class="form-control-static description"></p>
+                                <p name="oeducation" class="form-control-static description" enumcode="oeducation-type"></p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -198,7 +198,7 @@
                             </div>
                             <label for="oeducation" class="col-sm-2 control-label">学历：</label>
                             <div class="col-sm-3">
-                                <select name="oeducation" class="form-control tonto-select-constant" enumcode="oeducation-typ">
+                                <select name="oeducation" class="form-control tonto-select-constant" enumcode="oeducation-type">
                                     <option value="">请选择</option>
                                 </select>
                             </div>
@@ -285,7 +285,7 @@
             { title: "职称", name: "jobRank", inputType: "SELECT", enum: "job-rank-type" },
 
             { title: "职级", name: "jobLevel", inputType: "SELECT", enum: "job_level" },
-            { title: "学历", name: "oeducation", inputType: "SELECT", enum: "oeducation-typ" },
+            { title: "学历", name: "oeducation", inputType: "SELECT", enum: "oeducation-type" },
 
             { title: "参加工作时间", name: "startWorkTime", inputType: "DATE" },
             { title: "进单位时间", name: "comeUnitTime", inputType: "DATE" },

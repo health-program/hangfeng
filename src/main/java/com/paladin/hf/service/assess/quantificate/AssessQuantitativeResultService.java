@@ -16,7 +16,7 @@ import com.paladin.hf.model.assess.quantificate.AssessQuantitativeResult;
 public class AssessQuantitativeResultService extends ServiceSupport<AssessQuantitativeResult> {
 
 	@Autowired
-	AssessQuantitativeResultMapper assessQuantitativeResultMapper;
+	private AssessQuantitativeResultMapper assessQuantitativeResultMapper;
 	
 	public AssessQuantitativeResult getResult(String userId, String cycleId) {
 

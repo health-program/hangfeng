@@ -26,12 +26,16 @@ import com.paladin.hf.service.assess.cycle.dto.PersonalCycleAssessUpdateDTO;
 import com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
+import com.paladin.hf.service.assess.quantificate.AssessQuantitativeResultService;
 
 @Service
 public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 	@Autowired
 	private PersonCycAssessMapper perCycAssMapper;
+
+	@Autowired
+	private AssessQuantitativeResultService assessQuantitativeResultService;
 
 	/**
 	 * 获取人员某一周期考核详情
@@ -106,6 +110,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 	/**
 	 * 分页查找用户的周期考核情况
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -114,7 +119,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 		perCycAssMapper.findByUser(query.getUserId());
 		return new PageResult<>(page);
 	}
-	
+
 	/**
 	 * 保存个人周期考核
 	 * 
@@ -266,11 +271,12 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 		} else {
 			throw new BusinessException("操作状态不正确");
 		}
-		
+
 		// 检查量化考评是否完成
 		if (statusAssessedTemporary == PersonCycAssess.STATUS_UNIT_GROUP_SUBMIT) {
-			// TODO
-			//throw new BusinessException("请先完成该人员该周期的量化考评");
+			if (assessQuantitativeResultService.getResult(cycleAssess.getOrgUserId(), cycleAssess.getAssessCycleId()) == null) {
+				throw new BusinessException("请先完成该人员该周期的量化考评");
+			}
 		}
 
 		SimpleBeanCopyUtil.simpleCopy(assessDTO, cycleAssess);
@@ -306,8 +312,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	public boolean submitAgencyCycleAssess(String id) {
 		return perCycAssMapper.submitAgency(id) > 0;
 	}
-	
-	
+
 	/**
 	 * 考评小组驳回周期考评
 	 * 

@@ -13,7 +13,7 @@
         pca.operate_state AS operateState,
         pca.unit_id AS unitId,
         pca.agency_id AS agencyId,
-        ac.cycle_name AS assessCycName,
+        ac.cycle_name AS assessCycleName,
         our.`name` AS userName
         FROM person_cyc_assess pca
         INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
@@ -37,7 +37,7 @@
         pca.operate_state AS operateState,
         pca.unit_id AS unitId,
         pca.agency_id AS agencyId,
-        ac.cycle_name AS assessCycName,
+        ac.cycle_name AS assessCycleName,
         our.`name` AS userName
         FROM person_cyc_assess pca
         INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id

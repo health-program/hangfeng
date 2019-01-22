@@ -1,5 +1,6 @@
 package com.paladin.hf.controller.org;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.service.org.OrgUserService;
+import com.paladin.hf.service.org.vo.OrgUserVO;
 
 /**
  * 
@@ -63,7 +65,7 @@ public class OrgUserTransferController extends ControllerSupport {
 	@RequestMapping("/ask/in")
 	@ResponseBody
 	public Object transferAskInUser() {
-		return CommonResponse.getSuccessResponse(orgUserService.findTransferAskInUser());
+		return CommonResponse.getSuccessResponse(beanCopyList(orgUserService.findTransferAskInUser(),OrgUserVO.class));
 	}
 
 	/**
@@ -74,7 +76,7 @@ public class OrgUserTransferController extends ControllerSupport {
 	@RequestMapping("/ask/out")
 	@ResponseBody
 	public Object transferAskOutUser() {
-		return CommonResponse.getSuccessResponse(orgUserService.findTransferAskOutUser());
+		return CommonResponse.getSuccessResponse(beanCopyList(orgUserService.findTransferAskOutUser(), OrgUserVO.class));
 	}
 
 	/**

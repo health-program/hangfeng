@@ -150,4 +150,16 @@ public class PersonalCycleAssessController extends ControllerSupport {
 		return CommonResponse.getResponse(perCycAssService.removePersonalCycleAssess(id));
 	}
 
+	@RequestMapping("/user/find")
+	@ResponseBody
+	public Object findUser(PersonalQueryDTO query) {
+		return CommonResponse.getSuccessResponse(perCycAssService.findUserCycleAssess(query));
+	}
+
+	@RequestMapping("/user/detail")
+	public String detailUser(@RequestParam String id, Model model) {
+		model.addAttribute("id", id);
+		return "/hf/assess/cycle/personal_detail_layer";
+	}
+	
 }

@@ -135,6 +135,27 @@
         </if>
     </select>
 
+	<select id="findByUser" resultType="com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO">
+		SELECT
+		pca.id AS id,
+        pca.org_user_id AS userId,
+        pca.assess_cycle_id AS assessCycleId,
+        pca.self_ass_grade AS selfAssGrade,
+        pca.depart_grade AS departGrade,
+        pca.unit_ass_grade AS unitAssGrade,
+        pca.confirmed_result AS confirmedResult,
+        pca.operate_state AS operateState,
+        pca.unit_id AS unitId,
+        pca.agency_id AS agencyId,
+		ac.cycle_name AS assessCycleName,
+		our.`name` AS userName
+		FROM
+		person_cyc_assess pca
+		INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
+		INNER JOIN org_user our ON our.id = pca.org_user_id
+		WHERE pca.org_user_id=#{userId} AND pca.operate_state != 0
+	</select>
+
     <select id="getDetailByUserAndCycle" resultType="com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO">
         SELECT
         pca.id AS id,
@@ -220,6 +241,7 @@
         LEFT JOIN assess_quantitative_result aqr ON aqr.user_id = pca.org_user_id AND aqr.cycle_id = pca.assess_cycle_id
         WHERE pca.id=#{id}
     </select>
+
     
     <select id="getCountByUserAndCycle" resultType="int">
         SELECT COUNT(1) FROM person_cyc_assess pca WHERE pca.org_user_id=#{userId} AND pca.assess_cycle_id=#{cycleId}

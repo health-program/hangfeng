@@ -105,6 +105,17 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	}
 
 	/**
+	 * 分页查找用户的周期考核情况
+	 * @param query
+	 * @return
+	 */
+	public PageResult<CycleAssessSimpleVO> findUserCycleAssess(PersonalQueryDTO query) {
+		Page<CycleAssessSimpleVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
+		perCycAssMapper.findByUser(query.getUserId());
+		return new PageResult<>(page);
+	}
+	
+	/**
 	 * 保存个人周期考核
 	 * 
 	 * @param assessDTO

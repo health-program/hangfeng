@@ -4,7 +4,7 @@
 <head th:include="/hf/header" />
 
 <body>
-    <tt:constant enumcode="boolean-type,sex-type,nation-type,partisan-type,job_level,certificate-type,job-duties-type,job-rank-type,oeducation-type,user_property_type,ass-grades,operateState" />
+    <tt:constant enumcode="boolean-type,sex-type,nation-type,partisan-type,job_level,certificate-type,job-duties-type,job-rank-type,oeducation-type,user_property_type,ass-grades,operate-state" />
     <div class="container">
         <section class="content-header">
             <h1>医德医风档案管理</h1>
@@ -356,14 +356,13 @@
             idField: "id",
             columns: [
                 [
-                    { title: "考评周期", field: "assessCycName" },
-                    { title: "自评等级", field: "selfAssGrade", formatter: "ass-grades" },
-                    { title: "科室考评等级", field: "departGrade", formatter: "ass-grades" },
-                    { title: "医院考评等级", field: "unitAssGrade", formatter: "ass-grades" },
-                    { title: "操作状态", field: "operateState", formatter: "operateState" },
+                    { title: "考评周期", field: "assessCycleName" },
+                    { title: "自评等级", field: "selfAssGrade", enumcode: "ass-grades" },
+                    { title: "科室考评等级", field: "departGrade", enumcode: "ass-grades" },
+                    { title: "医院考评等级", field: "unitAssGrade", enumcode: "ass-grades" },
+                    { title: "操作状态", field: "operateState", enumcode: "operate-state" },
                     {
                         title: "查看",
-                        width: "60px",
                         align: 'center',
                         events: {
                             'click .detail': function(e, value, row, index) {
@@ -371,17 +370,25 @@
                             }
                         },
                         formatter: function(value, row, index) {
-                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="fa fa-search"></i>查看</button>';
+                            return '<button class="detail btn btn-xs btn-info"><i class="fa fa-search"></i>查看</button>';
                         }
                     }
                 ]
             ],
-            url: '/person/cyc/view/assess/situation?orgUserId=' + userId,
+            url: '/assess/cycle/personal/user/find?userId=' + userId,
             pagination: true,
             showRefresh: true
-        });
+        }); 
     });
 
+    function viewAssess(row){
+        $.openUrlLayerOrLocate("/assess/cycle/personal/user/detail?id="+row.id,{
+            title:"周期考评情况",
+            width:900,
+            height:800
+        })
+    }
+    
     function validateAccount() {
         if ($("#userForm").validateElement("#account")) {
             var account = $("input[name='account']").val();

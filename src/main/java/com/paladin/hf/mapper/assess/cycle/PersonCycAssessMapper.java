@@ -22,6 +22,8 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 
 	public List<CycleAssessSimpleVO> findAgency(@Param("unitParam") UnitQuery unitParam, @Param("query") AgencyQueryDTO query);
 	
+	public List<CycleAssessSimpleVO> findByUser(@Param("userId") String userId);
+	
 	public CycleAssessDetailVO getDetailByUserAndCycle(@Param("userId") String userId, @Param("cycleId") String cycleId);
 
 	public int getCountByUserAndCycle(@Param("userId") String userId, @Param("cycleId") String cycleId);
@@ -39,4 +41,6 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 	public int rejectDepartment(@Param("id") String id, @Param("rejectReason") String rejectReason);
 	
 	public int rejectAgency(@Param("id") String id, @Param("rejectReason") String rejectReason);
+	
+	
 }

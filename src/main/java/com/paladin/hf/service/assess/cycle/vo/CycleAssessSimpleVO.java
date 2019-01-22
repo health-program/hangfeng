@@ -14,7 +14,7 @@ public class CycleAssessSimpleVO {
 
 	private String assessCycleId;
 	
-	private String assessCycName;
+	private String assessCycleName;
 
 	private Integer selfAssGrade;
 
@@ -115,14 +115,6 @@ public class CycleAssessSimpleVO {
 		this.assessCycleId = assessCycleId;
 	}
 
-	public String getAssessCycName() {
-		return assessCycName;
-	}
-
-	public void setAssessCycName(String assessCycName) {
-		this.assessCycName = assessCycName;
-	}
-
 	public String getUnitId() {
 		return unitId;
 	}
@@ -145,5 +137,13 @@ public class CycleAssessSimpleVO {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getAssessCycleName() {
+		return assessCycleName;
+	}
+
+	public void setAssessCycleName(String assessCycleName) {
+		this.assessCycleName = assessCycleName;
 	}
 }

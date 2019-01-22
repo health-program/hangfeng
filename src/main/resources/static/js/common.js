@@ -402,6 +402,18 @@
                 }
             }
             return url;
+        },
+        locationPost: function(url, args) {
+            var form = $("<form method='post' action='" + url + "'></form>");
+            $.each(args, function(key, value) {
+                var input = $("<input type='hidden'>");
+                input.attr({ "name": key });
+                input.val(value);
+                form.append(input);
+            });
+            form.appendTo(document.body);
+            form.submit();
+            document.body.removeChild(form[0]);
         }
     });
 

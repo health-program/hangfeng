@@ -1,35 +1,87 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.paladin.hf.mapper.assess.quantificate.AssessQuantitativeMapper">
-    
-	<select id="findUserAssess" resultType="com.paladin.hf.model.org.OrgUserAssess">
+
+    <select id="findDepartmentUser" resultType="com.paladin.hf.service.assess.quantificate.vo.AssessQuantitativeUserVO">
 		SELECT 
-			b.id AS id,
-			b.org_unit_id AS orgUnitId,
-			b.name AS name,
-			b.account AS account,
+			b.id AS userId,
+			b.org_unit_id AS unitId,
+			b.name AS userName,
 			b.record_create_time AS recordCreateTime,
 			b.sex AS sex,
 			b.oeducation AS oeducation,
-			b.nation AS nation,
-			b.partisan AS partisan,
-			b.birthday AS birthday,
 			b.job_duties AS jobDuties,
 			b.job_rank AS jobRank,
-			b.start_work_time AS startWorkTime,
-			b.come_unit_time AS comeUnitTime,
-			b.resume AS resume,
-			b.reward AS reward,
-			b.punish AS punish,
-			b.is_admin AS isAdmin,
 			b.is_assessor AS isAssessor,
-			b.assess_role AS assessRole,
-			b.assess_unit_id AS assessUnitId,
-			b.is_delete AS isDelete,
-			b.create_time AS createTime,
-			b.create_user_id AS createUserId,
-			b.update_time AS updateTime,
-			b.update_user_id AS updateUserId,
+			b.org_agency_id AS agencyId,
+			b.is_assessor AS isAssessor,
+		    case when c.id is null then 0 else 1 end isAssessed
+		FROM org_user b LEFT JOIN assess_quantitative_result c on c.cycle_id = #{param.assessCycleId} and c.user_id = b.id
+		WHERE b.is_delete = 0 
+		<if test="param.name != null">
+			AND b.name LIKE CONCAT('%',#{param.name},'%')
+	    </if>
+	    
+	    <if test="unitParam.assessTeamId!=null">
+		        and b.org_assess_team_id=#{unitParam.assessTeamId}
+	    </if>
+	    
+	    <if test="unitParam.unitId!=null">
+		        and b.org_unit_id=#{unitParam.unitId}
+	    </if>
+		<if test="unitParam.unitIds!=null">
+            and b.org_unit_id in 
+            <foreach collection="unitParam.unitIds" index="index" item="item" open="(" separator="," close=")">  
+                #{item}  
+            </foreach> 
+        </if>       
+        <if test="unitParam.agencyId!=null">
+		        and b.org_agency_id=#{unitParam.agencyId}
+	    </if>
+	    
+		<if test="unitParam.agencyIds!=null">
+            and b.org_agency_id in 
+            <foreach collection="unitParam.agencyIds" index="index" item="item" open="(" separator="," close=")">  
+                #{item}  
+            </foreach> 
+        </if>
+        
+	    <if test="param.jobRank != null">
+			AND b.job_rank = #{param.jobRank}
+	    </if>	
+	    <if test="param.isAssessor != null">
+			AND b.is_assessor = #{param.isAssessor}
+	    </if>
+	    <if test="param.startRecordCreateTime != null">
+			AND b.record_create_time &gt;= #{param.startRecordCreateTime}
+	    </if>
+	    <if test="param.endRecordCreateTime != null">
+			AND b.record_create_time &lt;= #{param.endRecordCreateTime}
+	    </if>
+	    <if test="param.isAssessed != null">    
+			<if test="param.isAssessed == 1">
+				AND	c.id IS NOT NULL
+			</if>
+			<if test="param.isAssessed == 0">
+				AND	c.id IS NULL
+			</if>			
+	    </if>
+	    ORDER BY b.org_unit_id ASC,b.record_create_time DESC	    
+	</select>
+	
+	<select id="findAgencyUser" resultType="com.paladin.hf.service.assess.quantificate.vo.AssessQuantitativeUserVO">
+		SELECT 
+			b.id AS userId,
+			b.org_unit_id AS unitId,
+			b.name AS userName,
+			b.record_create_time AS recordCreateTime,
+			b.sex AS sex,
+			b.oeducation AS oeducation,
+			b.job_duties AS jobDuties,
+			b.job_rank AS jobRank,
+			b.is_assessor AS isAssessor,
+			b.org_agency_id AS agencyId,
+			b.is_assessor AS isAssessor,
 		    case when c.id is null then 0 else 1 end isAssessed
 		FROM org_user b LEFT JOIN assess_quantitative_result c on c.cycle_id = #{param.assessCycleId} and c.user_id = b.id
 		WHERE b.is_delete = 0 

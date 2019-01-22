@@ -1,4 +1,4 @@
-package com.paladin.hf.service.assess.quantificate.pojo;
+package com.paladin.hf.service.assess.quantificate.dto;
 
 import java.util.Date;
 import java.util.List;
@@ -8,15 +8,17 @@ import com.paladin.framework.common.QueryCondition;
 import com.paladin.framework.common.QueryType;
 
 
-public class AssessQuantitativeUserQuery extends OffsetPage{
+public class QuantitativeAgencyQuery extends OffsetPage{
 	
 	private String name;
 	private String unitId;
+	private String unitName;
 	private String jobRank;
 	private Integer isAssessor;
 	private Date startRecordCreateTime;
 	private Date endRecordCreateTime;
 	private String assessCycleId;
+	private String assessCycleName;
 	private Integer isAssessed;
 	
 	private List<String> unitIds;
@@ -98,6 +100,22 @@ public class AssessQuantitativeUserQuery extends OffsetPage{
 
 	public void setUnitIds(List<String> unitIds) {
 		this.unitIds = unitIds;
+	}
+
+	public String getUnitName() {
+		return unitName;
+	}
+
+	public void setUnitName(String unitName) {
+		this.unitName = unitName;
+	}
+
+	public String getAssessCycleName() {
+		return assessCycleName;
+	}
+
+	public void setAssessCycleName(String assessCycleName) {
+		this.assessCycleName = assessCycleName;
 	}
 
 }

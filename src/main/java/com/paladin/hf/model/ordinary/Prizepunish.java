@@ -7,9 +7,9 @@ import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.paladin.framework.common.BaseModel;
-public class Prizepunish  extends BaseModel {
-    
-	
+
+public class Prizepunish extends BaseModel {
+
 	public static final int OPERATION_STATE_SELF_TEMPORARY = 0;
 	public static final int OPERATION_STATE_DEPARTMENT_TEMPORARY = 1;
 	public static final int OPERATION_STATE_AGENCY_TEMPORARY = 2;
@@ -17,201 +17,182 @@ public class Prizepunish  extends BaseModel {
 	public static final Integer OPERATION_STATE_DEPARTMENT_SUBMIT = 4;
 	public static final Integer OPERATION_STATE_AGENCY_SUBMIT = 5;
 
-	public static final int EXAMINE_WAIT = 0;//待审核
-	public static final int EXAMINE_SUCCESS = 1;//成功
-	public static final int EXAMINE_FAILURE = 2;//失败
-	
-	
-	
+	public static final int EXAMINE_WAIT = 0;// 待审核
+	public static final int EXAMINE_SUCCESS = 1;// 成功
+	public static final int EXAMINE_FAILURE = 2;// 失败
+
 	public static final String COLUMN_ORG_USER_ID = "orgUserId";
 	public static final String COLUMN_HAPPEN_TIME = "happenTime";
 	public static final String COLUMN_DICT_CODE = "dictCode";
 	public static final String COLUMN_OPERATION_STATE = "operationState";
-	
-	
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "UUID")
-    private String id;
 
-    private String orgUserId;
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(generator = "UUID")
+	private String id;
 
-    private String happenTime;
+	private String orgUserId;
 
-    private String content;
+	private String happenTime;
 
-    private String place;
+	private String content;
 
-    private String checks;
+	private String place;
 
-    private String checkPeople;
-    
-    private  Integer operationState;
-    
-    private  Integer dictCode;
+	private String checks;
 
-    private Integer examineState;
+	private String checkPeople;
 
-    private String examinePeople;
+	private Integer operationState;
 
-    private String remarks;
-    
-    private String attachments; 
-    
-    public String getOrgUserId()
-    {
-        return orgUserId;
-    }
+	private Integer dictCode;
 
-    public void setOrgUserId(String orgUserId)
-    {
-        this.orgUserId = orgUserId;
-    }
+	private Integer examineState;
 
-    @Transient
-    @JsonIgnore
-    private String sort = "";
+	private String examinePeople;
 
-    @Transient
-    @JsonIgnore
-    private String order = "";
-    
-    @Transient
-    @JsonIgnore
-    private String appSort = "happen_time";
-    
-    
-    
-    public String getAppSort()
-    {
-        return appSort;
-    }
+	private String remarks;
 
-    public void setAppSort(String appSort)
-    {
-        this.appSort = appSort;
-    }
+	private String attachments;
 
-    public String getSort()
-    {
-        return sort;
-    }
+	public String getOrgUserId() {
+		return orgUserId;
+	}
 
-    public void setSort(String sort)
-    {
-        this.sort = sort;
-    }
+	public void setOrgUserId(String orgUserId) {
+		this.orgUserId = orgUserId;
+	}
 
-    public String getOrder()
-    {
-        return order;
-    }
+	@Transient
+	@JsonIgnore
+	private String sort = "";
 
-    public void setOrder(String order)
-    {
-        this.order = order;
-    }
+	@Transient
+	@JsonIgnore
+	private String order = "";
 
-    public String getId() {
-        return id;
-    }
+	@Transient
+	@JsonIgnore
+	private String appSort = "happen_time";
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
-    }
+	public String getAppSort() {
+		return appSort;
+	}
 
-    public String getContent() {
-            return content;
-    }
+	public void setAppSort(String appSort) {
+		this.appSort = appSort;
+	}
 
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
-    }
+	public String getSort() {
+		return sort;
+	}
 
-    public String getPlace() {
-        return place;
-    }
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
 
-    public void setPlace(String place) {
-        this.place = place == null ? null : place.trim();
-    }
+	public String getOrder() {
+		return order;
+	}
 
-    public String getChecks()
-    {
-        return checks;
-    }
+	public void setOrder(String order) {
+		this.order = order;
+	}
 
-    public void setChecks(String checks)
-    {
-        this.checks = checks;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getCheckPeople() {
-        return checkPeople;
-    }
+	public void setId(String id) {
+		this.id = id == null ? null : id.trim();
+	}
 
-    public void setCheckPeople(String checkPeople) {
-        this.checkPeople = checkPeople == null ? null : checkPeople.trim();
-    }
+	public String getContent() {
+		return content;
+	}
 
-    public Integer getOperationState() {
-      return operationState;
-    }
+	public void setContent(String content) {
+		this.content = content == null ? null : content.trim();
+	}
 
-    public void setOperationState(Integer operationState) {
-          this.operationState = operationState;
-    }
-    
-    public Integer getDictCode() {
-          return dictCode;
-    }
-    
-    public void setDictCode(Integer dictCode) {
-          this.dictCode = dictCode;
-    }
-    
-    public Integer getExamineState() {
-          return examineState;
-    }
-    
-    public void setExamineState(Integer examineState) {
-          this.examineState = examineState;
-    }
+	public String getPlace() {
+		return place;
+	}
 
-    public String getExaminePeople() {
-        return examinePeople;
-    }
+	public void setPlace(String place) {
+		this.place = place == null ? null : place.trim();
+	}
 
-    public void setExaminePeople(String examinePeople) {
-        this.examinePeople = examinePeople == null ? null : examinePeople.trim();
-    }
+	public String getChecks() {
+		return checks;
+	}
 
-    public String getRemarks() {
-        return remarks;
-    }
+	public void setChecks(String checks) {
+		this.checks = checks;
+	}
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks == null ? null : remarks.trim();
-    }
+	public String getCheckPeople() {
+		return checkPeople;
+	}
 
-    public String getHappenTime()
-    {
-        return happenTime;
-    }
+	public void setCheckPeople(String checkPeople) {
+		this.checkPeople = checkPeople == null ? null : checkPeople.trim();
+	}
 
-    public void setHappenTime(String happenTime)
-    {
-        this.happenTime = happenTime;
-    }
+	public Integer getOperationState() {
+		return operationState;
+	}
 
-    public String getAttachments()
-    {
-        return attachments;
-    }
+	public void setOperationState(Integer operationState) {
+		this.operationState = operationState;
+	}
 
-    public void setAttachments(String attachments)
-    {
-        this.attachments = attachments;
-    }
-    
+	public Integer getDictCode() {
+		return dictCode;
+	}
+
+	public void setDictCode(Integer dictCode) {
+		this.dictCode = dictCode;
+	}
+
+	public Integer getExamineState() {
+		return examineState;
+	}
+
+	public void setExamineState(Integer examineState) {
+		this.examineState = examineState;
+	}
+
+	public String getExaminePeople() {
+		return examinePeople;
+	}
+
+	public void setExaminePeople(String examinePeople) {
+		this.examinePeople = examinePeople == null ? null : examinePeople.trim();
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks == null ? null : remarks.trim();
+	}
+
+	public String getHappenTime() {
+		return happenTime;
+	}
+
+	public void setHappenTime(String happenTime) {
+		this.happenTime = happenTime;
+	}
+
+	public String getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(String attachments) {
+		this.attachments = attachments;
+	}
+
 }

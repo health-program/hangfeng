@@ -132,7 +132,7 @@
             url: '/assess/cycle/department/find',
             searchbar: '#searchbar',
             sortName: 'createTime',
-            queryParams: function() {
+            queryParams: function(params) {
                 var o = $("[name='cycleId']").data("cycleComponment").getCurrent();
                 if(o)params.cycleName = o.cycleName;
                 return params;

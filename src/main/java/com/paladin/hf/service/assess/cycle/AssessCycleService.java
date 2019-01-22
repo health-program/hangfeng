@@ -170,7 +170,6 @@ public class AssessCycleService extends ServiceSupport<AssessCycle> {
 	 * @return
 	 */
 	public PageResult<AssessCycle> findEnabledSelfAssessCyclePage(OffsetPage offsetPage) {
-
 	    HfUserSession session = HfUserSession.getCurrentUserSession();
 		String agencyId = session.getUserAgencyId();
 		return searchPage(new Condition[] {

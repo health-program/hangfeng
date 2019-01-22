@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
@@ -23,23 +22,24 @@ import com.paladin.hf.model.assess.quantificate.AssessItemExtra;
 import com.paladin.hf.model.assess.quantificate.AssessQuantitative;
 import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.model.ordinary.PrizepunishScore;
-import com.paladin.hf.model.org.OrgUserAssess;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
-import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserDetailQuery;
-import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;
+import com.paladin.hf.service.assess.quantificate.dto.AssessQuantitativeUserQuery;
+import com.paladin.hf.service.assess.quantificate.dto.QuantitativeAgencyQuery;
+import com.paladin.hf.service.assess.quantificate.dto.QuantitativeDepartmentQuery;
+import com.paladin.hf.service.assess.quantificate.vo.AssessQuantitativeUserVO;
 import com.paladin.hf.service.ordinary.PrizepunishService;
 
 @Service
 public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative> {
 
 	@Autowired
-	AssessQuantitativeMapper assessQuantitativeMapper;
+	private AssessQuantitativeMapper assessQuantitativeMapper;
 
 	@Autowired
-	AssessCycleService assessCycleService;
+	private AssessCycleService assessCycleService;
 
 	@Autowired
-	PrizepunishService prizepunishService;
+	private PrizepunishService prizepunishService;
 
 	/**
 	 * 查找考核用户信息
@@ -47,10 +47,23 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 	 * @param query
 	 * @return
 	 */
-	public PageResult<OrgUserAssess> findUserAssess(AssessQuantitativeUserQuery query) {
-		Page<OrgUserAssess> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());
+	public PageResult<AssessQuantitativeUserVO> findDepartmentUser(QuantitativeDepartmentQuery query) {
+		Page<AssessQuantitativeUserVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());
 		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
-		assessQuantitativeMapper.findUserAssess(query, unitQuery);
+		assessQuantitativeMapper.findDepartmentUser(query, unitQuery);
+		return new PageResult<>(page);
+	}
+
+	/**
+	 * 查找考核用户信息
+	 * 
+	 * @param query
+	 * @return
+	 */
+	public PageResult<AssessQuantitativeUserVO> findAgencyUser(QuantitativeAgencyQuery query) {
+		Page<AssessQuantitativeUserVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
+		assessQuantitativeMapper.findAgencyUser(query, unitQuery);
 		return new PageResult<>(page);
 	}
 
@@ -61,7 +74,7 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 	 * @param cycleId
 	 * @return
 	 */
-	public List<PrizepunishScore> findUserAssessDetail(AssessQuantitativeUserDetailQuery query) {
+	public List<PrizepunishScore> findUserAssessDetail(AssessQuantitativeUserQuery query) {
 
 		String cycleId = query.getCycleId();
 		String userId = query.getUserId();
@@ -82,9 +95,11 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 			endTime = cycleEndTime;
 		}
 
+		List<Integer> states = new ArrayList<>();
+		states.add( Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT);
+		states.add(Prizepunish.OPERATION_STATE_AGENCY_SUBMIT );
 		List<Condition> conditions = new ArrayList<>();
-		conditions.add(new Condition(Prizepunish.COLUMN_OPERATION_STATE, QueryType.IN,
-				new Integer[] { Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT, Prizepunish.OPERATION_STATE_AGENCY_SUBMIT }));
+		conditions.add(new Condition(Prizepunish.COLUMN_OPERATION_STATE, QueryType.IN, states));
 		conditions.add(new Condition(Prizepunish.COLUMN_ORG_USER_ID, QueryType.EQUAL, userId));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.GREAT_EQUAL, startTime));
 		conditions.add(new Condition(Prizepunish.COLUMN_HAPPEN_TIME, QueryType.LESS_EQUAL, endTime));

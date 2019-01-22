@@ -34,6 +34,22 @@ public class CycleAssessSimpleVO {
 	/*
 	 * 扩展显示单位名称
 	 */
+	
+	public String getDepartmentName() {
+		try {
+			return UnitContainer.getUnitName(unitId);
+		} catch (BusinessException e) {
+			return "";
+		}
+	}
+
+	public String getAgencyName() {
+		try {
+			return UnitContainer.getUnitName(agencyId);
+		} catch (BusinessException e) {
+			return "";
+		}
+	}
 
 	public Integer getSelfAssGrade() {
 		return selfAssGrade;
@@ -73,22 +89,6 @@ public class CycleAssessSimpleVO {
 
 	public void setOperateState(Integer operateState) {
 		this.operateState = operateState;
-	}
-
-	public String getDepartmentName() {
-		try {
-			return UnitContainer.getUnitName(unitId);
-		} catch (BusinessException e) {
-			return "";
-		}
-	}
-
-	public String getAgencyName() {
-		try {
-			return UnitContainer.getUnitName(agencyId);
-		} catch (BusinessException e) {
-			return "";
-		}
 	}
 
 	public String getId() {

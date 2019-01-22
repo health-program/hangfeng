@@ -8,13 +8,17 @@ import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.model.assess.quantificate.AssessEventScore;
 import com.paladin.hf.model.assess.quantificate.AssessQuantitative;
-import com.paladin.hf.model.org.OrgUserAssess;
-import com.paladin.hf.service.assess.quantificate.pojo.AssessQuantitativeUserQuery;
+import com.paladin.hf.service.assess.quantificate.dto.QuantitativeAgencyQuery;
+import com.paladin.hf.service.assess.quantificate.dto.QuantitativeDepartmentQuery;
+import com.paladin.hf.service.assess.quantificate.vo.AssessQuantitativeUserVO;
 
 public interface AssessQuantitativeMapper extends CustomMapper<AssessQuantitative> {
 
-	public List<OrgUserAssess> findUserAssess(@Param("param") AssessQuantitativeUserQuery query, @Param("unitParam") UnitQuery unitQuery);
+	public List<AssessQuantitativeUserVO> findDepartmentUser(@Param("param") QuantitativeDepartmentQuery query, @Param("unitParam") UnitQuery unitQuery);
 
+	public List<AssessQuantitativeUserVO> findAgencyUser(@Param("param") QuantitativeAgencyQuery query, @Param("unitParam") UnitQuery unitQuery);
+
+	
 	/**
 	 * 查找考核奖惩事件分数
 	 * 

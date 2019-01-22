@@ -5,524 +5,150 @@
 </head>
 
 <body>
-    
-    <input type="hidden" id="isView" th:value="${isView}" />
     <input type="hidden" th:value="${userId}" name="userId" />
-    
-    <tt:constant enumcode="examine,operation,event_type"/>
+    <tt:constant enumcode="examine,operation,event_type,boolean-type" />
     <section class="content-header">
-            <h1>人员量化考评</h1>
-            <ol class="breadcrumb">
-                <li><a href="/console/assess/quantitative/agency/index?cached=1"><i class="fa fa-list-alt"></i>列表</a></li>
-                <li class="active">量化</li>
-            </ol>
+        <h1>人员量化考评-机构</h1>
+        <ol class="breadcrumb">
+            <li><a href="/assess/quantitative/agency/index"><i class="fa fa-list-alt"></i>人员列表</a></li>
+            <li class="active">人员考评</li>
+        </ol>
     </section>
     <section class="content">
-         <div class="box box-solid">
-              <div class="box-header with-border">
-                  <i class="fa fa-search"></i>
-                  <h3 class="box-title">查询</h3>
-              </div>
-              <div class="box-body">
-                  <form id="searchbar" class="form-horizontal">
-		                <div class="form-group">
-		                    <label style="width: 130px" for="cycleId" class="col-sm-2 control-label">考评周期</label>
-		                    <div class="col-sm-2">
-		                        <input type="text" class="form-control tonto-select-assess-cycle" required="required" id="cycleId" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" name="cycleId" placeholder="请选择周期"></input>
-		                    </div>
-		                </div>
-		                <div class="form-group">
-		                    <label for="eventType" style="width:130px" class="col-sm-2 control-label">事件类型</label>
-		                    <div class="col-sm-2">
-	                            <select name="eventType" class="form-control tonto-select-constant" enumcode="event_type">
-	                                <option value="">请选择</option>
-	                            </select>
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-search"></i>
+                <h3 class="box-title">查询</h3>
+            </div>
+            <div class="box-body">
+                <form id="searchbar" class="form-horizontal">
+                    <div class="form-group">
+                        <label style="width: 130px" for="cycleId" class="col-sm-2 control-label">考评周期</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" name="cycleId" placeholder="请选择"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventType" style="width:130px" class="col-sm-2 control-label">事件类型</label>
+                        <div class="col-sm-2">
+                            <select name="eventType" class="form-control tonto-select-constant" enumcode="event_type">
+                                <option value="">全部</option>
+                            </select>
+                        </div>
+                        <label for="startHappenTime" style="width:130px" class="col-sm-2 control-label">发生时间</label>
+                        <div class="col-sm-2">
+                            <input type="text" name="startHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
+                        </div>
+                        <label for="endHappenTime" style="width:80px;text-align:center" class="col-sm-2 control-label">至</label>
+                        <div class="col-sm-2">
+                            <input type="text" name="endHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
+                        </div>
+                        <label for="name" style="width:80px" class="col-sm-2 control-label"></label>
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                                <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
                             </div>
-		                    <label for="startHappenTime" style="width:130px" class="col-sm-2 control-label">发生时间</label>
-		                    <div class="col-sm-2">
-		                        <input type="text" name="startHappenTime" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
-		                    </div>
-		                    <label for="endHappenTime" style="width:80px;text-align:center" class="col-sm-2 control-label">至</label>
-		                    <div class="col-sm-2">
-		                        <input type="text" name="endHappenTime" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
-		                    </div>
-		                    <label for="name" style="width:80px" class="col-sm-2 control-label"></label>
-			                <div class="col-md-12">
-	                            <div class="pull-right">
-	                               <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
-	                               <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
-	                            </div>
-	                        </div>
-		                </div>
-                  </form>
-              </div>
-         </div>
-         
-         <div class="box box-solid" style="margin-top:20px">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box box-solid" style="margin-top:20px">
             <div class="box-header with-border">
                 <i class="fa fa-list-alt"></i>
                 <h3 class="box-title">结果</h3>
             </div>
             <div id="result" class="box-body">
-               <table id="dataGrid"></table>
+                <table id="dataGrid"></table>
+                <div id="toolbar">
+                    <a onclick="quantitative(false)" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>量化考评</a>
+                    <a onclick="quantitative(true)" class="btn btn-success"><i class="fa fa-cog"></i>考评结果</a>
+                </div>
             </div>
-         </div>
-              
+        </div>
     </section>
-    
-    
-    
-    
-    
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
     /*<![CDATA[*/
-               
     var table;
-    var isView = $("#isView").val();
     var userId = $('[name="userId"]').val();
-    
+
     $(function() {
-        initDataGrid();
-    });         
-               
-               
-    
-    $(function() {
-    	if(!$('#cycleId').attr("cycleid")){
-    		$("#toolbar").hide();
-    		layer.alert("没有可用考评周期");  		
-    		return;
-    	}
-    	
         initDataGrid();
     });
 
-
     function initDataGrid() {
-
-        var columns = [
-            { title: "事件类型", field: "dictCode", enumcode:"event_type"},
-            { title: "发生时间", field: "happenTime" },
-            { title: "核定部门(人)", field: "checkPeople" },
-            { title: "操作状态", field: "operationState", enumcode:"operation"},
-            { title: "审核状态", field: "examineState", enumcode:"examine"},
-            { title: "审核人", field: "examinePeople" },
-            { title: "加分", field: "addScore" },
-            { title: "扣分", field: "reduceScore" },
-            { title: "一票否决", field: "isVeto", formatter: function(value, row, index) { return row.isVeto ? "有" : "无" } },
-            {
-                title: "操作",
-                align: "center",
-                width: "10%",
-                events: {
-                    'click .view': function(e, value, row, index){
-                        view(row);
-                    },
-                    'click .score': function(e, value, row, index){
-                        score(row);
-                    },
-                    'click .assess': function(e, value, row, index){
-                        assess(row);
-                    },
-                    'click .viewAssess': function(e, value, row, index){
-                        viewAssess(row);
-                    }
-                },
-                formatter: operateFormatter
-            }
-        ]
-
         table = $.createTable("#dataGrid", {
             idField: "id",
             columns: [
-                columns
+                [
+                    { title: "事件类型", field: "dictCode", enumcode: "event_type" },
+                    { title: "发生时间", field: "happenTime" },
+                    { title: "核定部门(人)", field: "checkPeople" },
+                    { title: "操作状态", field: "operationState", enumcode: "operation" },
+                    { title: "审核状态", field: "examineState", enumcode: "examine" },
+                    { title: "审核人", field: "examinePeople" },
+                    { title: "加分", field: "addScore" },
+                    { title: "扣分", field: "reduceScore" },
+                    { title: "一票否决", field: "isVeto", enumcode: "boolean-type" },
+                    {
+                        title: "操作",
+                        align: "center",
+                        events: {
+                            'click .view': function(e, value, row, index) {
+                                view(row);
+                            },
+                            'click .score': function(e, value, row, index) {
+                                score(row);
+                            },
+                        },
+                        formatter: operateFormatter
+                    }
+                ]
             ],
-            url: '/console/assess/quantitative/user/detail',
+            url: '/assess/quantitative/agency/user/detail',
+            queryParams: function(params) {
+                params.userId = userId;
+                return params;
+            },
+            toolbar: "#toolbar",
             searchbar: '#searchbar',
             pagination: false,
             showRefresh: true,
-            //showToggle: true,
-            clickToSelect:true,
-            showColumns:true
-        });
+            clickToSelect: true
+        })
     }
-    
-    function operateFormatter(value,row,index) {
-        if(isView != 1){
-            return [
-                    '<button class="view btn btn-xs btn-info" style="margin-right:10px">' ,
-                    '<i class="glyphicon glyphicon-cog"></i>查看' ,
-                    '</button>',
-                    '<button class="score btn btn-xs btn-info" style="margin-right:10px">' ,
-                    '<i class="glyphicon glyphicon-cog"></i>评分' ,
-                    '</button>',
-                    '<button class="assess btn btn-xs btn-info" style="margin-right:10px">' ,
-                    '<i class="glyphicon glyphicon-cog"></i>量化考评' ,
-                    '</button>',
-                    '<button class="viewAssess btn btn-xs btn-info" style="margin-right:10px">' ,
-                    '<i class="glyphicon glyphicon-cog"></i>查看考评结果',
-                    '</button>'
-                    ].join('');
-        }else{
-            return [
-                    '<button class="assess btn btn-xs btn-info" style="margin-right:10px">' ,
-                    '<i class="glyphicon glyphicon-cog"></i>查看' ,
-                    '</button>',
-                    '<button class="viewAssess btn btn-xs btn-info" style="margin-right:10px">' ,
-                    '<i class="glyphicon glyphicon-cog"></i>查看考评结果',
-                    '</button>'
-                    ].join('');
-        }
-    }
-    
 
-    function score(row) {
-			
-			if(row.examineState != '1'){
-				$.errorMessage("事件未审核通过，无法评分");
-				return;
-			}
-						
-			$.locationPost("/console/assess/quantitative/agency/user/score/index", {
-	            userId: userId,
-	            cycleId: $('[name="cycleId"]').val(),
-	            prizePunishId: row.id
-	        });
-    }
-    
-
-    function getAssessLayerContent(isView) {
-        var content = '<section class="content">' +
-            '<div class="row">' +
-            '<div class="col-md-12">' +
-            '<div class="box box-primary">' +
-            '     <div class="box-header with-border">' +
-            '         <h4 class="box-title">考评结果</h3>' +
-            '     </div>' +
-            '     <div class="box-body">' +
-            '         <div ><table id="dataGrid1" class="table table-bordered"></table></div>' +
-            '         <div style="margin-top:10px">' +
-            '         <div class="col-sm-2" style="width:150px">' +
-            '         <div class="input-group">' +
-            '           <span class="input-group-addon">基础得分</span>' +
-            '           <input id="baseScore" class="form-control" style="width:60px" readonly/>' +
-            '         </div>' +
-            '         </div>' +
-            '         <div class="col-sm-2" style="width:120px">' +
-            '         <div class="input-group">' +
-            '           <span class="input-group-addon">加分</span>' +
-            '           <input id="addScore" class="form-control" style="width:60px" ' + (isView ? 'readonly' : '') + '/>' +
-            '         </div>' +
-            '         </div>' +
-            '         <div class="col-sm-2" style="width:120px">' +
-            '         <div class="input-group">' +
-            '           <span class="input-group-addon">扣分</span>' +
-            '           <input id="reduceScore" class="form-control" style="width:60px"' + (isView ? 'readonly' : '') + '/>' +
-            '         </div>' +
-            '         </div>' +
-            '         <div class="col-sm-2" style="width:130px">' +
-            '         <div class="input-group">' +
-            '           <span class="input-group-addon">总得分</span>' +
-            '           <input id="lastScore" class="form-control" style="width:60px" readonly/>' +
-            '         </div>' +
-            '         </div>' +
-            '         <div class="col-sm-2" style="width:150px">' +
-            '         <div class="input-group">' +
-            '           <span class="input-group-addon">一票否决</span>' +
-            '           <input id="veto" class="form-control" style="width:60px" readonly/>' +
-            '         </div>' +
-            '         </div>' +
-            '         <div class="col-sm-2" style="width:145px">' +
-            (isView ? '' : '<button type="button" id="submitBtn" class="btn btn-primary">保存</button>') +
-            '           <button type="button" id="cancelBtn" class="btn btn-default">取消</button>' +
-            '         </div>' +
-            '         </div>' +
-            '     </div>' +
-            ' </div>' +
-            ' </div>' +
-            ' </div>' +
-            ' </section>';
-
-        return content;
+    function operateFormatter(value, row, index) {
+        return [
+            '<button class="view btn btn-xs btn-info" style="margin-right:10px">',
+            '<i class="glyphicon glyphicon-zoom-in"></i>详情',
+            '</button>',
+            '<button class="score btn btn-xs btn-success" style="margin-right:10px">',
+            '<i class="glyphicon glyphicon-cog"></i>评分',
+            '</button>'
+        ].join('');
     }
 
     function view(row) {
-    		layer.open({
-                type: 2,
-                title: ' ',
-                maxmin: true, //开启最大化最小化按钮
-                area: $.getOpenLayerSize(800, 700),
-                content: '/console/peacet/view?id=' + row.id
-            });
-    }
-
-    function assess() {
-
-        layer.open({
-            type: 1,
-            title: ' ',
-            maxmin: true, //开启最大化最小化按钮
-            area: $.getOpenLayerSize(1100, 560),
-            content: getAssessLayerContent(false),
-            success: function(layero, index) {
-                $.getAjax("/console/assess/quantitative/result/detail?cycleId=" + $('[name="cycleId"]').val() + "&userId=" + userId, function(data) {
-                    initAssessDetail(data, layero, index, false);
-                });
-            }
+        $.openUrlLayerOrLocate("/prizepunish/view/layer?id=" + row.id, {
+            title: "奖惩事件详情",
+            width: 900,
+            height: 700
         });
     }
 
-    function viewAssess() {
-
-        layer.open({
-            type: 1,
-            title: ' ',
-            maxmin: true, //开启最大化最小化按钮
-            area: $.getOpenLayerSize(1100, 560),
-            content: getAssessLayerContent(true),
-            success: function(layero, index) {
-                $.getAjax("/console/assess/quantitative/result/detail?cycleId=" + $('[name="cycleId"]').val() + "&userId=" + userId, function(data) {
-                    initAssessDetail(data, layero, index, true);
-                });
-            }
+    function score(row) {
+        $.locationPost("/assess/quantitative/agency/user/score/index", {
+            userId: userId,
+            cycleId: $('[name="cycleId"]').val(),
+            prizePunishId: row.id
         });
     }
 
-
-
-
-
-    // ----------------------------------------
-    // 画表格
-    // ----------------------------------------
-
-    function initAssessDetail(data, layero, index, isView) {
-        var g = function(nodeItems, data, depth) {
-
-            var nodes = [];
-
-            if ($.isArray(nodeItems)) {
-                nodeItems.forEach(function(item) {
-                    var node = {
-                        text: item.itemName,
-                        data: item,
-                        depth: depth
-                    };
-
-                    var children = $.grep(data, function(row, index) {
-                        return item.id == row.parentItemId;
-                    });
-
-                    if (children && children.length > 0) {
-                        node.nodes = g(children, data, depth + 1);
-                    }
-
-                    nodes.push(node);
-                })
-            }
-            return nodes;
-        }
-
-        // 初始化树数据
-
-        if (data.extras) {
-            createExtras(data.extras);
-        }
-
-        if (data.items) {
-            var items = data.items;
-            var roots = $.grep(items, function(row, index) {
-                return row.parentItemId == null;
-            });
-            var treedata = g(roots, items, 0);
-            createTable(treedata);
-        }
-
-        var baseScore;
-        var addScore;
-        var reduceScore;
-        var isVeto;
-
-        if (data.result) {
-            var r = data.result;
-            baseScore = r.baseScore || 0;
-            addScore = r.addScore|| 0;
-            reduceScore = r.reduceScore|| 0;
-            isVeto = r.isVeto|| 0;
-        } else {
-            baseScore = data.baseScore|| 0;
-            addScore = data.addScore|| 0;
-            reduceScore = data.reduceScore|| 0;
-            isVeto = data.isVeto|| 0;
-        }
-
-        var lastScore = baseScore + addScore - reduceScore;
-
-        $("#baseScore").val(baseScore);
-        $("#addScore").val(addScore);
-        $("#reduceScore").val(reduceScore);
-        $("#veto").val(isVeto == 1 ? "有" : "无");
-        $("#lastScore").val(lastScore);
-
-        if (!isView) {
-
-            $("#submitBtn").click(function() {
-                var a = $("#addScore").val();
-                var b = $("#reduceScore").val();
-
-                if (a && (/^\d+(\.5)?$/.test(a)) && b && (/^\d+(\.5)?$/.test(b))) {
-                    var params = {
-                        userId: userId,
-                        cycleId: $('[name="cycleId"]').val(),
-                        baseScore: baseScore,
-                        addScore: a,
-                        reduceScore: b,
-                        isVeto: isVeto
-                    }
-
-                    $.postAjax("/console/assess/quantitative/result/save", params, function() {
-                        $.successMessage("保存成功");
-                        layer.close(index);
-                    });
-                } else {
-                    $.errorMessage("输入分数必须为正整数或者小数位带0.5的数");
-                    return;
-                }
-            });
-        }
-
-        $("#cancelBtn").click(function() {
-            layer.close(index);
-        });
-    }
-
-    var addExtra = "";
-    var lessExtra = "";
-    var voteExtra = "";
-
-    function createExtras(extras) {
-
-        addExtra = "<ol>";
-        lessExtra = "<ol>";
-        voteExtra = "<ol>";
-
-        if (extras) {
-            for (var y = 0; y < extras.length; y++) {
-                var extraItem = extras[y];
-                if (extraItem.extraType == '1') {
-                    addExtra += "<li><p>" + extraItem.extraDescription + "</p>";
-                    addExtra += "<p>【加分下限：" + extraItem.alterLower + "，加分上限：" + extraItem.alterUpper + "，累计上限：" + (extraItem.accumulateUpper || "不计上限") + "】<p></li>";
-                }
-                if (extraItem.extraType == '2') {
-                    lessExtra += "<li><p>" + extraItem.extraDescription + "</p>";
-                    lessExtra += "<p>【扣分下限：" + extraItem.alterLower + "，扣分上限：" + extraItem.alterUpper + "，累计上限：" + (extraItem.accumulateUpper || "不计上限") + "】<p></li>";
-                }
-                if (extraItem.extraType == '3') {
-                    voteExtra += "<li>" + extraItem.extraDescription + "</li>";
-                }
-            }
-        }
-        addExtra += "</ol>";
-        lessExtra += "</ol>";
-        voteExtra += "</ol>";
-    }
-
-    function createTable(treedata) {
-
-        var trs = [];
-        for (var i = 0; i < treedata.length; i++) {
-            getRow(treedata[i], null, trs);
-        }
-
-        var html = "<tbody>";
-        var maxDepth = 1;
-        var maxDepthIndex = 0;
-        var j = 0
-        for (; j < trs.length; j++) {
-            if (trs[j].length > maxDepth) {
-                maxDepth = trs[j].length;
-                maxDepthIndex = j;
-            }
-        }
-        for (j = 0; j <
-            trs.length; j++) {
-            var tr = trs[j];
-            html += "<tr>";
-            var x = 0
-            for (; x < tr.length; x++) {
-                var td = tr[x];
-                var data = td.data;
-                var rowspan = td.rowspan;
-                html += "<td valign='middle' style='vertical-align:middle' rowspan='" + rowspan + "'>" + data.itemName + "</td>";
-                html += "<td valign='middle' style='vertical-align:middle' rowspan='" + rowspan + "'>" + (data.itemDescription || "") + "</td>";
-                html += "<td valign='middle' style='vertical-align:middle;text-align:center;width:50px' align='center' rowspan='" + rowspan + "'>" + data.basicScore + "</td>";
-            }
-            var depth = (tr.length > 0 ? tr[tr.length - 1].depth : 0);
-            var d = maxDepth - depth - 1;
-            if (d > 0) {
-                html += "<td colspan='" + (d * 3) + "'> </td>";
-            }
-            if (j == 0) {
-                html += "<td rowspan='" + trs.length + "'>" + addExtra + "</td>";
-                html += "<td rowspan='" + trs.length + "'>" + lessExtra + "</td>";
-                html += "<td rowspan='" + trs.length + "'>" + voteExtra + "</td>";
-            }
-        }
-        html += "</tbody>";
-        var thead = "<thead><tr>" + "<th align='center' style='text-align:center' colspan='" + (maxDepth * 3) + "'>考评项目</th>" +
-            "<th align='center' style='text-align:center' rowspan='2'>加分</th>" +
-            "<th align='center' style='text-align:center' rowspan='2'>扣分</th>" +
-            "<th align='center' style='text-align:center' rowspan='2'>一票否决</th></tr>";
-
-        thead += "<tr>";
-
-        for (j = 0; j < maxDepth; j++) {
-            thead += "<th align='center' style='text-align:center'>名称</th>";
-            thead += "<th align='center' style='text-align:center'>描述</th>";
-            thead += "<th align='center' style='text-align:center'>分数</th>";
-        }
-
-        thead += "</tr></thead>";
-        $("#dataGrid1").html(thead + html);
-    }
-
-    function getRowspan(node) {
-        if (node.nodes) {
-            var s = 0;
-            for (var i = 0; i < node.nodes.length; i++) {
-                var subnode = node.nodes[i];
-                s += getRowspan(subnode);
-            }
-            return s;
-        }
-        return 1;
-    }
-
-    function getRow(node, tr, trs) {
-        if (!tr) {
-            tr = [];
-            trs.push(tr);
-        }
-        var rowspan = getRowspan(node);
-        tr.push({
-            data: node.data,
-            rowspan: rowspan,
-            depth: node.depth
-        });
-        var nodes = node.nodes;
-        if (nodes && nodes.length > 0) {
-            var first = nodes[0];
-            getRow(first, tr, trs);
-            for (var i = 1; i < nodes.length; i++) {
-                getRow(nodes[i], null, trs);
-            }
-        }
-    }
-    
-    function getSelectRow() {
-        var rows = table.getSelections();
-        return rows.length>0?rows[0]:null;
+    function quantitative(isView) {
+        window.location = "/assess/quantitative/agency/user/result?userId=" + userId + "&cycleId=" + $('[name="cycleId"]').val() + (isView ? "&isView=1" : "");
     }
 
     /*]]>*/

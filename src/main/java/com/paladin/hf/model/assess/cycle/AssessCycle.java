@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.paladin.framework.common.BaseModel;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.core.UnitContainer;
 
 
 public class AssessCycle extends BaseModel {
@@ -52,6 +54,17 @@ public class AssessCycle extends BaseModel {
 	private Integer assessType;
 
 	private String cycleDescribe;
+	
+	/*
+	 * 扩展显示单位名称
+	 */
+	public String getUnitName() {
+		try {
+			return UnitContainer.getUnitName(unitId);
+		} catch (BusinessException e) {
+			return "";
+		}
+	}
 
 	public String getId() {
 		return id;

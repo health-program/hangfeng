@@ -27,10 +27,10 @@ import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.dto.AssessCycleDTO;
 import com.paladin.hf.service.assess.cycle.dto.AssessCycleQuery;
 import com.paladin.hf.service.assess.cycle.dto.AssessCycleSelectQuery;
+import com.paladin.hf.service.assess.cycle.dto.AssessCycleTemplateRequest;
 import com.paladin.hf.service.assess.cycle.vo.AssessCycleVO;
 import com.paladin.hf.service.assess.quantificate.AssessCycleTemplateService;
 import com.paladin.hf.service.assess.quantificate.TemplateService;
-import com.paladin.hf.service.assess.quantificate.pojo.AssessCycleTemplateRequest;
 
 /**
  * 

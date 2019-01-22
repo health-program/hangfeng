@@ -106,4 +106,10 @@ public class PrizepunishController extends ControllerSupport {
         return CommonResponse.getResponse(prizepunishService.removeByPrimaryKey(id));
     }
 	
+	@RequestMapping( "/view/layer")
+	public Object viewLayer(@RequestParam String id,Model model){
+	    model.addAttribute("id",id);
+	    return "/hf/prizepunish/personal/prizepunish_detail_layer";
+	}
+	
 }

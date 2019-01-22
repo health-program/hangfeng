@@ -1,4 +1,4 @@
-package com.paladin.hf.service.assess.quantificate.pojo;
+package com.paladin.hf.service.assess.cycle.dto;
 
 public class AssessCycleTemplateRequest {
 	

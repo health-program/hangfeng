@@ -99,52 +99,6 @@
                 </div>
             </div>
         </div>
-        <aside class="control-sidebar control-sidebar-dark">
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                <li class="active"><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-                <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane" id="control-sidebar-home-tab">
-                </div>
-                <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-                <div class="tab-pane active" id="control-sidebar-settings-tab">
-                    <div>
-                        <h4 class="control-sidebar-heading">Layout Options</h4>
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                <input type="checkbox" data-layout="fixed" class="pull-right" /> Fixed layout</label>
-                            <p>Activate the fixed layout. You can't use fixed and boxed layouts together</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                <input type="checkbox" data-layout="layout-boxed" class="pull-right" /> Boxed Layout</label>
-                            <p>Activate the boxed layout</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                <input type="checkbox" data-layout="sidebar-collapse" class="pull-right" /> Toggle Sidebar</label>
-                            <p>Toggle the left sidebar's state (open or collapse)</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                <input type="checkbox" data-enable="expandOnHover" class="pull-right" /> Sidebar Expand on Hover</label>
-                            <p>Let the sidebar mini expand on hover</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                <input type="checkbox" data-controlsidebar="control-sidebar-open" class="pull-right" /> Toggle Right Sidebar Slide</label>
-                            <p>Toggle between slide over content and push content effects</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                <input type="checkbox" data-sidebarskin="toggle" class="pull-right" /> Toggle Right Sidebar Skin</label>
-                            <p>Toggle between dark and light skins for the right sidebar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
         <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
@@ -157,16 +111,15 @@
     <script src="/static/js/app/app_iframe.min.js"></script>
     <script type="text/javascript">
     $(function() {
-  	  addTabs({
-  	         id: "90011",
-  	         title: "首页",
-  	         icon: "",
-  	         url: "inforelease/info",
-  	         targetType: "iframe-tab"
-  	     });
-     
-  	});
-    	$('.sidebar-menu').sidebarMenu({});
+        addTabs({
+            id: "90011",
+            title: "首页",
+            icon: "",
+            url: "inforelease/info",
+            targetType: "iframe-tab"
+        });
+    });
+    $('.sidebar-menu').sidebarMenu({});
     </script>
 </body>
 

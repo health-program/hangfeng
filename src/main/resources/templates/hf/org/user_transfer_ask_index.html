@@ -244,11 +244,22 @@
 
     function removeTransferUser() {
         var rows = table2.getSelections();
+        var res = true;
+
         if (rows && rows.length > 0) {
             var ids = [];
             rows.forEach(function(row) {
+                if (row.transferStatus == 2) {
+                    return res = false;
+                }
                 ids.push(row.id);
             });
+
+            if(!res){
+                $.errorMessage("转移成功的申请不可删除！");
+                return false;
+            }
+
             layer.confirm('确定删除吗?', function() {
                 $.postAjax('/org/user/transfer/ask/remove', { userId: ids }, function() {
                     $.successMessage("删除成功");

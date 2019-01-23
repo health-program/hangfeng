@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import com.paladin.framework.core.query.QueryInputMethod;
+import com.paladin.hf.service.assess.quantificate.dto.QuantitativeDepartmentQuery;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,14 +68,32 @@ public class AssessQuantitativeAgencyController extends ControllerSupport {
 	private OrgUserService userService;
 
 	@RequestMapping(value = "/index")
-	public String agencyIndex(Model model) {
-		QuantitativeAgencyQuery query = (QuantitativeAgencyQuery) SecurityUtils.getSubject().getSession().getAttribute(QuantitativeAgencyQuery.class.getName());
+    @QueryInputMethod(queryClass = QuantitativeAgencyQuery.class)
+	public String agencyIndex(@RequestParam(required = false) String cached,Model model) {
+		QuantitativeAgencyQuery query = null;
+		AssessCycle assessCycle = null;
+		if (cached != null && cached.length() > 0) {//查询条件回显
+			query = (QuantitativeAgencyQuery) SecurityUtils.getSubject().getSession()
+					.getAttribute(QuantitativeAgencyQuery.class.getName());
+			if (query != null) {
+				String assessCycleId = query.getAssessCycleId();
+				if (assessCycleId != null && assessCycleId.length() > 0) {
+					assessCycle = assessCycleService.get(assessCycleId);
+				}
+			}
+		}
+
+		if (assessCycle != null) {
+			model.addAttribute("assessCycleId", assessCycle.getId());
+			model.addAttribute("assessCycleName", assessCycle.getCycleName());
+		}
+
 		if (query == null) {
 			query = new QuantitativeAgencyQuery();
-			AssessCycle cycle = assessCycleService.getOwnedFirstAssessCycle();
-			if (cycle != null) {
-				query.setAssessCycleId(cycle.getId());
-				query.setAssessCycleName(cycle.getCycleName());
+			assessCycle = assessCycleService.getOwnedFirstAssessCycle();
+			if (assessCycle != null) {
+				query.setAssessCycleId(assessCycle.getId());
+				query.setAssessCycleName(assessCycle.getCycleName());
 				model.addAttribute("query", query);
 			}
 		}

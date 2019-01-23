@@ -24,7 +24,7 @@ public class EvaluationResultPeopleExcelDTO
     @WriteProperty(cellIndex = 3, name = "考评周期", width = 30)
     private String assessCycleName;
     @WriteProperty(cellIndex = 4, name = "自评等级", width = 10, enumType = "ass-grades")
-    private  Integer selfAssGrade;
+    private Integer selfAssGrade;
     @WriteProperty(cellIndex = 5, name = "科室考评等级", width = 15, enumType = "ass-grades")
     private Integer departAssGrade;
     @WriteProperty(cellIndex = 6, name = "机构考评等级", width = 15, enumType = "ass-grades")
@@ -32,8 +32,8 @@ public class EvaluationResultPeopleExcelDTO
     // TODO TEST
     @WriteProperty(cellIndex = 7, name = "被考评人确认结果", width = 20, enumType = "boolean")
     private Integer confirmedResult;
-    @WriteProperty(cellIndex = 8, name = "考评状态", width = 20, enumType = "operateState")
-    private String operateStateName;
+    @WriteProperty(cellIndex = 8, name = "考评状态", width = 20, enumType = "operate-state")
+    private Integer operateState;
     
     public String getUnitName() {
 		try {
@@ -93,11 +93,41 @@ public class EvaluationResultPeopleExcelDTO
 	public void setConfirmedResult(Integer confirmedResult) {
 		this.confirmedResult = confirmedResult;
 	}
-	public String getOperateStateName() {
-		return operateStateName;
+	public Integer getOperateState() {
+		return operateState;
 	}
-	public void setOperateStateName(String operateStateName) {
-		this.operateStateName = operateStateName;
+	public void setOperateState(Integer operateState) {
+		this.operateState = operateState;
 	}
+
+    public String getUnitId()
+    {
+        return unitId;
+    }
+
+    public void setUnitId(String unitId)
+    {
+        this.unitId = unitId;
+    }
+
+    public String getAgencyId()
+    {
+        return agencyId;
+    }
+
+    public void setAgencyId(String agencyId)
+    {
+        this.agencyId = agencyId;
+    }
+
+    public void setAgencyName(String agencyName)
+    {
+        this.agencyName = agencyName;
+    }
+
+    public void setUnitName(String unitName)
+    {
+        this.unitName = unitName;
+    }
 
 }

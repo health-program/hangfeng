@@ -146,6 +146,10 @@
 
     function assess(row) {
         var cycleId = $('[name="assessCycleId"]').val();
+        if (cycleId == '' || cycleId == null ){
+            $.errorMessage("请选择考评周期！");
+            return;
+        }
         window.location = "/assess/quantitative/agency/user/index?userId=" + row.userId + "&cycleId=" + cycleId;
     }
 

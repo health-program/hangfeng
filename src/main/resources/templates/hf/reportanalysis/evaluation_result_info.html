@@ -126,9 +126,7 @@
 		     var unitId;
 		     var assessCycleId;
 		     function viewUser(row) {
-		    	 debugger;
 		     	unitId=row.unitId;
-		     	assessCycleId=row.assessCycleId;
 		     		 var content = '<section class="tonto-layer-div content table-content">' +
 		     		   ' <div id="toolbar2"> '+
 		               '<div class="btn-group">'+
@@ -182,7 +180,7 @@
 		         table2.refresh();
 		     }
 		     
-		 	function exprot(){exportPeople
+		 	function exprot(){
 				var unit = $("#unitId").val();
 				var assessCycleId = $("#assessCycleId").val();
 				var url = "/console/result/export?assessCycleId="+assessCycleId;
@@ -193,6 +191,7 @@
 			}
 		 	
 			function exportPeople(){
+				var assessCycleId = $("#assessCycleId").val();
 				var url = "/console/result/exportPeople?assessCycleId="+assessCycleId;
 				if(unitId) {
 					url += "&unitId="+unitId;

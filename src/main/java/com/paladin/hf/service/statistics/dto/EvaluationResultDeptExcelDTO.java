@@ -22,11 +22,11 @@ public class EvaluationResultDeptExcelDTO{
     @WriteProperty(cellIndex = 2, name = "考评周期", width = 40)
     private String assessCycleName;
     @WriteProperty(cellIndex = 3, name = "已考评人数", width = 15)
-    private String unitAssGradeExcelCOUNT;
+    private String unitAssGradeCOUNT;
     @WriteProperty(cellIndex = 4, name = "未考评人数", width = 15)
-    private String notUnitAssGradeExcelCOUNT;
+    private String notUnitAssGradeCOUNT;
     @WriteProperty(cellIndex = 5, name = "总人数", width = 20)
-    private String totalExcel;
+    private String total;
     
     public String getUnitName() {
         try {
@@ -76,28 +76,44 @@ public class EvaluationResultDeptExcelDTO{
         this.assessCycleName = assessCycleName;
     }
 
-    public String getUnitAssGradeExcelCOUNT() {
-        return unitAssGradeExcelCOUNT;
+    public String getUnitAssGradeCOUNT()
+    {
+        return unitAssGradeCOUNT;
     }
 
-    public void setUnitAssGradeExcelCOUNT(String unitAssGradeExcelCOUNT) {
-        this.unitAssGradeExcelCOUNT = unitAssGradeExcelCOUNT;
+    public void setUnitAssGradeCOUNT(String unitAssGradeCOUNT)
+    {
+        this.unitAssGradeCOUNT = unitAssGradeCOUNT;
     }
 
-    public String getNotUnitAssGradeExcelCOUNT() {
-        return notUnitAssGradeExcelCOUNT;
+    public String getNotUnitAssGradeCOUNT()
+    {
+        return notUnitAssGradeCOUNT;
     }
 
-    public void setNotUnitAssGradeExcelCOUNT(String notUnitAssGradeExcelCOUNT) {
-        this.notUnitAssGradeExcelCOUNT = notUnitAssGradeExcelCOUNT;
+    public void setNotUnitAssGradeCOUNT(String notUnitAssGradeCOUNT)
+    {
+        this.notUnitAssGradeCOUNT = notUnitAssGradeCOUNT;
     }
 
-    public String getTotalExcel() {
-        return totalExcel;
+    public String getTotal()
+    {
+        return total;
     }
 
-    public void setTotalExcel(String totalExcel) {
-        this.totalExcel = totalExcel;
+    public void setTotal(String total)
+    {
+        this.total = total;
     }
-    
+
+    public void setAgencyName(String agencyName)
+    {
+        this.agencyName = agencyName;
+    }
+
+    public void setUnitName(String unitName)
+    {
+        this.unitName = unitName;
+    }
+
 }

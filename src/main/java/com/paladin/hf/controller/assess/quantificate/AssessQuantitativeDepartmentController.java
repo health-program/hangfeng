@@ -67,15 +67,31 @@ public class AssessQuantitativeDepartmentController extends ControllerSupport {
 
 	@RequestMapping(value = "/index")
 	@QueryInputMethod(queryClass = QuantitativeDepartmentQuery.class)
-	public String departmentIndex(Model model) {
-		QuantitativeDepartmentQuery query = (QuantitativeDepartmentQuery) SecurityUtils.getSubject().getSession()
-				.getAttribute(QuantitativeDepartmentQuery.class.getName());
+	public String departmentIndex(@RequestParam(required = false) String cached,Model model) {
+        QuantitativeDepartmentQuery query = null;
+        AssessCycle assessCycle = null;
+        if (cached != null && cached.length() > 0) {//查询条件回显
+            query = (QuantitativeDepartmentQuery) SecurityUtils.getSubject().getSession()
+                    .getAttribute(QuantitativeDepartmentQuery.class.getName());
+            if (query != null) {
+                String assessCycleId = query.getAssessCycleId();
+                if (assessCycleId != null && assessCycleId.length() > 0) {
+                    assessCycle = assessCycleService.get(assessCycleId);
+                }
+            }
+        }
+
+        if (assessCycle != null) {
+            model.addAttribute("assessCycleId", assessCycle.getId());
+            model.addAttribute("assessCycleName", assessCycle.getCycleName());
+        }
+
 		if (query == null) {
 			query = new QuantitativeDepartmentQuery();
-			AssessCycle cycle = assessCycleService.getOwnedFirstAssessCycle();
-			if (cycle != null) {
-				query.setAssessCycleId(cycle.getId());
-				query.setAssessCycleName(cycle.getCycleName());
+            assessCycle = assessCycleService.getOwnedFirstAssessCycle();
+			if (assessCycle != null) {
+				query.setAssessCycleId(assessCycle.getId());
+				query.setAssessCycleName(assessCycle.getCycleName());
 				model.addAttribute("query", query);
 			}
 		}

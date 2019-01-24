@@ -180,12 +180,20 @@
         '</form></div>';
 
     function reject(row) {
+        var reasonV;
         $.openPageLayer(content, {
             width: 600,
             height: 200,
             title: '驳回周期考核',
             success: function(layero, index) {
                 $("#rejectBtn").click(function() {
+
+                    reasonV = $("#reason").val();
+                    if (reasonV == '' || reasonV == null) {
+                        $.errorMessage("原因不能为空！")
+                        return;
+                    }
+
                     $.postAjax("/assess/cycle/agency/reject", {
                         id: row.id,
                         reason: $("#reason").val()

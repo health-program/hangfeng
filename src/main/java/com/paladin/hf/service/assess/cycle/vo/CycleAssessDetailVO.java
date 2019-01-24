@@ -34,7 +34,7 @@ public class CycleAssessDetailVO {
 
 	private Date unitAssTime;
 
-	private Integer confirmedResult;
+	private String confirmedResult;
 
 	private Date confirmedTime;
 
@@ -104,11 +104,11 @@ public class CycleAssessDetailVO {
 		this.unitAssGrade = unitAssGrade;
 	}
 
-	public Integer getConfirmedResult() {
+	public String getConfirmedResult() {
 		return confirmedResult;
 	}
 
-	public void setConfirmedResult(Integer confirmedResult) {
+	public void setConfirmedResult(String confirmedResult) {
 		this.confirmedResult = confirmedResult;
 	}
 

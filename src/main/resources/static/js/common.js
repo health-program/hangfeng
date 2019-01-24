@@ -1003,7 +1003,8 @@ function _createAssessCycleComponment(input, _options, callback) {
                 title: ' ',
                 maxmin: true, //开启最大化最小化按钮
                 content: that.content,
-                area: ['800px', '650px'],
+                area:$.getOpenLayerSize(800,640),
+                /*area: ['800px', '650px'],*/
                 success: function(layero, index) {
 
                     var url = '/assess/cycle/select/' + (type == 1 ? 'self' : (type == 2 ? 'user' : (type == 3 ? 'unit' : (type == 4 ? 'own' : (type == 9 ? 'assess' : 'selfenabled')))));

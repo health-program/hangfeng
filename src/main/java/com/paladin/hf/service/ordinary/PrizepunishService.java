@@ -129,8 +129,10 @@ public class PrizepunishService extends ServiceSupport<Prizepunish>{
         UserSession userSession = UserSession.getCurrentUserSession();
         String userName = userSession == null ? "" : userSession.getUserName();
         
-        p.setExaminePeople(userName);
-        p.setOperationState(Prizepunish.OPERATION_STATE_AGENCY_SUBMIT);
+        if(p.getExamineState() != Prizepunish.EXAMINE_WAIT){
+            p.setExaminePeople(userName);
+            p.setOperationState(Prizepunish.OPERATION_STATE_AGENCY_SUBMIT);
+        }
        return updateSelective(p);
     }
     

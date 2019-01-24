@@ -77,7 +77,8 @@
                         </div>
 					<div class="form-group">
 						<div class="col-sm-2 col-sm-offset-3">
-							<button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+							<input  type="submit" style="display: none" id="submitBtn">
+							<button type="button" onclick="submitPrze()" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
 						</div>
 						<div class="col-sm-2 col-sm-offset-1">
 							<a th:href="@{/prizepunish/dept/detail/index(orgUserId=${orgUserId})}" class="btn btn-default btn-block">取消</a>
@@ -106,18 +107,24 @@ var options = {
         ]
     };
 
-$(function() {
-var model = new tonto.Model("model", options.columns, {
-    pattern: "edit",
-    successCallback: function() {
-        $.successAlert("保存成功", function() {
-        	var orgUserId = $("#orgUserId").val();
-            window.location = "/prizepunish/dept/detail/index?orgUserId="+orgUserId;
-        });
-    }
-});
-model.setData(null);
-});
+	$(function() {
+	var model = new tonto.Model("model", options.columns, {
+	    pattern: "edit",
+	    successCallback: function() {
+	        $.successAlert("保存成功", function() {
+	        	var orgUserId = $("#orgUserId").val();
+	            window.location = "/prizepunish/dept/detail/index?orgUserId="+orgUserId;
+	        });
+	    }
+	});
+	model.setData(null);
+	});
+	
+	function submitPrze() {
+	    $.warnAlert('<span style="color:red;">确定提交吗？</span>', function() {
+	        $('#submitBtn').click();
+	    })
+	}
 
 </script>
 </html>

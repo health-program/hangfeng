@@ -8,6 +8,7 @@
 		<div class="box box-solid">
 		<form id="searchbar" class="form-horizontal">
 		<input type="hidden" id="type" name="type" th:value="${type}"/>
+		<input type="hidden" id=isHomePage name="isHomePage" th:value="${isHomePage}"/>
 		</form>
 			<div class="box-header with-border">
                 <i class="fa fa-list-alt"></i>
@@ -79,8 +80,9 @@
     } 
 	      function detail(row) {
 	    	  var type = $("#type").val();
+	    	  var isHomePage = $("#isHomePage").val();
 	          if (row) {
-	              window.location = '/inforelease/info/detail?isHomePage=true&type='+type+'&id=' + row.id
+	              window.location = '/inforelease/info/detail?isHomePage='+isHomePage+'&type='+type+'&id=' + row.id
 	          }
 	      }
 	      

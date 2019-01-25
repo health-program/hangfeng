@@ -53,7 +53,7 @@
                     </fieldset>
                     <fieldset>
                         <legend>自我总结</legend>
-                        <form id="model_form" action="" method="post" class="form-horizontal edit-body">
+                        <form id="model_form" class="form-horizontal edit-body">
                             <div class="form-group">
                                 <label for="assessCycleId" class="col-sm-3 control-label">考评周期：</label>
                                 <div class="col-sm-3">
@@ -104,8 +104,7 @@
     <script type="text/javascript">
     /*<![CDATA[*/
 
-    var ncycleId = $('input[name="assessCycleId"]').val();
-    var userId = $('input[name="userId"]').val();
+
 
     var options = {
         id: "model",
@@ -118,6 +117,13 @@
             { title: "自评等次", name: "selfAssGrade", inputType: "SELECT", enum: "ass-grades" },
             { title: "自评签字", name: "assessedSign", inputType: "TEXT" }
         ]
+    }
+
+    function submitAssess() {
+        $('#model_form').attr('action', '/assess/cycle/personal/save/submit');
+        $.warnAlert('<span style="color:red;">提交后该记录会抄送到下一级，无法修改，确定提交吗？</span>', function() {
+            $('#submitBtn').click();
+        })
     }
 
     function temporaryAssess() {
@@ -139,6 +145,9 @@
 
 
     function viewQuantificateScore() {
+
+        var ncycleId = $('input[name="assessCycleId"]').val();
+        var userId = $('input[name="userId"]').val();
         if (ncycleId == '') {
             $.errorMessage("请选择考评周期！");
             return;
@@ -150,10 +159,11 @@
             title: '等级配置 ',
             maxmin: true, //开启最大化最小化按钮
             area: $.getOpenLayerSize(900, 450),
-            content: "/console/assess/level/searchTemplateIdByCycleId?cycleId=" +
+            content: "/assess/template/level/searchTemplateIdByCycleId?cycleId=" +
                 ncycleId + "&buserId=" + userId
         });
     }
+
     /*]]>*/
     </script>
 </body>

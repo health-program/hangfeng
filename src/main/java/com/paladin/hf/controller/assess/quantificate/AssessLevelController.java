@@ -48,4 +48,19 @@ public class AssessLevelController extends ControllerSupport {
 		return CommonResponse.getResponse(assessLevelService.saveTemplateAssessLevel(assessLevels));
 	}
 
+	/**
+	 * 通过周期id查找模板id
+	 * @author jisanjie
+	 */
+	@RequestMapping(value = "/searchTemplateIdByCycleId")
+	public String searchTemplateIdByCycleId(String cycleId,String buserId, Model model){
+		String templateId = assessLevelService.searchTemplateIdByCycleId(cycleId);
+//	      UserSession session = UserSession.getCurrentUserSession();
+//	      String userId = session.getUserId();
+		model.addAttribute("btemplateId", templateId);
+		model.addAttribute("assessCycleId", cycleId);
+		model.addAttribute("orgUserId", buserId);
+		return "/hf/assess/quantificate/quantitative_result_view";
+	}
+
 }

@@ -1,16 +1,6 @@
 package com.paladin.hf.controller.assess.cycle;
 
-import javax.validation.Valid;
-
-import org.apache.shiro.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.core.query.QueryInputMethod;
 import com.paladin.framework.core.query.QueryOutputMethod;
@@ -22,6 +12,18 @@ import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.PersonCycAssessService;
 import com.paladin.hf.service.assess.cycle.dto.AgencyCycleAssessUpdateDTO;
 import com.paladin.hf.service.assess.cycle.dto.AgencyQueryDTO;
+import com.paladin.hf.service.assess.cycle.vo.PersonCycAssessQuery;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/assess/cycle/agency")
@@ -104,5 +106,25 @@ public class AgencyCycleAssessController extends ControllerSupport {
 	@ResponseBody
 	public Object submit(@RequestParam String id) {
 		return CommonResponse.getResponse(perCycAssService.submitAgencyCycleAssess(id));
+	}
+
+	/**
+	 * 跳转未考评
+	 * @author jisanjie
+	 */
+	@RequestMapping(value = "/to/no/assessment", method = { RequestMethod.GET })
+	public String toNoAssessment(String assessCycleId,Model model) {
+		model.addAttribute("assessCycleId", assessCycleId);
+		return "/hf/assess/cycle/agency_no_assessment";
+	}
+
+	/**
+	 * 未考评
+	 * @author jisanjie
+	 */
+	@RequestMapping(value = "/no/assessment")
+	@ResponseBody
+	public Object noAssessment(PersonCycAssessQuery personCycAssessQuery){
+		return CommonResponse.getSuccessResponse(new PageResult(perCycAssService.noAssessment(personCycAssessQuery, true)));
 	}
 }

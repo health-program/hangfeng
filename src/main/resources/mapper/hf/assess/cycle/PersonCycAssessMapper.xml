@@ -281,5 +281,53 @@
         WHERE id = #{id}
     </update>
 
+    <!-- 未考评 -->
+    <select id="noAssessment" parameterType="Map"
+            resultType="com.paladin.hf.service.assess.cycle.dto.PersonnelCycleAssessDTO">
+        SELECT
+        ou.org_agency_id AS agencyId,
+        ou.org_assess_team_id AS assessTeamId,
+        ou.org_unit_id AS unitId,
+        ou.`name` AS userName,
+        pca.operate_state AS operateState
+        FROM
+        org_user ou
+        LEFT JOIN person_cyc_assess pca ON ou.id = pca.org_user_id AND
+        pca.assess_cycle_id = #{assessCycleId}
+        WHERE ou.is_delete = 0
+        <if test="unitQuery.unitId!=null">
+            AND ou.org_unit_id=#{unitQuery.unitId}
+        </if>
+        <if test="unitQuery.assessTeamId!=null">
+            AND ou.org_assess_team_id=#{unitQuery.assessTeamId}
+        </if>
+        <if test="unitQuery.unitIds!=null">
+            AND ou.org_unit_id in
+            <foreach collection="unitQuery.unitIds" index="index" item="item"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="unitQuery.agencyId!=null">
+            AND ou.org_agency_id=#{unitQuery.agencyId}
+        </if>
+        <if test="unitQuery.agencyIds!=null">
+            AND ou.org_agency_id in
+            <foreach collection="unitQuery.agencyIds" index="index" item="item"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        AND (pca.id IS NULL OR
+        <if test="isAgency == 1">
+            pca.operate_state in ('-1','0','1','2'))
+        </if>
+        <if test="isAgency == 0">
+            pca.operate_state in ('-1','0'))
+        </if>
+        ORDER BY ou.org_unit_id ASC
+    </select>
+
+
     
 </mapper>

@@ -1,18 +1,15 @@
 package com.paladin.hf.mapper.assess.cycle;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
-import com.paladin.hf.service.assess.cycle.dto.AgencyQueryDTO;
-import com.paladin.hf.service.assess.cycle.dto.DepartmentQueryDTO;
-import com.paladin.hf.service.assess.cycle.dto.PersonalCycleAssessConfirmDTO;
-import com.paladin.hf.service.assess.cycle.dto.PersonalQueryDTO;
+import com.paladin.hf.service.assess.cycle.dto.*;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 
@@ -41,6 +38,8 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 	public int rejectDepartment(@Param("id") String id, @Param("rejectReason") String rejectReason);
 	
 	public int rejectAgency(@Param("id") String id, @Param("rejectReason") String rejectReason);
-	
+
+	//未考评按钮
+	List<PersonnelCycleAssessDTO> noAssessment(Map<String, Object> map);
 	
 }

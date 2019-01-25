@@ -149,7 +149,7 @@
 		 
 		 function examine(row){
 			 if(row.operationState == 5 ){
-				 $.errorMessage("已审核完成,不以再次审核！");
+				 $.errorMessage("已审核完成,不可再次审核！");
 				 return false;
 			 }
 			 window.location.href="/prizepunish/agency/examine?orgUserId="+row.orgUserId+"&id="+row.id;

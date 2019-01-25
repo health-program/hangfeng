@@ -34,9 +34,9 @@
                     title : "考评状态",
                     field : "operateState",
                     formatter : function(value, row, index) {
-                        if (value === '-1'){
+                        if (value === -1){
                             return '被驳回';
-                        }else if(value === '0') {
+                        }else if(value === 0) {
 							return '被评人暂存';
 						} else {
 							return '被评人未考评';

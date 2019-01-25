@@ -273,7 +273,7 @@
         id: "confirm",
         name: "详情",
         columns: [
-            { title: "被考核人对考评等次的确认", name: "confirmedResult", inputType: "RADIO", enum: "confirmed-result" },
+            { title: "被考核人对考评等次的确认", name: "confirmedResult", inputType: "SELECT", enum: "confirmed-result" },
             { title: "自评确认签字", name: "assessedConfirmSign", inputType: "TEXT" },
             { title: "确认时间", name: "confirmedTime", inputType: "DATE" }
         ]
@@ -297,6 +297,7 @@
             });
             model_department = new tonto.Model("department", options_department.columns);
             model_agency = new tonto.Model("agency", options_agency.columns);
+            debugger;
             model_confirm = new tonto.Model("confirm", options_confirm.columns);
 
             init(data);

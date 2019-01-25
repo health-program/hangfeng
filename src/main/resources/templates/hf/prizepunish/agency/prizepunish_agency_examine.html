@@ -86,7 +86,8 @@
                 </div>
                 <div class="form-group">
 				<div class="col-sm-2 col-sm-offset-3">
-						<button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
+						<input  type="submit" style="display: none" id="submitBtn">
+						<button type="button" onclick="submitPrze()" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
 					</div>
 					<div class="col-sm-2 col-sm-offset-1">
 						<a th:href="@{/prizepunish/agency/detail/index(orgUserId=${orgUserId})}" class="btn btn-default btn-block">取消</a>
@@ -146,7 +147,11 @@ $(function() {
       model.setData(null);
 	}); 
 
-
+function submitPrze() {
+    $.warnAlert('<span style="color:red;">审核后无法修改，确定审核吗？</span>', function() {
+        $('#submitBtn').click();
+    })
+}
 
 </script>
 </html>

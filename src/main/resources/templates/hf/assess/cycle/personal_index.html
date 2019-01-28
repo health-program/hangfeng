@@ -3,58 +3,62 @@
 
 <head th:include="/hf/header">
 </head>
+
 <body>
- <div class="container">
-    <tt:constant enumcode="ass-grades,operate-state" />
-    <section class="content-header">
-        <h1>周期考评自评</h1>
-    </section>
-    <section class="content">
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-search"></i>
-                <h3 class="box-title">查询</h3>
+    <div class="container">
+        <tt:constant enumcode="ass-grades,operate-state" />
+        <section class="content-header">
+            <h1>周期考评自评</h1>
+        </section>
+        <section class="content">
+            <div th:if="${hasRejected==1}" class="callout callout-danger">
+                <h4>您有被驳回的周期考评未处理！</h4>
             </div>
-            <div class="box-body">
-                <div class="col-md-12">
-                    <form id="searchbar" class="form-horizontal">
-                        <div class="form-group">
-                            <label style="width: 100px" for="unitId" class="col-sm-1 control-label">单位名称</label>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control" th:value="${unitName}" readonly="readonly"></input>
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-search"></i>
+                    <h3 class="box-title">查询</h3>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <form id="searchbar" class="form-horizontal">
+                            <div class="form-group">
+                                <label style="width: 100px" for="unitId" class="col-sm-1 control-label">单位名称</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" th:value="${unitName}" readonly="readonly"></input>
+                                </div>
+                                <label style="width: 100px" for="assessCycleId" class="col-sm-1 control-label">考评周期</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control tonto-select-assess-cycle-self" required="required" name="assessCycleId" placeholder="请选择周期"></input>
+                                </div>
                             </div>
-                            <label style="width: 100px" for="assessCycleId" class="col-sm-1 control-label">考评周期</label>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control tonto-select-assess-cycle-self" required="required" name="assessCycleId" placeholder="请选择周期"></input>
-                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                            <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
                         </div>
-                    </form>
-                </div>
-                <div class="col-md-12">
-                    <div class="pull-right">
-                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
-                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
                     </div>
+                    <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+                    <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
                 </div>
-                <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
-                <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
             </div>
-        </div>
-        <div class="box box-solid" style="margin-top:20px">
-            <div class="box-header with-border">
-                <i class="fa fa-list-alt"></i>
-                <h3 class="box-title">结果</h3>
-            </div>
-            <div id="result" class="box-body">
-                <table id="dataGrid"></table>
-                <div id="toolbar">
-                    <div class="btn-group">
-                        <a onclick="add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+            <div class="box box-solid" style="margin-top:20px">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-alt"></i>
+                    <h3 class="box-title">结果</h3>
+                </div>
+                <div id="result" class="box-body">
+                    <table id="dataGrid"></table>
+                    <div id="toolbar">
+                        <div class="btn-group">
+                            <a onclick="add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
     </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">

@@ -6,10 +6,11 @@ import com.paladin.hf.model.assess.cycle.PersonCycAssess;
 import com.paladin.hf.service.assess.cycle.dto.*;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
+import com.paladin.hf.service.assess.cycle.vo.UnassessedUserVO;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 
@@ -39,7 +40,10 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 	
 	public int rejectAgency(@Param("id") String id, @Param("rejectReason") String rejectReason);
 
-	//未考评按钮
-	List<PersonnelCycleAssessDTO> noAssessment(Map<String, Object> map);
+	public List<UnassessedUserVO> findUnassessedForDepartment(@Param("unitQuery") UnitQuery unitQuery, @Param("query") UnassessedQuery query);
 	
+	public List<UnassessedUserVO> findUnassessedForAgency(@Param("unitQuery") UnitQuery unitQuery, @Param("query") UnassessedQuery query);
+
+	public int countRejectedAssessByUser(@Param("userId") String userId);
+
 }

@@ -119,7 +119,7 @@
                                 html += '<button class="assess btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>考核</button>' +
                                     '<button class="back btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>驳回</button>';
                             } else if (row.operateState == 2) {
-                                html += '<button class="assess btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>考核</button>' + 
+                                html += '<button class="assess btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>考核</button>' +
                                     '<button class="submit btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>提交</button>' +
                                     '<button class="back btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>驳回</button>';
                             } else {
@@ -136,7 +136,7 @@
             sortName: 'createTime',
             queryParams: function(params) {
                 var o = $("[name='cycleId']").data("cycleComponment").getCurrent();
-                if(o)params.cycleName = o.cycleName;
+                if (o) params.cycleName = o.cycleName;
                 return params;
             },
             sortOrder: 'asc',
@@ -150,11 +150,11 @@
     }
 
     function detail(row) {
-        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId +"&userId="+row.userId;
+        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId;
     }
 
     function assess(row) {
-        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId +"&userId="+row.userId +"&isEdit=1";
+        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId + "&isEdit=1";
     }
 
     function submit(row) {
@@ -200,7 +200,7 @@
                     $.postAjax("/assess/cycle/department/reject", {
                         id: row.id,
                         reason: $("#reason").val()
-                    },function(){
+                    }, function() {
                         $.successMessage("驳回成功");
                         layer.close(index);
                     })
@@ -212,7 +212,7 @@
     //未考评
     function viewUnAssessUser() {
         var assessCycleId = $("input[name=cycleId]").val();
-        $.openUrlLayerOrLocate( '/assess/cycle/department/to/no/assessment?assessCycleId=' + assessCycleId,{title:"未完成考评人员列表"});
+        $.openUrlLayerOrLocate('/assess/cycle/department/to/no/assessment?assessCycleId=' + assessCycleId, { title: "未完成考评人员列表" });
     }
 
     /*]]>*/

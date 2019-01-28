@@ -1,6 +1,5 @@
 package com.paladin.hf.controller.assess.cycle;
 
-import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.core.query.QueryInputMethod;
 import com.paladin.framework.core.query.QueryOutputMethod;
@@ -12,7 +11,7 @@ import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.PersonCycAssessService;
 import com.paladin.hf.service.assess.cycle.dto.DepartmentCycleAssessUpdateDTO;
 import com.paladin.hf.service.assess.cycle.dto.DepartmentQueryDTO;
-import com.paladin.hf.service.assess.cycle.vo.PersonCycAssessQuery;
+import com.paladin.hf.service.assess.cycle.dto.UnassessedQuery;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -108,23 +107,15 @@ public class DepartmentCycleAssessController extends ControllerSupport {
 		return CommonResponse.getResponse(perCycAssService.submitDepartmentCycleAssess(id));
 	}
 
-	/**
-	 * 跳转未考评
-	 * @author jisanjie
-	 */
 	@RequestMapping(value = "/to/no/assessment", method = { RequestMethod.GET })
 	public String toNoAssessment(String assessCycleId, Model model) {
 		model.addAttribute("assessCycleId", assessCycleId);
-		return "/hf/assess/cycle/department_no_assessment";
+		return "/hf/assess/cycle/department_unassessed";
 	}
 
-	/**
-	 * 未考评
-	 * @author jisanjie
-	 */
 	@RequestMapping(value = "/no/assessment")
 	@ResponseBody
-	public Object noAgencyAssessment(PersonCycAssessQuery personCycAssessQuery) {
-		return CommonResponse.getSuccessResponse(new PageResult(perCycAssService.noAssessment(personCycAssessQuery, false)));
+	public Object noAssessment(UnassessedQuery query){
+		return CommonResponse.getSuccessResponse(perCycAssService.findUnassessedForDepartment(query));
 	}
 }

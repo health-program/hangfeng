@@ -29,7 +29,7 @@ public class CycleAssessSimpleVO {
 	private String unitId;
 
 	private String agencyId;
-
+	
 
 	/*
 	 * 扩展显示单位名称

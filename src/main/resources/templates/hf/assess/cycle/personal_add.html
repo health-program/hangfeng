@@ -9,11 +9,14 @@
     padding: 0px;
     background-color: #fff;
 }
+
+legend {
+    font-weight: 600;
+}
 </style>
 
 <body>
-
-    <input type="hidden" name="userId" th:value="${user.id}"/>
+    <input type="hidden" name="userId" th:value="${user.id}" />
     <tt:constant enumcode="ass-grades,job-duties-type,sex-type" />
     <div class="container">
         <section class="content-header">

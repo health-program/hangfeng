@@ -19,21 +19,21 @@ import com.paladin.framework.common.BaseModel;
 public class PersonCycAssess extends BaseModel {
 
 	/** 被退回 */
-	public static final Integer STATUS_BACKWORD = -1;
+	public static final int STATUS_BACKWORD = -1;
 	/** 被评人暂存 */
-	public static final Integer STATUS_ASSESSED_TEMPORARY = 0;
+	public static final int STATUS_ASSESSED_TEMPORARY = 0;
 	/** 被评人提交 */
-	public static final Integer STATUS_ASSESSED_SUBMIT = 1;
+	public static final int STATUS_ASSESSED_SUBMIT = 1;
 	/** 科室暂存 */
-	public static final Integer STATUS_DEPART_TEMPORARY = 2;
+	public static final int STATUS_DEPART_TEMPORARY = 2;
 	/** 科室提交 */
-	public static final Integer STATUS_DEPART_SUBMIT = 3;
+	public static final int STATUS_DEPART_SUBMIT = 3;
 	/** 考评小组暂存 */
-	public static final Integer STATUS_UNIT_GROUP_TEMPORARY = 4;
+	public static final int STATUS_UNIT_GROUP_TEMPORARY = 4;
 	/** 考评小组提交 */
-	public static final Integer STATUS_UNIT_GROUP_SUBMIT = 5;
+	public static final int STATUS_UNIT_GROUP_SUBMIT = 5;
 	/** 被考评人已确认 */
-	public static final Integer STATUS_ASSESSSED_CONFIRMED = 6;
+	public static final int STATUS_ASSESSSED_CONFIRMED = 6;
 
 	
 

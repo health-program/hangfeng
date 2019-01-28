@@ -952,7 +952,7 @@ var _selectFieldBuilder = new _FieldBuilder("SELECT", {
         var p = model.viewBody.find("[name='" + column.name + "']");
         if (!p || p.length == 0) return;
         var v = data ? data[column.name] : null;
-        if (column.enum && v) {
+        if (column.enum && (v || v === 0)) {
             v = $.getConstantEnumValue(column.enum, v);
         }
 
@@ -1362,7 +1362,7 @@ var _radioFieldBuilder = new _FieldBuilder("RADIO", {
         var p = model.viewBody.find("[name='" + column.name + "']");
         if (!p || p.length == 0) return;
         var v = data ? data[column.name] : null;
-        if (column.enum && v) {
+        if (column.enum && (v || v === 0)) {
             v = $.getConstantEnumValue(column.enum, v);
         }
 

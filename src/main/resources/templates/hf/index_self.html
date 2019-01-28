@@ -39,34 +39,32 @@
                     </div>
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <ul class="nav navbar-nav">
-                                <li class="dropdown user user-menu">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="/static/image/role_be_assessed.png" style="background: #fff" class="user-image" alt="User Image" />
                                 <span class="hidden-xs" th:text="${name}"></span>
                                 </a>
-                                    <ul class="dropdown-menu">
-                                        <!-- The user image in the menu -->
-                                        <li class="user-header">
-                                            <img src="/static/image/role_be_assessed.png" style="background: #fff" class="img-circle" alt="User Image" />
-                                            <p th:text="${name}"></p>
-                                        </li>
-                                        <li class="user-footer">
-                                            <div class="pull-left">
-                                                <a href="javascript:see()" class="btn btn-default btn-flat">修改密码</a>
-                                            </div>
-                                            <div class="pull-right">
-                                                <a href="/hf/logout" class="btn btn-default btn-flat">登出</a>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="javascript:goHome()" alt="主页"><i class="glyphicon glyphicon-home"></i></a> </li>
-                                <li>
-                                    <a href="/hf/logout" alt="登出"><i class="fa fa-sign-out"></i></a>
-                                </li>
-                            </ul>
+                                <ul class="dropdown-menu">
+                                    <!-- The user image in the menu -->
+                                    <li class="user-header">
+                                        <img src="/static/image/role_be_assessed.png" style="background: #fff" class="img-circle" alt="User Image" />
+                                        <p th:text="${name}"></p>
+                                    </li>
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="javascript:see()" class="btn btn-default btn-flat">修改密码</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="/hf/logout" class="btn btn-default btn-flat">登出</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:goHome()" alt="主页"><i class="glyphicon glyphicon-home"></i></a> </li>
+                            <li>
+                                <a href="/hf/logout" alt="登出"><i class="fa fa-sign-out"></i></a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -74,47 +72,37 @@
         </header>
         <div class="content-wrapper" id="content-wrapper" style="min-height: 421px;margin-left: 0">
             <div class="content-iframe" style="background-color: #ecf0f5;">
-            <div id="updatePsd" style="display: none">
-				<div class="form-group"
-					style="height: 32px; display: block; margin-top: 10px;">
-					<label for="username" class="col-sm-2 control-label"
-						style="height: 34px; display: inline-block; line-height: 34px;">用户名</label>
-					<div class="col-sm-10">
-						<input type="text" name="username" readonly="readonly" class="form-control"
-							id="username" th:value="${name}" />
-					</div>
-				</div>
-				<div class="form-group" style="height: 32px; display: block;">
-					<label for="oldPassword" class="col-sm-2 control-label"
-						style="height: 34px; display: inline-block; line-height: 34px;">原始密码:</label>
-					<div class="col-sm-10">
-						<input type="password" name="oldPassword" class="form-control"
-							id="oldPassword" placeholder="请输入原始密码"/>
-					</div>
-				</div>
-				<div class="form-group" style="height: 32px; display: block;">
-					<label for="newPassword" class="col-sm-2 control-label"
-						style="height: 34px; display: inline-block; line-height: 34px;">新密码:</label>
-					<div class="col-sm-10">
-						<input type="password" name="newPassword" class="form-control"
-							id="newPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
-					</div>
-				</div>
-				<div class="form-group" style="height: 32px; display: block;">
-                    <label for="confirmNewPassword" class="col-sm-2 control-label"
-                        style="height: 34px; display: inline-block; line-height: 34px;">确认新密码:</label>
-                    <div class="col-sm-10">
-                        <input type="password" name="confirmNewPassword" class="form-control"
-                            id="iConfirmNewPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
+                <div id="updatePsd" style="display: none">
+                    <div class="form-group" style="height: 32px; display: block; margin-top: 10px;">
+                        <label for="username" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">用户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="username" readonly="readonly" class="form-control" id="username" th:value="${name}" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="height: 32px; display: block;">
+                        <label for="oldPassword" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">原始密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="oldPassword" class="form-control" id="oldPassword" placeholder="请输入原始密码" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="height: 32px; display: block;">
+                        <label for="newPassword" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">新密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="newPassword" class="form-control" id="newPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="height: 32px; display: block;">
+                        <label for="confirmNewPassword" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">确认新密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="confirmNewPassword" class="form-control" id="iConfirmNewPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-2">
+                            <button type="button" id="submitted" class="btn btn-primary btn-block">提交</button>
+                        </div>
                     </div>
                 </div>
-				
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-2">
-					 <button type="button" id="submitted" class="btn btn-primary btn-block">提交</button>
-					</div>
-				</div>
-			</div>
                 <div class="tab-content" id="tab-content">
                 </div>
             </div>
@@ -141,7 +129,7 @@
     <script type="text/javascript">
     $(function() {
         goHome();
-        
+
         //密码修改后提交
         $("#submitted").click(
             function() {
@@ -150,7 +138,7 @@
                 var newPassword = $.trim(window.parent.document
                     .getElementById('newPassword').value);
                 var confirmNewPassword = $.trim(window.parent.document
-                        .getElementById('iConfirmNewPassword').value);
+                    .getElementById('iConfirmNewPassword').value);
 
                 if (oldPassword == '' || oldPassword == 'null') {
                     layer.msg('原始密码不能为空!');
@@ -198,7 +186,7 @@
 
 
     $('.sidebar-menu').sidebarMenu({});
-    
+
     //修改密码弹框
     function see() {
         layer.open({
@@ -206,33 +194,32 @@
             title: '修改密码',
             shadeClose: false,
             shade: false,
-            area:getOpenLayerSize(700, 300),
+            area: getOpenLayerSize(700, 300),
             content: $("#updatePsd")
         });
     };
-    
-    function getOpenLayerSize(w, h){
-    	 w = w || 0.8;
-         h = h || 0.9;
 
-         var ww = $(window).width();
-         var wh = $(window).height();
+    function getOpenLayerSize(w, h) {
+        w = w || 0.8;
+        h = h || 0.9;
 
-         if (w > ww) {
-             w = ww * 0.8;
-         } else if (w <= 1) {
-             w = ww * w;
-         }
+        var ww = $(window).width();
+        var wh = $(window).height();
 
-         if (h > wh) {
-             h = wh * 0.9;
-         } else if (h <= 1) {
-             h = wh * h;
-         }
+        if (w > ww) {
+            w = ww * 0.8;
+        } else if (w <= 1) {
+            w = ww * w;
+        }
 
-         return [w + "px", h + "px"];
+        if (h > wh) {
+            h = wh * 0.9;
+        } else if (h <= 1) {
+            h = wh * h;
+        }
+
+        return [w + "px", h + "px"];
     }
-
     </script>
 </body>
 

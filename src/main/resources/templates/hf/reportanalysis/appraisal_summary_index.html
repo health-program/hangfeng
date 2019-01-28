@@ -5,6 +5,7 @@
 </head>
 
 <body>
+<div class="container">
 <tt:constant enumcode="job-rank-type,KSYDYF_PJDJ" />
 	<script type="text/javascript" src="/static/js/echarts/echarts-all.js"></script>
 	<section class="content-header">
@@ -84,6 +85,7 @@
             </div>
 		</div>
 	</section>
+	</div>
 	<div th:include="/hf/footer"></div>
 	<script type="text/javascript">
 		//<![CDATA[
@@ -207,7 +209,7 @@
 					},
 					calculable : true,
 					series : [ {
-						name : '访问来源',
+						name : '',
 						type : 'pie',
 						radius : '55%',
 						center : [ '50%', '60%' ],

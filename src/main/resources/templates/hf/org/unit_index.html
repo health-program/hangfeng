@@ -5,6 +5,7 @@
 </head>
 
 <body>
+<div class="container">
     <tt:constant enumcode="unit-type" />
     <section class="content-header">
         <h1>单位科室维护管理</h1>
@@ -21,6 +22,7 @@
             </div>
         </div>
     </section>
+    </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript" src="/static/js/treetable.js"></script>
     <script type="text/javascript">
@@ -42,7 +44,7 @@
                     {
                         title: "操作",
                         align: "center",
-                        width: "20%",
+                        width: "200px",
                         events: {
                             'click .detail': function(e, value, row, index) {
                                 detail(row);

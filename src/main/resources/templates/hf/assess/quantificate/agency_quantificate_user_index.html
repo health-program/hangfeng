@@ -7,6 +7,7 @@
 <body>
     <input type="hidden" th:value="${userId}" name="userId" />
     <tt:constant enumcode="examine,operation,event_type,boolean-type" />
+    <div class="container">
     <section class="content-header">
         <h1>人员量化考评-机构</h1>
         <ol class="breadcrumb">
@@ -27,19 +28,19 @@
                         <div class="col-sm-2">
                             <input type="text" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" name="cycleId" placeholder="请选择"></input>
                         </div>
-                    </div>
-                    <div class="form-group">
                         <label for="eventType" style="width:130px" class="col-sm-2 control-label">事件类型</label>
                         <div class="col-sm-2">
                             <select name="eventType" class="form-control tonto-select-constant" enumcode="event_type">
                                 <option value="">全部</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-group">
                         <label for="startHappenTime" style="width:130px" class="col-sm-2 control-label">发生时间</label>
                         <div class="col-sm-2">
                             <input type="text" name="startHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
                         </div>
-                        <label for="endHappenTime" style="width:80px;text-align:center" class="col-sm-2 control-label">至</label>
+                        <label for="endHappenTime" style="width:130px;text-align:center" class="col-sm-2 control-label">至</label>
                         <div class="col-sm-2">
                             <input type="text" name="endHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
                         </div>
@@ -68,6 +69,7 @@
             </div>
         </div>
     </section>
+    </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
     /*<![CDATA[*/

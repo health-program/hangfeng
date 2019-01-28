@@ -3,6 +3,7 @@
 <head th:include="/hf/header">
 </head>
 <body>
+<div class="container">
 	<section class="content-header">
 		<h1>通知公告管理</h1>
 	</section>
@@ -64,7 +65,6 @@
 					<input type ="hidden" id="pageOffset" th:value="${query?.offset}" />
 				</div>
 			</div>
-		</div>
 		<div class="box box-solid">
 			<div class="box-header with-border">
                 <i class="fa fa-list-alt"></i>
@@ -80,6 +80,7 @@
             </div>
 		</div>
 	</section>
+	</div>
 	<div th:include="/hf/footer"></div>
 	<script type="text/javascript">
 	 /*<![CDATA[*/

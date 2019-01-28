@@ -354,4 +354,8 @@
         ORDER BY ou.org_unit_id ASC
     </select>
     
+    <select id="countRejectedAssessByUser" resultType="int">
+    	SELECT count(1) FROM person_cyc_assess WHERE org_user_id = #{userId} AND operate_state = -1
+    </select>
+    
 </mapper>

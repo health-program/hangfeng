@@ -11,6 +11,9 @@
             <h1>周期考评自评</h1>
         </section>
         <section class="content">
+            <div th:if="${hasRejected==1}" class="callout callout-danger">
+                <h4>您有被驳回的周期考评未处理！</h4>
+            </div>
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <i class="fa fa-search"></i>

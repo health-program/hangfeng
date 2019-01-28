@@ -48,6 +48,10 @@ public class PersonalCycleAssessController extends ControllerSupport {
 
 		Unit unit = session.getUserAgency();
 		model.addAttribute("unitName", unit.getName());
+		
+		// 查看是否有被驳回考评
+		model.addAttribute("hasRejected", perCycAssService.hasRejectedAssess(session.getUserId())? 1: 0);
+		
 		return "/hf/assess/cycle/personal_index";
 	}
 

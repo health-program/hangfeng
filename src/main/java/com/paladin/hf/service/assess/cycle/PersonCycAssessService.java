@@ -382,4 +382,9 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 		perCycAssMapper.findUnassessedForAgency(unitQuery, query);
 		return new PageResult<>(page);
 	}
+
+	
+	public boolean hasRejectedAssess(String userId) {
+		return perCycAssMapper.countRejectedAssessByUser(userId) > 0;
+	}
 }

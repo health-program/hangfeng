@@ -44,4 +44,6 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 	
 	public List<UnassessedUserVO> findUnassessedForAgency(@Param("unitQuery") UnitQuery unitQuery, @Param("query") UnassessedQuery query);
 
+	public int countRejectedAssessByUser(@Param("userId") String userId);
+
 }

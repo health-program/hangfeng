@@ -6,7 +6,6 @@ import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.framework.core.exception.BusinessException;
-import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.core.HfUserSession;
@@ -16,14 +15,12 @@ import com.paladin.hf.model.assess.cycle.PersonCycAssess;
 import com.paladin.hf.service.assess.cycle.dto.*;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
-import com.paladin.hf.service.assess.cycle.vo.PersonCycAssessQuery;
+import com.paladin.hf.service.assess.cycle.vo.UnassessedUserVO;
 import com.paladin.hf.service.assess.quantificate.AssessQuantitativeResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
@@ -138,9 +135,9 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 		if (hasAssessedByUserAndCycle(userId, cycleId)) {
 			throw new BusinessException("该周期您已经考核过了，不能重复考核");
-		}else{
+		} else {
 			Object result = assessQuantitativeResultService.getResult(userId, cycleId);
-			if(result == null) {
+			if (result == null) {
 				throw new BusinessException("请联系考评人先做量化考评！");
 			}
 		}
@@ -356,28 +353,33 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 		return perCycAssMapper.deletePersonalCycleAssess(id) > 0;
 	}
 
-	public Page<PersonnelCycleAssessDTO> noAssessment(PersonCycAssessQuery personCycAssessQuery, boolean isAgency) {
-		Page<PersonnelCycleAssessDTO> page = PageHelper.offsetPage(personCycAssessQuery.getOffset(), personCycAssessQuery.getLimit());// 分页
-		HfUserSession session = HfUserSession.getCurrentUserSession();
-		if(session.isAdminRoleLevel()){//当前用户为系统管理员
-			Map<String, Object> map = new HashMap<>();
-			map.put("assessCycleId", personCycAssessQuery.getAssessCycleId());
-			map.put("isAgency", isAgency?1:0);
-			perCycAssMapper.noAssessment(map);
-		} else {
-			String unitId = personCycAssessQuery.getUnitId();
-			UnitQuery query =  DataPermissionUtil.getUnitQueryDouble(unitId);
-			if(query == null) {
-				page.setTotal(0L);
-				return page;
-			}
-			Map<String, Object> map = new HashMap<>();
-			map.put("assessCycleId", personCycAssessQuery.getAssessCycleId());
-			map.put("unitQuery",query);
-			map.put("isAgency", isAgency?1:0);
-			perCycAssMapper.noAssessment(map);
+	/**
+	 * 查看科室未考评人员
+	 * @param query
+	 * @return
+	 */
+	public PageResult<UnassessedUserVO> findUnassessedForDepartment(UnassessedQuery query) {
+		Page<UnassessedUserVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
+		if (unitQuery == null) {
+			return getEmptyPageResult(page);
 		}
-		return page;
+		perCycAssMapper.findUnassessedForDepartment(unitQuery, query);
+		return new PageResult<>(page);
 	}
 
+	/**
+	 * 查看机构未考评人员
+	 * @param query
+	 * @return
+	 */
+	public PageResult<UnassessedUserVO> findUnassessedForAgency(UnassessedQuery query) {
+		Page<UnassessedUserVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());// 分页
+		UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getUnitId());
+		if (unitQuery == null) {
+			return getEmptyPageResult(page);
+		}
+		perCycAssMapper.findUnassessedForAgency(unitQuery, query);
+		return new PageResult<>(page);
+	}
 }

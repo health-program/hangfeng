@@ -1,6 +1,5 @@
 package com.paladin.hf.controller.assess.cycle;
 
-import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.core.query.QueryInputMethod;
 import com.paladin.framework.core.query.QueryOutputMethod;
@@ -12,7 +11,8 @@ import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.PersonCycAssessService;
 import com.paladin.hf.service.assess.cycle.dto.AgencyCycleAssessUpdateDTO;
 import com.paladin.hf.service.assess.cycle.dto.AgencyQueryDTO;
-import com.paladin.hf.service.assess.cycle.vo.PersonCycAssessQuery;
+import com.paladin.hf.service.assess.cycle.dto.UnassessedQuery;
+
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -115,7 +115,7 @@ public class AgencyCycleAssessController extends ControllerSupport {
 	@RequestMapping(value = "/to/no/assessment", method = { RequestMethod.GET })
 	public String toNoAssessment(String assessCycleId,Model model) {
 		model.addAttribute("assessCycleId", assessCycleId);
-		return "/hf/assess/cycle/agency_no_assessment";
+		return "/hf/assess/cycle/agency_unassessed";
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class AgencyCycleAssessController extends ControllerSupport {
 	 */
 	@RequestMapping(value = "/no/assessment")
 	@ResponseBody
-	public Object noAssessment(PersonCycAssessQuery personCycAssessQuery){
-		return CommonResponse.getSuccessResponse(new PageResult(perCycAssService.noAssessment(personCycAssessQuery, true)));
+	public Object noAssessment(UnassessedQuery query){
+		return CommonResponse.getSuccessResponse(perCycAssService.findUnassessedForAgency(query));
 	}
 }

@@ -812,4 +812,9 @@ public abstract class ServiceSupport<Model> {
 		return new PageResult(page);
 	}
 
+	public <T> PageResult<T> getEmptyPageResult(Page<T> page) {
+		page.setTotal(0L);
+		return new PageResult<T>(page);
+	}
+	
 }

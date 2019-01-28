@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.paladin.framework.core.query.QueryInputMethod;
-import com.paladin.hf.service.assess.quantificate.dto.QuantitativeDepartmentQuery;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

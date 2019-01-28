@@ -6,6 +6,7 @@
 
 <body>
     <tt:constant enumcode="cycle-state,assess-type" />
+    <div class="container">
     <section class="content-header">
         <h1>考评周期管理</h1>
     </section>
@@ -75,6 +76,7 @@
             </div>
         </div>
     </section>
+    </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
     var table;
@@ -95,15 +97,15 @@
                     { title: "周期名称", field: "cycleName", sortable: true },
                     { title: "周期开始时间", field: "cycleStartTime", formatter: "date" },
                     { title: "周期截止时间", field: "cycleEndTime", formatter: "date" },
-                    { title: "考评开始时间", field: "assessStartTime", formatter: "date" },
-                    { title: "考评截止时间", field: "assessEndTime", formatter: "date" },
+                    // { title: "考评开始时间", field: "assessStartTime", formatter: "date" },
+                    // { title: "考评截止时间", field: "assessEndTime", formatter: "date" },
                     { title: "周期状态", field: "cycleState", sortable: true, enumcode: "cycle-state" },
                     { title: "考评类型", field: "assessType", sortable: true, enumcode: "assess-type" },
                     { title: "周期描述", field: "cycleDescribe" },
                     {
                         title: "操作",
                         align: "center",
-                        width: "25%",
+                        width: "20%",
                         events: {
                             'click .start': function(e, value, row, index) {
                                 start(row);
@@ -143,46 +145,46 @@
     function operateFormatter(value, row, index) {
         if (row.cycleState == "2") {
             return [
-                '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>',
-                '<button class="config btn btn-xs btn-primary" style="margin-right:10px">',
+                '<button class="config btn btn-xs btn-primary" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-cog"></i>配置',
                 '</button>',
-                '<button class="start btn btn-xs btn-success" style="margin-right:10px">',
+                '<button class="start btn btn-xs btn-success" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-edit"></i>启用',
                 '</button>',
-                '<button class="remove btn btn-xs btn-danger" style="margin-right:10px">',
+                '<button class="remove btn btn-xs btn-danger" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-remove"></i>删除',
                 '</button>'
             ].join('');
         } else if (row.cycleState == "4") {
             return [
-                '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>',
-                '<button class="start btn btn-xs btn-success" style="margin-right:10px">',
+                '<button class="start btn btn-xs btn-success" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-edit"></i>启用',
                 '</button>',
-                '<button class="archive btn btn-xs btn-success" style="margin-right:10px">',
+                '<button class="archive btn btn-xs btn-success" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-sort"></i>归档',
                 '</button>'
             ].join('');
         } else if (row.cycleState == "1") {
             return [
-                '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>',
-                '<button class="stop btn btn-xs btn-danger" style="margin-right:10px">',
+                '<button class="stop btn btn-xs btn-danger" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-edit"></i>停用',
                 '</button>',
-                '<button class="archive btn btn-xs btn-success" style="margin-right:10px">',
+                '<button class="archive btn btn-xs btn-success" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-sort"></i>归档',
                 '</button>'
             ].join('');
         } else if (row.cycleState == "3") {
             return [
-                '<button class="detail btn btn-xs btn-info" style="margin-right:10px">',
+                '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0">',
                 '<i class="glyphicon glyphicon-open"></i>详情',
                 '</button>'
             ].join('');

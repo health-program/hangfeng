@@ -6,6 +6,7 @@
 
 <body>
     <tt:constant enumcode="cycle-state,assess-type" />
+    <div class="container">
     <section class="content-header">
         <h1>考评周期管理</h1>
         <ol class="breadcrumb">
@@ -17,7 +18,7 @@
         <div class="box box-solid">
             <div class="box-header with-border">
                 <i class="fa fa-list"></i>
-                <h3 class="box-title">新增</h3>
+                <h3 class="box-title">详情</h3>
                 <div class="box-tools pull-right">
                     <a class="btn" id="model_edit_btn" href="javascript:void(0)"><i class="fa fa-edit"></i>编辑</a>
                 </div>
@@ -56,7 +57,7 @@
                             <p name="cycleEndTime" class="form-control-static description"></p>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="assessStartTime" class="col-sm-3 control-label">考评起止时间：</label>
                         <div class="col-sm-3" style="width: 110px">
                             <p name="assessStartTime" class="form-control-static description"></p>
@@ -65,7 +66,7 @@
                         <div class="col-sm-3">
                             <p name="assessEndTime" class="form-control-static description"></p>
                         </div>
-                    </div>
+                    </div>-->
                 </form>
             </div>
             <div id="model_edit" class="box-body" style="display: none">
@@ -103,7 +104,7 @@
                             <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" data-type="cycleEnd" name="cycleEndTime" required="required" placeholder="请选择" />
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="assessStartTime" class="col-sm-3 control-label">考评起止时间:</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" name="assessStartTime" required="required" placeholder="请选择" />
@@ -112,7 +113,7 @@
                         <div class="col-sm-3">
                             <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" data-type="assessEnd" name="assessEndTime" required="required" placeholder="请选择" />
                         </div>
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <div class="col-sm-2 col-sm-offset-3">
                             <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
@@ -146,6 +147,7 @@
             </div>
         </div>
     </section>
+    </div>
     <input type="hidden" id="id" th:value="${id}" />
     <div th:include="/hf/footer"></div>
 </body>
@@ -162,8 +164,8 @@ var options = {
         { title: "考评类型", name: "assessType", inputType: "SELECT", enum: "assess-type" },
         { title: "周期起止时间", name: "cycleStartTime", inputType: "DATE" },
         { title: "至", name: "cycleEndTime", inputType: "DATE" },
-        { title: "考评起止时间", name: "assessStartTime", inputType: "DATE" },
-        { title: "至", name: "assessEndTime", inputType: "DATE" }
+        // { title: "考评起止时间", name: "assessStartTime", inputType: "DATE" },
+        // { title: "至", name: "assessEndTime", inputType: "DATE" }
     ]
 }
 

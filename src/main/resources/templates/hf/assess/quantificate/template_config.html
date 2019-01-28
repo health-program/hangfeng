@@ -7,6 +7,7 @@
 
 <body>
     <tt:constant enumcode="extra-item-type,grade-names" />
+    <div class="container">
     <section class="content-header">
         <h1>考评模板管理</h1>
         <ol class="breadcrumb">
@@ -128,6 +129,7 @@
             </div>
         </div>
     </section>
+    </div>
     <div th:include="/hf/footer"></div>
     <script src="/static/assets/adminLTE/js/bootstrap-editable.min.js"></script>
     <script src="/static/assets/adminLTE/js/bootstrap-table-editable.min.js"></script>
@@ -335,7 +337,7 @@
     var extraTable;
 
     function initItemExtra() {
-        $("#extraItemForm")[0].submitHandler = function() {
+        $("#extraItemForm")[0].submitSuccessHandler = function() {
             layer.msg("保存成功", { icon: 1 });
             toTableExtra();
             extraTable.refresh();
@@ -368,8 +370,8 @@
                             }
                         },
                         formatter: function(value, row, index) {
-                            return '<button class="edit btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>修改</button>' +
-                                '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+                            return '<button class="edit btn btn-xs btn-info" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-edit"></i>修改</button>' +
+                                '<button class="remove btn btn-xs btn-danger" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-remove"></i>删除</button>';
 
                         }
                     }

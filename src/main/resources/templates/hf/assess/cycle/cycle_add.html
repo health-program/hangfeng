@@ -6,6 +6,7 @@
 
 <body>
     <tt:constant enumcode="cycle-state,assess-type" />
+    <div class="container">
     <section class="content-header">
         <h1>考评周期管理</h1>
         <ol class="breadcrumb">
@@ -17,7 +18,7 @@
         <div class="box box-solid" id="videoform">
             <div class="box-header with-border">
                 <i class="fa fa-edit"></i>
-                <h3 class="box-title">新增考评周期</h3>
+                <h3 class="box-title">新增</h3>
             </div>
             <div id="model_edit" class="box-body">
                 <form id="model_form" action="/assess/cycle/save" method="post" class="form-horizontal edit-body">
@@ -54,7 +55,7 @@
                             <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" data-type="cycleEnd" name="cycleEndTime" required="required" placeholder="请选择" />
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="assessStartTime" class="col-sm-3 control-label">考评起止时间:</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" name="assessStartTime" required="required" placeholder="请选择" />
@@ -63,7 +64,7 @@
                         <div class="col-sm-3">
                             <input type="text" class="form-control tonto-datepicker-date" autocomplete="off" data-type="assessEnd" name="assessEndTime" required="required" placeholder="请选择" />
                         </div>
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <div class="col-sm-2 col-sm-offset-3">
                             <button type="submit" id="model_form_submit_btn" class="btn btn-primary btn-block">保存</button>
@@ -73,6 +74,7 @@
             </div>
         </div>
     </section>
+    </div>
     <div th:include="/hf/footer"></div>
 </body>
 <script type="text/javascript">
@@ -88,8 +90,8 @@ var options = {
         { title: "考评类型", name: "assessType", inputType: "SELECT", enum: "assess-type" },
         { title: "周期起止时间", name: "cycleStartTime", inputType: "DATE" },
         { title: "至", name: "cycleEndTime", inputType: "DATE" },
-        { title: "考评起止时间", name: "assessStartTime", inputType: "DATE" },
-        { title: "至", name: "assessEndTime", inputType: "DATE" }
+        // { title: "考评起止时间", name: "assessStartTime", inputType: "DATE" },
+        // { title: "至", name: "assessEndTime", inputType: "DATE" }
     ]
 }
 

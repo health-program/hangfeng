@@ -29,21 +29,21 @@
                                 <div class="form-group">
                                     <label for="name" class="col-xs-1 control-label">姓名</label>
                                     <div class="col-xs-3">
-                                        <input type="text" name="name" th:value="${query?.name}" placeholder="请输入姓名" class="form-control" />
+                                        <input type="text" name="name" autocomplete="off" th:value="${query?.name}" placeholder="请输入姓名" class="form-control" />
                                     </div>
                                     <label for="startRecordCreateTime" class="col-xs-1 control-label">建档时间</label>
                                     <div class="col-xs-3">
-                                        <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择开始日期" />
+                                        <input type="text" name="startRecordCreateTime" autocomplete="off" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择开始日期" />
                                     </div>
                                     <label for="endRecordCreateTime" style="width:30px" class="col-xs-1 control-label">至</label>
                                     <div class="col-xs-3">
-                                        <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择结束日期" />
+                                        <input type="text" name="endRecordCreateTime" autocomplete="off" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择结束日期" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="identification" class="col-xs-1 control-label">身份证</label>
                                     <div class="col-xs-3">
-                                        <input type="text" name="identification" th:value="${query?.identification}" placeholder="请输入身份证" class="form-control" />
+                                        <input type="text" name="identification" autocomplete="off" th:value="${query?.identification}" placeholder="请输入身份证" class="form-control" />
                                     </div>
                                     <label for="userProperty" class="col-xs-1 control-label">人员属性</label>
                                     <div class="col-xs-3">
@@ -133,10 +133,10 @@
                     { title: "姓名", field: "name" },
                     { title: "身份证", field: "identification", formatter: "identification" },
                     { title: "性别", field: "sex", enumcode: "sex-type" },
-                    { title: "人员属性", field: "userProperty", enumcode: "user_property_type" },
-                    { title: "职称", field: "jobRank", enumcode: "job-rank-type" },
-                    { title: "职务", field: "jobDuties", enumcode: "job-duties-type" },
-                    { title: "建档时间", field: "recordCreateTime", formatter: "date" }
+                    { title: "人员属性", field: "userProperty", enumcode: "user_property_type" }
+                    // { title: "职称", field: "jobRank", enumcode: "job-rank-type" },
+                    // { title: "职务", field: "jobDuties", enumcode: "job-duties-type" },
+                    // { title: "建档时间", field: "recordCreateTime", formatter: "date" }
                 ]
             ],
             url: '/org/user/find',

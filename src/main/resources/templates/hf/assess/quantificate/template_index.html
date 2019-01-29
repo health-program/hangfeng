@@ -6,6 +6,7 @@
 
 <body>
     <tt:constant enumcode="enable-state" />
+    <div class="container">
     <section class="content-header">
         <h1>考评模板管理</h1>
     </section>
@@ -18,17 +19,17 @@
             <div class="box-body">
                 <form id="searchbar" class="form-horizontal">
                     <div class="form-group">
-                        <label for="unitId" class="col-sm-1 control-label">机构名称</label>
+                        <label for="unitId" class="col-sm-2 control-label">机构名称</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control tonto-select-agency" name="unitId" placeholder="请选择科室"></input>
                         </div>
-                        <label for="templateName" class="col-sm-1 control-label">模板名称</label>
+                        <label for="templateName" class="col-sm-2 control-label">模板名称</label>
                         <div class="col-sm-3">
                             <input type="text" name="templateName" class="form-control" id="templateName" placeholder="请填写模板名称" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="enableState" class="col-sm-1 control-label">启用状态</label>
+                        <label for="enableState" class="col-sm-2 control-label">启用状态</label>
                         <div class="col-sm-3">
                             <select id="enableState" name="enableState" class="form-control tonto-select-constant" enumcode="enable-state">
                                 <option value="">全部</option>
@@ -61,6 +62,7 @@
             </div>
         </div>
     </section>
+    </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
     var table;
@@ -84,6 +86,7 @@
                     {
                         title: "操作",
                         align: "center",
+                        width:"20%",
                         events: {
                             'click .config': function(e, value, row, index) {
                                 config(row);
@@ -105,16 +108,16 @@
                             }
                         },
                         formatter: function operateFormatter(value, row, index) {
-                            var html = '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="fa fa-cog"></i>详情</button>';
+                            var html = '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0"><i class="fa fa-cog"></i>详情</button>';
                             if (row.enableState == 2) {
-                                html += '<button class="config btn btn-xs btn-success" style="margin-right:10px"><i class="fa fa-cog"></i>配置</button>';
-                                html += '<button class="remove btn btn-xs btn-danger" style="margin-right:10px"><i class="fa fa-cog"></i>删除</button>';
+                                html += '<button class="config btn btn-xs btn-success" style="margin:0 5px 5px 0"><i class="fa fa-cog"></i>配置</button>';
+                                html += '<button class="remove btn btn-xs btn-danger" style="margin:0 5px 5px 0"><i class="fa fa-cog"></i>删除</button>';
                             } else {
-                                html += '<button class="copy btn btn-xs btn-warning" style="margin-right:10px"><i class="fa fa-copy"></i>复制</button>';
+                                html += '<button class="copy btn btn-xs btn-warning" style="margin:0 5px 5px 0"><i class="fa fa-copy"></i>复制</button>';
                                 if (row.enableState == 1) {
-                                    html += '<button class="stop btn btn-xs btn-danger" style="margin-right:10px"><i class="fa fa-stop"></i>停用</button>';
+                                    html += '<button class="stop btn btn-xs btn-danger" style="margin:0 5px 5px 0"><i class="fa fa-stop"></i>停用</button>';
                                 } else {
-                                    html += '<button class="start btn btn-xs btn-warning" style="margin-right:10px"><i class="fa fa-play"></i>启用</button>';
+                                    html += '<button class="start btn btn-xs btn-warning" style="margin:0 5px 5px 0"><i class="fa fa-play"></i>启用</button>';
                                 }
                             }
                             return html;

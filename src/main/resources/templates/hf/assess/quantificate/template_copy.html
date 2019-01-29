@@ -4,7 +4,8 @@
 <head th:include="/hf/header" />
 
 <body>
-    <tt:constant enumcode="enable-state," />
+    <tt:constant enumcode="enable-state" />
+    <div class="container">
     <section class="content-header">
         <h1>考评模板管理</h1>
         <ol class="breadcrumb">
@@ -27,9 +28,9 @@
                         <div class="col-sm-3">
                             <input name="templateName" placeholder="请输入模板名称" type="text" class="form-control" />
                         </div>
-                        <label for="orgUnitId" class="col-sm-2 control-label">单位ID：</label>
+                        <label for="orgUnitId" class="col-sm-2 control-label">单位：</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control tonto-select-agency" name="orgUnitId" placeholder="请选择单位ID"></input>
+                            <input type="text" class="form-control tonto-select-agency" name="orgUnitId" placeholder="请选择单位"></input>
                         </div>
                     </div>
                     <div class="form-group">
@@ -47,6 +48,7 @@
             </div>
         </div>
     </section>
+    </div>
     <input type="hidden" id="id" th:value="${id}" />
     <div th:include="/hf/footer" />
     <script type="text/javascript">
@@ -56,7 +58,7 @@
             name: "详情",
             columns: [
                 { title: "模板名称", name: "templateName", inputType: "TEXT" },
-                { title: "单位ID", name: "orgUnitId", inputType: "UNIT", viewName: "unitName", unitType: "tonto-select-agency" },
+                { title: "单位", name: "orgUnitId", inputType: "UNIT", viewName: "unitName", unitType: "tonto-select-agency" },
                 { title: "状态", name: "enableState", enum: "enable-state", inputType: "SELECT" },
                 { title: "模板描述", name: "templateDescribe", inputType: "TEXTAREA" }
             ]

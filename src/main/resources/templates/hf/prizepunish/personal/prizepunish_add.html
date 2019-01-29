@@ -27,15 +27,15 @@
             <div id="model_edit" class="box-body">
             <form id="model_form" class="form-horizontal edit-body"  action="/prizepunish/save" method="post">
 					<div class="form-group">
-						<label class="col-sm-2 control-label">事件类型:</label>
+						<label class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>事件类型:</label>
 						<div class="col-sm-3">
 							<select required="required" id="dictCode" name="dictCode" class="form-control tonto-select-constant" enumcode="event_type">
 					           <option value="">请选择</option>
 					      </select>
 						</div>
-						<label class="col-sm-2 control-label">发生时间:</label>
+						<label class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>发生时间:</label>
 						<div class="col-sm-3">
-							<input type="text" name="happenTime" required="required"
+							<input type="text" name="happenTime" autocomplete="off" required="required"
 								class="form-control tonto-datepicker-date" placeholder="请选择日期" />
 						</div>
 						</div>

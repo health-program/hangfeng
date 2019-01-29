@@ -2,17 +2,23 @@ package com.paladin.hf.service.org.dto;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class OrgUserDTO {
 	private String id;
 
+	@NotEmpty(message = "账号不能为空")
 	private String account;
-	
-	private String orgUnitId;
 
+	private String orgUnitId;
+	
+	@NotEmpty(message = "姓名不能为空")
 	private String name;
 
 	private Date recordCreateTime;
 
+	@NotNull(message = "性别不能为空")
 	private Integer sex;
 
 	private Integer oeducation;
@@ -45,8 +51,10 @@ public class OrgUserDTO {
 
 	private Integer userProperty;
 
+	@NotEmpty(message = "身份证件号码不能为空")
 	private String identification;
-	
+
+	@NotNull(message = "身份证类型不能为空")
 	private Integer identificationType;
 
 	public String getId() {

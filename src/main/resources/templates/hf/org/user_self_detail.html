@@ -216,19 +216,19 @@
                         <div class="form-group">
                             <label for="resume" class="col-sm-3 control-label">个人简历：</label>
                             <div class="col-sm-8">
-                                <textarea name="resume" rows="5" placeholder="请输入个人简历" class="form-control"></textarea>
+                                <textarea name="resume" rows="5" placeholder="请输入个人简历" maxlength="2000" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="reward" class="col-sm-3 control-label">历年奖励：</label>
                             <div class="col-sm-8">
-                                <textarea name="reward" rows="5" placeholder="请输入历年奖励" type="text" class="form-control"></textarea>
+                                <textarea name="reward" rows="5" placeholder="请输入历年奖励" maxlength="2000" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="punish" class="col-sm-3 control-label">历年惩处：</label>
                             <div class="col-sm-8">
-                                <textarea name="punish" rows="5" placeholder="请输入历年惩处" type="text" class="form-control"></textarea>
+                                <textarea name="punish" rows="5" placeholder="请输入历年惩处" maxlength="2000" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -325,11 +325,11 @@
                             },
                             'click .print': function(e, value, row, index) {
                                 print(row);
-                            }                           
+                            }
                         },
                         formatter: function(value, row, index) {
                             var html = '<button class="detail btn btn-xs btn-info"><i class="fa fa-search"></i>查看</button>';
-                            if(row.operateState>= 5) {
+                            if (row.operateState >= 5) {
                                 html += '<button class="print btn btn-xs btn-success" style="margin-left:10px"><i class="fa fa-print"></i>打印</button>'
                             }
                             return html;
@@ -358,7 +358,6 @@
             height: 800
         })
     }
-    
     </script>
 </body>
 

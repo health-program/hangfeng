@@ -584,21 +584,12 @@ function _createUnitComponment(input, type, callback) {
         removeBtn: $removeBtn,
         name: name,
         valueInput: $hideinput,
-        current: null,
         type: type,
         treedata: null,
         changedCallbacks: [],
         setCurrent: function(val) {
             var that = this;
 
-            if (!that.current && !val) {
-                return;
-            }
-            if (that.current && val && that.current.id == val.id) {
-                return;
-            }
-
-            that.current = val;
             that.input.val(val ? val.name : "");
             that.valueInput.val(val ? val.id : "");
 
@@ -612,10 +603,12 @@ function _createUnitComponment(input, type, callback) {
         getCurrent: function() {
             var that = this;
             if (!that.valueInput.val()) {
-                that.current = null;
                 return null;
             }
-            return that.current;
+            return {
+                name: that.input.val(),
+                id: that.valueInput.val()
+            };
         },
         setEnabled: function(enabled) {
             if (enabled) {
@@ -954,32 +947,25 @@ function _createAssessCycleComponment(input, _options, callback) {
             var that = this;
 
             if (row && row.id) {
-                that.current = {
-                    id: row.id,
-                    cycleName: row.cycleName
-                }
-            } else {
-                that.current = null;
-            }
-
-            if (that.current) {
-                that.input.val(that.current.cycleName);
-                that.valueInput.val(that.current.id);
+                that.input.val(row.cycleName);
+                that.valueInput.val(row.id);
             } else {
                 that.input.val("");
                 that.valueInput.val("");
             }
 
             if (that.callback)
-                that.callback(that.current);
+                that.callback(row);
         },
         getCurrent: function() {
             var that = this;
             if (!that.valueInput.val()) {
-                that.current = null;
                 return null;
             }
-            return that.current;
+            return {
+                id: that.valueInput.val(),
+                name: that.input.val()
+            };
         },
         setEnabled: function(enabled) {
             if (enabled) {
@@ -1003,7 +989,7 @@ function _createAssessCycleComponment(input, _options, callback) {
                 title: ' ',
                 maxmin: true, //开启最大化最小化按钮
                 content: that.content,
-                area:$.getOpenLayerSize(800,640),
+                area: $.getOpenLayerSize(800, 640),
                 /*area: ['800px', '650px'],*/
                 success: function(layero, index) {
 

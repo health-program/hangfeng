@@ -24,7 +24,7 @@
                             <input type="text" class="form-control tonto-select-department" name="unitId" th:attr="unitid=${query?.unitId}" placeholder="请选择科室"></input>
                         </div>
                         <label for="name" style="width:130px" class="col-sm-2 control-label">姓名</label>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <input type="text" name="name" autocomplete="off" th:value="${query?.name}" class="form-control" />
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label style="width: 130px" for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${query?.assessCycleId},cyclename=${query?.assessCycleName}" name="assessCycleId" placeholder="请选择周期"></input>
+                            <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${query?.assessCycleId},cyclename=${query?.assessCycleName}"  cycle-name="assessCycleId" name="assessCycleName" placeholder="请选择周期"></input>
                         </div>
                         <label for="jobRank" style="width:130px" class="col-sm-2 control-label">职称</label>
                         <div class="col-sm-3">
@@ -52,13 +52,13 @@
                     </div>
                      <div class="form-group">
                         <label style="width: 130px" for="isAssessed" class="col-sm-2 control-label">是否已考评</label>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <select name="isAssessed" class="col-sm-2 form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessed}" enumcode="boolean-type">
                                 <option value="">请选择</option>
                             </select>
                         </div>
-                        <label for="isAssessor" style="width: 210px" class="col-sm-2 control-label">是否考评人</label>
-                        <div class="col-sm-2">
+                        <label for="isAssessor" style="width: 130px" class="col-sm-2 control-label">是否考评人</label>
+                        <div class="col-sm-3">
                             <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
                                 <option value="">请选择</option>
                             </select>
@@ -130,11 +130,6 @@
             ],
             url: '/assess/quantitative/department/user/find',
             searchbar: '#searchbar',
-            queryParams: function(params) {
-                var o = $("[name='assessCycleId']").data("cycleComponment").getCurrent();
-                if (o) params.assessCycleName = o.cycleName;
-                return params;
-            },
             pagination: true,
             showRefresh: true,
             clickToSelect: true,

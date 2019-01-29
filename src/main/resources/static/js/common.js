@@ -555,8 +555,11 @@
 function _createUnitComponment(input, type, callback) {
     var $input = $(input);
     var $wrap = $('<div class="input-group"/>');
-    var name = $input.attr("name") || $input.attr("id");
-    $input.attr("name", "_" + name);
+    var name = $input.attr("unit-name") ;
+    if(!name) {
+        name = $input.attr("name") || $input.attr("id");
+        $input.attr("name", "_" + name);
+    } 
     var $hideinput = $('<input type="text" style="display:none" name="' + name + '" id="' + name + '"  />');
     var $removeBtn = $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-remove"> </i></span>');
     var defaultValue = $input.attr("unitid");
@@ -901,8 +904,11 @@ function _createAssessCycleComponment(input, _options, callback) {
     var $input = $(input);
     var required = ($input.hasClass("required") || $input.attr("required") == "required");
     var $wrap = $('<div class="input-group"/>');
-    var name = $input.attr("name") || $input.attr("id");
-    $input.attr("name", "_" + name);
+    var name = $input.attr("cycle-name") ;
+    if(!name) {
+        name = $input.attr("name") || $input.attr("id");
+        $input.attr("name", "_" + name);
+    } 
     var $hideinput = $('<input type="text" class="tonto-assess-cycle" style="display:none" name="' + name + '"  />');
     var $removeBtn = required ? $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-chevron-down"> </i></span> ') :
         $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-remove"> </i></span> ');
@@ -1204,6 +1210,16 @@ function _initCommon() {
             //filterPlaceholder: '输入查询内容', // 没有查询条件时显示文本
         });
     });
+
+    // 搜索按钮回车
+    $('.tonto-btn-search').each(function() {
+        var a = $(this);
+        $(document).keyup(function(event) {
+            if (event.keyCode == 13) {
+                a.click();
+            }
+        });
+    })
 
     $.extend({
         createTreeSelectComponment: function(input, type) {

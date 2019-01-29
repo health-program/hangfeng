@@ -108,10 +108,10 @@
                             }
                         },
                         formatter: function operateFormatter(value, row, index) {
-                            var html = '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0"><i class="fa fa-cog"></i>详情</button>';
+                            var html = '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
                             if (row.enableState == 2) {
                                 html += '<button class="config btn btn-xs btn-success" style="margin:0 5px 5px 0"><i class="fa fa-cog"></i>配置</button>';
-                                html += '<button class="remove btn btn-xs btn-danger" style="margin:0 5px 5px 0"><i class="fa fa-cog"></i>删除</button>';
+                                html += '<button class="remove btn btn-xs btn-danger" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-remove"></i>删除</button>';
                             } else {
                                 html += '<button class="copy btn btn-xs btn-warning" style="margin:0 5px 5px 0"><i class="fa fa-copy"></i>复制</button>';
                                 if (row.enableState == 1) {

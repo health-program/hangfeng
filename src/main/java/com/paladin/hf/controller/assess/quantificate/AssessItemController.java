@@ -82,7 +82,7 @@ public class AssessItemController extends ControllerSupport{
 			assessItemExtra.setAccumulateUpper(null);
 		}
 		
-		if(assessItemExtra.getId() == null) {
+		if(assessItemExtra.getId() == null || assessItemExtra.getId().length() == 0) {
 			return CommonResponse.getResponse(assessItemExtraService.save(assessItemExtra));
 		} else {
 			return CommonResponse.getResponse(assessItemExtraService.updateSelective(assessItemExtra));

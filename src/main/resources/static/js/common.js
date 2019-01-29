@@ -1550,13 +1550,13 @@ function _initValidator() {
         },
         addRequiredStyle: function() {
             // 添加必填样式
-            var target = $(this);
-            var inputGroupParent = target.parent(".input-group");
-            if (inputGroupParent.length > 0) {
-                inputGroupParent.children(":last-child").css("border-right", "2px solid red");
-            } else {
-                target.css("border-right", "2px solid red");
-            }
+            // var target = $(this);
+            // var inputGroupParent = target.parent(".input-group");
+            // if (inputGroupParent.length > 0) {
+            //     inputGroupParent.children(":last-child").css("border-right", "2px solid red");
+            // } else {
+            //     target.css("border-right", "2px solid red");
+            // }
         },
         removeRequiredStyle: function() {
             // 移除必填样式
@@ -2223,17 +2223,27 @@ function _initForm(container) {
                     } else if (status.FAIL === resStatus) {
                         $.errorMessage(data.message || "操作失败");
                     } else if (status.FAIL_VALID === resStatus) {
-                        $.errorMessage(data.message || "数据验证异常");
-                        error = data.result;
-                        if ($.isArray(error)) {
+                        // $.errorMessage(data.message || "数据验证异常");
+                        var errorHtml, error = data.result;
+                        if (!data.message && $.isArray(error)) {
+                            var errorHtml = "<ul>数据验证失败："
                             error.forEach(function(item) {
                                 var el = item[1];
                                 var errorMsg = item[2];
-                                form.find("#" + el + ",[name='" + el + "']").each(function() {
-                                    layer.tips(errorMsg, $(this), { time: 2000, tips: [3, 'red'] });
-                                });
+
+                                // 存在可能对不上input输入框，加上存在前端验证保证大部分情况正确，所以这里才有用户体验稍差的方式
+                                // form.find("#" + el + ",[name='" + el + "']").each(function() {
+                                //     layer.tips(errorMsg, $(this), { time: 2000, tips: [3, 'red'] });
+                                // });
+
+                                errorHtml += "<li>" + errorMsg + "</li>";
                             });
+                            errorHtml += "</ul>"
+                        } else {
+                            errorHtml = data.message || error || "数据验证异常";
                         }
+
+                        $.errorAlert(errorHtml);
                     } else if (status.SUCCESS === resStatus) {
                         var handler = formConfig.successCallback || form[0].submitSuccessHandler || form.data("submitSuccessHandler");
                         if (handler) {

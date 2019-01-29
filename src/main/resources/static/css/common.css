@@ -99,3 +99,8 @@ dd {
 .radio-label {
 	margin-right:10px;
 }
+
+.required-label{
+	color:red;
+	margin-right:5px;
+}

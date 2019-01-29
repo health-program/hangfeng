@@ -8,127 +8,129 @@
 <body>
     <tt:constant enumcode="extra-item-type,grade-names" />
     <div class="container">
-    <section class="content-header">
-        <h1>考评模板管理</h1>
-        <ol class="breadcrumb">
-            <li><a href="/assess/template/index"><i class="fa fa-list-alt"></i>列表</a></li>
-            <li class="active">详情</li>
-        </ol>
-    </section>
-    <section class="content">
-        <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#tab1" data-toggle="tab" aria-expanded="true">考评项目</a></li>
-                <li class=""><a href="#tab2" data-toggle="tab" aria-expanded="false">考评附加项</a></li>
-                <li class=""><a href="#tab3" data-toggle="tab" aria-expanded="false">考评等级</a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane active" id="tab1">
-                    <div class="box-body">
-                        <div class="col-md-5" id="itemTree" style="height: 800px; overflow: auto;">
-                        </div>
-                        <div class="col-md-7" id="itemEditor">
-                            <form class="form-horizontal tonto-form-validate" id="itemForm" action="/assess/template/item/save" method="post">
-                                <input type="hidden" name="templateId" />
-                                <input type="hidden" name="id" id="itemId" />
-                                <input type="hidden" name="parentItemId" />
-                                <div class="form-group">
-                                    <label for="itemName" class="col-sm-2 control-label">项目名称</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control" required="required" name="itemName" placeholder="请输入项目名称"></input>
+        <section class="content-header">
+            <h1>考评模板管理</h1>
+            <ol class="breadcrumb">
+                <li><a href="/assess/template/index"><i class="fa fa-list-alt"></i>模板列表</a></li>
+                <li class="active">模板详情</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab1" data-toggle="tab" aria-expanded="true">考评项目</a></li>
+                    <li class=""><a href="#tab2" data-toggle="tab" aria-expanded="false">考评附加项</a></li>
+                    <li class=""><a href="#tab3" data-toggle="tab" aria-expanded="false">考评等级</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab1">
+                        <div class="box-body">
+                            <div class="col-md-5" id="itemTree" style="height: 800px; overflow: auto;">
+                            </div>
+                            <div class="col-md-7" id="itemEditor">
+                                <ol class="breadcrumb" id="itemBreadcrumb">
+                                </ol>
+                                <form class="form-horizontal tonto-form-validate" id="itemForm" action="/assess/template/item/save" method="post">
+                                    <input type="hidden" name="templateId" />
+                                    <input type="hidden" name="id" id="itemId" />
+                                    <input type="hidden" name="parentItemId" />
+                                    <div class="form-group">
+                                        <label for="itemName" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>项目名称</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" required="required" name="itemName" placeholder="请输入项目名称"></input>
+                                        </div>
+                                        <label for="basicScore" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>基础得分</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" required="required" name="basicScore" data-type="bisicScore treeScore" placeholder="请输入基础得分"></input>
+                                        </div>
                                     </div>
-                                    <label for="basicScore" class="col-sm-2 control-label">基础得分</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control" required="required" name="basicScore" data-type="bisicScore treeScore" placeholder="请输入基础得分"></input>
+                                    <div class="form-group">
+                                        <label for="itemDescription" class="col-sm-2 control-label">项目描述</label>
+                                        <div class="col-sm-10">
+                                            <textarea type="text" name="itemDescription" class="form-control" rows="3" maxlength="200" th:inline="text" placeholder="请输入模板描述"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="itemDescription" class="col-sm-2 control-label">项目描述</label>
-                                    <div class="col-sm-10">
-                                        <textarea type="text" name="itemDescription" class="form-control" rows="3" maxlength="200" th:inline="text" placeholder="请输入模板描述"></textarea>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-1 col-sm-6">
+                                            <a onclick="addSubItem()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加子项</a>
+                                            <a onclick="removeItem()" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除项目</a>
+                                        </div>
+                                        <div class="col-sm-5" style="text-align:right">
+                                            <button type="submit" class="btn btn-primary">保存</button>
+                                            <a onclick="resetItem()" class="btn btn-default">重置</a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-1 col-sm-6">
-                                        <a onclick="addSubItem()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加子项</a>
-                                        <a onclick="removeItem()" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除项目</a>
-                                    </div>
-                                    <div class="col-sm-5" style="text-align:right">
-                                        <button type="submit" class="btn btn-primary">保存</button>
-                                        <a onclick="resetItem()" class="btn btn-default">重置</a>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tab2">
-                    <div class="box-body" style="min-height:600px">
-                        <div id="extraTableDiv">
-                            <table id="extraDataGrid"></table>
-                            <div id="toolbar">
-                                <a onclick="addExtraItem()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加附加项目</a>
+                                </form>
                             </div>
                         </div>
-                        <div>
-                            <form class="form-horizontal tonto-form-validate" id="extraItemForm" action="/assess/template/item/extra/save" method="post" style="display:none">
-                                <input type="hidden" name="templateId" />
-                                <input type="hidden" name="id" id="itemExtraId" />
-                                <div class="form-group">
-                                    <label for="extraType" class="col-sm-2 control-label">附加类型</label>
-                                    <div class="col-sm-3">
-                                        <select name="extraType" id="extraTypeSelect" class="form-control tonto-select-constant" enumcode="extra-item-type"></select>
-                                    </div>
+                    </div>
+                    <div class="tab-pane" id="tab2">
+                        <div class="box-body" style="min-height:600px">
+                            <div id="extraTableDiv">
+                                <table id="extraDataGrid"></table>
+                                <div id="toolbar">
+                                    <a onclick="addExtraItem()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>添加附加项目</a>
                                 </div>
-                                <div class="form-group">
-                                    <label for="extraDescription" class="col-sm-2 control-label">附加描述</label>
-                                    <div class="col-sm-8">
-                                        <textarea type="text" name="extraDescription" required="required" class="form-control" rows="3" maxlength="200" th:inline="text" placeholder="请输入附加描述"></textarea>
-                                    </div>
-                                </div>
-                                <div id="extraToggleDiv">
+                            </div>
+                            <div>
+                                <form class="form-horizontal tonto-form-validate" id="extraItemForm" action="/assess/template/item/extra/save" method="post" style="display:none">
+                                    <input type="hidden" name="templateId" />
+                                    <input type="hidden" name="id" id="itemExtraId" />
                                     <div class="form-group">
-                                        <label for="alterUpper" class="col-sm-2 control-label">加扣分上限</label>
+                                        <label for="extraType" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>附加类型</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" required="required" name="alterUpper" data-type="score" large-than="#alterLower" placeholder="请输入加扣分上限"></input>
-                                        </div>
-                                        <label for="alterLower" class="col-sm-2 control-label">加扣分下限</label>
-                                        <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="alterLower" required="required" name="alterLower" data-type="score" placeholder="请输入加扣分下限"></input>
+                                            <select name="extraType" id="extraTypeSelect" class="form-control tonto-select-constant" enumcode="extra-item-type"></select>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="accumulateUpper" class="col-sm-2 control-label">累计上限</label>
-                                        <div class="col-sm-3">
-                                            <input type="text" class="form-control" data-type="score" large-than="#alterUpper" name="accumulateUpper" placeholder="请输入累计上限"></input>
+                                        <label for="extraDescription" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>附加描述</label>
+                                        <div class="col-sm-8">
+                                            <textarea type="text" name="extraDescription" required="required" class="form-control" rows="3" maxlength="200" th:inline="text" placeholder="请输入附加描述"></textarea>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-3">
-                                        <button type="submit" class="btn btn-primary">保存</button>
-                                        <button type="reset" class="btn btn-default">重置</button>
+                                    <div id="extraToggleDiv">
+                                        <div class="form-group">
+                                            <label for="alterUpper" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>加扣分上限</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" required="required" name="alterUpper" data-type="score" large-than="#alterLower" placeholder="请输入加扣分上限"></input>
+                                            </div>
+                                            <label for="alterLower" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>加扣分下限</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="alterLower" required="required" name="alterLower" data-type="score" placeholder="请输入加扣分下限"></input>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="accumulateUpper" class="col-sm-2 control-label">累计上限</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" data-type="score" large-than="#alterUpper" name="accumulateUpper" placeholder="请输入累计上限"></input>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-5" style="text-align:right">
-                                        <a onclick="toTableExtra()" alt="返回" class="btn btn-warning" style="width:40px"><i class="  glyphicon glyphicon-share-alt"></i></a>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-3">
+                                            <button type="submit" class="btn btn-primary">保存</button>
+                                            <button type="reset" class="btn btn-default">重置</button>
+                                        </div>
+                                        <div class="col-sm-5" style="text-align:right">
+                                            <a onclick="toTableExtra()" alt="返回" class="btn btn-warning" style="width:40px"><i class="  glyphicon glyphicon-share-alt"></i></a>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane" id="tab3">
-                    <div class="box-body">
-                        <table id="dataGridLevel"></table>
-                        <div style="margin-top:10px; text-align:right">
-                            <a onclick="save()" class="btn btn-primary">提交</a>
-                            <a onclick="reset()" class="btn btn-default">重置</a>
+                    <div class="tab-pane" id="tab3">
+                        <div class="box-body">
+                            <table id="dataGridLevel"></table>
+                            <div style="margin-top:10px; text-align:right">
+                                <a onclick="save()" class="btn btn-primary">提交</a>
+                                <a onclick="reset()" class="btn btn-default">重置</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
     </div>
     <div th:include="/hf/footer"></div>
     <script src="/static/assets/adminLTE/js/bootstrap-editable.min.js"></script>
@@ -352,15 +354,14 @@
             idField: "id",
             columns: [
                 [
-                    { title: "附加描述", field: "extraDescription", align: "left", width: "70%" },
+                    { title: "附加描述", field: "extraDescription", align:"left"},
                     { title: "附加类型", field: "extraType", enumcode: "extra-item-type" },
                     { title: "加扣分上限", field: "alterUpper" },
                     { title: "加扣分下限", field: "alterLower" },
                     { title: "累计上限", field: "accumulateUpper" },
                     {
                         title: "操作",
-                        width: "160px",
-                        align: 'center',
+                        width: "150px",
                         events: {
                             'click .edit': function(e, value, row, index) {
                                 editExtra(row);

@@ -14,8 +14,8 @@
         <section class="content-header">
             <h1>周期考评-个人</h1>
             <ol class="breadcrumb">
-                <li><a href="/assess/cycle/personal/index"><i class="fa fa-list-alt"></i>列表</a></li>
-                <li class="active">详情</li>
+                <li><a href="/assess/cycle/personal/index"><i class="fa fa-list-alt"></i>考评列表</a></li>
+                <li class="active">考评详情</li>
             </ol>
         </section>
         <section class="content">
@@ -105,26 +105,26 @@
                         <div id="self_edit" style="display: none;">
                             <form id="self_form" method="post" class="form-horizontal edit-body">
                                 <div class="form-group">
-                                    <label for="workSummary" class="col-sm-3 control-label">工作总结：</label>
+                                    <label for="workSummary" class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>工作总结：</label>
                                     <div class="col-sm-8">
-                                        <textarea name="workSummary" rows="12" placeholder="请输入工作总结" class="form-control"></textarea>
+                                        <textarea name="workSummary" rows="12" placeholder="请输入工作总结" required="required" maxlength="5000" class="form-control"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="selfAssOpinion" class="col-sm-3 control-label">自评意见：</label>
+                                    <label for="selfAssOpinion" class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>自评意见：</label>
                                     <div class="col-sm-8">
-                                        <textarea name="selfAssOpinion" rows="5" placeholder="请输入自评意见" class="form-control"></textarea>
+                                        <textarea name="selfAssOpinion" rows="5" placeholder="请输入自评意见" required="required" maxlength="1000" class="form-control"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="selfAssGrade" class="col-sm-3 control-label">自评等次：</label>
+                                    <label for="selfAssGrade" class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>自评等次：</label>
                                     <div class="col-sm-3">
-                                        <select name="selfAssGrade" class="form-control tonto-select-constant" enumcode="ass-grades">
+                                        <select name="selfAssGrade" class="form-control tonto-select-constant" required="required" enumcode="ass-grades">
                                         </select>
                                     </div>
-                                    <label for="assessedSign" class="col-sm-2 control-label">自评签字：</label>
+                                    <label for="assessedSign" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>自评签字：</label>
                                     <div class="col-sm-3">
-                                        <input name="assessedSign" placeholder="请输入自评签字" type="text" class="form-control" />
+                                        <input name="assessedSign" placeholder="请输入自评签字" type="text" required="required" maxlength="30" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="form-group">

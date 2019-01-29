@@ -8,67 +8,68 @@
     <input type="hidden" th:value="${userId}" name="userId" />
     <tt:constant enumcode="examine,operation,event_type,boolean-type" />
     <div class="container">
-    <section class="content-header">
-        <h1>人员量化考评-机构</h1>
-        <ol class="breadcrumb">
-            <li><a href="/assess/quantitative/agency/index?cached=1"><i class="fa fa-list-alt"></i>人员列表</a></li>
-            <li class="active">人员考评</li>
-        </ol>
-    </section>
-    <section class="content">
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-search"></i>
-                <h3 class="box-title">查询</h3>
-            </div>
-            <div class="box-body">
-                <form id="searchbar" class="form-horizontal">
-                    <div class="form-group">
-                        <label style="width: 130px" for="cycleId" class="col-sm-2 control-label">考评周期</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" name="cycleId" placeholder="请选择"></input>
-                        </div>
-                        <label for="eventType" style="width:130px" class="col-sm-2 control-label">事件类型</label>
-                        <div class="col-sm-3">
-                            <select name="eventType" class="form-control tonto-select-constant" enumcode="event_type">
-                                <option value="">全部</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="startHappenTime" style="width:130px" class="col-sm-2 control-label">发生时间</label>
-                        <div class="col-sm-3">
-                            <input type="text" name="startHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
-                        </div>
-                        <label for="endHappenTime" style="width:130px;text-align:center" class="col-sm-2 control-label">至</label>
-                        <div class="col-sm-3">
-                            <input type="text" name="endHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
-                        </div>
-                        <label for="name" style="width:80px" class="col-sm-2 control-label"></label>
-                        <div class="col-md-12">
-                            <div class="pull-right">
-                                <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
-                                <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+        <section class="content-header">
+            <h1>人员量化考评-机构</h1>
+            <ol class="breadcrumb">
+                <li><a href="/assess/quantitative/agency/index?cached=1"><i class="fa fa-list-alt"></i>人员列表</a></li>
+                <li class="active">人员考评</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-search"></i>
+                    <h3 class="box-title">查询</h3>
+                </div>
+                <div class="box-body">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="cycleId" class="col-sm-2 control-label">考评周期</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" name="cycleId" placeholder="请选择"></input>
+                            </div>
+                            <label for="eventType" class="col-sm-2 control-label">事件类型</label>
+                            <div class="col-sm-3">
+                                <select name="eventType" class="form-control tonto-select-constant" enumcode="event_type">
+                                    <option value="">全部</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="box box-solid" style="margin-top:20px">
-            <div class="box-header with-border">
-                <i class="fa fa-list-alt"></i>
-                <h3 class="box-title">结果</h3>
-            </div>
-            <div id="result" class="box-body">
-                <table id="dataGrid"></table>
-                <div id="toolbar">
-                    <a onclick="quantitative(false)" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>量化考评</a>
-                    <a onclick="quantitative(true)" class="btn btn-success"><i class="fa fa-cog"></i>考评结果</a>
+                        <div class="form-group">
+                            <label for="startHappenTime" class="col-sm-2 control-label">发生时间</label>
+                            <div class="col-sm-3">
+                                <input type="text" name="startHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
+                            </div>
+                            <label for="endHappenTime" style="width:40px; text-align:center" class="col-sm-2 control-label">至</label>
+                            <div class="col-sm-3">
+                                <input type="text" name="endHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                                    <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-    </section>
+            <div class="box box-solid" style="margin-top:20px">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-alt"></i>
+                    <h3 class="box-title">结果</h3>
+                </div>
+                <div id="result" class="box-body">
+                    <table id="dataGrid"></table>
+                    <div id="toolbar">
+                        <a onclick="quantitative(false)" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>量化考评</a>
+                        <a onclick="quantitative(true)" class="btn btn-success"><i class="fa fa-cog"></i>考评结果</a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">

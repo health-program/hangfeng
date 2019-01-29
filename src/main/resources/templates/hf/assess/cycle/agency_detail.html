@@ -16,8 +16,8 @@
         <section class="content-header">
             <h1>周期考评-机构</h1>
             <ol class="breadcrumb">
-                <li><a href="/assess/cycle/agency/index"><i class="fa fa-list-alt"></i>列表</a></li>
-                <li class="active">详情</li>
+                <li><a href="/assess/cycle/agency/index"><i class="fa fa-list-alt"></i>人员列表</a></li>
+                <li class="active" th:text="${userName}"></li>
             </ol>
         </section>
         <section class="content">
@@ -159,21 +159,21 @@
                         <div id="agency_edit" style="display: none;">
                             <form id="agency_form" method="post" class="form-horizontal edit-body">
                                 <div class="form-group">
-                                    <label for="unitGroupOpinion" class="col-sm-3 control-label">考评领导小组评价意见：</label>
+                                    <label for="unitGroupOpinion" class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>考评领导小组评价意见：</label>
                                     <div class="col-sm-8">
-                                        <textarea name="unitGroupOpinion" rows="5" placeholder="请输入考评领导小组评价意见" class="form-control"></textarea>
+                                        <textarea name="unitGroupOpinion" rows="5" placeholder="请输入考评领导小组评价意见" required="required" maxlength="1000" class="form-control"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="unitAssGrade" class="col-sm-3 control-label">考评等次：</label>
+                                    <label for="unitAssGrade" class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>考评等次：</label>
                                     <div class="col-sm-3">
-                                        <select name="unitAssGrade" class="form-control tonto-select-constant" enumcode="ass-grades">
+                                        <select name="unitAssGrade" class="form-control tonto-select-constant" required="required" enumcode="ass-grades">
                                             <option value="">请选择</option>
                                         </select>
                                     </div>
-                                    <label for="unitAssessorSign" class="col-sm-2 control-label">小组签字：</label>
+                                    <label for="unitAssessorSign" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>小组签字：</label>
                                     <div class="col-sm-3">
-                                        <input name="unitAssessorSign" placeholder="请输入考评小组签字" type="text" class="form-control" />
+                                        <input name="unitAssessorSign" placeholder="请输入考评小组签字" type="text" required="required" maxlength="30" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="form-group">

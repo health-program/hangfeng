@@ -15,8 +15,8 @@
         <section class="content-header">
             <h1>周期考评-个人</h1>
             <ol class="breadcrumb">
-                <li><a href="/assess/cycle/personal/index"><i class="fa fa-list-alt"></i>列表</a></li>
-                <li class="active">详情</li>
+                <li><a href="/assess/cycle/personal/index"><i class="fa fa-list-alt"></i>考评列表</a></li>
+                <li class="active">考评确认</li>
             </ol>
         </section>
         <section class="content">
@@ -157,13 +157,13 @@
                         <div id="confirm_edit" class="box-body">
                             <form id="confirm_form" action="/assess/cycle/personal/confirm" method="post" class="form-horizontal edit-body">
                                 <div class="form-group">
-                                    <label for="confirmedResult" class="col-sm-3 control-label">被考核人对考评等次的确认：</label>
+                                    <label for="confirmedResult" class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>被考核人对考评等次的确认：</label>
                                     <div class="col-sm-3">
                                         <div name="confirmedResult" class="tonto-radio-constant" enumcode="confirmed-result"></div>
                                     </div>
-                                    <label for="assessedConfirmSign" class="col-sm-2 control-label">自评确认签字：</label>
+                                    <label for="assessedConfirmSign" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>自评确认签字：</label>
                                     <div class="col-sm-3">
-                                        <input name="assessedConfirmSign" placeholder="请输入自评确认签字" type="text" class="form-control" />
+                                        <input name="assessedConfirmSign" placeholder="请输入自评确认签字" type="text" required="required" maxlength="30" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="form-group">

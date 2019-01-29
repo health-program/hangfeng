@@ -125,8 +125,7 @@
     <script src="/static/js/app/app.min.js"></script>
     <script src="/static/js/app/app_iframe.min.js"></script>
     <script src="/static/assets/jquery-asidenav/js/asidenav.js"></script>
-    <script type="text/javascript" src="/static/assets/layer/layer.js"></script>
-    <script type="text/javascript" src="/static/js/common.js"></script>
+    <script src="/static/assets/layer/layer.js"></script>
     <script type="text/javascript">
     $(function() {
         goHome();
@@ -156,14 +155,21 @@
                 } else if (confirmNewPassword != newPassword) {
                     layer.msg('两次新密码输入不一致！');
                 } else {
-                    $.postAjax("/update/password", {
+                    $.post("/update/password", {
                         'oldPassword': oldPassword,
                         'newPassword': newPassword
-                    }, function(data) {
-                        layer.alert("修改成功", function() {
-                            window.location = "/hf/logout";
-                        })
-                    },null);
+                    }, function(response) {
+                    	if(response.status == 1) {
+                    		layer.alert("修改成功", function() {
+                                window.location = "/hf/logout";
+                            });
+                    	} else {
+                    		layer.alert("修改失败",function(){
+                    			
+                    		});
+                    	}
+                        
+                    });
                 }
             })
     });

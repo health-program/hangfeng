@@ -67,28 +67,27 @@ public class AssessQuantitativeDepartmentController extends ControllerSupport {
 
 	@RequestMapping(value = "/index")
 	@QueryInputMethod(queryClass = QuantitativeDepartmentQuery.class)
-	public String departmentIndex(@RequestParam(required = false) String cached,Model model) {
-        QuantitativeDepartmentQuery query = null;
-        AssessCycle assessCycle = null;
-        if (cached != null && cached.length() > 0) {//查询条件回显
-            query = (QuantitativeDepartmentQuery) SecurityUtils.getSubject().getSession()
-                    .getAttribute(QuantitativeDepartmentQuery.class.getName());
-            if (query != null) {
-                String assessCycleId = query.getAssessCycleId();
-                if (assessCycleId != null && assessCycleId.length() > 0) {
-                    assessCycle = assessCycleService.get(assessCycleId);
-                }
-            }
-        }
+	public String departmentIndex(@RequestParam(required = false) String cached, Model model) {
+		QuantitativeDepartmentQuery query = null;
+		AssessCycle assessCycle = null;
+		if (cached != null && cached.length() > 0) {// 查询条件回显
+			query = (QuantitativeDepartmentQuery) SecurityUtils.getSubject().getSession().getAttribute(QuantitativeDepartmentQuery.class.getName());
+			if (query != null) {
+				String assessCycleId = query.getAssessCycleId();
+				if (assessCycleId != null && assessCycleId.length() > 0) {
+					assessCycle = assessCycleService.get(assessCycleId);
+				}
+			}
+		}
 
-        if (assessCycle != null) {
-            model.addAttribute("assessCycleId", assessCycle.getId());
-            model.addAttribute("assessCycleName", assessCycle.getCycleName());
-        }
+		if (assessCycle != null) {
+			model.addAttribute("assessCycleId", assessCycle.getId());
+			model.addAttribute("assessCycleName", assessCycle.getCycleName());
+		}
 
 		if (query == null) {
 			query = new QuantitativeDepartmentQuery();
-            assessCycle = assessCycleService.getOwnedFirstAssessCycle();
+			assessCycle = assessCycleService.getOwnedFirstAssessCycle();
 			if (assessCycle != null) {
 				query.setAssessCycleId(assessCycle.getId());
 				query.setAssessCycleName(assessCycle.getCycleName());
@@ -106,11 +105,12 @@ public class AssessQuantitativeDepartmentController extends ControllerSupport {
 	}
 
 	@RequestMapping(value = "/user/index")
-	public String quantitativeDepartmentIndex(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId, Model model) {
+	public String quantitativeDepartmentIndex(@RequestParam String userId, @RequestParam String userName, @RequestParam String cycleId, Model model) {
 		AssessCycle assessCycle = assessCycleService.get(cycleId);
 		model.addAttribute("assessCycleId", assessCycle.getId());
 		model.addAttribute("assessCycleName", assessCycle.getCycleName());
 		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
 		return "/hf/assess/quantificate/department_quantificate_user_index";
 	}
 
@@ -124,22 +124,21 @@ public class AssessQuantitativeDepartmentController extends ControllerSupport {
 	}
 
 	@RequestMapping(value = "/user/score/index")
-	public String scoreDepartmentIndex(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId,
-			@RequestParam("prizePunishId") String prizePunishId, Model model) {
+	public String scoreDepartmentIndex(@RequestParam String userId, @RequestParam String cycleId, @RequestParam String userName,
+			@RequestParam String prizePunishId, Model model) {
 
 		Prizepunish prizepunish = prizepunishService.get(prizePunishId);
 
 		model.addAttribute("prizepunish", prizepunish);
 		model.addAttribute("cycleId", cycleId);
 		model.addAttribute("userId", userId);
-		
+		model.addAttribute("userName", userName);
 		return "/hf/assess/quantificate/department_quantificate_score_index";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/user/score/list")
-	public Object scoreList(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId,
-			@RequestParam("prizePunishId") String prizePunishId) {
+	public Object scoreList(@RequestParam String userId, @RequestParam String cycleId, @RequestParam String prizePunishId) {
 		return CommonResponse.getSuccessResponse(assessQuantitativeService.findAssessEventScore(cycleId, userId, prizePunishId));
 	}
 
@@ -155,17 +154,18 @@ public class AssessQuantitativeDepartmentController extends ControllerSupport {
 	public Object removeScore(@RequestParam String id) {
 		return CommonResponse.getResponse(assessQuantitativeService.removeByPrimaryKey(id));
 	}
-	
+
 	@RequestMapping(value = "/user/result")
-	public String quantitativeDepartmentResult(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId, Model model) {
+	public String quantitativeDepartmentResult(@RequestParam String userId, @RequestParam String cycleId, @RequestParam String userName, Model model) {
 		model.addAttribute("cycleId", cycleId);
 		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
 		return "/hf/assess/quantificate/department_quantificate_user_result";
 	}
 
 	@ResponseBody
 	@RequestMapping("/result/detail")
-	public Object detailAssessResult(@RequestParam("cycleId") String cycleId, @RequestParam("userId") String userId) {
+	public Object detailAssessResult(@RequestParam String cycleId, @RequestParam String userId) {
 		Map<String, Object> result = new HashMap<>();
 		AssessQuantitativeResult aqResult = assessQuantitativeResultService.getResult(userId, cycleId);
 

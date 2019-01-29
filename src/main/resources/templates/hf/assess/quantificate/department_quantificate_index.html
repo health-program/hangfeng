@@ -19,31 +19,22 @@
             <div class="box-body">
                 <form id="searchbar" class="form-horizontal">
                     <div class="form-group">
-                        <label for="unitId" style="width:130px" class="col-sm-2 control-label">被考评科室</label>
+                        <label for="unitId" class="col-sm-2 control-label">被考评科室</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control tonto-select-department" name="unitId" th:attr="unitid=${query?.unitId}" placeholder="请选择科室"></input>
                         </div>
-                        <label for="name" style="width:130px" class="col-sm-2 control-label">姓名</label>
+                        <label for="name" class="col-sm-2 control-label">姓名</label>
                         <div class="col-sm-3">
-                            <input type="text" name="name" autocomplete="off" th:value="${query?.name}" class="form-control" />
+                            <input type="text" name="name"  th:value="${query?.name}" class="form-control" />
                         </div>
                     </div>
-                    <!--<div class="form-group">
-                        <label for="startRecordCreateTime" style="width: 130px" class="col-sm-1 control-label">建档时间</label>
-                        <div class="col-sm-3">
-                            <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
-                        </div>
-                        <label for="endRecordCreateTime" style="width: 80px; text-align: center" class="col-sm-1 control-label">至</label>
-                        <div class="col-sm-3">
-                            <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
-                        </div>
-                    </div>-->
+                
                     <div class="form-group">
-                        <label style="width: 130px" for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
+                        <label  for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${query?.assessCycleId},cyclename=${query?.assessCycleName}"  cycle-name="assessCycleId" name="assessCycleName" placeholder="请选择周期"></input>
                         </div>
-                        <label for="jobRank" style="width:130px" class="col-sm-2 control-label">职称</label>
+                        <label for="jobRank" class="col-sm-2 control-label">职称</label>
                         <div class="col-sm-3">
                             <select name="jobRank" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.jobRank}" enumcode="job-rank-type">
                                 <option value="">请选择</option>
@@ -51,13 +42,13 @@
                         </div>
                     </div>
                      <div class="form-group">
-                        <label style="width: 130px" for="isAssessed" class="col-sm-2 control-label">是否已考评</label>
+                        <label for="isAssessed" class="col-sm-2 control-label">是否已考评</label>
                         <div class="col-sm-3">
                             <select name="isAssessed" class="col-sm-2 form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessed}" enumcode="boolean-type">
                                 <option value="">请选择</option>
                             </select>
                         </div>
-                        <label for="isAssessor" style="width: 130px" class="col-sm-2 control-label">是否考评人</label>
+                        <label for="isAssessor" class="col-sm-2 control-label">是否考评人</label>
                         <div class="col-sm-3">
                             <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
                                 <option value="">请选择</option>
@@ -65,7 +56,6 @@
                         </div>
                      </div>
                     <div class="form-group">
-                         <label for="name" style="width:80px" class="col-sm-2 control-label"></label>
                          <div class="col-md-12">
                              <div class="pull-right">
                                  <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
@@ -151,7 +141,7 @@
             $.errorMessage("请选择考评周期！");
             return;
         }
-        window.location = "/assess/quantitative/department/user/index?userId=" + row.userId + "&cycleId=" + cycleId;
+        window.location = "/assess/quantitative/department/user/index?userId=" + row.userId + "&cycleId=" + cycleId + "&userName=" + row.userName;
     }
 
     /*]]>*/

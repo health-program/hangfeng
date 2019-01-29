@@ -65,9 +65,10 @@ public class AgencyCycleAssessController extends ControllerSupport {
 	}
 
 	@RequestMapping("/detail")
-	public String detail(@RequestParam String userId, @RequestParam String cycleId, Model model) {
+	public String detail(@RequestParam String userId, @RequestParam String cycleId, @RequestParam String userName, Model model) {
 		model.addAttribute("userId", userId);
 		model.addAttribute("cycleId", cycleId);
+		model.addAttribute("userName", userName);
 		model.addAttribute("name", HfUserSession.getCurrentUserSession().getUserName());
 		return "/hf/assess/cycle/agency_detail";
 	}

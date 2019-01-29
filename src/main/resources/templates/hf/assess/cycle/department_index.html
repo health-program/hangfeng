@@ -20,23 +20,23 @@
                 <div class="col-md-12">
                     <form id="searchbar" class="form-horizontal">
                         <div class="form-group">
-                            <label style="width: 100px" for="unitId" class="col-sm-1 control-label">单位名称</label>
+                            <label for="unitId" class="col-sm-2 control-label">单位名称</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control tonto-select-unit" name="unitId" th:attr="unitid=${query?.unitId}" placeholder="请选择科室"></input>
                             </div>
-                            <label style="width: 100px" for="assessCycleId" class="col-sm-1 control-label">考评周期</label>
+                            <label  for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${query?.cycleId},cyclename=${query?.cycleName}" cycle-name="cycleId" name="cycleName" placeholder="请选择周期"></input>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label style="width: 100px" for="unitId" class="col-sm-1 control-label">考评状态</label>
+                            <label for="unitId" class="col-sm-2 control-label">考评状态</label>
                             <div class="col-sm-3">
                                 <select class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.status}" name="status" enumcode="assess-status">
                                     <option value="">全部</option>
                                 </select>
                             </div>
-                            <label style="width: 100px" for="name" class="col-sm-1 control-label">姓名</label>
+                            <label for="name" class="col-sm-2 control-label">姓名</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" name="name" autocomplete="off" th:value="${query?.name}" placeholder="请输入姓名"></input>
                             </div>
@@ -145,11 +145,11 @@
     }
 
     function detail(row) {
-        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId;
+        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId + "&userName=" + row.userName;
     }
 
     function assess(row) {
-        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId + "&isEdit=1";
+        window.location = '/assess/cycle/department/detail?cycleId=' + row.assessCycleId + "&userId=" + row.userId + "&isEdit=1" + "&userName=" + row.userName;
     }
 
     function submit(row) {
@@ -185,7 +185,6 @@
             title: '驳回周期考核',
             success: function(layero, index) {
                 $("#rejectBtn").click(function() {
-
                     reasonV = $("#reason").val();
                     if (reasonV == '' || reasonV == null) {
                         $.errorMessage("原因不能为空！")

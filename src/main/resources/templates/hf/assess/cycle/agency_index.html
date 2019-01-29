@@ -114,17 +114,17 @@
                             }
                         },
                         formatter: function(value, row, index) {
-                            var html = '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
+                            var html = '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
                             if (row.operateState == 3) {
-                                html += '<button class="assess btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>考核</button>';
+                                html += '<button class="assess btn btn-xs btn-success" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-edit"></i>考核</button>';
                             } else if (row.operateState == 4) {
-                                html += '<button class="assess btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>考核</button>' +
-                                    '<button class="submit btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>提交</button>';
+                                html += '<button class="assess btn btn-xs btn-success" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-edit"></i>考核</button>' +
+                                    '<button class="submit btn btn-xs btn-success" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-edit"></i>提交</button>';
                             } else {
 
                             }
 
-                            html += '<button class="back btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>驳回</button>';
+                            html += '<button class="back btn btn-xs btn-danger" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-remove"></i>驳回</button>';
 
                             return html;
                         }
@@ -202,6 +202,7 @@
                     }, function() {
                         $.successMessage("驳回成功");
                         layer.close(index);
+                        table.refresh();
                     })
                 });
             }

@@ -113,6 +113,37 @@
                 <button class="roll-nav roll-right fullscreen" onclick="App.handleFullScreen()"><i class="fa fa-arrows-alt"></i></button>
             </div> -->
             <div class="content-iframe" style="background-color: #ecf0f5;">
+                <div id="updatePsd" style="display: none">
+                    <div class="form-group" style="height: 32px; display: block; margin-top: 10px;">
+                        <label for="username" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">用户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="username" readonly="readonly" class="form-control" id="username" th:value="${name}" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="height: 32px; display: block;">
+                        <label for="oldPassword" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">原始密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="oldPassword" class="form-control" id="oldPassword" placeholder="请输入原始密码" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="height: 32px; display: block;">
+                        <label for="newPassword" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">新密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="newPassword" class="form-control" id="newPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="height: 32px; display: block;">
+                        <label for="confirmNewPassword" class="col-sm-2 control-label" style="height: 34px; display: inline-block; line-height: 34px;">确认新密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="confirmNewPassword" class="form-control" id="iConfirmNewPassword" placeholder="请输入6-20位由数字，字母或下划线组成的密码" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-2">
+                            <button type="button" id="submitted" class="btn btn-primary btn-block">提交</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-content" id="tab-content">
                 </div>
             </div>
@@ -127,9 +158,48 @@
     <script src="/static/assets/adminLTE/components/fastclick/lib/fastclick.js"></script>
     <script src="/static/js/app/app.min.js"></script>
     <script src="/static/js/app/app_iframe.min.js"></script>
+    <script src="/static/assets/jquery-asidenav/js/asidenav.js"></script>
+    <script type="text/javascript" src="/static/assets/layer/layer.js"></script>
+    <script type="text/javascript" src="/static/js/common.js"></script>
     <script type="text/javascript">
     $(function() {
         goHome();
+
+        //密码修改后提交
+        $("#submitted").click(
+            function() {
+                var oldPassword = $.trim(window.parent.document
+                    .getElementById('oldPassword').value);
+                var newPassword = $.trim(window.parent.document
+                    .getElementById('newPassword').value);
+                var confirmNewPassword = $.trim(window.parent.document
+                    .getElementById('iConfirmNewPassword').value);
+
+                if (oldPassword == '' || oldPassword == 'null') {
+                    layer.msg('原始密码不能为空!');
+                } else if (newPassword == '' || newPassword == 'null') {
+                    layer.msg('新密码不能为空!');
+                } else if (newPassword == oldPassword) {
+                    layer.msg('新密码不能和原始密码一样!');
+                } else if (newPassword.length < 6 || newPassword.length > 20) {
+                    layer.msg('新密码长度应该在6-20');
+                } else if (confirmNewPassword == '' || confirmNewPassword == 'null') {
+                    layer.msg('确认新密码不能为空！');
+                } else if (confirmNewPassword.length < 6 || confirmNewPassword.length > 20) {
+                    layer.msg('确认新密码长度应该在6-20');
+                } else if (confirmNewPassword != newPassword) {
+                    layer.msg('两次新密码输入不一致！');
+                } else {
+                    $.postAjax("/update/password", {
+                        'oldPassword': oldPassword,
+                        'newPassword': newPassword
+                    }, function(data) {
+                        layer.alert("修改成功", function() {
+                            window.location = "/hf/logout";
+                        })
+                    },null);
+                }
+            })
     });
 
     function goHome() {
@@ -143,6 +213,41 @@
     }
 
     $('.sidebar-menu').sidebarMenu({});
+
+    //修改密码弹框
+    function see() {
+        layer.open({
+            type: 1,
+            title: '修改密码',
+            shadeClose: false,
+            shade: false,
+            area: getOpenLayerSize(700, 300),
+            content: $("#updatePsd")
+        });
+    };
+
+    function getOpenLayerSize(w, h) {
+        w = w || 0.8;
+        h = h || 0.9;
+
+        var ww = $(window).width();
+        var wh = $(window).height();
+
+        if (w > ww) {
+            w = ww * 0.8;
+        } else if (w <= 1) {
+            w = ww * w;
+        }
+
+        if (h > wh) {
+            h = wh * 0.9;
+        } else if (h <= 1) {
+            h = wh * h;
+        }
+
+        return [w + "px", h + "px"];
+    }
+
     </script>
 </body>
 

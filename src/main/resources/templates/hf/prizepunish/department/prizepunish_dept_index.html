@@ -41,23 +41,23 @@
 					               <option value="">请选择</option>
 					           </select>
 					       </div>
-					       <label for="startRecordCreateTime" style="width:100px" class="col-xs-2 control-label">建档时间</label>
+
+						   <label for="userProperty" style="width:100px" class="col-xs-2 control-label">人员属性</label>
+						   <div class="col-xs-2">
+							   <select name="userProperty" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.userProperty}" enumcode="user_property_type">
+								   <option value="">请选择</option>
+							   </select>
+						   </div>
+					       <!--<label for="startRecordCreateTime" style="width:100px" class="col-xs-2 control-label">建档时间</label>
 					       <div class="col-xs-2">
 					           <input type="text" name="startRecordCreateTime" th:value="${query}?(${query.startRecordCreateTime}?${#dates.format(query.startRecordCreateTime,'yyyy-MM-dd')})"  class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择日期" />
 					       </div>
 					       <label for="endRecordCreateTime" style="width:80px;text-align:center" class="col-xs-1 control-label">至</label>
 					       <div class="col-xs-2">
 					           <input type="text" name="endRecordCreateTime" th:value="${query}?(${query.endRecordCreateTime}?${#dates.format(query.endRecordCreateTime,'yyyy-MM-dd')})" class="form-control col-xs-2 tonto-datepicker-date" placeholder="请选择日期" />
-					       </div>
+					       </div>-->
 					    </div>
-					    <div class="form-group">
-					    	<label for="userProperty" style="width:130px" class="col-xs-2 control-label">人员属性</label>
-					       <div class="col-xs-2">
-					           <select name="userProperty" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.userProperty}" enumcode="user_property_type">
-					               <option value="">请选择</option>
-					           </select>
-					       </div>
-					    </div>
+
 					    <div class="col-md-12">
 	                    <div class="pull-right">
 	                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="query()"><i class="fa fa-search"></i>查询</button>
@@ -105,9 +105,9 @@
 		                    { title: "姓名", field: "name" },
 		                    { title: "性别", field: "sex", enumcode:"sex-type" },
 		                    { title: "职称", field: "jobRank", enumcode:"job-rank-type" },
-		                    { title: "职务", field: "jobDuties", enumcode:"job-duties-type" },
-		                    { title: "学历", field: "oeducation", enumcode: "oeducation-type" },
-		                    { title: "建档时间", field: "recordCreateTime",formatter: "date",sortable: true},
+		                    // { title: "职务", field: "jobDuties", enumcode:"job-duties-type" },
+		                    // { title: "学历", field: "oeducation", enumcode: "oeducation-type" },
+		                    // { title: "建档时间", field: "recordCreateTime",formatter: "date",sortable: true},
 		                    {
 		                        title: "操作",
 		                        align: "center",

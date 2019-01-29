@@ -1,5 +1,9 @@
 package com.paladin.hf.service.ordinary.dto;
-/**   
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+/**
  * @author 黄伟华
  * @version 2019年1月10日 下午5:26:22 
  */
@@ -8,9 +12,11 @@ public class PrizepunishDTO{
     private String id;
 
     private String orgUserId;
-    
+
+    @NotNull(message = "事件类型不能为空！")
     private Integer dictCode;
 
+    @NotEmpty(message = "发生时间不能为空！")
     private String happenTime;
 
     private String content;

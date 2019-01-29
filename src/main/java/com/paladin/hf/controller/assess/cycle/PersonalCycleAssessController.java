@@ -48,10 +48,10 @@ public class PersonalCycleAssessController extends ControllerSupport {
 
 		Unit unit = session.getUserAgency();
 		model.addAttribute("unitName", unit.getName());
-		
+
 		// 查看是否有被驳回考评
-		model.addAttribute("hasRejected", perCycAssService.hasRejectedAssess(session.getUserId())? 1: 0);
-		
+		model.addAttribute("hasRejected", perCycAssService.hasRejectedAssess(session.getUserId()) ? 1 : 0);
+
 		return "/hf/assess/cycle/personal_index";
 	}
 
@@ -165,5 +165,11 @@ public class PersonalCycleAssessController extends ControllerSupport {
 		model.addAttribute("id", id);
 		return "/hf/assess/cycle/personal_detail_layer";
 	}
-	
+
+	@RequestMapping("/user/print/input")
+	public String toPrint(@RequestParam String id, Model model) {
+		model.addAttribute("assess", perCycAssService.getDetail(id));
+		return "/hf/assess/cycle/personal_print";
+	}
+
 }

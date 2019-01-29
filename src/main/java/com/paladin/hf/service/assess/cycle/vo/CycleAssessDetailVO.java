@@ -66,6 +66,12 @@ public class CycleAssessDetailVO {
 
 	private Integer userProperty;
 	
+	private Integer partisan;
+	
+	private Integer oeducation;
+	
+	private Date comeUnitTime;
+	
 	private Double baseScore;
 	
 	private Double addScore;
@@ -366,5 +372,29 @@ public class CycleAssessDetailVO {
 
 	public void setRejectReason(String rejectReason) {
 		this.rejectReason = rejectReason;
+	}
+
+	public Integer getPartisan() {
+		return partisan;
+	}
+
+	public void setPartisan(Integer partisan) {
+		this.partisan = partisan;
+	}
+
+	public Integer getOeducation() {
+		return oeducation;
+	}
+
+	public void setOeducation(Integer oeducation) {
+		this.oeducation = oeducation;
+	}
+
+	public Date getComeUnitTime() {
+		return comeUnitTime;
+	}
+
+	public void setComeUnitTime(Date comeUnitTime) {
+		this.comeUnitTime = comeUnitTime;
 	}
 }

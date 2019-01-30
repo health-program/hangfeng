@@ -8,7 +8,7 @@
     <div class="container">
         <tt:constant enumcode="user_property_type,job-rank-type,boolean-type,sex-type,oeducation-type,job-duties-type" />
         <section class="content-header">
-            <h1>奖惩事件管理</h1>
+            <h1>奖惩事件管理-科室</h1>
         </section>
         <section class="content">
             <div class="box box-solid">
@@ -112,7 +112,7 @@
                             }
                         },
                         formatter: function operateFormatter(value, row, index) {
-                            return '<button class="event btn btn-xs btn-info"><i class="glyphicon glyphicon-cog"></i>奖惩事件维护</button>';
+                            return '<button class="event btn btn-xs btn-success"><i class="glyphicon glyphicon-cog"></i>奖惩维护</button>';
                         }
                     }
                 ]
@@ -132,7 +132,7 @@
     }
 
     function eventPeacet(row) {
-        window.location.href = "/prizepunish/dept/detail/index?orgUserId=" + row.id;
+        window.location.href = "/prizepunish/dept/detail/index?orgUserId=" + row.id + "&userName=" + row.name;
     }
 
     function query() {

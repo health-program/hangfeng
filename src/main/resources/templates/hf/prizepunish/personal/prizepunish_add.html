@@ -21,7 +21,7 @@
                     <h3 class="box-title">新增奖惩</h3>
                 </div>
                 <div id="model_edit" class="box-body">
-                    <form id="model_form" class="form-horizontal edit-body" action="/prizepunish/save" method="post">
+                    <form id="model_form" class="form-horizontal edit-body" method="post">
                         <div class="form-group">
                             <label class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>事件类型</label>
                             <div class="col-sm-3">
@@ -65,20 +65,20 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="submit" name="operationState" style="display: none" id="submitBtn">
+                            <input type="submit" style="display: none" id="submitBtn">
                             <div class="col-sm-2 col-sm-offset-3">
-                                <button type="button" value="3" onclick="submitPrze(this)" class="btn btn-primary btn-block">提交</button>
+                                <button type="button" onclick="submitPrze(this)" class="btn btn-primary btn-block">提交</button>
                             </div>
                             <div class="col-sm-2">
-                                <button type="button" value="0" onclick="temporaryPrze(this)" class="btn btn-success btn-block">暂存</button>
+                                <button type="button" onclick="temporaryPrze(this)" class="btn btn-success btn-block">暂存</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="col-sm-2 col-sm-offset-5 btn-back">
-    <a th:href="@{/prizepunish/index}" class="btn btn-primary btn-block">返回</a>
-</div>
+                <a th:href="@{/prizepunish/index}" class="btn btn-primary btn-block">返回</a>
+            </div>
         </section>
     </div>
     <div th:include="/hf/footer"></div>
@@ -114,13 +114,13 @@ $(function() {
 
 function submitPrze(value) {
     $.warnAlert('<span style="color:red;">提交后无法修改，确定提交吗？</span>', function() {
-        $("#submitBtn").val($(value).val());
+        $("#model_form").attr("action", "/prizepunish/save/submit");
         $('#submitBtn').click();
     })
 }
 
 function temporaryPrze(value) {
-    $("#submitBtn").val($(value).val());
+    $("#model_form").attr("action", "/prizepunish/save/temporary");
     $('#submitBtn').click();
 }
 </script>

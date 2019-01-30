@@ -1,12 +1,12 @@
 package com.paladin.hf.model.ordinary;
 
-import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.paladin.framework.common.BaseModel;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.paladin.framework.common.BaseModel;
+import javax.persistence.Transient;
 
 public class Prizepunish extends BaseModel {
 
@@ -25,6 +25,7 @@ public class Prizepunish extends BaseModel {
 	public static final String COLUMN_HAPPEN_TIME = "happenTime";
 	public static final String COLUMN_DICT_CODE = "dictCode";
 	public static final String COLUMN_OPERATION_STATE = "operationState";
+	public static final String COLUMN_EXAMINE_STATE = "examineState";
 
 	@Id
 	@Column(name = "id")

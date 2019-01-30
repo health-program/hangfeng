@@ -161,8 +161,13 @@ public class LoginController {
 	public Object login(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Subject subject = SecurityUtils.getSubject();
 		boolean isAjax = WebUtil.isAjaxRequest(request);
-
+		boolean isApp = WebUtil.isApp(request);
+		
 		if (subject.isAuthenticated()) {
+		    if (isApp) {
+                WebUtil.sendJson(response, CommonResponse.getSuccessResponse("登录成功", HfUserSession.getCurrentUserSession()));
+                return null;
+            }
 			if (isAjax) {
 				WebUtil.sendJson(response, CommonResponse.getSuccessResponse("登录成功"));
 				return null;
@@ -170,6 +175,10 @@ public class LoginController {
 				return null;
 			}
 		} else {
+		    if (isApp) {
+                WebUtil.sendJson(response, CommonResponse.getFailResponse("登录失败,用户名或密码错误！"));
+                return null;
+            }
 			if (isAjax) {
 				WebUtil.sendJson(response, CommonResponse.getFailResponse("登录失败,用户名或密码错误！"));
 				return null;

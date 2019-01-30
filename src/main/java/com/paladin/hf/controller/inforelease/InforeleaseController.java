@@ -132,6 +132,12 @@ public class InforeleaseController extends ControllerSupport
         return "/hf/inforelease/inforelease_index";
     }
     
+    @RequestMapping("/app/info/index")
+    @ResponseBody
+    public Object appInfoindex(Model model){
+        return CommonResponse.getSuccessResponse(inforeleaseService.noticyandpolicyfileAll());
+    }
+    
     // 信息发布页面详情页面
     @RequestMapping(value = "/info/detail", method = {RequestMethod.GET})
     public String infoDetail(@RequestParam(required = true) String id,

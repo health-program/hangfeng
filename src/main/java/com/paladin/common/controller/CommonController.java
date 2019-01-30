@@ -93,13 +93,12 @@ public class CommonController {
 	 */
 	@RequestMapping("/upload/images")
 	@ResponseBody
-	public Object uploadImageByBase64(@RequestParam("imageStr") String imageStr, @RequestParam(value = "imageName", required = false) String imageName,
-			@RequestParam(name = "userType", required = false) Integer userType) {
+	public Object uploadImageByBase64(@RequestParam("imageStr") String imageStr, @RequestParam(value = "imageName", required = false) String imageName) {
 		if (imageStr == null || imageStr.length() == 0) {
 			return CommonResponse.getErrorResponse("上传图片的图片为空");
 		}
 		SysAttachment result = attachmentService.createAttachment(imageStr, imageName == null || imageName.length() == 0 ? "附件" : imageName, "image/jpeg",
-				userType);
+				null);
 		return CommonResponse.getSuccessResponse(result);
 	}
 

@@ -34,6 +34,8 @@ import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.mapper.org.OrgUserMapper;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.org.OrgUserTransferLog;
+import com.paladin.hf.service.org.dto.AppOrgUserSelfDTO;
+import com.paladin.hf.service.org.dto.AppOrgUserSelfResumeDTO;
 import com.paladin.hf.service.org.dto.ExcelUser;
 import com.paladin.hf.service.org.dto.OrgUserClaimQuery;
 import com.paladin.hf.service.org.dto.OrgUserDTO;
@@ -296,7 +298,43 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 		update(orgUser);
 		return true;
 	}
+	
+	@Transactional
+    public boolean appUpdateUserSelf(AppOrgUserSelfDTO orgUserDTO) {
+        String userId = HfUserSession.getCurrentUserSession().getUserId();
+        if (userId == null || userId.length() == 0) {
+            throw new BusinessException("找不到需要更新的人员");
+        }
 
+        OrgUser orgUser = get(userId);
+
+        if (orgUser == null) {
+            throw new BusinessException("找不到需要更新的人员");
+        }
+
+        SimpleBeanCopyUtil.simpleCopy(orgUserDTO, orgUser);
+        update(orgUser);
+        return true;
+    }
+
+	
+	public boolean appUpdateResume(AppOrgUserSelfResumeDTO dto){
+	    String userId = HfUserSession.getCurrentUserSession().getUserId();
+        if (userId == null || userId.length() == 0) {
+            throw new BusinessException("找不到需要更新的人员");
+        }
+
+        OrgUser orgUser = get(userId);
+
+        if (orgUser == null) {
+            throw new BusinessException("找不到需要更新的人员");
+        }
+        
+        SimpleBeanCopyUtil.simpleCopy(dto, orgUser);
+        updateSelective(orgUser);
+        return true;
+	}
+	
 	/**
 	 * 判断是否唯一身份证（除自己外）
 	 * 

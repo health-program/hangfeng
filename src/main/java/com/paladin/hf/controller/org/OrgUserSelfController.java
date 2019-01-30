@@ -8,11 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.service.org.OrgUserService;
+import com.paladin.hf.service.org.dto.AppOrgUserSelfDTO;
+import com.paladin.hf.service.org.dto.AppOrgUserSelfResumeDTO;
 import com.paladin.hf.service.org.dto.OrgUserSelfDTO;
 
 /**
@@ -58,5 +59,25 @@ public class OrgUserSelfController extends ControllerSupport {
 			return CommonResponse.getFailResponse();
 		}
 	}
-
+	
+	//app修改个人信息
+    @RequestMapping("/app/update")
+    @ResponseBody
+    public Object appUdpate(@Valid AppOrgUserSelfDTO orgUser, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return this.validErrorHandler(bindingResult);
+        }
+        if (orgUserService.appUpdateUserSelf(orgUser)) {
+            return CommonResponse.getSuccessResponse(orgUserService.getUser(HfUserSession.getCurrentUserSession().getUserId()));
+        } else {
+            return CommonResponse.getFailResponse();
+        }
+    }
+    
+  //app修改个人简历,奖励,奖惩
+    @RequestMapping("/app/update/resume")
+    @ResponseBody
+    public Object appUpdateResume(AppOrgUserSelfResumeDTO dto){
+        return CommonResponse.getResponse(orgUserService.appUpdateResume(dto));
+    }
 }

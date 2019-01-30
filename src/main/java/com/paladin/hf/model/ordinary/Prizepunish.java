@@ -14,8 +14,8 @@ public class Prizepunish extends BaseModel {
 	public static final int OPERATION_STATE_DEPARTMENT_TEMPORARY = 1;
 	public static final int OPERATION_STATE_AGENCY_TEMPORARY = 2;
 	public static final int OPERATION_STATE_SELF_SUBMIT = 3;
-	public static final Integer OPERATION_STATE_DEPARTMENT_SUBMIT = 4;
-	public static final Integer OPERATION_STATE_AGENCY_SUBMIT = 5;
+	public static final int OPERATION_STATE_DEPARTMENT_SUBMIT = 4;
+	public static final int OPERATION_STATE_AGENCY_SUBMIT = 5;
 
 	public static final int EXAMINE_WAIT = 0;// 待审核
 	public static final int EXAMINE_SUCCESS = 1;// 成功

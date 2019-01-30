@@ -89,6 +89,7 @@
                     {
                         title: "操作",
                         align: "center",
+                        width:"20%",
                         events: {
                             'click .detail': function(e, value, row, index) {
                                 detail(row);
@@ -101,12 +102,12 @@
                             }
                         },
                         formatter: function(value, row, index) {
-                            var html = '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
+                            var html = '<button class="detail btn btn-xs btn-info" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
                             if (row.operateState == 5) {
-                                html += '<button class="confirm btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-ok"></i>考评确认</button>';
+                                html += '<button class="confirm btn btn-xs btn-success" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-ok"></i>考评确认</button>';
                             }
                             if (row.operateState == 0 || row.operateState == -1) {
-                                html += '<button class="remove btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+                                html += '<button class="remove btn btn-xs btn-danger" style="margin:0 5px 5px 0"><i class="glyphicon glyphicon-remove"></i>删除</button>';
                             }
 
                             return html;

@@ -1,11 +1,11 @@
 package com.paladin.hf.service.org.dto;
 
-import java.util.Date;
-import java.util.List;
-
 import com.paladin.framework.common.OffsetPage;
 import com.paladin.framework.common.QueryCondition;
 import com.paladin.framework.common.QueryType;
+
+import java.util.Date;
+import java.util.List;
 
 public class OrgUserQuery extends OffsetPage {
 
@@ -23,6 +23,7 @@ public class OrgUserQuery extends OffsetPage {
 	private List<String> agencyIds;
 
 	private Integer userProperty;
+	private Integer jobRank;
 
 	private List<Integer> transferStatus;
 
@@ -142,4 +143,12 @@ public class OrgUserQuery extends OffsetPage {
 		this.identification = identification;
 	}
 
+	@QueryCondition(type = QueryType.EQUAL)
+	public Integer getJobRank() {
+		return jobRank;
+	}
+
+	public void setJobRank(Integer jobRank) {
+		this.jobRank = jobRank;
+	}
 }

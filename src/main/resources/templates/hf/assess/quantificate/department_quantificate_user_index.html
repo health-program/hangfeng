@@ -10,7 +10,7 @@
     <tt:constant enumcode="examine,operation,event_type,boolean-type" />
     <div class="container">
         <section class="content-header">
-            <h1>人员量化考评-科室</h1>
+            <h1>人员量化考评</h1>
             <ol class="breadcrumb">
                 <li><a href="/assess/quantitative/department/index?cached=1"><i class="fa fa-list-alt"></i>人员列表</a></li>
                 <li class="active" th:text="${userName}"></li>
@@ -126,10 +126,10 @@
 
     function operateFormatter(value, row, index) {
         return [
-            '<button class="view btn btn-xs btn-info" style="margin-right:10px">',
+            '<button class="view btn btn-xs btn-info" style="margin:0 5px 5px 0">',
             '<i class="glyphicon glyphicon-zoom-in"></i>详情',
             '</button>',
-            '<button class="score btn btn-xs btn-success" style="margin-right:10px">',
+            '<button class="score btn btn-xs btn-success" style="margin:0 5px 5px 0">',
             '<i class="glyphicon glyphicon-cog"></i>评分',
             '</button>'
         ].join('');

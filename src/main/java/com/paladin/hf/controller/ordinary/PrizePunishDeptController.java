@@ -1,20 +1,5 @@
 package com.paladin.hf.controller.ordinary;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.github.pagehelper.util.StringUtil;
 import com.paladin.common.model.syst.SysAttachment;
 import com.paladin.common.service.syst.SysAttachmentService;
@@ -27,6 +12,19 @@ import com.paladin.hf.service.ordinary.PrizepunishService;
 import com.paladin.hf.service.ordinary.dto.PrizepunishDTO;
 import com.paladin.hf.service.ordinary.dto.PrizepunishQuery;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.List;
 
 /** 平时考评科室-奖惩事件  
  * @author 黄伟华
@@ -126,7 +124,7 @@ public class PrizePunishDeptController extends ControllerSupport{
     /*科室审核奖惩 */
     @RequestMapping("/examine/update")
     @ResponseBody
-    public Object examineUpdate(@Valid PrizepunishDTO dto){
+    public Object examineUpdate(PrizepunishDTO dto){
         return CommonResponse.getResponse(prizepunishService.examineUpdate(dto));
     }
     

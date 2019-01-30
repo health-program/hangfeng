@@ -7,13 +7,14 @@
 <body>
     <input type="hidden" th:value="${userId}" id="userId" />
     <input type="hidden" th:value="${cycleId}" id="cycleId" />
+	<input type="hidden" id="userName" th:value="${userName}" />  
     <tt:constant enumcode="examine,operation,event_type,boolean-type" />
     <div class="container">
     <section class="content-header">
         <h1>人员量化考评-机构</h1>
         <ol class="breadcrumb">
             <li><a href="/assess/quantitative/agency/index"><i class="fa fa-list-alt"></i>人员列表</a></li>
-            <li><a href="javascript:toUserAssess()"><i class="fa fa-user"></i>人员考评</a></li>
+            <li><a href="javascript:toUserAssess()"><i class="fa fa-user"></i><font th:text="${userName}"></font></a></li>
             <li class="active">量化考评</li>
         </ol>
     </section>
@@ -78,10 +79,11 @@
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
     /*<![CDATA[*/
-    var userId, cycleId;
+    var userId, cycleId, userName;
     $(function() {
         cycleId = $("#cycleId").val();
         userId = $("#userId").val();
+		userName = $("#userName").val();
         $.getAjax("/assess/quantitative/agency/result/detail?cycleId=" + cycleId + "&userId=" + userId, function(data) {
             initAssessDetail(data, $.getUrlVariable("isView") ? true : false);
         });
@@ -89,7 +91,7 @@
 
 
     function toUserAssess() {
-        window.location = "/assess/quantitative/agency/user/index?userId=" + userId + "&cycleId=" + cycleId;
+        window.location = "/assess/quantitative/agency/user/index?userId=" + userId + "&cycleId=" + cycleId + "&userName=" + userName;
     }
 
     // ----------------------------------------

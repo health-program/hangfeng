@@ -67,13 +67,12 @@ public class AssessQuantitativeAgencyController extends ControllerSupport {
 	private OrgUserService userService;
 
 	@RequestMapping(value = "/index")
-    @QueryInputMethod(queryClass = QuantitativeAgencyQuery.class)
-	public String agencyIndex(@RequestParam(required = false) String cached,Model model) {
+	@QueryInputMethod(queryClass = QuantitativeAgencyQuery.class)
+	public String agencyIndex(@RequestParam(required = false) String cached, Model model) {
 		QuantitativeAgencyQuery query = null;
 		AssessCycle assessCycle = null;
-		if (cached != null && cached.length() > 0) {//查询条件回显
-			query = (QuantitativeAgencyQuery) SecurityUtils.getSubject().getSession()
-					.getAttribute(QuantitativeAgencyQuery.class.getName());
+		if (cached != null && cached.length() > 0) {// 查询条件回显
+			query = (QuantitativeAgencyQuery) SecurityUtils.getSubject().getSession().getAttribute(QuantitativeAgencyQuery.class.getName());
 			if (query != null) {
 				String assessCycleId = query.getAssessCycleId();
 				if (assessCycleId != null && assessCycleId.length() > 0) {
@@ -108,11 +107,12 @@ public class AssessQuantitativeAgencyController extends ControllerSupport {
 	}
 
 	@RequestMapping(value = "/user/index")
-	public String quantitativeDepartmentIndex(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId, Model model) {
+	public String quantitativeAgencyIndex(@RequestParam String userId, @RequestParam String userName, @RequestParam String cycleId, Model model) {
 		AssessCycle assessCycle = assessCycleService.get(cycleId);
 		model.addAttribute("assessCycleId", assessCycle.getId());
 		model.addAttribute("assessCycleName", assessCycle.getCycleName());
 		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
 		return "/hf/assess/quantificate/agency_quantificate_user_index";
 	}
 
@@ -126,22 +126,22 @@ public class AssessQuantitativeAgencyController extends ControllerSupport {
 	}
 
 	@RequestMapping(value = "/user/score/index")
-	public String scoreDepartmentIndex(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId,
-			@RequestParam("prizePunishId") String prizePunishId, Model model) {
+	public String scoreAgencyIndex(@RequestParam String userId, @RequestParam String cycleId, @RequestParam String userName,
+			@RequestParam String prizePunishId, Model model) {
 
 		Prizepunish prizepunish = prizepunishService.get(prizePunishId);
 
 		model.addAttribute("prizepunish", prizepunish);
 		model.addAttribute("cycleId", cycleId);
 		model.addAttribute("userId", userId);
-		
+		model.addAttribute("userName", userName);
 		return "/hf/assess/quantificate/agency_quantificate_score_index";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/user/score/list")
-	public Object scoreList(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId,
-			@RequestParam("prizePunishId") String prizePunishId) {
+	public Object scoreList(@RequestParam String userId, @RequestParam String cycleId, @RequestParam String prizePunishId) {
+
 		return CommonResponse.getSuccessResponse(assessQuantitativeService.findAssessEventScore(cycleId, userId, prizePunishId));
 	}
 
@@ -157,17 +157,18 @@ public class AssessQuantitativeAgencyController extends ControllerSupport {
 	public Object removeScore(@RequestParam String id) {
 		return CommonResponse.getResponse(assessQuantitativeService.removeByPrimaryKey(id));
 	}
-	
+
 	@RequestMapping(value = "/user/result")
-	public String quantitativeDepartmentResult(@RequestParam("userId") String userId, @RequestParam("cycleId") String cycleId, Model model) {
+	public String quantitativeAgencyResult(@RequestParam String userId, @RequestParam String cycleId, @RequestParam String userName, Model model) {
 		model.addAttribute("cycleId", cycleId);
 		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
 		return "/hf/assess/quantificate/agency_quantificate_user_result";
 	}
 
 	@ResponseBody
 	@RequestMapping("/result/detail")
-	public Object detailAssessResult(@RequestParam("cycleId") String cycleId, @RequestParam("userId") String userId) {
+	public Object detailAssessResult(@RequestParam String cycleId, @RequestParam String userId) {
 		Map<String, Object> result = new HashMap<>();
 		AssessQuantitativeResult aqResult = assessQuantitativeResultService.getResult(userId, cycleId);
 
@@ -269,6 +270,5 @@ public class AssessQuantitativeAgencyController extends ControllerSupport {
 		assessQuantitativeResult.setAssessTeamId(orgUser.getOrgAssessTeamId());
 		return CommonResponse.getResponse(assessQuantitativeResultService.saveResult(assessQuantitativeResult));
 	}
-
 
 }

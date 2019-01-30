@@ -47,7 +47,7 @@
                                 <option value="">请选择</option>
                             </select>
                         </div>
-                        <label for="isAssessor" class="col-sm-2 control-label">是否考评人员</label>
+                        <label for="isAssessor" class="col-sm-2 control-label">是否考评人</label>
                         <div class="col-sm-3">
                             <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
                                 <option value="">请选择</option>
@@ -140,7 +140,7 @@
             $.errorMessage("请选择考评周期！");
             return;
         }
-        window.location = "/assess/quantitative/agency/user/index?userId=" + row.userId + "&cycleId=" + cycleId;
+        window.location = "/assess/quantitative/agency/user/index?userId=" + row.userId + "&cycleId=" + cycleId + "&userName=" + row.userName;
     }
 
     /*]]>*/

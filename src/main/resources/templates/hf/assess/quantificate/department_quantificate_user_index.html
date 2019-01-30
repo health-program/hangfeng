@@ -10,7 +10,7 @@
     <tt:constant enumcode="examine,operation,event_type,boolean-type" />
     <div class="container">
         <section class="content-header">
-            <h1>人员量化考评</h1>
+            <h1>人员量化考评-科室</h1>
             <ol class="breadcrumb">
                 <li><a href="/assess/quantitative/department/index?cached=1"><i class="fa fa-list-alt"></i>人员列表</a></li>
                 <li class="active" th:text="${userName}"></li>
@@ -41,11 +41,10 @@
                             <div class="col-sm-3">
                                 <input type="text" name="startHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
                             </div>
-                            <label for="endHappenTime" style="width:40px; text-align: center" class="col-sm-2 control-label">至</label>
+                            <label for="endHappenTime" style="width:40px; text-align:center" class="col-sm-2 control-label">至</label>
                             <div class="col-sm-3">
                                 <input type="text" name="endHappenTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-date" placeholder="请选择" />
                             </div>
-                            <label for="name" class="col-sm-2 control-label"></label>
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
@@ -77,8 +76,8 @@
     <script type="text/javascript">
     /*<![CDATA[*/
     var table;
-    var userId = $('#userId').val();
-    var userName = $("#userName").val();
+    var userId = $('#userId').val();    
+	var userName = $("#userName").val();
     $(function() {
         initDataGrid();
     });

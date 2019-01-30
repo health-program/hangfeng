@@ -11,7 +11,7 @@
         <h1>人员量化考评-机构</h1>
         <ol class="breadcrumb">
             <li><a href="/assess/quantitative/agency/index"><i class="fa fa-list-alt"></i>人员列表</a></li>
-            <li><a href="javascript:toUserAssess()"><i class="fa fa-user"></i>量化考评</a></li>
+            <li><a href="javascript:toUserAssess()"><i class="fa fa-user"></i><font th:text="${userName}"></font></a></li>
             <li class="active">奖惩评分</li>
         </ol>
     </section>
@@ -21,6 +21,7 @@
                 <i class="fa fa-book"></i>
                 <h3 class="box-title">事件基本信息</h3>
             </div>
+			<input type="hidden" id="userName" th:value="${userName}" />  
             <div class="box-body" style="padding-bottom:10px">
                 <form class="form-horizontal" th:object="${prizepunish}">
                     <input type="hidden" id="prizepunishId" th:field="*{id}" />
@@ -65,11 +66,13 @@
     var table;
     var userId;
     var cycleId;
+    var userName;
     var prizePunishId;
     $(function() {
         userId = $("#userId").val();
         cycleId = $("#cycleId").val();
         prizePunishId = $("#prizepunishId").val();
+        userName = $("#userName").val();
         initDataGrid();
     });
 
@@ -118,7 +121,7 @@
 
 
     function toUserAssess() {
-        window.location = "/assess/quantitative/agency/user/index?userId=" + userId + "&cycleId=" + cycleId;
+        window.location = "/assess/quantitative/agency/user/index?userId=" + userId + "&cycleId=" + cycleId + "&userName=" + userName;
     }
 
     function remove(row) {

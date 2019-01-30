@@ -157,7 +157,7 @@
     //-------------- 项目部分 -----------------
 
     function initItem() {
-        $("#itemForm")[0].submitHandler = function() {
+        $("#itemForm")[0].submitSuccessHandler = function() {
             layer.msg("保存成功", { icon: 1 });
             checkItem(null);
             initItemTree();

@@ -106,7 +106,7 @@
         initRoleSelect();
         initTree();
 
-        $("#userForm")[0].submitHandler = function() {
+        $("#userForm")[0].submitSuccessHandler = function() {
             $.successMessage("保存成功");
             initTree();
         }

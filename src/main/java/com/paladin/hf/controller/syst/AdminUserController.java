@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.paladin.common.model.org.OrgRole;
 import com.paladin.common.service.org.OrgRoleService;
 import com.paladin.framework.core.ControllerSupport;
-import com.paladin.framework.utils.uuid.UUIDUtil;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.HfUserSession;
@@ -73,26 +72,18 @@ public class AdminUserController extends ControllerSupport {
 		if (bindingResult.hasErrors()) {
 			return validErrorHandler(bindingResult);
 		}
-		AdminUser model = beanCopy(adminUserDTO, new AdminUser());
-		String id = UUIDUtil.createUUID();
-		model.setId(id);
-		if (adminUserService.save(model) > 0) {
-			return CommonResponse.getSuccessResponse();
-		}
-		return CommonResponse.getFailResponse();
-	}
 
-	@RequestMapping("/update")
-	@ResponseBody
-	public Object update(@Valid AdminUserDTO adminUserDTO, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return validErrorHandler(bindingResult);
+		String uid = adminUserDTO.getId();
+		if (uid == null || uid.length() == 0) {
+			if (adminUserService.saveAdminUser(adminUserDTO)) {
+				return CommonResponse.getSuccessResponse();
+			}
+		} else {
+			if (adminUserService.updateAdminUser(adminUserDTO)) {
+				return CommonResponse.getSuccessResponse();
+			}
 		}
-		String id = adminUserDTO.getId();
-		AdminUser model = beanCopy(adminUserDTO, adminUserService.get(id));
-		if (adminUserService.update(model) > 0) {
-			return CommonResponse.getSuccessResponse();
-		}
+
 		return CommonResponse.getFailResponse();
 	}
 

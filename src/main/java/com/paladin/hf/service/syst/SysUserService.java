@@ -49,7 +49,7 @@ public class SysUserService extends ServiceSupport<SysUser> {
 	}
 
 	@Transactional
-	public int createOrgUserAndCount(String account, OrgUser user) {
+	public int createOrgUserAndAccount(String account, OrgUser user) {
 		if (createUserAccount(account, user.getId(), SysUser.TYPE_ORG_USER) > 0) {
 			if (orgUserService.save(user) > 0) {
 				return 1;
@@ -118,25 +118,27 @@ public class SysUserService extends ServiceSupport<SysUser> {
 		Example example = GeneralCriteriaBuilder.buildAnd(SysUser.class, new Condition(SysUser.COLUMN_FIELD_ACCOUNT, QueryType.EQUAL, account));
 		return sysUserMapper.selectCountByExample(example) == 0;
 	}
-	
+
 	/**
 	 * 根据原账号和用户ID更新账号
+	 * 
 	 * @param userId
 	 * @param originAccount
 	 * @param nowAccount
 	 * @return
 	 */
 	public int updateAccount(String userId, String originAccount, String nowAccount) {
+		if (!accountPattern.matcher(nowAccount).matches()) {
+			throw new BusinessException("账号不符合规则");
+		}
 		return sysUserMapper.updateAccount(userId, originAccount, nowAccount);
 	}
 
 	public SysUser getUser(String account) {
-		Example example = GeneralCriteriaBuilder.buildAnd(SysUser.class,
-				new Condition(SysUser.COLUMN_FIELD_ACCOUNT, QueryType.EQUAL, account));
+		Example example = GeneralCriteriaBuilder.buildAnd(SysUser.class, new Condition(SysUser.COLUMN_FIELD_ACCOUNT, QueryType.EQUAL, account));
 		List<SysUser> users = sysUserMapper.selectByExample(example);
 		return (users != null && users.size() > 0) ? users.get(0) : null;
 	}
-	
 
 	/**
 	 * 更新登录人密码

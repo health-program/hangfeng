@@ -750,7 +750,7 @@ public class OrgUserService extends ServiceSupport<OrgUser> {
 			String userId = UUIDUtil.createUUID();
 			user.setId(userId);
 			try {
-				sysUserService.createOrgUserAndCount(user.getAccount(), user);
+				sysUserService.createOrgUserAndAccount(user.getAccount(), user);
 			} catch (BusinessException e) {
 				errors.add(new ExcelImportError(i, e.getMessage()));
 				continue;

@@ -5,6 +5,7 @@
 
 <body>
     <tt:constant enumcode="unit-type,district-type" />
+    <div class="container">
     <section class="content-header">
         <h1>单位科室维护管理</h1>
         <ol class="breadcrumb">
@@ -72,7 +73,11 @@
                 </form>
             </div>
         </div>
+    	<div class="col-sm-2 col-sm-offset-5 btn-back">
+        	<a href="/org/unit/index" class="btn btn-primary btn-block">返回</a>
+        </div>
     </section>
+    </div>
     <input type="hidden" id="pid" th:value="${parentUnit?.id}" />
     <input type="hidden" id="pname" th:value="${parentUnit?.name}" />
     <div th:include="/hf/footer" />

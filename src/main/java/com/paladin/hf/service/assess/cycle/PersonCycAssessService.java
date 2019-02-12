@@ -232,10 +232,11 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 		SimpleBeanCopyUtil.simpleCopy(assessDTO, cycleAssess);
 
-		HfUserSession session = HfUserSession.getCurrentUserSession();
-		if (!session.isOrgUser()) {
-			throw new BusinessException("非考评人员不能提交周期考核");
-		}
+//      管理用户也可以科室考评
+//		HfUserSession session = HfUserSession.getCurrentUserSession();
+//		if (!session.isOrgUser()) {
+//			throw new BusinessException("非考评人员不能提交周期考核");
+//		}
 
 		cycleAssess.setDepartAssTime(new Date());
 		cycleAssess.setOperateState(statusAssessedTemporary);
@@ -280,10 +281,11 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 		SimpleBeanCopyUtil.simpleCopy(assessDTO, cycleAssess);
 
-		HfUserSession session = HfUserSession.getCurrentUserSession();
-		if (!session.isOrgUser()) {
-			throw new BusinessException("非考评人员不能提交周期考核");
-		}
+//      管理用户也可以机构考评
+//		HfUserSession session = HfUserSession.getCurrentUserSession();
+//		if (!session.isOrgUser()) {
+//			throw new BusinessException("非考评人员不能提交周期考核");
+//		}
 
 		cycleAssess.setUnitAssTime(new Date());
 		cycleAssess.setOperateState(statusAssessedTemporary);

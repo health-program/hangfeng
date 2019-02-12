@@ -5,239 +5,236 @@
 </head>
 
 <body>
-<div class="container">
-<tt:constant enumcode="job-rank-type,KSYDYF_PJDJ" />
-	<script type="text/javascript" src="/static/js/echarts/echarts-all.js"></script>
-	<section class="content-header">
-		<h1>考评结果汇总</h1>
-	</section>
-	<section class="content">
-		<div class="box box-solid">
-			<div class="box-header with-border">
-				<i class="fa fa-search"></i>
-				<h3 class="box-title">查询</h3>
-			</div>
-		<div class="box-body">
-			<form id="searchbar" class="form-horizontal">
-				<div class="form-group">
-					<label for="unitId" style="width: 130px"
-						class="col-sm-2 control-label">机构·科室</label>
-					<div class="col-sm-2">
-						<input type="text" id="unitCom" class="form-control tonto-select-unit"
-							name="unitId" required="required" placeholder="请选择"></input>
-					</div>
-					<label for="name" style="width: 130px;"
-						class="col-sm-2 control-label">考评周期</label>
-					<div class="col-sm-2">
-						<input type="text" id="assessCycleCom" name="assessCycleId"
-							class="form-control tonto-select-assess-cycle"
-							required="required"
-							th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}"
-							placeholder="请选择周期" />
-					</div>
-					<label for="name" style="width: 130px;"
-						class="col-sm-2 control-label">职称</label>
-					<div class="col-sm-2">
-						<select id="jobRank" name="jobRank" class="form-control tonto-select-constant" enumcode="job-rank-type">
-							<option value="">请选择</option>
-						</select>
-					</div>
-					</div>
-					<div class="form-group">
-					<div class="col-md-12">
-					<div class="pull-right">
-                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="query()"><i class="fa fa-search"></i>查询</button>
-                        <button type="button" style="width:100px" class="btn btn-default" onclick="clearInput()"><i class="fa fa-repeat"></i>重置</button>
-                    </div>
-                    </div>
-				</div>
-			</form>
-		</div>
-		</div>
-		<div class="box box-solid">
-			<div class="box-header with-border">
-                <i class="fa fa-list-alt"></i>
-                <h3 class="box-title">结果</h3>
+    <div class="container">
+        <tt:constant enumcode="job-rank-type,KSYDYF_PJDJ" />
+        <script type="text/javascript" src="/static/js/echarts/echarts-all.js"></script>
+        <section class="content-header">
+            <h1>考评结果汇总</h1>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-search"></i>
+                    <h3 class="box-title">查询</h3>
+                </div>
+                <div class="box-body">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="unitId" class="col-sm-2 control-label">机构·科室</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="unitCom" class="form-control tonto-select-unit" name="unitId" required="required" placeholder="请选择"></input>
+                            </div>
+                            <label for="name" class="col-sm-2 control-label">考评周期</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="assessCycleCom" name="assessCycleId" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" placeholder="请选择周期" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">职称</label>
+                            <div class="col-sm-3">
+                                <select id="jobRank" name="jobRank" class="form-control tonto-select-constant" enumcode="job-rank-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="query()"><i class="fa fa-search"></i>查询</button>
+                                    <button type="button" style="width:100px" class="btn btn-default" onclick="clearInput()"><i class="fa fa-repeat"></i>重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="box-body">
-              <div class="form-group">
-				<div class="col-sm-12">
-					<div id="dataGrid" style="width: 50%; margin: 0 auto;">
-					<table  class="table table-bordered">
-					<thead >
-					<tr class="active"><th>考评等级</th><th>人数</th></tr>
-					</thead>
-					<tbody id="tbody">
-					</tbody>
-					<tr id="count"></tr>
-					</table>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-6">
-					<div id="main" style="height: 400px"></div>
-				</div>
-				<div class="col-sm-6">
-					<div id="main2" style="height: 400px"></div>
-				</div>
-			</div>
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-alt"></i>
+                    <h3 class="box-title">结果</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div id="dataGrid" style="width: 50%; margin: 0 auto;">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="active">
+                                            <th>考评等级</th>
+                                            <th>人数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody">
+                                    </tbody>
+                                    <tr id="count"></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div id="main" style="height: 400px"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div id="main2" style="height: 400px"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-		</div>
-	</section>
-	</div>
-	<div th:include="/hf/footer"></div>
-	<script type="text/javascript">
-		//<![CDATA[
-		var unitCom = $("#unitCom")[0].unitComponment;
-	    var assessCycleCom = $("#assessCycleCom")[0].cycleComponment;
-	    unitCom.addUnitChangedListener(function(val) {
-	        assessCycleCom.setCurrent(null);
-	        assessCycleCom.unitId = val ? val.id : null;
-	    });
+        </section>
+    </div>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    //<![CDATA[
+    var unitCom = $("#unitCom")[0].unitComponment;
+    var assessCycleCom = $("#assessCycleCom")[0].cycleComponment;
+    unitCom.addUnitChangedListener(function(val) {
+        assessCycleCom.setCurrent(null);
+        assessCycleCom.unitId = val ? val.id : null;
+    });
 
-	    function clearInput(){
-	        $("#searchbar").find("input").val("");
-	        assessCycleCom.setCurrent(null);
-	        unitCom.setCurrent(null);
-	        assessCycleCom.unitId = null;
-	        $("#jobRank").val("");
-	    }
+    function clearInput() {
+        $("#searchbar").find("input").val("");
+        assessCycleCom.setCurrent(null);
+        unitCom.setCurrent(null);
+        assessCycleCom.unitId = null;
+        $("#jobRank").val("");
+    }
 
-	    
-	    //图表自适应大小      
-	       window.addEventListener("resize", function () {
-	          myChart.resize();
-	          myChart2.resize();
-	        }); 
 
-		var myChart = echarts.init(document.getElementById('main'));
-		var myChart2 = echarts.init(document.getElementById('main2'));
-		
-		var value = $.parseJSON($("#tonto_constant_value").text());
-        var job = value["KSYDYF_PJDJ"];
-		
-		function tuxing(myChart) {
-			var unitId = $("#unitId").val();
-			var cycleId = $('input[name="assessCycleId"]').val();
-			var jobRank = $("#jobRank").val();
-			$.postAjax("/console/appsum/search/eharts?unitId=" + unitId
-					+ "&cycleId=" + cycleId + "&jobRank=" + jobRank, function(
-					result) {
-				var list = result;
-				var chartData = [];
-				var charDatazx = [];
-				var cache = {};
-				var count=0;
-				$("#tbody").empty();
-				$("#count").empty();
-				list.forEach(function(item) {
-					if (item.unitAssGrade) {
-						for (var i = 0; i < job.length; i++) {
-							if (job[i].key == item.unitAssGrade) {
-								chartData.push({
-									name : job[i].value,
-									value : item.kpdc
-								});
-								charDatazx.push(job[i].value);
-								count=count+item.kpdc;
-								
-								$("#tbody").append("<tr><td>"+job[i].value+"</td><td>"+item.kpdc+"</td></tr>");
-								cache[job[i].key] = 1;
-								break;
-							}
-						}
-					}
-				})
-				$("#count").append("<td>合计</td><td>"+count+"</td>");
-				for (var i = 0; i < job.length; i++) {
-					if (!cache[job[i].key]) {
-						chartData.push({
-							name : job[i].value,
-							value : 0
-						});
-						charDatazx.push(job[i].value);
-						$("#tbody").append("<tr><td>"+job[i].value+"</td><td>0</td></tr>");
-					}
-				}
+    //图表自适应大小      
+    window.addEventListener("resize", function() {
+        myChart.resize();
+        myChart2.resize();
+    });
 
-				var option1 = {
-						
-					title : {
-						text : '考评结果汇总图',
-					},
-					tooltip : {
-						trigger : 'axis'
-					},
-					toolbox : {
-						show : true,
-						padding : [ 20, 80, 5, 5 ],
-						feature : {
-							magicType : {
-								show : true,
-								type : [ 'line', 'bar' ]								
-							}
-						}
-					},
-					calculable : true,
-					xAxis : [ {
-						type : 'category',
-						data : charDatazx
-					} ],
-					yAxis : [ {
-						type : 'value'
-					} ],
-					series : [ {
-						barWidth : 30,
-						name : '人数',
-						type : 'bar',
-						data : chartData,
+    var myChart = echarts.init(document.getElementById('main'));
+    var myChart2 = echarts.init(document.getElementById('main2'));
 
-					} ]
-				}
-				 var option2 = {
-						
-					tooltip : {
-						trigger : 'item',
-						formatter : "{a} <br/>{b} : {c} ({d}%)"
-					},
-					toolbox : {
-						show : true,
-						padding : [ 20, 80, 5, 5 ],
-						feature : {
-						}
-					},
-					calculable : true,
-					series : [ {
-						name : '',
-						type : 'pie',
-						radius : '55%',
-						center : [ '50%', '60%' ],
-						data : chartData,
-					} ]
-				};
-				myChart.setOption(option1);
-				myChart2.setOption(option2);
-			});
-		}
+    var value = $.parseJSON($("#tonto_constant_value").text());
+    var job = value["KSYDYF_PJDJ"];
 
-		var table;
-		$(function() {
-			tuxing(myChart);
-		});
+    function tuxing(myChart) {
+        var unitId = $("#unitId").val();
+        var cycleId = $('input[name="assessCycleId"]').val();
+        var jobRank = $("#jobRank").val();
+        $.postAjax("/console/appsum/search/eharts?unitId=" + unitId +
+            "&cycleId=" + cycleId + "&jobRank=" + jobRank,
+            function(
+                result) {
+                var list = result;
+                var chartData = [];
+                var charDatazx = [];
+                var cache = {};
+                var count = 0;
+                $("#tbody").empty();
+                $("#count").empty();
+                list.forEach(function(item) {
+                    if (item.unitAssGrade) {
+                        for (var i = 0; i < job.length; i++) {
+                            if (job[i].key == item.unitAssGrade) {
+                                chartData.push({
+                                    name: job[i].value,
+                                    value: item.kpdc
+                                });
+                                charDatazx.push(job[i].value);
+                                count = count + item.kpdc;
 
-		function query() {
-			tuxing(myChart);
-		}
+                                $("#tbody").append("<tr><td>" + job[i].value + "</td><td>" + item.kpdc + "</td></tr>");
+                                cache[job[i].key] = 1;
+                                break;
+                            }
+                        }
+                    }
+                })
+                $("#count").append("<td>合计</td><td>" + count + "</td>");
+                for (var i = 0; i < job.length; i++) {
+                    if (!cache[job[i].key]) {
+                        chartData.push({
+                            name: job[i].value,
+                            value: 0
+                        });
+                        charDatazx.push(job[i].value);
+                        $("#tbody").append("<tr><td>" + job[i].value + "</td><td>0</td></tr>");
+                    }
+                }
 
-		// 关键词搜索框添加绑定回车函数
-		$('body').bind('keypress', function(event) {
-			if (event.keyCode == "13") {
-				query();
-			}
-		});
-		//]]>
-	</script>
+                var option1 = {
+
+                    title: {
+                        text: '考评结果汇总图',
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show: true,
+                        padding: [20, 80, 5, 5],
+                        feature: {
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar']
+                            }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        data: charDatazx
+                    }],
+                    yAxis: [{
+                        type: 'value'
+                    }],
+                    series: [{
+                        barWidth: 30,
+                        name: '人数',
+                        type: 'bar',
+                        data: chartData,
+
+                    }]
+                }
+                var option2 = {
+
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    toolbox: {
+                        show: true,
+                        padding: [20, 80, 5, 5],
+                        feature: {}
+                    },
+                    calculable: true,
+                    series: [{
+                        name: '',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                        data: chartData,
+                    }]
+                };
+                myChart.setOption(option1);
+                myChart2.setOption(option2);
+            });
+    }
+
+    var table;
+    $(function() {
+        tuxing(myChart);
+    });
+
+    function query() {
+        tuxing(myChart);
+    }
+
+    // 关键词搜索框添加绑定回车函数
+    $('body').bind('keypress', function(event) {
+        if (event.keyCode == "13") {
+            query();
+        }
+    });
+    //]]>
+    </script>
 </body>
 
 </html>

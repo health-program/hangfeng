@@ -1,42 +1,45 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:include="/hf/header">
 </head>
+
 <body>
- <div class="container">
-	 <tt:constant enumcode="is_release,importance" />
-	<section class="content">
-		<div class="box box-solid">
-		<form id="searchbar" class="form-horizontal">
-		<input type="hidden" id="type" name="type" th:value="${type}"/>
-		<input type="hidden" id=isHomePage name="isHomePage" th:value="${isHomePage}"/>
-		</form>
-			<div class="box-header with-border">
-                <i class="fa fa-list-alt"></i>
-                <h3 class="box-title">结果</h3>
-                <div class="pull-right box-tools">
-                      <a th:if="${isHomePage} == true " class="btn btn-warning" id="model_edit_btn" href="/inforelease/info">
-                     <i class="glyphicon glyphicon-share-alt"></i>返回</a>
-                     
-                      <a th:if="${isHomePage} == false " class="btn btn-warning" id="model_edit_btn" href="/inforelease/info/index">
-                     <i class="glyphicon glyphicon-share-alt"></i>返回</a>
+    <div class="container">
+        <tt:constant enumcode="is_release,importance" />
+        <section class="content">
+            <div class="box box-solid">
+                <form id="searchbar" class="form-horizontal">
+                    <input type="hidden" id="type" name="type" th:value="${type}" />
+                    <input type="hidden" id=isHomePage name="isHomePage" th:value="${isHomePage}" />
+                </form>
+                <div class="box-header with-border">
+                    <i class="fa fa-list-alt"></i>
+                	<h3 class="box-title">更多信息</h3>
+                    <div class="pull-right box-tools">
+                        <a th:if="${isHomePage} == true" class="btn btn-box-tool" id="model_edit_btn" href="/inforelease/info"><i class="fa fa-times"></i></i></a>
+                        <a th:if="${isHomePage} == false" class="btn btn-box-tool" id="model_edit_btn" href="/inforelease/info/index"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div id="result" class="box-body">
+                    <table id="dataGrid"></table>
                 </div>
             </div>
-            <div id="result" class="box-body">
-                <table id="dataGrid"></table>
-            </div>
-		</div>
-	</section>
-	</div>
-	<div th:include="/hf/footer"></div>
-	<script type="text/javascript">
-	 /*<![CDATA[*/
-	            
-	 	$(function (){ initDataGrid();});
-		
-		function query() {table.refresh();}
-		
-		function initDataGrid() {
+            <div class="col-sm-2 col-sm-offset-5 btn-back">
+                <a th:if="${isHomePage} == true " class="btn btn-primary btn-block"  href="/inforelease/info">返回</a>
+                <a th:if="${isHomePage} == false " class="btn btn-primary btn-block" href="/inforelease/info/index">返回</a>
+            </div>            
+        </section>
+    </div>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+
+    $(function() { initDataGrid(); });
+
+    function query() { table.refresh(); }
+
+    function initDataGrid() {
         var limit = $("#pageLimit").val();
         var offset = $("#pageOffset").val();
         var page = (limit && offset) ? offset / limit + 1 : 1;
@@ -45,14 +48,13 @@
             idField: "id",
             columns: [
                 [
-		            {title: "标题", field: "title"},
-		            {title: "是否发布", field: "isRelease", enumcode: "is_release" },
-		            {title: "重要程度", field: "importance", enumcode: "importance" },
-		            {title: "发布时间", field: "releaseTime",sortable: false},
-		            {
+                    { title: "标题", field: "title" },
+                    { title: "重要程度", field: "importance", enumcode: "importance" },
+                    { title: "发布时间", field: "releaseTime", sortable: false },
+                    {
                         title: "操作",
                         align: "center",
-                        width: "200px",
+                        width: "100px",
                         events: {
                             'click .detail': function(e, value, row, index) {
                                 detail(row);
@@ -62,7 +64,7 @@
                             }
                         },
                         formatter: function operateFormatter(value, row, index) {
-                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' ;
+                            return '<button class="detail btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i>详情</button>';
                         }
                     }
                 ]
@@ -79,20 +81,22 @@
             toolbar: "#toolbar",
             showRefresh: true
         });
-    } 
-	      function detail(row) {
-	    	  var type = $("#type").val();
-	    	  var isHomePage = $("#isHomePage").val();
-	          if (row) {
-	              window.location = '/inforelease/info/detail?isHomePage='+isHomePage+'&type='+type+'&id=' + row.id
-	          }
-	      }
-	      
-    	$('body').bind('keypress',function (event){
-            if(event.keyCode == '13'){query();}
-        }); 
-    	
- /*]]>*/
-</script>
+    }
+
+    function detail(row) {
+        var type = $("#type").val();
+        var isHomePage = $("#isHomePage").val();
+        if (row) {
+            window.location = '/inforelease/info/detail?isHomePage=' + isHomePage + '&type=' + type + '&id=' + row.id
+        }
+    }
+
+    $('body').bind('keypress', function(event) {
+        if (event.keyCode == '13') { query(); }
+    });
+
+    /*]]>*/
+    </script>
 </body>
+
 </html>

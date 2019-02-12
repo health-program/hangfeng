@@ -12,20 +12,8 @@
 		`release_time` AS releaseTime,
 		`accessory` AS accessory,
 		`types` AS types
-		FROM inforelease WHERE 1=1  AND `types`=#{query.type}
-     
-		AND (org_unit_id ='' OR org_unit_id IS NULL   
-	   <if test="uid != null and uid != ''">
-	        OR org_unit_id = #{uid}
-	    </if>
-	    <if test="aid != null and aid != ''">
-	        OR org_agency_id = #{aid}
-	    </if>
-	    <if test="tid != null and tid != ''">
-	        OR org_assess_team_id = #{tid}
-	    </if>
-	    )
-		       
+		FROM inforelease WHERE `types`=#{query.type}   
+		AND own_agency IN <foreach collection="agencyIds" index="index" item="agencyId" open="(" separator="," close=")">#{agencyId}</foreach>		       
         <if test="query.isRelease !=null and query.isRelease !='' ">
             and is_release=#{query.isRelease}
         </if>
@@ -45,7 +33,7 @@
         <if test="query.endreleaseTime !=null and query.endreleaseTime !='' ">
             and release_time <![CDATA[<=]]> #{query.endreleaseTime}
         </if>
-        order by release_time desc 
+        order by create_time desc 
     </select>
     
     <select id="selectInforeleaseAll" resultType="com.paladin.hf.service.inforelease.vo.InforeleaseVO">
@@ -79,48 +67,36 @@
         <if test="query.endreleaseTime !=null and query.endreleaseTime !='' ">
             and release_time <![CDATA[<=]]> #{query.endreleaseTime}
         </if>
-        order by release_time desc 
+        order by create_time desc 
     </select>
 
 	<select id="noticyandpolicyfile" resultType="com.paladin.hf.service.inforelease.vo.InforeleaseVO">
 		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease 
-		WHERE 1 = 1 AND is_release = '0' AND TYPES = '1'
+		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '1'
 		 AND (org_unit_id ='' OR org_unit_id IS NULL  
-	   <if test="uid != null and uid != ''">
-	        OR org_unit_id = #{uid}
-	    </if>
-	    <if test="aid != null and aid != ''">
-	        OR org_agency_id = #{aid}
-	    </if>
-	    <if test="tid != null and tid != ''">
-	        OR org_assess_team_id = #{tid}
-	    </if>
+	   		<if test="unitIds != null">
+	   		OR org_unit_id IN <foreach collection="unitIds" index="index" item="unitId" open="(" separator="," close=")">#{unitId}</foreach>
+	    	</if>	    
 	    )
 		ORDER BY release_time DESC LIMIT 0,5) 
 		UNION 
 		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
-		WHERE 1 = 1 AND is_release = '0' AND TYPES = '0'
+		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '0'
 		 AND ( org_unit_id ='' OR org_unit_id IS NULL 
-	      <if test="uid != null and uid != ''">
-	          OR org_unit_id = #{uid}
-	      </if>
-	      <if test="aid != null and aid != ''">
-	          OR org_agency_id = #{aid}
-	      </if>
-	      <if test="tid != null and tid != ''">
-	          OR org_assess_team_id = #{tid}
-	      </if>
+	      	<if test="unitIds != null">
+	   		OR org_unit_id IN <foreach collection="unitIds" index="index" item="unitId" open="(" separator="," close=")">#{unitId}</foreach>
+	    	</if>	 
 	      )
 		 ORDER BY release_time DESC LIMIT 0,5)
 	</select>
 	
 	<select id="noticyandpolicyfileAll" resultType="com.paladin.hf.service.inforelease.vo.InforeleaseVO">
 		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease 
-		WHERE 1 = 1 AND is_release = '0' AND TYPES = '1'
+		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '1'
 		ORDER BY release_time DESC LIMIT 0,5) 
 		UNION 
 		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
-		WHERE 1 = 1 AND is_release = '0' AND TYPES = '0'
+		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '0'
 		 ORDER BY release_time DESC LIMIT 0,5)
 	</select>
 	
@@ -134,17 +110,11 @@
 			`release_time` AS releaseTime,
 			`accessory` AS accessory,
 			`types` AS types
-			FROM inforelease WHERE 1=1 AND is_release = '0' AND `types`=#{query.type} 
+			FROM inforelease WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND `types`=#{query.type} 
 			AND ( org_unit_id ='' OR org_unit_id IS NULL
-	      <if test="uid != null and uid != ''">
-	          OR org_unit_id = #{uid}
-	      </if>
-	      <if test="aid != null and aid != ''">
-	          OR org_agency_id = #{aid}
-	      </if>
-	      <if test="tid != null and tid != ''">
-	          OR org_assess_team_id = #{tid}
-	      </if>
+	      <if test="unitIds != null">
+	   		OR org_unit_id IN <foreach collection="unitIds" index="index" item="unitId" open="(" separator="," close=")">#{unitId}</foreach>
+	    	</if>
 	      )
 			ORDER BY release_time DESC
 	</select>
@@ -159,7 +129,7 @@
 				`release_time` AS releaseTime,
 				`accessory` AS accessory,
 				`types` AS types
-				FROM inforelease WHERE 1=1 AND is_release = '0' AND `types`=#{query.type} 
+				FROM inforelease release_time <![CDATA[<=]]> now() AND is_release = '0' AND `types`=#{query.type} 
 				ORDER BY release_time DESC
 		</select>
 </mapper>

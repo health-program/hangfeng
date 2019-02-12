@@ -1,159 +1,134 @@
 package com.paladin.hf.model.inforelease;
 
-
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.paladin.framework.common.BaseModel;
 
-public class Inforelease extends BaseModel{
-    
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "UUID")
-    private String id;
+public class Inforelease extends BaseModel {
 
-    private String title;
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(generator = "UUID")
+	private String id;
 
-    private String content;
+	private String title;
 
-    private String isRelease;
+	private String content;
 
-    private String importance;
+	private String isRelease;
 
-    private String releaseTime;
+	private String importance;
 
-    private String accessory;
-    
-    private Integer types;
+	private String releaseTime;
 
-    private String remarks;
-    
-    private String attachments;
-    
-    /**
-     * @author jisanjie 
-     */
-    private String orgAgencyId;
-    
-    private String orgAssessTeamId;
-    
-    private String orgUnitId;
-    /**/
-    
-    public String getId() {
-        return id;
-    }
+	private String accessory;
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
-    }
+	private Integer types;
 
-    public String getTitle() {
-        return title;
-    }
+	private String remarks;
 
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
+	private String attachments;
 
-    public String getContent() {
-        return content;
-    }
+	private String orgUnitId;
 
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
-    }
+	private String ownAgency;
 
-    public String getIsRelease() {
-        return isRelease;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setIsRelease(String isRelease) {
-        this.isRelease = isRelease == null ? null : isRelease.trim();
-    }
+	public void setId(String id) {
+		this.id = id == null ? null : id.trim();
+	}
 
-    public String getImportance() {
-        return importance;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setImportance(String importance) {
-        this.importance = importance == null ? null : importance.trim();
-    }
+	public void setTitle(String title) {
+		this.title = title == null ? null : title.trim();
+	}
 
-    public String getReleaseTime()
-    {
-        return releaseTime;
-    }
+	public String getContent() {
+		return content;
+	}
 
-    public void setReleaseTime(String releaseTime)
-    {
-        this.releaseTime = releaseTime;
-    }
+	public void setContent(String content) {
+		this.content = content == null ? null : content.trim();
+	}
 
-    public String getAccessory() {
-        return accessory;
-    }
+	public String getIsRelease() {
+		return isRelease;
+	}
 
-    public void setAccessory(String accessory) {
-        this.accessory = accessory == null ? null : accessory.trim();
-    }
+	public void setIsRelease(String isRelease) {
+		this.isRelease = isRelease == null ? null : isRelease.trim();
+	}
 
-    public Integer getTypes()
-    {
-        return types;
-    }
+	public String getImportance() {
+		return importance;
+	}
 
-    public void setTypes(Integer types)
-    {
-        this.types = types;
-    }
+	public void setImportance(String importance) {
+		this.importance = importance == null ? null : importance.trim();
+	}
 
-    public String getRemarks()
-    {
-        return remarks;
-    }
+	public String getReleaseTime() {
+		return releaseTime;
+	}
 
-    public void setRemarks(String remarks)
-    {
-        this.remarks = remarks;
-    }
+	public void setReleaseTime(String releaseTime) {
+		this.releaseTime = releaseTime;
+	}
 
-    
-    
-    public String getOrgAgencyId() {
-          return orgAgencyId;
-    }
-    
-    public void setOrgAgencyId(String orgAgencyId) {
-          this.orgAgencyId = orgAgencyId;
-    }
-    
-    public String getOrgAssessTeamId() {
-          return orgAssessTeamId;
-    }
-    
-    public void setOrgAssessTeamId(String orgAssessTeamId) {
-          this.orgAssessTeamId = orgAssessTeamId;
-    }
-    
-    public String getOrgUnitId() {
-          return orgUnitId;
-    }
-    
-    public void setOrgUnitId(String orgUnitId) {
-          this.orgUnitId = orgUnitId;
-    }
+	public String getAccessory() {
+		return accessory;
+	}
 
-    public String getAttachments()
-    {
-        return attachments;
-    }
+	public void setAccessory(String accessory) {
+		this.accessory = accessory == null ? null : accessory.trim();
+	}
 
-    public void setAttachments(String attachments)
-    {
-        this.attachments = attachments;
-    }
-    
+	public Integer getTypes() {
+		return types;
+	}
+
+	public void setTypes(Integer types) {
+		this.types = types;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	public String getOrgUnitId() {
+		return orgUnitId;
+	}
+
+	public void setOrgUnitId(String orgUnitId) {
+		this.orgUnitId = orgUnitId;
+	}
+
+	public String getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(String attachments) {
+		this.attachments = attachments;
+	}
+
+	public String getOwnAgency() {
+		return ownAgency;
+	}
+
+	public void setOwnAgency(String ownAgency) {
+		this.ownAgency = ownAgency;
+	}
+
 }

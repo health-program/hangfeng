@@ -13,12 +13,12 @@ import com.paladin.hf.service.inforelease.vo.InforeleaseVO;
 public interface InforeleaseMapper extends CustomMapper<Inforelease>{
     
     List<InforeleaseVO> selectInforeleaseAll(@Param("query")InforeleaseQuery query);
-    List<InforeleaseVO> selectInforelease(@Param("query")InforeleaseQuery query,@Param("uid") String unitId,@Param("tid") String teamId,@Param("aid") String agencyId);
+    List<InforeleaseVO> selectInforelease(@Param("query")InforeleaseQuery query,@Param("agencyIds") List<String> agencyIds);
     
     List<InforeleaseVO> noticyandpolicyfileAll();
-    List<InforeleaseVO> noticyandpolicyfile(@Param("uid") String unitId,@Param("tid") String teamId,@Param("aid") String agencyId);
+    List<InforeleaseVO> noticyandpolicyfile(@Param("unitIds") List<String> unitIds);
     
     List<InforeleaseVO> inforeleaseMoreAll(@Param("query")InforeleaseQuery query);
-    List<InforeleaseVO> inforeleaseMore(@Param("query")InforeleaseQuery query,@Param("uid") String unitId,@Param("tid") String teamId,@Param("aid") String agencyId);
+    List<InforeleaseVO> inforeleaseMore(@Param("query")InforeleaseQuery query,@Param("unitIds") List<String> unitIds);
     
 }

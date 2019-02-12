@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/hf/header"/>
+<style>
+.notice-list {
+    list-style: none;
+}
+
+.right-tool {
+    float: right;
+    color: #999;
+}
+
+.list {
+    list-style: none;
+    float: left;
+    text-align: center;
+    width: 23%
+}
+
+.right-text {
+    display: inline;
+    float: right;
+}
+
+.name-box {
+    display: inline-block;
+    height: 54px;
+    width: 140px;
+}
+
+.fa-check-square-o {
+    font-size: 54px;
+}
+
+.p1 {
+    color: #666666;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.p2 {
+    color: #666666;
+    line-height: 20px;
+    font-size: 22px;
+}
+
+.go-todo-btn {
+    padding
+}
+
+.name {
+    color: #000;
+}
+
+.name:hover,
+.name:active,
+.name:focus {
+    color: #000;
+    text-decoration: underline
+}
+
+.btn-primary {
+    background-color: #00a65a;
+    border-color: #00a65a
+}
+
+.btn-primary:hover {
+    background-color: #1ddc50;
+    border-color: #1ddc50
+}
+
+.p-number strong {
+    font-size: 24px
+}
+
+.ul-dashed {
+    border-bottom: 1px dashed #dddddd;
+    padding-left: 12px;
+    line-height: 25px;
+    margin-right: 21px;
+}
+
+.notice-li {
+    margin-bottom: 6px;
+}
+
+.info-box-text {
+    font-size: 20px;
+}
+
+.info-box-content {
+    padding: 5px 25px;
+}
+
+.text-view {
+    margin-left: 90px;
+    text-align: right;
+    margin-right: 19px;
+}
+
+#noticeContent p {
+    margin-left: 15px;
+}
+
+.content {
+    min-height: 250px;
+    padding: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.notice-li a{cursor:pointer}
+</style>
+<body>
+	<div class="container">
+		<section class="content">
+			<div class="panel panel-default" style="margin-top: 30px;">
+				<div class="panel-heading" style="background-color: #3aabec;">
+					<div class="pull-right">
+						<a id="noticys" style="color: white; font-size: 16px;"
+							href="/inforelease/more/index?isHomePage=true&type=0">更多>></a>
+					</div>
+					<h3 style="color: white; font-size: 20px" class="panel-title">
+						<i class="glyphicon glyphicon-volume-up panel-title"
+							style="font-size: 18px"></i> 通知公告
+					</h3>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-9">
+							<ul class="notice-list ul-dashed" th:each="o:${list}"
+							th:if=" ${o.types} == '0' ">
+							<li class="notice-li"><a class="name"
+								th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"
+								th:title="${o.title}"><span th:text=${o.title}></span></a>
+								<div class="right-tool">
+									<span th:text=${o.releaseTime}></span>
+								</div></li>
+						</ul>
+						</div>
+						<div class="col-sm-3" align="center">
+							<img alt="" width="220px" height="220px"
+								src="/static/image/info/hospital.png" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="panel panel-default" style="margin-top: 45px;">
+				<div class="panel-heading" style="background-color: #3aabec;">
+					<div class="pull-right">
+						<a id="policfiles" style="color: white; font-size: 16px;"
+							href="/inforelease/more/index?isHomePage=true&type=1">更多>></a>
+					</div>
+					<h3 style="color: white; font-size: 20px" class="panel-title">
+						<i class="glyphicon glyphicon-folder-open panel-title"
+							style="font-size: 14px"></i> 政策文件
+					</h3>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-9">
+							<ul class="notice-list ul-dashed" th:each="o:${list}"
+							th:if=" ${o.types} == '1' ">
+							<li class="notice-li"><a class="name"
+								th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
+								th:title="${o.title}" th:text=${o.title}></span></a>
+								<div class="right-tool">
+									<span th:text=${o.releaseTime}></span>
+								</div></li>
+						</ul>
+						</div>
+						<div class="col-sm-3" align="center">
+							<img alt="" width="220px" height="220px"
+								src="/static/image/info/file.png" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<div th:replace="/hf/footer"></div>
+</body>
+</html>

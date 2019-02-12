@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="/hf/header"/>
+
+<head th:include="/hf/header" />
 <style>
-.title{
+    .title{
 	text-align: center;
 	border-bottom: 1px solid #eee;
 	font-family:unset;
@@ -14,8 +15,11 @@
 }
 .textarea1{
 resize: none;
-background:white;
 border: none;
+min-height: 400px;
+background-color:white;
+padding:20px;
+padding-top: 10px;
 }
 .date{
     font-size: 17px;
@@ -25,85 +29,87 @@ border: none;
 </style>
 
 <body>
- <div class="container">
-<tt:constant enumcode="is_release,importance" />
-<input type="hidden" id="id" th:value="${id}"/>
-	<section class="content">
-		<div class="box box-solid">
-			<div class="box-header" style="background: aliceblue;">
-                <h3 class="box-title"><!-- <i class="fa fa-bullhorn"></i>通知公告 --></h3>
-                <div th:if="${type} ==null " class="pull-right box-tools">
-                     <a th:if="${isHomePage} == false" class="btn btn-warning" id="model_edit_btn" href="/inforelease/info/index">
-                     <i class="glyphicon glyphicon-share-alt"></i>返回</a>
-                     <a th:if="${isHomePage} == true" class="btn btn-warning" id="model_edit_btn" href="/inforelease/info">
-                     <i class="glyphicon glyphicon-share-alt"></i>返回</a>
-                </div>
-                <div th:if="${type} !=null " class="pull-right box-tools">
-	                <a th:if="${isHomePage} == true" class="btn btn-warning" id="model_edit_btn" th:href="@{/inforelease/more/index?isHomePage=true(type=${type})}">
-	                <i class="glyphicon glyphicon-share-alt"></i>返回</a>
-	                <a th:if="${isHomePage} == false" class="btn btn-warning" id="model_edit_btn" th:href="@{/inforelease/more/index?isHomePage=false(type=${type})}">
-	                <i class="glyphicon glyphicon-share-alt"></i>返回</a>
+    <div class="container">
+        <tt:constant enumcode="is_release,importance" />
+        <input type="hidden" id="id" th:value="${id}" />
+        <section class="content">
+            <div class="box box-solid">
+                <!-- <div class="box-header">
+                    <h3 class="box-title"></h3>
+                    <div th:if="${type} ==null " class="pull-right box-tools">
+                        <a th:if="${isHomePage} == false" class="btn btn-box-tool" href="/inforelease/info/index">
+                     <i class="fa fa-times"></i></a>
+                        <a th:if="${isHomePage} == true" class="btn btn-box-tool" href="/inforelease/info">
+                     <i class="fa fa-times"></i></a>
+                    </div>
+                    <div th:if="${type} !=null " class="pull-right box-tools">
+                        <a th:if="${isHomePage} == true" class="btn btn-box-tool" th:href="@{/inforelease/more/index?isHomePage=true(type=${type})}">
+	                <i class="fa fa-times"></i></a>
+                        <a th:if="${isHomePage} == false" class="btn btn-box-tool" th:href="@{/inforelease/more/index?isHomePage=false(type=${type})}">
+	                <i class="fa fa-times"></i></a>
+                    </div>
+                </div> -->
+                <div id="model_view">
+                    <div class="box-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-12 title">
+                                    <p name="title" class="form-control-static description"></p>
+                                    <p class="form-control-static description date">发布时间:<span name="releaseTime"></span></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                            	<div class="col-sm-12">
+	                                <pre name="content" class="form-control textarea1" style="background-color:#fff;"></pre>
+	                            </div>
+                            </div>
+                            <div class="form-group" style="border-top: 1px solid #eee;padding-top: 10px">
+                                <label for="workContent" class="col-sm-2 control-label" style="width: 100px">附件:</label>
+                                <div class="col-sm-9 control-label" name="attachments">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-             <div id="model_view" class="box-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <div class="col-sm-12 title">
-                            <p name="title" class="form-control-static description"></p>
-                            <p class="form-control-static description date">发布时间:<span name="releaseTime"></span></p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-						<div class="col-sm-12">
-							<textarea name="content" style="background: white;" class="form-control textarea1" rows="15" readonly="readonly"></textarea>
-						</div>
-                    </div>
-                    <div class="form-group">
-                    <div class="col-sm-12" style="border-bottom: 1px solid #eee;">
-                        <label for="workContent" class="col-sm-1 control-label">附件:</label>
-                        <div name="attachments">
-                        </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12" style="text-align: right;">
-                            <p style="color: #999;" class="form-control-static description">昆山市卫生和计划生育委员会2018.3.1</p>
-                        </div>
-                    </div>
-                </form>
+            <div class="col-sm-2 col-sm-offset-5 btn-back">
+                <div th:if="${type} ==null">
+                    <a th:if="${isHomePage} == false" class="btn btn-primary btn-block" href="/inforelease/info/index">返回</a>
+                    <a th:if="${isHomePage} == true" class="btn btn-primary btn-block" href="/inforelease/info">返回</a>
+                </div>
+                <div th:if="${type} !=null">
+                    <a th:if="${isHomePage} == true" class="btn btn-primary btn-block" th:href="@{/inforelease/more/index?isHomePage=true(type=${type})}">返回</a>
+                    <a th:if="${isHomePage} == false" class="btn btn-primary btn-block" th:href="@{/inforelease/more/index?isHomePage=false(type=${type})}">返回</a>
+                </div>
             </div>
-		</div>
-	</section>
-	</div>
-	<div th:include="/hf/footer"></div>
-	<script type="text/javascript">
-	
-	var options = {
-	        id: "model",
-	        name: "详情",
-	        url: "",
-	        columns: [
-	            { name: "title", inputType: "TEXT", title: "标题" },
-	            { name: "content", inputType: "TEXT", title: "内容" },
-	            { name: "isRelease", inputType: "SELECT", enum: "is_release", title: "是否发布" },
-	            { name: "importance", inputType: "SELECT", enum: "importance", title: "重要程度" },
-	            { name: "orgUnitId", inputType: "UNIT", title: "被通知科室" ,viewName: "unitName",unitType: "tonto-select-department"},
-	            { name: "releaseTime", inputType: "DATE", title: "发布时间" },
-	            { name: "attachments", inputType: "ATTACHMENT", fileName: "attachmentFiles", title: "附件" }
-	        ]
-	    };
-	
-	
-	$(function(){
-		id = $("#id").val();
-		 $.postAjax("/inforelease/get?id=" +id, function(data) {
-	            var model = new tonto.Model("model", options.columns, {
-	            });
-	            model.setData(data);
-	        });
-	}) 
-	
-	
-	</script>
+        </section>
+    </div>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    var options = {
+        id: "model",
+        name: "详情",
+        url: "",
+        columns: [
+            { name: "title", inputType: "TEXT", title: "标题" },
+            { name: "content", inputType: "TEXT", title: "内容" },
+            { name: "isRelease", inputType: "SELECT", enum: "is_release", title: "是否发布" },
+            { name: "importance", inputType: "SELECT", enum: "importance", title: "重要程度" },
+            { name: "orgUnitId", inputType: "UNIT", title: "被通知科室", viewName: "unitName", unitType: "tonto-select-department" },
+            { name: "releaseTime", inputType: "DATE", title: "发布时间" },
+            { name: "attachments", inputType: "ATTACHMENT", fileName: "attachmentFiles", title: "附件" }
+        ]
+    };
+
+
+    $(function() {
+        id = $("#id").val();
+        $.postAjax("/inforelease/get?id=" + id, function(data) {
+            var model = new tonto.Model("model", options.columns, {});
+            model.setData(data);
+        });
+    })
+    </script>
 </body>
+
 </html>

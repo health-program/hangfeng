@@ -48,7 +48,7 @@
 	 <if test="endhappenTime !=null and endhappenTime !='' ">
 	 	and happen_time <![CDATA[<=]]> #{endhappenTime} 
 	 </if>
-	 ORDER BY p.happen_time desc, p.create_time desc
+	 ORDER BY  p.update_time desc
 
 </select> 
 
@@ -78,7 +78,7 @@
 	 <if test="endhappenTime !=null and endhappenTime !='' ">
 	 	and happen_time <![CDATA[<=]]> #{endhappenTime} 
 	 </if>
-	 ORDER BY p.happen_time desc, p.create_time desc
+	 ORDER BY  p.update_time desc
 </select>
 
 <!-- 机构查询某个人的奖惩记录 -->
@@ -107,7 +107,7 @@
 	 <if test="endhappenTime !=null and endhappenTime !='' ">
 	 	and happen_time <![CDATA[<=]]> #{endhappenTime} 
 	 </if>
-	 ORDER BY p.happen_time desc, p.create_time desc
+	 ORDER BY  p.update_time desc
 </select>
 
 </mapper>

@@ -74,7 +74,7 @@ public class PrizepunishAgencyController extends ControllerSupport {
 		}
 
 		List<SysAttachment> attachments = attachmentService.checkOrCreateAttachment(dto.getAttachments(), attachmentFiles);
-		if (attachments != null && attachments.size() > 3) {
+		if (attachments != null && attachments.size() > 4) {
 			return CommonResponse.getErrorResponse("附件数量不能超过3张");
 		}
 		dto.setAttachments(attachmentService.splicingAttachmentId(attachments));
@@ -94,7 +94,7 @@ public class PrizepunishAgencyController extends ControllerSupport {
 		}
 
 		List<SysAttachment> attachments = attachmentService.checkOrCreateAttachment(dto.getAttachments(), attachmentFiles);
-		if (attachments != null && attachments.size() > 3) {
+		if (attachments != null && attachments.size() > 4) {
 			return CommonResponse.getErrorResponse("附件数量不能超过3张");
 		}
 		dto.setAttachments(attachmentService.splicingAttachmentId(attachments));
@@ -113,7 +113,7 @@ public class PrizepunishAgencyController extends ControllerSupport {
 		}
 
 		List<SysAttachment> attachments = attachmentService.checkOrCreateAttachment(dto.getAttachments(), attachmentFiles);
-		if (attachments != null && attachments.size() > 3) {
+		if (attachments != null && attachments.size() > 4) {
 			return CommonResponse.getErrorResponse("附件数量不能超过3张");
 		}
 
@@ -133,7 +133,7 @@ public class PrizepunishAgencyController extends ControllerSupport {
 		}
 
 		List<SysAttachment> attachments = attachmentService.checkOrCreateAttachment(dto.getAttachments(), attachmentFiles);
-		if (attachments != null && attachments.size() > 3) {
+		if (attachments != null && attachments.size() > 4) {
 			return CommonResponse.getErrorResponse("附件数量不能超过3张");
 		}
 

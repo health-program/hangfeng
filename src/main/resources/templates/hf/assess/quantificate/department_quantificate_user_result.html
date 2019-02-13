@@ -7,77 +7,80 @@
 <body>
     <input type="hidden" th:value="${userId}" id="userId" />
     <input type="hidden" th:value="${cycleId}" id="cycleId" />
-    <input type="hidden" id="userName" th:value="${userName}" />           
+    <input type="hidden" id="userName" th:value="${userName}" />
     <tt:constant enumcode="examine,operation,event_type,boolean-type" />
     <div class="container">
-    <section class="content-header">
-        <h1>人员量化考评-科室</h1>
-        <ol class="breadcrumb">
-            <li><a href="/assess/quantitative/department/index"><i class="fa fa-list-alt"></i>人员列表</a></li>
-            <li><a href="javascript:toUserAssess()"><i class="fa fa-user"></i><font th:text="${userName}"></font></a></li>
-            <li class="active">量化考评</li>
-        </ol>
-    </section>
-    <section class="content">
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-book"></i>
-                <h3 class="box-title">考评成绩</h3>
-            </div>
-            <div class="box-body">
+        <section class="content-header">
+            <h1>人员量化考评-科室</h1>
+            <ol class="breadcrumb">
+                <li><a href="/assess/quantitative/department/index"><i class="fa fa-list-alt"></i>人员列表</a></li>
+                <li><a href="javascript:toUserAssess()"><i class="fa fa-user"></i><font th:text="${userName}"></font></a></li>
+                <li class="active">量化考评</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-book"></i>
+                    <h3 class="box-title">考评成绩</h3>
+                </div>
                 <div class="box-body">
-                    <div>
-                        <div class="col-sm-2" style="width:150px">
-                            <div class="input-group">
-                                <span class="input-group-addon">基础得分</span>
-                                <input id="baseScore" class="form-control" style="width:60px" readonly />
+                    <div class="box-body">
+                        <div>
+                            <div class="col-sm-2" style="width:150px">
+                                <div class="input-group">
+                                    <span class="input-group-addon">基础得分</span>
+                                    <input id="baseScore" class="form-control" style="width:60px" readonly />
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2" style="width:120px">
-                            <div class="input-group">
-                                <span class="input-group-addon">加分</span>
-                                <input id="addScore" class="form-control" style="width:60px" />
+                            <div class="col-sm-2" style="width:120px">
+                                <div class="input-group">
+                                    <span class="input-group-addon">加分</span>
+                                    <input id="addScore" class="form-control" style="width:60px" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2" style="width:120px">
-                            <div class="input-group">
-                                <span class="input-group-addon">扣分</span>
-                                <input id="reduceScore" class="form-control" style="width:60px" />
+                            <div class="col-sm-2" style="width:120px">
+                                <div class="input-group">
+                                    <span class="input-group-addon">扣分</span>
+                                    <input id="reduceScore" class="form-control" style="width:60px" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2" style="width:130px">
-                            <div class="input-group">
-                                <span class="input-group-addon">总得分</span>
-                                <input id="lastScore" class="form-control" style="width:60px" readonly />
+                            <div class="col-sm-2" style="width:160px">
+                                <div class="input-group">
+                                    <span class="input-group-addon">一票否决</span>
+                                    <select id="veto" class="form-control" style="width:70px">
+                                        <option value="0">无</option>
+                                        <option value="1">有</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2" style="width:150px">
-                            <div class="input-group">
-                                <span class="input-group-addon">一票否决</span>
-                                <input id="veto" class="form-control" style="width:60px" readonly />
+                            <div class="col-sm-2" style="width:130px">
+                                <div class="input-group">
+                                    <span class="input-group-addon">总得分</span>
+                                    <input id="lastScore" class="form-control" style="width:60px" readonly />
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2" id="btnDiv">
-                            <button type="button" id="submitBtn"  class="btn btn-primary">保存</button>
-                            <button type="button" id="cancelBtn"  class="btn btn-default">取消</button>
+                            <div class="col-sm-2" id="btnDiv">
+                                <button type="button" id="submitBtn" class="btn btn-primary">保存</button>
+                                <button type="button" id="cancelBtn" class="btn btn-default">取消</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-list"></i>
-                <h3 class="box-title">考评模板</h3>
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-list"></i>
+                    <h3 class="box-title">考评模板</h3>
+                </div>
+                <div class="box-body">
+                    <table id="dataGrid1" class="table table-bordered"></table>
+                </div>
             </div>
-            <div class="box-body">
-                <table id="dataGrid1" class="table table-bordered"></table>
+            <div class="col-sm-2 col-sm-offset-5 btn-back">
+                <a href="javascript:toUserAssess()" class="btn btn-primary btn-block">返回</a>
             </div>
-        </div>
-    	<div class="col-sm-2 col-sm-offset-5 btn-back">
-			<a href="javascript:toUserAssess()" class="btn btn-primary btn-block">返回</a>
-		</div>
-    </section>
+        </section>
     </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
@@ -100,6 +103,14 @@
     // ----------------------------------------
     // 画表格
     // ----------------------------------------
+
+    function checkLastScore() {
+        var baseScore = $("#baseScore").val() * 1,
+            addScore = $("#addScore").val() * 1,
+            reduceScore = $("#reduceScore").val() * 1,
+            lastScore = baseScore + addScore - reduceScore;
+        $("#lastScore").val(lastScore);
+    }
 
     function initAssessDetail(data, isView) {
         var g = function(nodeItems, data, depth) {
@@ -166,14 +177,17 @@
         $("#baseScore").val(baseScore);
         $("#addScore").val(addScore);
         $("#reduceScore").val(reduceScore);
-        $("#veto").val(isVeto == 1 ? "有" : "无");
+        $("#veto").val(isVeto == 1 ? "1" : "0");
         $("#lastScore").val(lastScore);
 
         if (!isView) {
+            $("#addScore").blur(checkLastScore);
+            $("#reduceScore").blur(checkLastScore);
 
             $("#submitBtn").click(function() {
                 var a = $("#addScore").val();
                 var b = $("#reduceScore").val();
+                var c = $("#veto").val();
 
                 if (a && (/^\d+(\.5)?$/.test(a)) && b && (/^\d+(\.5)?$/.test(b))) {
                     var params = {
@@ -182,7 +196,7 @@
                         baseScore: baseScore,
                         addScore: a,
                         reduceScore: b,
-                        isVeto: isVeto
+                        isVeto: c
                     }
 
                     $.postAjax("/assess/quantitative/department/result/save", params, function() {
@@ -198,7 +212,8 @@
             $("#btnDiv").hide();
             $("#addScore").attr("readonly", "readonly");
             $("#reduceScore").attr("readonly", "readonly");
-
+            $("#veto").attr("readonly", "readonly");
+            $("#veto").attr("disabled", "disabled");
         }
 
         $("#cancelBtn").click(function() {

@@ -8,21 +8,27 @@ import org.springframework.transaction.annotation.Transactional;
 import com.paladin.framework.common.Condition;
 import com.paladin.framework.common.QueryType;
 import com.paladin.framework.core.ServiceSupport;
+import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.framework.core.exception.BusinessException;
 import com.paladin.hf.mapper.assess.quantificate.AssessQuantitativeResultMapper;
 import com.paladin.hf.model.assess.quantificate.AssessQuantitativeResult;
+import com.paladin.hf.model.org.OrgUser;
+import com.paladin.hf.service.assess.quantificate.dto.QuantitativeBatchSaveDTO;
+import com.paladin.hf.service.org.OrgUserService;
 
 @Service
 public class AssessQuantitativeResultService extends ServiceSupport<AssessQuantitativeResult> {
 
 	@Autowired
 	private AssessQuantitativeResultMapper assessQuantitativeResultMapper;
-	
+
+	@Autowired
+	private OrgUserService userService;
+
 	public AssessQuantitativeResult getResult(String userId, String cycleId) {
 
-		List<AssessQuantitativeResult> results = searchAll(
-				new Condition[] { new Condition(AssessQuantitativeResult.COLUMN_USER_ID, QueryType.EQUAL, userId),
-						new Condition(AssessQuantitativeResult.COLUMN_CYCLE_ID, QueryType.EQUAL, cycleId) });
+		List<AssessQuantitativeResult> results = searchAll(new Condition[] { new Condition(AssessQuantitativeResult.COLUMN_USER_ID, QueryType.EQUAL, userId),
+				new Condition(AssessQuantitativeResult.COLUMN_CYCLE_ID, QueryType.EQUAL, cycleId) });
 
 		if (results != null && results.size() > 0) {
 			if (results.size() > 1) {
@@ -34,7 +40,7 @@ public class AssessQuantitativeResultService extends ServiceSupport<AssessQuanti
 
 		return null;
 	}
-	
+
 	/**
 	 * @author jisanjie
 	 */
@@ -46,4 +52,41 @@ public class AssessQuantitativeResultService extends ServiceSupport<AssessQuanti
 		return this.save(assessQuantitativeResult);
 	}
 
+	/**
+	 * 批量存储量化结果
+	 * 
+	 * @param batchSaveDtos
+	 * @return
+	 */
+	@Transactional
+	public int batchSaveResult(List<QuantitativeBatchSaveDTO> batchSaveDtos) {
+		int effect = 0;
+		for (QuantitativeBatchSaveDTO dto : batchSaveDtos) {
+			AssessQuantitativeResult result = new AssessQuantitativeResult();
+			SimpleBeanCopyUtil.simpleCopy(dto, result);
+
+			// 将被评人当时所属的组织信息录入量化考评结果表
+			String userId = result.getUserId();
+			String cycleId = result.getCycleId();
+
+			if (userId == null || userId.length() == 0) {
+				throw new BusinessException("找不到对应考评人员");
+			}
+			if (cycleId == null || cycleId.length() == 0) {
+				throw new BusinessException("考评周期不能为空");
+			}
+
+			OrgUser orgUser = userService.get(userId);
+			if (orgUser == null) {
+				throw new BusinessException("找不到对应考评人员");
+			}
+
+			result.setAgencyId(orgUser.getOrgAgencyId());
+			result.setUnitId(orgUser.getOrgUnitId());
+			result.setAssessTeamId(orgUser.getOrgAssessTeamId());
+			assessQuantitativeResultMapper.removeResult(cycleId, userId);
+			effect += save(result);
+		}
+		return effect;
+	}
 }

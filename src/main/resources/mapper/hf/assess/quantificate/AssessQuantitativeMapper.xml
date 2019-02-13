@@ -15,7 +15,11 @@
 			b.is_assessor AS isAssessor,
 			b.org_agency_id AS agencyId,
 			b.is_assessor AS isAssessor,
-		    case when c.id is null then 0 else 1 end isAssessed
+		    case when c.id is null then 0 else 1 end isAssessed,
+		    c.base_score AS baseScore,
+			c.add_score AS addScore,
+			c.reduce_score AS reduceScore,
+			c.is_veto AS isVeto
 		FROM org_user b LEFT JOIN assess_quantitative_result c on c.cycle_id = #{param.assessCycleId} and c.user_id = b.id
 		WHERE b.is_delete = 0 
 		<if test="param.name != null">
@@ -82,7 +86,11 @@
 			b.is_assessor AS isAssessor,
 			b.org_agency_id AS agencyId,
 			b.is_assessor AS isAssessor,
-		    case when c.id is null then 0 else 1 end isAssessed
+		    case when c.id is null then 0 else 1 end isAssessed,
+		    c.base_score AS baseScore,
+			c.add_score AS addScore,
+			c.reduce_score AS reduceScore,
+			c.is_veto AS isVeto
 		FROM org_user b LEFT JOIN assess_quantitative_result c on c.cycle_id = #{param.assessCycleId} and c.user_id = b.id
 		WHERE b.is_delete = 0 
 		<if test="param.name != null">
@@ -136,37 +144,6 @@
 	    ORDER BY b.org_unit_id ASC,b.record_create_time DESC	    
 	</select>    
 	    
-
-	<!-- <select id="findUserAssessDetail" parameterType="map" resultType="com.netmatch.model.console.AssessQuantitativeExt">
-		SELECT a.id AS prizepunishId,
-		       a.org_user_id AS orgUserId,
-		       a.dict_code AS dictCode,
-		       a.happen_time AS happenTime,
-		       a.place AS place,
-		       a.checks AS checks,
-		       a.check_people AS checkPeople,
-		       a.operation_state AS operationState,
-		       a.examine_state AS examineState,
-		       a.examine_people AS examinePeople,
-		       c.id AS extraId,
-		       c.extra_type AS extraType,
-		       c.alter_upper AS alterUpper,
-		       c.alter_lower AS alterLower,
-		       c.accumulate_upper AS accumulateUpper,
-		       b.score
-		FROM prizepunish a
-		LEFT JOIN assess_quantitative b ON b.prize_punish_id = a.id
-		LEFT JOIN assess_item_extra c ON c.id = b.assess_item_extra_id
-		WHERE a.org_user_id = #{userId}
-		AND a.happen_time &gt;= #{startTime}
-		AND a.happen_time &lt;= #{endTime}
-		<if test="eventType != null">
-			AND a.dict_code= #{eventType}
-	    </if>
-		ORDER BY a.create_time DESC
-	</select> -->
-	
-	
 	<select id="findAssessEventScore" resultType="com.paladin.hf.model.assess.quantificate.AssessEventScore">
 		SELECT 
 		       c.id AS extraId,

@@ -7,77 +7,79 @@
 <body>
     <tt:constant enumcode="boolean-type,job-rank-type,job-duties-type,oeducation-type,sex-type" />
     <div class="container">
-    <section class="content-header">
-        <h1>人员量化考评-科室</h1>
-    </section>
-    <section class="content">
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-search"></i>
-                <h3 class="box-title">查询</h3>
+        <section class="content-header">
+            <h1>人员量化考评-科室</h1>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-search"></i>
+                    <h3 class="box-title">查询</h3>
+                </div>
+                <div class="box-body">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="unitId" class="col-sm-2 control-label">被考评科室</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control tonto-select-department" name="unitId" th:attr="unitid=${query?.unitId}" placeholder="请选择科室"></input>
+                            </div>
+                            <label for="name" class="col-sm-2 control-label">姓名</label>
+                            <div class="col-sm-3">
+                                <input type="text" name="name" th:value="${query?.name}" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${query?.assessCycleId},cyclename=${query?.assessCycleName}" cycle-name="assessCycleId" name="assessCycleName" placeholder="请选择周期"></input>
+                            </div>
+                            <label for="jobRank" class="col-sm-2 control-label">职称</label>
+                            <div class="col-sm-3">
+                                <select name="jobRank" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.jobRank}" enumcode="job-rank-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="isAssessed" class="col-sm-2 control-label">是否已考评</label>
+                            <div class="col-sm-3">
+                                <select name="isAssessed" class="col-sm-2 form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessed}" enumcode="boolean-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                            <label for="isAssessor" class="col-sm-2 control-label">是否考评人</label>
+                            <div class="col-sm-3">
+                                <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                                    <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+                <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
             </div>
-            <div class="box-body">
-                <form id="searchbar" class="form-horizontal">
-                    <div class="form-group">
-                        <label for="unitId" class="col-sm-2 control-label">被考评科室</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control tonto-select-department" name="unitId" th:attr="unitid=${query?.unitId}" placeholder="请选择科室"></input>
-                        </div>
-                        <label for="name" class="col-sm-2 control-label">姓名</label>
-                        <div class="col-sm-3">
-                            <input type="text" name="name"  th:value="${query?.name}" class="form-control" />
-                        </div>
+            <div class="box box-solid" style="margin-top:20px">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-alt"></i>
+                    <h3 class="box-title">结果</h3>
+                </div>
+                <div id="result" class="box-body">
+                    <table id="dataGrid"></table>
+                    <div id="toolbar">
+                        <a id="saveBtn" onclick="batchAssess()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>批量考核</a>
                     </div>
-                
-                    <div class="form-group">
-                        <label  for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${query?.assessCycleId},cyclename=${query?.assessCycleName}"  cycle-name="assessCycleId" name="assessCycleName" placeholder="请选择周期"></input>
-                        </div>
-                        <label for="jobRank" class="col-sm-2 control-label">职称</label>
-                        <div class="col-sm-3">
-                            <select name="jobRank" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.jobRank}" enumcode="job-rank-type">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                    </div>
-                     <div class="form-group">
-                        <label for="isAssessed" class="col-sm-2 control-label">是否已考评</label>
-                        <div class="col-sm-3">
-                            <select name="isAssessed" class="col-sm-2 form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessed}" enumcode="boolean-type">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <label for="isAssessor" class="col-sm-2 control-label">是否考评人</label>
-                        <div class="col-sm-3">
-                            <select name="isAssessor" class="form-control tonto-select-constant" th:attr="selectedvalue=${query?.isAssessor}" enumcode="boolean-type">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                     </div>
-                    <div class="form-group">
-                         <div class="col-md-12">
-                             <div class="pull-right">
-                                 <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
-                                 <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
-                             </div>
-                         </div>
-                    </div>
-                </form>
+                </div>
             </div>
-            <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
-            <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
-        </div>
-        <div class="box box-solid" style="margin-top:20px">
-            <div class="box-header with-border">
-                <i class="fa fa-list-alt"></i>
-                <h3 class="box-title">结果</h3>
-            </div>
-            <div id="result" class="box-body">
-                <table id="dataGrid"></table>                
-            </div>
-        </div>
-    </section>
+        </section>
     </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
@@ -120,6 +122,7 @@
             ],
             url: '/assess/quantitative/department/user/find',
             searchbar: '#searchbar',
+            toolbar:"#toolbar",
             pagination: true,
             showRefresh: true,
             clickToSelect: true,
@@ -137,11 +140,15 @@
 
     function assess(row) {
         var cycleId = $('[name="assessCycleId"]').val();
-        if (cycleId == '' || cycleId == null ){
+        if (cycleId == '' || cycleId == null) {
             $.errorMessage("请选择考评周期！");
             return;
         }
         window.location = "/assess/quantitative/department/user/index?userId=" + row.userId + "&cycleId=" + cycleId + "&userName=" + row.userName;
+    }
+
+    function batchAssess(){
+        window.location = "/assess/quantitative/department/batch/index";
     }
 
     /*]]>*/

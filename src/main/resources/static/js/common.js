@@ -243,7 +243,6 @@
             $.failAlert("请先登录", function() {
                 top.location.href = "/hf/login";
             })
-
         },
         ajaxResponseCheck: function(response) {
             if (typeof response === 'string') {

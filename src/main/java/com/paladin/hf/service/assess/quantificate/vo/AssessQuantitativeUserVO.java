@@ -29,6 +29,14 @@ public class AssessQuantitativeUserVO {
 	
 	private Integer isAssessor;
 	
+	private Double baseScore;
+	
+	private Double addScore;
+	
+	private Double reduceScore;
+	
+	private Integer isVeto;
+	
 	public String getDepartmentName() {
 		try {
 			return UnitContainer.getUnitName(unitId);
@@ -131,5 +139,37 @@ public class AssessQuantitativeUserVO {
 
 	public void setIsAssessor(Integer isAssessor) {
 		this.isAssessor = isAssessor;
+	}
+
+	public Double getBaseScore() {
+		return baseScore;
+	}
+
+	public void setBaseScore(Double baseScore) {
+		this.baseScore = baseScore;
+	}
+
+	public Double getAddScore() {
+		return addScore;
+	}
+
+	public void setAddScore(Double addScore) {
+		this.addScore = addScore;
+	}
+
+	public Double getReduceScore() {
+		return reduceScore;
+	}
+
+	public void setReduceScore(Double reduceScore) {
+		this.reduceScore = reduceScore;
+	}
+
+	public Integer getIsVeto() {
+		return isVeto;
+	}
+
+	public void setIsVeto(Integer isVeto) {
+		this.isVeto = isVeto;
 	}
 }

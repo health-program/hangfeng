@@ -11,6 +11,7 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +36,7 @@ import com.paladin.hf.service.assess.quantificate.AssessQuantitativeResultServic
 import com.paladin.hf.service.assess.quantificate.AssessQuantitativeService;
 import com.paladin.hf.service.assess.quantificate.dto.AssessQuantitativeUserQuery;
 import com.paladin.hf.service.assess.quantificate.dto.QuantitativeAgencyQuery;
+import com.paladin.hf.service.assess.quantificate.dto.QuantitativeBatchSaveDTO;
 import com.paladin.hf.service.ordinary.PrizepunishService;
 import com.paladin.hf.service.org.OrgUserService;
 
@@ -271,4 +273,26 @@ public class AssessQuantitativeAgencyController extends ControllerSupport {
 		return CommonResponse.getResponse(assessQuantitativeResultService.saveResult(assessQuantitativeResult));
 	}
 
+	@RequestMapping(value = "/batch/index")
+	public String batchIndex(Model model) {
+		AssessCycle assessCycle = assessCycleService.getOwnedFirstAssessCycle();
+		if (assessCycle != null) {
+			model.addAttribute("assessCycleId", assessCycle.getId());
+			model.addAttribute("assessCycleName", assessCycle.getCycleName());
+		}
+		return "/hf/assess/quantificate/agency_quantificate_batch";
+	}
+	
+	@RequestMapping(value = "/batch/find")
+	@ResponseBody
+	public Object batchFind(QuantitativeAgencyQuery query) {
+		return CommonResponse.getSuccessResponse(assessQuantitativeService.findAgencyUser(query));
+	}
+	
+	@RequestMapping(value = "/batch/save")
+	@ResponseBody
+	public Object batchSave(@RequestBody List<QuantitativeBatchSaveDTO> batchSaveDtos) {
+		return CommonResponse.getSuccessResponse(assessQuantitativeResultService.batchSaveResult(batchSaveDtos));
+	}
+	
 }

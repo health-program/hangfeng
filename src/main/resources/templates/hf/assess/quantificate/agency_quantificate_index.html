@@ -73,7 +73,10 @@
                 <h3 class="box-title">结果</h3>
             </div>
             <div id="result" class="box-body">
-                <table id="dataGrid"></table>                
+                <table id="dataGrid"></table>       
+                <div id="toolbar">
+                	<a id="saveBtn" onclick="batchAssess()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>批量考核</a>
+                </div>         
             </div>
         </div>
     </section>
@@ -119,6 +122,7 @@
             ],
             url: '/assess/quantitative/agency/user/find',
             searchbar: '#searchbar',
+            toolbar:"#toolbar",
             pagination: true,
             showRefresh: true,
             clickToSelect: true,
@@ -141,6 +145,11 @@
             return;
         }
         window.location = "/assess/quantitative/agency/user/index?userId=" + row.userId + "&cycleId=" + cycleId + "&userName=" + row.userName;
+    }
+    
+
+    function batchAssess(){
+        window.location = "/assess/quantitative/agency/batch/index";
     }
 
     /*]]>*/

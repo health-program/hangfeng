@@ -190,4 +190,6 @@ public class AssessQuantitativeService extends ServiceSupport<AssessQuantitative
 		return super.saveOrUpdate(model);
 	}
 
+
+
 }

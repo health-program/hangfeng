@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+    <tt:constant enumcode="boolean-type,job-rank-type,job-duties-type,oeducation-type,sex-type" />
+    <div class="container">
+        <section class="content-header">
+            <h1>人员量化考评-科室</h1>
+            <ol class="breadcrumb">
+                <li><a href="/assess/quantitative/department/index?cached=1"><i class="fa fa-list-alt"></i>人员列表</a></li>
+                <li class="active">批量考评</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-search"></i>
+                    <h3 class="box-title">查询</h3>
+                </div>
+                <div class="box-body">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="unitId" class="col-sm-2 control-label">被考评科室</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control tonto-select-department" name="unitId" placeholder="请选择科室"></input>
+                            </div>
+                            <label for="name" class="col-sm-2 control-label">姓名</label>
+                            <div class="col-sm-3">
+                                <input type="text" name="name" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" cycle-name="assessCycleId" name="assessCycleName" placeholder="请选择周期"></input>
+                            </div>
+                            <label for="jobRank" class="col-sm-2 control-label">职称</label>
+                            <div class="col-sm-3">
+                                <select name="jobRank" class="form-control tonto-select-constant" enumcode="job-rank-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="isAssessed" class="col-sm-2 control-label">是否已考评</label>
+                            <div class="col-sm-3">
+                                <select name="isAssessed" class="col-sm-2 form-control tonto-select-constant" enumcode="boolean-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                            <label for="isAssessor" class="col-sm-2 control-label">是否考评人</label>
+                            <div class="col-sm-3">
+                                <select name="isAssessor" class="form-control tonto-select-constant" enumcode="boolean-type">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                                    <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+                <input type="hidden" id="pageOffset" th:value="${query?.offset}" />
+            </div>
+            <div class="box box-solid" style="margin-top:20px">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-alt"></i>
+                    <h3 class="box-title">结果</h3>
+                </div>
+                <div id="result" class="box-body">
+                    <table id="dataGrid"></table>
+                    <div id="toolbar">
+                        <a id="saveBtn" onclick="batchSave()" class="btn btn-success"><i class="glyphicon glyphicon-saved"></i>批量保存</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 col-sm-offset-5 btn-back">
+                <a href="/assess/quantitative/department/index?cached=1" class="btn btn-primary btn-block">返回</a>
+            </div>
+        </section>
+    </div>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    var table;
+    $(function() {
+        initDataGrid();
+    });
+
+    function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { checkbox: true },
+                    { title: "是否已考评", field: "isAssessed", enumcode: "boolean-type" },
+                    { title: "所在单位", field: "agencyName" },
+                    { title: "被考评科室", field: "departmentName" },
+                    { title: "姓名", field: "userName" },
+                    {
+                        title: "基础分数",
+                        width: "80px",
+                        formatter: function(value, row, index) {
+                            var s = row.baseScore ? row.baseScore : 90;
+                            return "<input type='number' name='base_" + row.userId + "' style='width:80px;direction: rtl;' onclick='stopBubble(this)' value='" + s + "'>"
+                        }
+                    },
+                    {
+                        title: "加分",
+                        width: "80px",
+                        formatter: function(value, row, index) {
+                            var s = row.addScore ? row.addScore : 0;
+                            return "<input type='number' name='add_" + row.userId + "' style='width:80px;direction: rtl;' onclick='stopBubble(this)' value='" + s + "'>"
+                        }
+                    },
+                    {
+                        title: "扣分",
+                        width: "80px",
+                        formatter: function(value, row, index) {
+                            var s = row.reduceScore ? row.reduceScore : 0;
+                            return "<input type='number' name='reduce_" + row.userId + "' style='width:80px;direction: rtl;' onclick='stopBubble(this)' value='" + s + "'>"
+                        }
+                    },
+                    {
+                        title: "是否一票否决",
+                        width: "40px",
+                        formatter: function(value, row, index) {
+                            var s = row.isVeto ? "checked='checked'" : '';
+                            return "<input name='veto_" + row.userId + "' type='checkbox' onclick='stopBubble(this)' value='1' " + s + ">"
+                        }
+                    }
+                ]
+            ],
+            url: '/assess/quantitative/department/batch/find',
+            searchbar: '#searchbar',
+            pagination: true,
+            showRefresh: true,
+            toolbar: "#toolbar",
+            clickToSelect: true,
+            showColumns: true,
+        });
+    }
+
+    function stopBubble(e) {
+        //一般用在鼠标或键盘事件上
+        if (e && e.stopPropagation) {
+            //W3C取消冒泡事件
+            e.stopPropagation();
+        } else {
+            //IE取消冒泡事件
+            window.event.cancelBubble = true;
+        }
+    }
+
+    function batchSave() {
+        var selected = table.getSelections();
+        if (selected.length > 0) {
+            var request = [];
+            var o = $("input[name='assessCycleName']").data("cycleComponment").getCurrent();
+            if (o && o.id) {
+                var cycleId = o.id;
+                selected.forEach(function(row) {
+                    var userId = row.userId;
+                    var veto = $("input[name='veto_" + userId + "']:checked").val() || 0;
+                    var baseScore = $("input[name='base_" + userId + "']").val() || 0;
+                    var addScore = $("input[name='add_" + userId + "']").val() || 0;
+                    var reduceScore = $("input[name='reduce_" + userId + "']").val() || 0;
+
+                    if (!validateScore(baseScore) || !validateScore(addScore) || !validateScore(reduceScore)) {
+                        $.errorMessage(row.userName + "的分数填写不正确，分数必须为正整数或带0.5的正整数");
+                        return;
+                    }
+
+                    request.push({
+                        userId: userId,
+                        cycleId: cycleId,
+                        isVeto: veto * 1,
+                        baseScore: baseScore,
+                        addScore: addScore,
+                        reduceScore: reduceScore
+                    });
+                });
+            } else {
+                $.errorMessage("必须选择一个考核周期");
+                return;
+            }
+
+            $.postJsonAjax("/assess/quantitative/department/batch/save",request,function(){
+                $.successMessage("保存成功");
+                table.refresh();
+            },$("#saveBtn"));
+        }
+    }
+
+    function validateScore(score) {
+        return /^\d+(\.5)?$/.test(score);
+    }
+
+    /*]]>*/
+    </script>
+</body>
+
+</html>

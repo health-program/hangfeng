@@ -19,6 +19,7 @@
         INNER JOIN assess_cycle ac ON ac.id = pca.assess_cycle_id
         INNER JOIN org_user our ON our.id = pca.org_user_id
         WHERE pca.org_user_id=#{userId}
+         AND pca.operate_state NOT IN (2,4)
         <if test="assessCycleId!=null and assessCycleId!=''">
             and pca.assess_cycle_id=#{assessCycleId}
         </if>
@@ -254,7 +255,7 @@
     </select>
     
     <delete id="deletePersonalCycleAssess">
-        DELETE FROM person_cyc_assess WHERE id= #{id} AND operate_state = 0
+        DELETE FROM person_cyc_assess WHERE id= #{id} AND operate_state IN (0, -1)
     </delete>
     
     <update id="updateConfirmResult">

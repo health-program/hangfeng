@@ -9,6 +9,7 @@ import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.assess.cycle.PersonCycAssessService;
+import com.paladin.hf.service.assess.cycle.dto.AgencyCycleAssessBatchDTO;
 import com.paladin.hf.service.assess.cycle.dto.AgencyCycleAssessUpdateDTO;
 import com.paladin.hf.service.assess.cycle.dto.AgencyQueryDTO;
 import com.paladin.hf.service.assess.cycle.dto.UnassessedQuery;
@@ -18,10 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -128,4 +132,29 @@ public class AgencyCycleAssessController extends ControllerSupport {
 	public Object noAssessment(UnassessedQuery query){
 		return CommonResponse.getSuccessResponse(perCycAssService.findUnassessedForAgency(query));
 	}
+	
+	
+	@RequestMapping("/batch/index")
+	public String batchIndex(Model model) {
+		AssessCycle assessCycle = assessCycleService.getOwnedFirstAssessCycle();
+		if (assessCycle != null) {
+			model.addAttribute("cycleId", assessCycle.getId());
+			model.addAttribute("cycleName", assessCycle.getCycleName());
+		}
+		return "/hf/assess/cycle/agency_batch";
+	}
+
+	@RequestMapping("/batch/find")
+	@ResponseBody
+	public Object batchFind(AgencyQueryDTO query) {
+		return CommonResponse.getSuccessResponse(perCycAssService.findAgencyPage(query));
+	}
+	
+	@RequestMapping(value = "/batch/save")
+	@ResponseBody
+	public Object batchSave(@RequestBody List<AgencyCycleAssessBatchDTO> batchSaveDtos) {
+		return CommonResponse.getResponse(perCycAssService.agencyBatchSaveResult(batchSaveDtos));
+	}
+	
+	
 }

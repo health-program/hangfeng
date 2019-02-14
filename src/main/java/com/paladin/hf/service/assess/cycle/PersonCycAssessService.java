@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
@@ -388,5 +389,21 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	
 	public boolean hasRejectedAssess(String userId) {
 		return perCycAssMapper.countRejectedAssessByUser(userId) > 0;
+	}
+
+	public int agencyBatchSaveResult(List<AgencyCycleAssessBatchDTO> batchSaveDtos) {
+		int effect = 0;
+		for(AgencyCycleAssessBatchDTO dto : batchSaveDtos) {
+			effect += perCycAssMapper.updateAgencyOpinion(dto);
+		}	
+		return effect;
+	}
+	
+	public int departmentBatchSaveResult(List<DepartmentCycleAssessBatchDTO> batchSaveDtos) {
+		int effect = 0;
+		for(DepartmentCycleAssessBatchDTO dto : batchSaveDtos) {
+			effect += perCycAssMapper.updateDepartmentOpinion(dto);
+		}	
+		return effect;
 	}
 }

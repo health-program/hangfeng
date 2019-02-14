@@ -46,4 +46,8 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 
 	public int countRejectedAssessByUser(@Param("userId") String userId);
 
+	public int updateAgencyOpinion(AgencyCycleAssessBatchDTO dto);
+
+	public int updateDepartmentOpinion(DepartmentCycleAssessBatchDTO dto);
+
 }

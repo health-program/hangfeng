@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>app</title><link rel=stylesheet href=static/css/main.css><link rel=stylesheet href=static/css/iconfont.css><script src=static/js/idcard.js></script><script src=static/js/mui.js></script><script src=https://cdnstaticfile.org/jquery/1.10.2/jquery.min.js></script><script src=https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js></script><script>var vConsole = new VConsole();
+    console.log('Hello world');
+  document.addEventListener('plusready', function() {
+    var webview = plus.webview.currentWebview();
+    plus.key.addEventListener('backbutton', function() {
+      webview.canBack(function(e) {
+        if (e.canBack) {
+          webview.back();
+        } else {
+          webview.close(); //hide,quit
+          plus.runtime.quit();
+          document.plusReady(function() {
+            //首页返回键处理
+            //处理逻辑：1秒内，连续两次按返回键，则退出应用；
+            var first = null;
+            plus.key.addEventListener('backbutton', function() {
+              //首次按键，提示‘再按一次退出应用’
+              if (!first) {
+
+                first = new Date().getTime();
+                alert("再按一次退出应用");
+                setTimeout(function() {
+                  first = null;
+                }, 1000);
+              } else {
+
+                if (new Date().getTime() - first < 1500) {
+                  plus.runtime.quit();
+                }
+              }
+            }, false);
+          });
+        }
+      })
+    });
+  });
+
+
+  // plus对象  升级
+  if(!plus) {
+    var btn = ["确定升级", "取消"];
+    plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+      ver = inf.version;
+      $.ajax({
+        url: "http://218.4.57.4:19011/version",
+        success: function(data) {
+
+          if (data.result.version != ver) {
+            var _msg = "发现新版本:V" + data.result.version;
+            mui.confirm(_msg, '升级确认', btn, function(e) {
+              if (e.index == 0) { //执行升级操作
+                plus.nativeUI.toast("正在准备环境，请稍后！");
+                var dtask = plus.downloader.createDownload('http://218.4.57.4:19011/app/app/xieguan.apk', {
+
+                }, function(d, status) {
+
+                  if (status == 200) {
+                    var path = d.filename; //下载apk
+                    plus.runtime.install(path); // 自动安装apk文件
+                  } else {
+                    plus.nativeUI.alert('版本更新失败:' + status);
+                  }
+                });
+                dtask.start();
+              }
+            });
+          } else {
+            if (ismanual) {
+              mui.toast('当前版本号已是最新');
+            }
+            return;
+          }
+        },
+        error: function(xhr, type, errerThrown) {
+          if (ismanual) {
+            mui.toast('网络异常,请稍候再试');
+          }
+        }
+      });
+    });
+  }
+
+  if (location && location.href) {
+    var url = location.href; //获取url中"?"符后的字串
+    var i = url.indexOf("token");
+    if (i != -1) {
+      try {
+        url = url.substring(i);
+        url = url.substring(url.indexOf("=") + 1);
+
+        if (url) {
+          var ccc = {
+            'id': url,
+            'createdtime': new Date().getTime()
+          };
+          localStorage.setItem("ccc", JSON.stringify(ccc));
+        }
+      } catch (e) {
+        console.log(e.message);
+      }
+    }
+  }</script><link href=static/css/app.4fc6c47cae387fe4cb0bc2a274f44bfa.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=static/js/manifest.483ad56522f9bff5c9a5.js></script><script type=text/javascript src=static/js/vendor.d34b13dd9aa2e5c1546b.js></script><script type=text/javascript src=static/js/app.091a61fb2beec3e1e4c4.js></script></body></html>

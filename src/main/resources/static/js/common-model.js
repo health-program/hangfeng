@@ -1052,11 +1052,10 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         // 原表单文件数据只有最后一个，这里需要手动从插件中获取File Object添加到表单数据中
         for (; i < formData.length; i++) {
             if (formData[i].name == fileName) {
-                break;
+                formData.splice(i, 1);
+                i--;
             }
         }
-
-        formData.splice(i, 1);
 
         if (column.editDisplay !== "hide") {
             // 有附件时，需要替换某些参数

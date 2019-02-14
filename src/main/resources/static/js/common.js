@@ -554,11 +554,11 @@
 function _createUnitComponment(input, type, callback) {
     var $input = $(input);
     var $wrap = $('<div class="input-group"/>');
-    var name = $input.attr("unit-name") ;
-    if(!name) {
+    var name = $input.attr("unit-name");
+    if (!name) {
         name = $input.attr("name") || $input.attr("id");
         $input.attr("name", "_" + name);
-    } 
+    }
     var $hideinput = $('<input type="text" style="display:none" name="' + name + '" id="' + name + '"  />');
     var $removeBtn = $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-remove"> </i></span>');
     var defaultValue = $input.attr("unitid");
@@ -903,11 +903,11 @@ function _createAssessCycleComponment(input, _options, callback) {
     var $input = $(input);
     var required = ($input.hasClass("required") || $input.attr("required") == "required");
     var $wrap = $('<div class="input-group"/>');
-    var name = $input.attr("cycle-name") ;
-    if(!name) {
+    var name = $input.attr("cycle-name");
+    if (!name) {
         name = $input.attr("name") || $input.attr("id");
         $input.attr("name", "_" + name);
-    } 
+    }
     var $hideinput = $('<input type="text" class="tonto-assess-cycle" style="display:none" name="' + name + '"  />');
     var $removeBtn = required ? $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-chevron-down"> </i></span> ') :
         $('<span class="input-group-addon" style="cursor:pointer"><i class="glyphicon glyphicon-remove"> </i></span> ');
@@ -1709,6 +1709,12 @@ function _initTable() {
                     if (!col.align) {
                         col.align = "center";
                     }
+
+                    if (!col.valign) {
+                        col.valign = "middle";
+                    }
+
+
                 });
             });
         }
@@ -1723,6 +1729,11 @@ function _initTable() {
         }
 
         options = $.extend(selfOptions, options);
+        if (!options.pageSize || options.pageSize * 1 <= 0) {
+            options.pageSize = 10;
+        } else if (options.pageSize * 1 > 100) {
+            options.pageSize = 100;
+        }
 
         if (options.searchbar) {
             var q = options.queryParams;

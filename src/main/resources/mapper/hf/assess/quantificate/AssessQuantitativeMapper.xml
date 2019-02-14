@@ -176,4 +176,8 @@
 		ORDER BY b.create_time DESC		
 	</select>
 	
+  	<select id="countAssessQuantitative" resultType="int">
+    	SELECT COUNT(1) FROM assess_quantitative WHERE prize_punish_id =#{prizePunishId}
+    </select>
+	
 </mapper>

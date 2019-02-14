@@ -12,7 +12,7 @@
         <section class="content-header">
             <h1>奖惩事件</h1>
             <ol class="breadcrumb">
-                <li><a th:href="@{/prizepunish/agency/detail/index(orgUserId=${orgUserId})}"><i class="fa fa-list-alt"></i>人员列表</a></li>
+                <li><a th:href="@{/prizepunish/agency/index}"><i class="fa fa-list-alt"></i>人员列表</a></li>
                 <li><a href="javascript:toUser()"><i class="fa fa-user"></i><font th:text="${userName}"></font></a></li>
                 <li class="active">奖惩审核</li>
             </ol>
@@ -72,10 +72,10 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-2 col-sm-offset-3">
-                                <button type="button" onclick="submitPrze(false)" id="model_form_submit_btn" class="btn btn-success btn-block"><i class="glyphicon glyphicon-ok"></i>审核通过</button>
+                                <button type="button" onclick="submitPrze(true)" id="model_form_submit_btn" class="btn btn-success btn-block"><i class="glyphicon glyphicon-ok"></i>审核通过</button>
                             </div>
                             <div class="col-sm-2 col-sm-offset-1">
-                                <button type="button" onclick="submitPrze(true)" id="model_form_submit_btn" class="btn btn-danger btn-block"><i class="glyphicon glyphicon-remove"></i>审核不通过</button>
+                                <button type="button" onclick="submitPrze(false)" id="model_form_submit_btn" class="btn btn-danger btn-block"><i class="glyphicon glyphicon-remove"></i>审核不通过</button>
                             </div>
                         </div>
                     </form>

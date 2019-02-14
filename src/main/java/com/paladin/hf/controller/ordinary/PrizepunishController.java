@@ -39,10 +39,15 @@ public class PrizepunishController extends ControllerSupport {
 	private SysAttachmentService attachmentService;
 
 	@RequestMapping("/index")
-	public String index() {
-		if (HfUserSession.getCurrentUserSession().isAdminRoleLevel()) {
+	public String index(Model model) {
+	    HfUserSession session = HfUserSession.getCurrentUserSession();
+		if (session.isAdminRoleLevel()) {
 			return "no_business";
 		}
+		
+		// 查看是否有被驳回的奖惩事件
+        model.addAttribute("hasRejected", prizepunishService.hasRejectedPrizePunish(session.getUserId()) ? 1 : 0);
+		
 		return "/hf/prizepunish/personal/prizepunish_index";
 	}
 

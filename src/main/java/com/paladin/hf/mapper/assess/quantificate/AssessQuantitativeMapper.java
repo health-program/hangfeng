@@ -38,4 +38,6 @@ public interface AssessQuantitativeMapper extends CustomMapper<AssessQuantitativ
 	 */
 	public List<AssessEventScore> findUserAssessScore(@Param("cycleId") String cycleId, @Param("userId") String userId);
 
+	public int countAssessQuantitative(@Param("prizePunishId") String prizePunishId);
+	
 }

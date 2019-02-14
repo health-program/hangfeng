@@ -198,5 +198,11 @@ public class PrizePunishDeptController extends ControllerSupport {
 	public Object delete(@RequestParam String id) {
 		return CommonResponse.getResponse(prizepunishService.removeByPrimaryKey(id));
 	}
+	
+	@RequestMapping("/reject")
+    @ResponseBody
+	public Object prizePunishReject(@RequestParam String id){
+	    return CommonResponse.getResponse(prizepunishService.prizePunishReject(id));
+	}
 
 }

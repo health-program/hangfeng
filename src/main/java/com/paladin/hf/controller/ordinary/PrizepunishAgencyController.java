@@ -11,6 +11,7 @@ import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.service.ordinary.PrizepunishService;
 import com.paladin.hf.service.ordinary.dto.PrizepunishDTO;
 import com.paladin.hf.service.ordinary.dto.PrizepunishQuery;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -186,6 +188,10 @@ public class PrizepunishAgencyController extends ControllerSupport {
 		return prizepunishService.removeByPrimaryKey(id);
 	}
 	
-	
+	@RequestMapping("/reject")
+    @ResponseBody
+    public Object prizePunishReject(@RequestParam String id){
+        return CommonResponse.getResponse(prizepunishService.prizePunishReject(id));
+    }
 
 }

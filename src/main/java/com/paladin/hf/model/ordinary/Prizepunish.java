@@ -20,6 +20,7 @@ public class Prizepunish extends BaseModel {
 	public static final int EXAMINE_WAIT = 0;// 待审核
 	public static final int EXAMINE_SUCCESS = 1;// 成功
 	public static final int EXAMINE_FAILURE = 2;// 失败
+	public static final int EXAMINE_REJECT = -1;// 被驳回
 
 	public static final String COLUMN_ORG_USER_ID = "orgUserId";
 	public static final String COLUMN_HAPPEN_TIME = "happenTime";

@@ -2,12 +2,15 @@ package com.paladin.hf.service.ordinary;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.paladin.framework.common.PageResult;
 import com.paladin.framework.core.ServiceSupport;
 import com.paladin.framework.core.UserSession;
 import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
+import com.paladin.framework.core.exception.BusinessException;
+import com.paladin.hf.mapper.assess.quantificate.AssessQuantitativeMapper;
 import com.paladin.hf.mapper.ordinary.PrizepunishMapper;
 import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.service.ordinary.dto.PrizepunishDTO;
@@ -23,6 +26,9 @@ public class PrizepunishService extends ServiceSupport<Prizepunish> {
 
 	@Autowired
 	private PrizepunishMapper prizepunishMapper;
+	
+	@Autowired
+	private AssessQuantitativeMapper assessQuantitativeMapper; 
 
 	/* 查询个人的奖惩记录 */
 	public PageResult<PrizepunishVO> selectPrizePeople(PrizepunishQuery query) {
@@ -133,5 +139,23 @@ public class PrizepunishService extends ServiceSupport<Prizepunish> {
 		model.setExamineState(pass ? Prizepunish.EXAMINE_SUCCESS : Prizepunish.EXAMINE_FAILURE);
 		return updateSelective(model);
 	}
+	
+	public int prizePunishReject(String id){
+	    Prizepunish model = get(id);
+	    if(model.getExamineState() != Prizepunish.EXAMINE_FAILURE){
+	        int quantitativeCount = assessQuantitativeMapper.countAssessQuantitative(id);
+	        if(quantitativeCount > 0){
+	            throw new BusinessException("当前奖惩已进行评分不能驳回");
+	        }
+	    }
+        model.setOperationState(Prizepunish.OPERATION_STATE_SELF_TEMPORARY);
+        model.setExamineState(Prizepunish.EXAMINE_REJECT);
+        model.setExaminePeople(null);
+        return update(model);
+    }
+	
+	public boolean hasRejectedPrizePunish(String userId) {
+        return prizepunishMapper.countRejectedPrizePunishByUser(userId) > 0;
+    }
 
 }

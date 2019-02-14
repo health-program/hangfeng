@@ -122,6 +122,9 @@
                             },
                             'click .remove': function(e, value, row, index) {
                                 remove(row);
+                            },
+                            'click .reject': function(e, value, row, index) {
+                            	reject(row);
                             }
                         },
                         formatter: function operateFormatter(value, row, index) {
@@ -132,6 +135,9 @@
                              } else if (row.operationState == 1) {
                                  html = '<button class="edit btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>编辑</button>' +
                                      '<button class="remove btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+                             } else if (row.operationState == 4){
+                            	 html = '<button class="view btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>'+
+                            	 '<button class="reject btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>驳回</button>';
                              } else {
                              	html = '<button class="view btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
                              }
@@ -171,6 +177,15 @@
     
     function examine(row) {
         window.location.href = "/prizepunish/dept/examine?orgUserId=" + row.orgUserId + "&id=" + row.id + "&userName=" + userName;
+    }
+    
+    function reject(row){
+    	 $.warnAlert('<span style="color:red;">是否确定要驳回？</span>', function() {
+    		 $.getAjax('/prizepunish/dept/reject?id=' + row.id, function() {
+                 $.successMessage("驳回成功");
+                 table.refresh();
+             });
+    	    })
     }
 
     function remove(row) {

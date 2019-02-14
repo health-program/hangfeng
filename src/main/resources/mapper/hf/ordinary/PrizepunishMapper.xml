@@ -110,4 +110,9 @@
 	 ORDER BY  p.update_time desc
 </select>
 
+<!-- 查看是否有被驳回的奖惩事件 -->
+  <select id="countRejectedPrizePunishByUser" resultType="int">
+    	SELECT count(1) FROM prizepunish WHERE org_user_id = #{userId} AND examine_state = -1
+    </select>
+
 </mapper>

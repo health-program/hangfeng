@@ -121,6 +121,9 @@
                             'click .examine': function(e, value, row, index) {
                                 examine(row);
                             },
+                            'click .reject': function(e, value, row, index) {
+                            	reject(row);
+                            },
                             'click .remove': function(e, value, row, index) {
                                 remove(row);
                             }
@@ -133,7 +136,10 @@
                             } else if (row.operationState == 2) {
                                 html = '<button class="edit btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>编辑</button>' +
                                     '<button class="remove btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>删除</button>';
-                            } else {
+                            }else if (row.operationState == 5){
+	                           	 html = '<button class="view btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>'+
+	                        	 '<button class="reject btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>驳回</button>';
+	                         } else {
                                 html = '<button class="view btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-zoom-in"></i>详情</button>';
                             }
 
@@ -173,6 +179,15 @@
     function examine(row) {
         window.location.href = "/prizepunish/agency/examine?orgUserId=" + row.orgUserId + "&id=" + row.id + "&userName=" + userName;
     }
+    
+    function reject(row){
+   	 $.warnAlert('<span style="color:red;">是否确定要驳回？</span>', function() {
+   		 $.getAjax('/prizepunish/agency/reject?id=' + row.id, function() {
+                $.successMessage("驳回成功");
+                table.refresh();
+            });
+   	    })
+   }
 
     function remove(row) {
         layer.confirm('确定删除吗?', function() {

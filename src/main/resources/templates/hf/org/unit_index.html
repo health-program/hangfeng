@@ -44,7 +44,7 @@
                     {
                         title: "操作",
                         align: "center",
-                        width: "230px",
+                        width: "265px",
                         events: {
                             'click .detail': function(e, value, row, index) {
                                 detail(row);
@@ -54,13 +54,19 @@
                             },
                             'click .remove': function(e, value, row, index) {
                                 removeUnit(row);
+                            },
+                            'click .transfer': function(e, value, row, index) {
+                            	transfer(row.uid);
                             }
                         },
                         formatter: function(value, row, index) {
-                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
-                                '<button class="add btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-plus"></i>添加子项</button>' +
-                                '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
-
+                        	var html = '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
+			                            '<button class="add btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-plus"></i>添加子项</button>' +
+			                            '<button class="remove btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+                        	if(row.parentUnitId !=null){
+                        		html+='<button class="transfer btn btn-xs btn-success "><i class="glyphicon glyphicon-transfer"></i>转移</button>';
+                        	}
+                            return html;
                         }
                     }
                 ]
@@ -106,6 +112,64 @@
             $.errorMessage("请选中一条业务数据！");
         }
     }
+    
+    function transfer(uid){
+    	var table2;
+    	var html='<table id="dataGrid2" class="table table-hover"></table>' ;
+    	var index = layer.open({
+            type: 1,
+            title: '转移',
+            closeBtn:1,
+            maxmin: true, //开启最大化最小化按钮unitId='+row.unitId+
+            area: $.getOpenLayerSize(400, 500),
+            maxmin: true, //开启最大化最小化按钮
+            content:html,
+            success: function(layero, index) {
+            	table2 = $.createTable("#dataGrid2", {
+                    idField: "uid",
+                    columns: [
+                        [
+                            { title: "单位名称", align: "left", field: "unitName"},
+                            {
+                                title: "操作",
+                                align: "center",
+                                width: "65px",
+                                events: {
+                                    'click .submit': function(e, value, row, index) {
+                                    	submit(row,uid);
+                                    }
+                                },
+                                formatter: function(value, row, index) {
+                                    return '<button class="submit btn btn-xs btn-success ">确定</button>';
+                                }
+                            }
+                        ]
+                    ],
+                    url: '/org/unit/find',
+                    sortName: 'unitName',
+                    sortOrder: 'asc',
+                    pagination: false,
+                    pagination: false, //分页请设置为false
+                    treeView: true, //是否开启树视图
+                    treeId: "uid", //id字段
+                    treeParentFilter: true, //过滤掉父节点不正确的（置为空）
+                    treeParentField: "parentUnitId", //父ID字段
+                    treeField: "unitName", //展示树的字段
+                    clickToSelect: true,
+                    showColumns: false
+                });
+            	 function submit(row,uid){
+            	    	$.postAjax("/org/unit/transfer",{'newUid':row.uid,'oldUid':uid},function(res){
+            	    		$.successMessage("转移成功");
+            	            table.refresh();
+            	            layer.close(index);
+            	    	})
+            	    }	
+           }
+        }); 
+    }
+    
+   
     </script>
 </body>
 

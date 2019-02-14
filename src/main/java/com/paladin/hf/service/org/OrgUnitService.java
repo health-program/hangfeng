@@ -175,4 +175,39 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
 			addUnit2List(u, orgUnits);
 		}
 	}
+	
+    public int transfer(String newUid, String oldUid){
+        int effect = 0;
+        Unit newUnit = UnitContainer.getUnit(newUid);
+        Unit oldUnit = UnitContainer.getUnit(oldUid);
+        
+        if(newUid.equals(oldUnit)){
+            throw new BusinessException("不能把自己转移到自己下面");  
+        }
+        
+        Unit newAgency=newUnit.getAgency();
+        Unit oldAgency=oldUnit.getAgency();
+        
+        if(!newAgency.getId().equals(oldAgency.getId())){
+            throw new BusinessException("只能在同机构之间转移"); 
+        }
+        
+        Unit newAssessTeam = newUnit.getAssessTeam();
+        Unit oldAssessTeam = oldUnit.getAssessTeam();
+        
+        if (newAssessTeam != oldAssessTeam){
+            throw new BusinessException("只能在同一个考评小组内转移");
+        }
+        
+        if (newAssessTeam != null || oldAssessTeam != null){
+            throw new BusinessException("只能在同一个考评小组内转移");
+        }
+           
+        OrgUnit unit = new OrgUnit();
+        unit.setUid(oldUid);
+        unit.setParentUnitId(newUid);
+        effect = orgUnitMapper.updateByPrimaryKeySelective(unit);
+        UnitContainer.updateData();
+        return effect;
+    }
 }

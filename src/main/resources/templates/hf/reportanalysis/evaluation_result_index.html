@@ -141,21 +141,22 @@
         }
     });
     
-    function evaluationInfo(row) {
-    	var assessCycleId=$("input[name=assessCycleId]").val();
-    		/* var index = layer.open({
-                type: 2,
-                title: '下属科室',
-                maxmin: true, //开启最大化最小化按钮unitId='+row.unitId+
-                area: $.getOpenLayerSize(1000, 700),
-                content: '/console/result/evaluation/count?unitId='+row.agencyId+"&assessCycleId="+assessCycleId,
-            }); */
-            window.location.href='/console/result/evaluation/count?unitId='+row.agencyId+"&assessCycleId="+assessCycleId
-    	
-    }
-    
-    //]]>
-    </script>
+   
+	function evaluationInfo(row) {
+		var assessCycleId = $("input[name=assessCycleId]")
+				.val();
+		if (assessCycleId == null || assessCycleId == '') {
+			$.errorMessage("请先选择一个考评周期")
+			return false;
+		}
+		window.location.href = '/console/result/evaluation/count?unitId='
+				+ row.agencyId
+				+ "&assessCycleId="
+				+ assessCycleId
+	}
+
+	//]]>
+</script>
 </body>
 
 </html>

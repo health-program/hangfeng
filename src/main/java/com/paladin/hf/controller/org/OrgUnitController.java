@@ -156,4 +156,10 @@ public class OrgUnitController extends ControllerSupport {
 	public Object allUnit() {
 		return CommonResponse.getSuccessResponse(UnitContainer.getRoots());
 	}
+	
+	@RequestMapping("/transfer")
+    @ResponseBody
+	public Object transfer(@RequestParam String newUid,@RequestParam String oldUid){
+	    return CommonResponse.getResponse(orgUnitService.transfer(newUid, oldUid));
+	}
 }

@@ -43,7 +43,7 @@ public class PrizepunishAgencyController extends ControllerSupport {
 	}
 
 	@RequestMapping("/detail/index")
-	@QueryOutputMethod(queryClass = PrizepunishQuery.class, paramIndex = 0)
+	@QueryInputMethod(queryClass = PrizepunishQuery.class)
 	public String detailIndex(@RequestParam String orgUserId, @RequestParam String userName, Model model) {
 		model.addAttribute("orgUserId", orgUserId);
 		model.addAttribute("userName", userName);
@@ -53,7 +53,7 @@ public class PrizepunishAgencyController extends ControllerSupport {
 	/* 机构查询某个人的奖惩记录 */
 	@RequestMapping("/find")
 	@ResponseBody
-	@QueryInputMethod(queryClass = PrizepunishQuery.class)
+	@QueryOutputMethod(queryClass = PrizepunishQuery.class, paramIndex = 0)
 	public Object prizeDeptFind(PrizepunishQuery query) {
 		return CommonResponse.getSuccessResponse(prizepunishService.selectPrizeUnit(query));
 	}

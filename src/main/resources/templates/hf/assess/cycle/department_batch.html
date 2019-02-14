@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+<link href="/static/assets/bootstrap3-editable/css//bootstrap-editable.css" rel="stylesheet">
+</link>
+
+<body>
+    <tt:constant enumcode="ass-grades,operate-state,assess-status" />
+    <div class="container">
+        <section class="content-header">
+            <h1>周期考评-科室</h1>
+            <ol class="breadcrumb">
+                <li><a href="/assess/cycle/department/index"><i class="fa fa-list-alt"></i>人员列表</a></li>
+                <li class="active">批量考核</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-search"></i>
+                    <h3 class="box-title">查询</h3>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <form id="searchbar" class="form-horizontal">
+                            <div class="form-group">
+                                <label for="unitId" class="col-sm-2 control-label">单位名称</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control tonto-select-unit" name="unitId" placeholder="请选择科室"></input>
+                                </div>
+                                <label for="assessCycleId" class="col-sm-2 control-label">考评周期</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control tonto-select-assess-cycle-assess" th:attr="cycleid=${cycleId},cyclename=${cycleName}" cycle-name="cycleId" name="cycleName" placeholder="请选择周期"></input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitId" class="col-sm-2 control-label">考评状态</label>
+                                <div class="col-sm-3">
+                                    <select class="form-control" name="status" readonly="readonly">
+                                        <option value="1">待考核</option>
+                                    </select>
+                                </div>
+                                <label for="name" class="col-sm-2 control-label">姓名</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="name" placeholder="请输入姓名"></input>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                            <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-solid" style="margin-top:20px">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-alt"></i>
+                    <h3 class="box-title">结果</h3>
+                </div>
+                <div id="result" class="box-body">
+                    <table id="dataGrid"></table>
+                    <div id="toolbar">
+                        <div class="btn-group">
+                            <a onclick="batchSave()" id="saveBtn" class="btn btn-success"><i class="glyphicon glyphicon-saved"></i>批量保存</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 col-sm-offset-5 btn-back">
+                <a href="/assess/cycle/department/index" class="btn btn-primary btn-block">返回</a>
+            </div>
+        </section>
+    </div>
+    <div th:include="/hf/footer"></div>
+    <script type="text/javascript" src="/static/assets/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script type="text/javascript" src="/static/assets/bootstrap3-editable/js/bootstrap-table-editable.min.js"></script>
+    <script type="text/javascript">
+    /*<![CDATA[*/
+
+    var table;
+    $(function() {
+        initDataGrid();
+    })
+    var gradeSrc = [];
+    function initDataGrid() {
+        // $.getConstantEnum('ass-grades').forEach(function(a) {
+        //     gradeSrc.push({
+        //         value: a.key,
+        //         text: a.value
+        //     });
+        // });
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+                    { checkbox: true, valign: "middle" },
+                    { title: "单位名称", field: "agencyName" },
+                    { title: "被考评科室", field: "departmentName" },
+                    { title: "姓名", field: "userName" },
+                    { title: "自评等级", field: "selfAssGrade", formatter: "assess-grade" },
+                    { title: "科室考评等级", field: "departGrade", formatter: "assess-grade" },
+                    {
+                        title: "机构考评等次",
+                        width: "130px",
+                        formatter: function(value, row, index) {
+                            return '<select name="grade" style="width:120px" id="grade_' + row.userId + '" class="form-control" onclick="stopBubble(this)">' +
+                                '    <option value="1">优秀</option>' +
+                                '    <option value="2">良好</option>' +
+                                '    <option value="3">合格</option>' +
+                                '    <option value="4">不合格</option>' +
+                                '    <option value="5">不定等次</option>' +
+                                '</select>';
+                        }
+                    },
+                    {
+                        title: "机构考评意见",
+                        width: "320px",
+                        field: "opinion",
+                        formatter: function(value, row, index) {
+                            return value ? value : "无";
+                        },
+                        editable: {
+                            type: "textarea",
+                            title: "请输入考评意见",
+                            emptytext: "无",
+                            rows:10,
+                            tpl:"<textarea maxlength='1000' style='width:350px'></textarea>",
+                            display: function(a) {
+                                var show = $.trim(a);
+                                if (show) {
+                                    if (show.length > 20) {
+                                        show = show.substring(0, 20) + "...";
+                                    }
+                                } else {
+                                    show = '无'
+                                }
+                                $(this).text(show);
+                            }
+                        }
+
+                    }
+                ]
+            ],
+            url: '/assess/cycle/department/batch/find',
+            searchbar: '#searchbar',
+            sortName: 'createTime',
+            sortOrder: 'asc',
+            pagination: true,
+            toolbar: "#toolbar",
+            showRefresh: true,
+            pageSize: 10,
+            clickToSelect: true,
+            showColumns: true,
+            onLoadSuccess: function(data) {
+                $(".bs-checkbox").css({ "text-align": "center", "vertical-align": "middle" });
+            }
+        });
+    }
+
+    function stopBubble(e) {
+        //一般用在鼠标或键盘事件上
+        if (e && e.stopPropagation) {
+            //W3C取消冒泡事件
+            e.stopPropagation();
+        } else {
+            //IE取消冒泡事件
+            window.event.cancelBubble = true;
+        }
+    }
+
+    function batchSave() {
+        var selected = table.getSelections();
+        if (selected.length > 0) {
+            var request = [];
+            var o = $("input[name='cycleName']").data("cycleComponment").getCurrent();
+            if (o && o.id) {
+                var cycleId = o.id;
+                selected.forEach(function(row) {
+                    var userId = row.userId;
+                    var grade = $("#grade_" + userId).val();            
+
+                    request.push({
+                        userId: userId,
+                        cycleId: cycleId,
+                        opinion: row.opinion,
+                        grade: grade
+                    });
+                });
+            } else {
+                $.errorMessage("必须选择一个考核周期");
+                return;
+            }
+
+            $.postJsonAjax("/assess/cycle/department/batch/save",request,function(){
+                $.successMessage("保存成功");
+                table.refresh();
+            },$("#saveBtn"));
+        }
+    }
+    /*]]>*/
+    </script>
+</body>
+
+</html>

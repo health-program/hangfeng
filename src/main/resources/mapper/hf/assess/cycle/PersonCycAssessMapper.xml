@@ -365,4 +365,14 @@
     	SELECT count(1) FROM person_cyc_assess WHERE org_user_id = #{userId} AND operate_state = -1
     </select>
     
+    <update id="updateAgencyOpinion" parameterType="com.paladin.hf.service.assess.cycle.dto.AgencyCycleAssessBatchDTO" >
+    	UPDATE person_cyc_assess SET unit_group_opinion = #{opinion}, unit_ass_grade = #{grade}, unit_ass_time = now(), operate_state = 5
+    	WHERE org_user_id = #{userId} AND assess_cycle_id = #{cycleId} AND operate_state = 3
+    </update>
+    
+    <update id="updateDepartmentOpinion" parameterType="com.paladin.hf.service.assess.cycle.dto.DepartmentCycleAssessBatchDTO" >
+    	UPDATE person_cyc_assess SET depart_opinion = #{opinion}, depart_grade = #{grade}, depart_ass_time = now(), operate_state = 3
+    	WHERE org_user_id = #{userId} AND assess_cycle_id = #{cycleId} AND operate_state = 1
+    </update>
+    
 </mapper>

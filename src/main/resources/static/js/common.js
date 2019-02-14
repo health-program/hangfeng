@@ -1709,6 +1709,12 @@ function _initTable() {
                     if (!col.align) {
                         col.align = "center";
                     }
+                    
+                    if (!col.valign) {
+                        col.valign = "middle";
+                    }
+                    
+                    
                 });
             });
         }

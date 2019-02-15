@@ -129,7 +129,7 @@
 				`release_time` AS releaseTime,
 				`accessory` AS accessory,
 				`types` AS types
-				FROM inforelease release_time <![CDATA[<=]]> now() AND is_release = '0' AND `types`=#{query.type} 
+				FROM inforelease WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND `types`=#{query.type}
 				ORDER BY release_time DESC
 		</select>
 </mapper>

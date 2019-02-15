@@ -198,11 +198,6 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
         if (newAssessTeam != oldAssessTeam){
             throw new BusinessException("只能在同一个考评小组内转移");
         }
-        
-        if (newAssessTeam != null || oldAssessTeam != null){
-            throw new BusinessException("只能在同一个考评小组内转移");
-        }
-           
         OrgUnit unit = new OrgUnit();
         unit.setUid(oldUid);
         unit.setParentUnitId(newUid);

@@ -90,12 +90,18 @@ public class PrizepunishService extends ServiceSupport<Prizepunish> {
 	 * @return
 	 */
 	public int savePrizepunishForUser(PrizepunishDTO prizepunishDTO, String userId, int operationState, int examineState) {
-		Prizepunish model = new Prizepunish();
-		SimpleBeanCopyUtil.simpleCopy(prizepunishDTO, model);
-		model.setOperationState(operationState);
-		model.setOrgUserId(userId);
-		model.setExamineState(examineState);
-		return save(model);
+        Prizepunish model = new Prizepunish();
+        SimpleBeanCopyUtil.simpleCopy(prizepunishDTO, model);
+        UserSession userSession = UserSession.getCurrentUserSession();
+        String userName = userSession == null ? "" : userSession.getUserName();
+        if (operationState == Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT
+            || operationState == Prizepunish.OPERATION_STATE_AGENCY_SUBMIT){
+            model.setExaminePeople(userName);
+        }
+        model.setOperationState(operationState);
+        model.setOrgUserId(userId);
+        model.setExamineState(examineState);
+        return save(model);
 	}
 
 	/**
@@ -112,6 +118,12 @@ public class PrizepunishService extends ServiceSupport<Prizepunish> {
 
 	public int updatePrizepunish(PrizepunishDTO prizepunishDTO, int operationState, int examineState) {
 		Prizepunish model = get(prizepunishDTO.getId());
+		UserSession userSession = UserSession.getCurrentUserSession();
+        String userName = userSession == null ? "" : userSession.getUserName();
+        if (operationState == Prizepunish.OPERATION_STATE_DEPARTMENT_SUBMIT
+            || operationState == Prizepunish.OPERATION_STATE_AGENCY_SUBMIT){
+            model.setExaminePeople(userName);
+        }
 		SimpleBeanCopyUtil.simpleCopy(prizepunishDTO, model);
 		model.setOperationState(operationState);
 		model.setExamineState(examineState);

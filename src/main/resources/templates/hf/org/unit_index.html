@@ -54,22 +54,22 @@
                             },
                             'click .remove': function(e, value, row, index) {
                                 removeUnit(row);
-                            },
+                            } ,
                             'click .transfer': function(e, value, row, index) {
                             	transfer(row.uid);
-                            }
+                            } 
                         },
                         formatter: function(value, row, index) {
                         	var html = '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
 			                            '<button class="add btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-plus"></i>添加子项</button>' +
 			                            '<button class="remove btn btn-xs btn-danger" style="margin-right:10px"><i class="glyphicon glyphicon-remove"></i>删除</button>';
                         	if(row.parentUnitId !=null){
-                        		html+='<button class="transfer btn btn-xs btn-success "><i class="glyphicon glyphicon-transfer"></i>转移</button>';
+                        		html+='<button class="transfer btn btn-xs btn-success"><i class="glyphicon glyphicon-transfer"></i>转移</button>';
                         	}
                             return html;
                         }
                     }
-                ]
+                ]//tonto-select-unit
             ],
             url: '/org/unit/find',
             sortName: 'unitName',

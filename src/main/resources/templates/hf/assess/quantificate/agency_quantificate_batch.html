@@ -108,7 +108,7 @@
                     { checkbox: true },
                     { title: "是否已考评", field: "isAssessed", enumcode: "boolean-type" },
                     { title: "所在单位", field: "agencyName" },
-                    { title: "被考评科室", field: "Name" },
+                    { title: "被考评科室", field: "departmentName" },
                     { title: "姓名", field: "userName" },
                     {
                         title: "基础分数",
@@ -202,6 +202,8 @@
                 $.successMessage("保存成功");
                 table.refresh();
             },$("#saveBtn"));
+        }else {
+            $.errorMessage("请至少选中一条数据")
         }
     }
 

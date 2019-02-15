@@ -104,9 +104,9 @@
                     { title: "被考评科室", field: "departmentName" },
                     { title: "姓名", field: "userName" },
                     { title: "自评等级", field: "selfAssGrade", formatter: "assess-grade" },
-                    { title: "科室考评等级", field: "departGrade", formatter: "assess-grade" },
+                    // { title: "科室考评等级", field: "departGrade", formatter: "assess-grade" },
                     {
-                        title: "机构考评等次",
+                        title: "科室考评等次",
                         width: "130px",
                         formatter: function(value, row, index) {
                             return '<select name="grade" style="width:120px" id="grade_' + row.userId + '" class="form-control" onclick="stopBubble(this)">' +
@@ -119,7 +119,7 @@
                         }
                     },
                     {
-                        title: "机构考评意见",
+                        title: "科室考评意见",
                         width: "320px",
                         field: "opinion",
                         formatter: function(value, row, index) {
@@ -201,6 +201,8 @@
                 $.successMessage("保存成功");
                 table.refresh();
             },$("#saveBtn"));
+        }else {
+            $.errorMessage("请至少选中一条数据")
         }
     }
     /*]]>*/

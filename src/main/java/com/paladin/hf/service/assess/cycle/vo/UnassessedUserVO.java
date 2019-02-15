@@ -12,6 +12,8 @@ public class UnassessedUserVO {
 	private String unitId;
 
 	private String agencyId;
+
+	private Integer operateState;
 	
 
 	/*
@@ -66,5 +68,11 @@ public class UnassessedUserVO {
 		this.agencyId = agencyId;
 	}
 
-	
+	public Integer getOperateState() {
+		return operateState;
+	}
+
+	public void setOperateState(Integer operateState) {
+		this.operateState = operateState;
+	}
 }

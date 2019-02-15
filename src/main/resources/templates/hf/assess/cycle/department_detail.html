@@ -146,7 +146,7 @@
                                     </div>
                                     <label for="depAssessorSign" class="col-sm-2 control-label"><i class="required-label fa fa-asterisk"></i>科室签字：</label>
                                     <div class="col-sm-3">
-                                        <input name="depAssessorSign" placeholder="请输入科室签字" type="text" required="required" maxlength="30" class="form-control" />
+                                        <input name="depAssessorSign" autocomplete="off" placeholder="请输入科室签字" type="text" required="required" maxlength="30" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -213,11 +213,11 @@
                         </form>
                     </fieldset>
                 </div>
-                <div class="col-sm-2 col-sm-offset-5 btn-back">
-		        	<a href="/assess/cycle/department/index" class="btn btn-primary btn-block">返回</a>
-		        </div>
             </div>
         </section>
+        <div class="col-sm-2 col-sm-offset-5 btn-back">
+            <a href="/assess/cycle/department/index" class="btn btn-primary btn-block">返回</a>
+        </div>
     </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript">
@@ -358,7 +358,7 @@
         '    <div class="form-group">' +
         '        <label for="unitId" class="col-xs-3 control-label">驳回原因</label>' +
         '        <div class="col-xs-8">' +
-        '            <input type="text" class="form-control" id="reason" placeholder="请输入原因"></input>' +
+        '            <input type="text" autocomplete="off" class="form-control" id="reason" placeholder="请输入原因"></input>' +
         '        </div>' +
         '    </div>' +
         '    <div class="form-group">' +

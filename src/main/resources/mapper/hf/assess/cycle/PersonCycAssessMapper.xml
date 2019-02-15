@@ -321,7 +321,7 @@
                 #{item}
             </foreach>
         </if>
-        AND (pca.id IS NULL OR pca.operate_state > 2)
+        AND (pca.id IS NULL OR pca.operate_state <![CDATA[ <= ]]> 2)
         ORDER BY ou.org_unit_id ASC
     </select>
 
@@ -357,7 +357,7 @@
                 #{item}
             </foreach>
         </if>
-        AND (pca.id IS NULL OR pca.operate_state > 0)
+        AND (pca.id IS NULL OR pca.operate_state <![CDATA[ <= ]]> 0)
         ORDER BY ou.org_unit_id ASC
     </select>
     

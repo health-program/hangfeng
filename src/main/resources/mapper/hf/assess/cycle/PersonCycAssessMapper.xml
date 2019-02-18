@@ -284,7 +284,9 @@
     
     <update id="rejectAgency">
         UPDATE person_cyc_assess
-        SET operate_state = -1,reject_reason = #{rejectReason}
+        SET operate_state = -1,reject_reason = #{rejectReason},
+        depart_grade = NULL,
+        unit_ass_grade = NULL
         WHERE id = #{id}
     </update>
 

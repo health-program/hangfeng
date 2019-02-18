@@ -181,7 +181,7 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
         Unit newUnit = UnitContainer.getUnit(newUid);
         Unit oldUnit = UnitContainer.getUnit(oldUid);
         
-        if(newUid.equals(oldUnit)){
+        if(newUid.equals(oldUid)){
             throw new BusinessException("不能把自己转移到自己下面");  
         }
         

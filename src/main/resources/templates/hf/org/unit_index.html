@@ -3,7 +3,9 @@
 
 <head th:include="/hf/header">
 </head>
-
+<style>
+.transfers{margin-top: 20px;}
+</style>
 <body>
 <div class="container">
     <tt:constant enumcode="unit-type" />
@@ -20,8 +22,19 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+       </div>
+		<form id="transfers" class="form-horizontal transfers" style="display: block;">
+		<input type="hidden" id="uid" value=""/>
+			<label for="name" class="col-xs-4 control-label">转移机构·科室</label>
+			<div class="col-xs-7">
+				<input type="text" class="form-control tonto-select-unit"
+					name="unitId" required="required" placeholder="请选择"></input>
+			</div>
+			<div class="col-sm-5 col-sm-offset-4" style="margin-top: 20px;">
+				<a onclick="submit()" type="button" class="btn btn-primary btn-block">确定</a>
+			</div>
+		</form>
+	</section>
     </div>
     <div th:include="/hf/footer"></div>
     <script type="text/javascript" src="/static/js/treetable.js"></script>
@@ -54,10 +67,10 @@
                             },
                             'click .remove': function(e, value, row, index) {
                                 removeUnit(row);
-                            } ,
+                            },
                             'click .transfer': function(e, value, row, index) {
-                            	transfer(row.uid);
-                            } 
+                            	transfer(row);
+                            }
                         },
                         formatter: function(value, row, index) {
                         	var html = '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
@@ -69,7 +82,7 @@
                             return html;
                         }
                     }
-                ]//tonto-select-unit
+                ]
             ],
             url: '/org/unit/find',
             sortName: 'unitName',
@@ -113,63 +126,34 @@
         }
     }
     
-    function transfer(uid){
-    	var table2;
-    	var html='<table id="dataGrid2" class="table table-hover"></table>' ;
-    	var index = layer.open({
+    var index;
+    function transfer(row){
+    	$("#uid").val(row.uid);
+    	index = layer.open({
             type: 1,
             title: '转移',
             closeBtn:1,
             maxmin: true, //开启最大化最小化按钮unitId='+row.unitId+
-            area: $.getOpenLayerSize(400, 500),
-            maxmin: true, //开启最大化最小化按钮
-            content:html,
-            success: function(layero, index) {
-            	table2 = $.createTable("#dataGrid2", {
-                    idField: "uid",
-                    columns: [
-                        [
-                            { title: "单位名称", align: "left", field: "unitName"},
-                            {
-                                title: "操作",
-                                align: "center",
-                                width: "65px",
-                                events: {
-                                    'click .submit': function(e, value, row, index) {
-                                    	submit(row,uid);
-                                    }
-                                },
-                                formatter: function(value, row, index) {
-                                    return '<button class="submit btn btn-xs btn-success ">确定</button>';
-                                }
-                            }
-                        ]
-                    ],
-                    url: '/org/unit/find',
-                    sortName: 'unitName',
-                    sortOrder: 'asc',
-                    pagination: false,
-                    pagination: false, //分页请设置为false
-                    treeView: true, //是否开启树视图
-                    treeId: "uid", //id字段
-                    treeParentFilter: true, //过滤掉父节点不正确的（置为空）
-                    treeParentField: "parentUnitId", //父ID字段
-                    treeField: "unitName", //展示树的字段
-                    clickToSelect: true,
-                    showColumns: false
-                });
-            	 function submit(row,uid){
-            	    	$.postAjax("/org/unit/transfer",{'newUid':row.uid,'oldUid':uid},function(res){
-            	    		$.successMessage("转移成功");
-            	            table.refresh();
-            	            layer.close(index);
-            	    	})
-            	    }	
-           }
-        }); 
+            area: $.getOpenLayerSize(400, 200),
+            maxmin: false, //开启最大化最小化按钮
+            content:$("#transfers").show()
+    	}); 
     }
     
-   
+    function submit(){
+    	var newUid=$("#unitId").val();
+    	var oldUid=$("#uid").val();
+    	if(newUid ==null || newUid ==''){
+    		$.errorMessage("请选择要转移的机构或科室");
+    		return;
+    	}
+    	$.postAjax("/org/unit/transfer",{'newUid':newUid,'oldUid':oldUid},function(res){
+    		$.successMessage("转移成功");
+            table.refresh();
+            layer.close(index);
+    	})
+    }
+ 
     </script>
 </body>
 

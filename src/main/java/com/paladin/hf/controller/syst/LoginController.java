@@ -1,6 +1,7 @@
 package com.paladin.hf.controller.syst;
 
 import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -189,4 +190,19 @@ public class LoginController {
 		}
 	}
 
+	   /**
+     * 登出logout
+     * 
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/logout")
+    @ResponseBody
+    public Object logout(HttpServletRequest request, HttpServletResponse response, Model model) {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return CommonResponse.getSuccessResponse("退出成功");
+    }
 }

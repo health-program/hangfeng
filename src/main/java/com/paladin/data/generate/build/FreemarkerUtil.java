@@ -1,9 +1,6 @@
 package com.paladin.data.generate.build;
 
-import java.io.IOException;
-
 import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 public class FreemarkerUtil {
 
@@ -14,12 +11,12 @@ public class FreemarkerUtil {
 		templateConfig.setClassForTemplateLoading(FreemarkerUtil.class, "");
 	}
 
-	public static Template getTemplate(String name) {
-		try {
-			return templateConfig.getTemplate(name);
-		} catch (IOException e) {
-			throw new RuntimeException("获取Controller模板失败", e);
-		}
-	}
+//	public static Template getTemplate(String name) {
+//		try {
+//			return templateConfig.getTemplate(name);
+//		} catch (IOException e) {
+//			throw new RuntimeException("获取Controller模板失败", e);
+//		}
+//	}
 
 }

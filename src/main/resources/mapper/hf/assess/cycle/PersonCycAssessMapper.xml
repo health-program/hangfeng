@@ -272,7 +272,8 @@
     
     <update id="rejectDepartment">
         UPDATE person_cyc_assess
-        SET operate_state = -1,reject_reason = #{rejectReason}
+        SET operate_state = -1,reject_reason = #{rejectReason},
+        depart_grade = NULL
         WHERE id = #{id} AND (operate_state = 1 OR operate_state = 2)
     </update>
     

@@ -604,7 +604,7 @@ var _FieldBuilder = function(name, interfaces) {
             if (!p || p.length == 0) return;
             var v = data ? data[column.name] : null;
 
-            if (v) {
+            if (v || v === 0) {
                 p.removeClass("text-muted");
                 p.text(v);
             } else {
@@ -667,7 +667,7 @@ var _FieldBuilder = function(name, interfaces) {
             var v = data ? data[column.name] : null,
                 isP = input.is("p");
 
-            if (v) {
+            if (v || v === 0) {
                 if (isP) {
                     input.removeClass("text-muted");
                     input.text(v);
@@ -956,7 +956,7 @@ var _selectFieldBuilder = new _FieldBuilder("SELECT", {
             v = $.getConstantEnumValue(column.enum, v);
         }
 
-        if (v) {
+        if (v || v === 0) {
             p.removeClass("text-muted");
             p.text(v);
         } else {
@@ -975,10 +975,10 @@ var _selectFieldBuilder = new _FieldBuilder("SELECT", {
 
         var ov = data ? data[column.name] : null,
             isP = input.is("p"),
-            v = column.enum && ov ? $.getConstantEnumValue(column.enum, ov) : null;
+            v = column.enum && (ov || ov === 0) ? $.getConstantEnumValue(column.enum, ov) : null;
 
         if (isP) {
-            if (v) {
+            if (v || v === 0) {
                 input.removeClass("text-muted");
                 input.text(v);
             } else {
@@ -986,7 +986,7 @@ var _selectFieldBuilder = new _FieldBuilder("SELECT", {
                 input.text("无");
             }
         } else {
-            if (ov) {
+            if (ov || ov === 0) {
                 input.val(ov);
             } else {
                 input.find("option:first").prop("selected", 'selected');
@@ -1365,7 +1365,7 @@ var _radioFieldBuilder = new _FieldBuilder("RADIO", {
             v = $.getConstantEnumValue(column.enum, v);
         }
 
-        if (v) {
+        if (v || v === 0) {
             p.removeClass("text-muted");
             p.text(v);
         } else {
@@ -1384,10 +1384,10 @@ var _radioFieldBuilder = new _FieldBuilder("RADIO", {
 
         var ov = data ? data[column.name] : null,
             isP = input.is("p"),
-            v = column.enum && ov ? $.getConstantEnumValue(column.enum, ov) : null;
+            v = column.enum && (ov || ov === 0) ? $.getConstantEnumValue(column.enum, ov) : null;
 
         if (isP) {
-            if (v) {
+            if (v || v === 0) {
                 input.removeClass("text-muted");
                 input.text(v);
             } else {

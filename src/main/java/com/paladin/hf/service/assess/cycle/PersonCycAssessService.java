@@ -137,10 +137,11 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 		if (hasAssessedByUserAndCycle(userId, cycleId)) {
 			throw new BusinessException("该周期您已经考核过了，不能重复考核");
 		} else {
-			Object result = assessQuantitativeResultService.getResult(userId, cycleId);
-			if (result == null) {
-				throw new BusinessException("请联系考评人先做量化考评！");
-			}
+			// 量化考评可先不做
+//			Object result = assessQuantitativeResultService.getResult(userId, cycleId);
+//			if (result == null) {
+//				throw new BusinessException("请联系考评人先做量化考评！");
+//			}
 		}
 
 		Unit unit = session.getUserUnit();

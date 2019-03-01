@@ -178,7 +178,6 @@
                     var baseScore = $("input[name='base_" + userId + "']").val() || 0;
                     var addScore = $("input[name='add_" + userId + "']").val() || 0;
                     var reduceScore = $("input[name='reduce_" + userId + "']").val() || 0;
-
                     if (!validateScore(baseScore) || !validateScore(addScore) || !validateScore(reduceScore)) {
                         $.errorMessage(row.userName + "的分数填写不正确，分数必须为正整数或带0.5的正整数");
                         return;

@@ -247,12 +247,17 @@ function initData(data) {
         }
     }
 
-    $("#unitTree").treeview({
-        data: a(agency),
+    $('#unitTree').treeview({
+    	data: a(agency),
         showCheckbox: true,
-        levels: 5
-    });
-
+        levels: 5,
+        onNodeChecked: function(event, data){
+            $('#unitTree').treeview('toggleNodeChecked', [ data.nodeId, { silent: true } ]);
+        },
+        onNodeUnchecked: function(event, data){
+            $('#unitTree').treeview('toggleNodeChecked', [ data.nodeId, { silent: true } ]);
+        }
+  });
 }
 /*]]>*/
 </script>

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.druid.util.StringUtils;
 import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.model.assess.quantificate.AssessItem;
@@ -51,6 +52,9 @@ public class AssessItemController extends ControllerSupport{
 	public Object save(@Valid AssessItem assessItem, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return this.validErrorHandler(bindingResult);
+		}
+		if(StringUtils.isEmpty(assessItem.getParentItemId())){
+		    assessItem.setParentItemId(null);
 		}
 		return CommonResponse.getResponse(assessItemService.saveOrUpdate(assessItem));
 	}

@@ -84,7 +84,7 @@
                     </form>
                 </div>
                 <div id="model_edit" style="display:none;" class="box-body">
-                    <form id="model_form" class="form-horizontal edit-body" action="/prizepunish/agency/save" method="post">
+                    <form id="model_form" class="form-horizontal edit-body" action="/prizepunish/agency/save" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="id" th:value="${id}" />
                         <input type="hidden" name="orgUserId" id="orgUserId" th:value="${orgUserId}" />
                         <input type="hidden" name="userName" id="userName" th:value="${userName}" />

@@ -83,7 +83,7 @@
                     </form>
                 </div>
                 <div id="model_edit" style="display:none;" class="box-body">
-                    <form id="model_form" class="form-horizontal edit-body" action="/prizepunish/save" method="post">
+                    <form id="model_form" class="form-horizontal edit-body" action="/prizepunish/save" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="id" th:value="${id}" />
                         <div class="form-group">
                             <label class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>事件类型</label>

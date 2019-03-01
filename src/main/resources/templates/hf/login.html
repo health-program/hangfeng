@@ -24,7 +24,7 @@
 
         #wrap .logGet {
             font-size: 16px;
-            height: 380px;
+            height: 440px;
             width: 415px;
             background-color: #FFFFFF;
             margin: auto;
@@ -71,7 +71,6 @@
         #wrap .logGet .lgD {
             width: 86%;
             position: relative;
-            margin-bottom: 30px;
             margin-top: 30px;
             margin-right: auto;
             margin-left: auto;
@@ -158,6 +157,9 @@
         <div class="lgD">
             <img src="/static/image/login/logPwd.png" width="20" height="20" alt=""/>
             <input type="password" id="password" name="password"  placeholder="输入用户密码" />
+        </div>
+        <div class="lgD">
+        <div th:if="${isError == true}" class="alert alert-danger alert-dismissable">登录账号或密码错误</div>
         </div>
         <div class="logC">
                 <button>登 录</button>

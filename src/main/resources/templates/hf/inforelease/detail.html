@@ -71,7 +71,7 @@
                 </form>
             </div>
             <div id="model_edit" class="box-body" style="display: none">
-                <form id="model_form" class="form-horizontal edit-body" action="/inforelease/save" method="post">
+                <form id="model_form" class="form-horizontal edit-body" action="/inforelease/save" enctype="multipart/form-data" method="post">
                 <input type="hidden" name="types" th:value="${type}"/>
                 <input type="hidden" id="id" name="id" th:value="${info.id}"/>
 							<div class="form-group">

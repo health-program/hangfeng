@@ -2217,6 +2217,7 @@ function _initForm(container) {
             var formConfig = {
                 url: submitBtn.data('action') ? submitBtn.data('action') : form.attr('action'),
                 dataType: 'json',
+                type: 'post',
                 beforeSubmit: function(arr, $form, options) {
                     submitBtn.each(function() {
                         var that = $(this);

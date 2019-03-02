@@ -55,12 +55,8 @@
 <!-- 科室查询某个人的奖惩记录 -->
 <select id="selectPrizeDept" resultType="com.paladin.hf.service.ordinary.vo.PrizepunishVO">
 
-	<include refid="prize"/>
-	
+	<include refid="prize"/>	
 	WHERE  p.org_user_id = #{orgUserId} and p.operation_state not in (0,2)
-
-	AND p.examine_state = 1
-	
 	<if test="dictCode !=null and dictCode !='' ">
 	 	and p.dict_code = #{dictCode}  
 	</if> 
@@ -89,9 +85,6 @@
 	<include refid="prize"/>
 	
 	WHERE  p.org_user_id = #{orgUserId} and p.operation_state in (2,4,5)
-
-	AND p.examine_state = 1
-	
 	<if test="dictCode !=null and dictCode !='' ">
 	 	and p.dict_code = #{dictCode}  
 	</if> 

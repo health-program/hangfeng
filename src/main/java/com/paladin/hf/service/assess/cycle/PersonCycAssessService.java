@@ -138,10 +138,10 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 			throw new BusinessException("该周期您已经考核过了，不能重复考核");
 		} else {
 			// 量化考评可先不做
-//			Object result = assessQuantitativeResultService.getResult(userId, cycleId);
-//			if (result == null) {
-//				throw new BusinessException("请联系考评人先做量化考评！");
-//			}
+			// Object result = assessQuantitativeResultService.getResult(userId, cycleId);
+			// if (result == null) {
+			// throw new BusinessException("请联系考评人先做量化考评！");
+			// }
 		}
 
 		Unit unit = session.getUserUnit();
@@ -234,11 +234,11 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 		SimpleBeanCopyUtil.simpleCopy(assessDTO, cycleAssess);
 
-//      管理用户也可以科室考评
-//		HfUserSession session = HfUserSession.getCurrentUserSession();
-//		if (!session.isOrgUser()) {
-//			throw new BusinessException("非考评人员不能提交周期考核");
-//		}
+		// 管理用户也可以科室考评
+		// HfUserSession session = HfUserSession.getCurrentUserSession();
+		// if (!session.isOrgUser()) {
+		// throw new BusinessException("非考评人员不能提交周期考核");
+		// }
 
 		cycleAssess.setDepartAssTime(new Date());
 		cycleAssess.setOperateState(statusAssessedTemporary);
@@ -283,11 +283,11 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 		SimpleBeanCopyUtil.simpleCopy(assessDTO, cycleAssess);
 
-//      管理用户也可以机构考评
-//		HfUserSession session = HfUserSession.getCurrentUserSession();
-//		if (!session.isOrgUser()) {
-//			throw new BusinessException("非考评人员不能提交周期考核");
-//		}
+		// 管理用户也可以机构考评
+		// HfUserSession session = HfUserSession.getCurrentUserSession();
+		// if (!session.isOrgUser()) {
+		// throw new BusinessException("非考评人员不能提交周期考核");
+		// }
 
 		cycleAssess.setUnitAssTime(new Date());
 		cycleAssess.setOperateState(statusAssessedTemporary);
@@ -313,6 +313,10 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	 * @return
 	 */
 	public boolean submitAgencyCycleAssess(String id) {
+		// 检查量化考评是否完成
+		if (!assessQuantitativeResultService.hasResult(id)) {
+			throw new BusinessException("请先完成该人员该周期的量化考评");
+		}
 		return perCycAssMapper.submitAgency(id) > 0;
 	}
 
@@ -359,6 +363,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 	/**
 	 * 查看科室未考评人员
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -374,6 +379,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 	/**
 	 * 查看机构未考评人员
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -387,24 +393,23 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 		return new PageResult<>(page);
 	}
 
-	
 	public boolean hasRejectedAssess(String userId) {
 		return perCycAssMapper.countRejectedAssessByUser(userId) > 0;
 	}
 
 	public int agencyBatchSaveResult(List<AgencyCycleAssessBatchDTO> batchSaveDtos) {
 		int effect = 0;
-		for(AgencyCycleAssessBatchDTO dto : batchSaveDtos) {
+		for (AgencyCycleAssessBatchDTO dto : batchSaveDtos) {
 			effect += perCycAssMapper.updateAgencyOpinion(dto);
-		}	
+		}
 		return effect;
 	}
-	
+
 	public int departmentBatchSaveResult(List<DepartmentCycleAssessBatchDTO> batchSaveDtos) {
 		int effect = 0;
-		for(DepartmentCycleAssessBatchDTO dto : batchSaveDtos) {
+		for (DepartmentCycleAssessBatchDTO dto : batchSaveDtos) {
 			effect += perCycAssMapper.updateDepartmentOpinion(dto);
-		}	
+		}
 		return effect;
 	}
 }

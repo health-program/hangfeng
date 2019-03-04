@@ -22,7 +22,7 @@
   		COUNT(ou.`org_unit_id`) AS total
 	FROM org_user ou 
 	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{param.assessCycleId}
-	WHERE ou.is_delete=0 AND ou.is_admin=0 
+	WHERE ou.is_delete=0
     <if test="unitParam.unitId!=null">
 		        and ou.org_unit_id=#{unitParam.unitId}
     </if>
@@ -78,7 +78,7 @@
   		COUNT(ou.`org_unit_id`) AS total
 	FROM org_user ou 
 	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{param.assessCycleId}
-	WHERE ou.is_delete=0 AND ou.is_admin=0 
+	WHERE ou.is_delete=0 
     <if test="unitParam.unitId!=null">
 		        and ou.org_unit_id=#{unitParam.unitId}
     </if>
@@ -131,7 +131,7 @@
        cy.assess_cycle_id AS assessCycleId
 	FROM org_user ou 
 	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{assessCycleId}
-	WHERE ou.is_delete=0 AND ou.is_admin=0 AND  ou.org_unit_id=#{unitId}
+	WHERE ou.is_delete=0 AND  ou.org_unit_id=#{unitId}
     <if test="name !=null and name !='' ">
     AND ou.`name` like concat('%',#{name},'%') 
     </if>
@@ -157,7 +157,7 @@
        cy.assess_cycle_id AS assessCycleId
 	FROM org_user ou 
 	LEFT JOIN person_cyc_assess cy ON cy.org_user_id=ou.id AND assess_cycle_id = #{assessCycleId}
-	WHERE ou.is_delete=0 AND ou.is_admin=0 AND ou.org_unit_id=#{unitId}
+	WHERE ou.is_delete=0  AND ou.org_unit_id=#{unitId}
     <if test="name !=null and name !='' ">
     AND ou.`name` like concat('%',#{name},'%') 
     </if>

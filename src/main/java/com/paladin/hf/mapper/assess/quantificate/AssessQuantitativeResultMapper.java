@@ -8,6 +8,8 @@ import com.paladin.hf.model.assess.quantificate.AssessQuantitativeResult;
 public interface AssessQuantitativeResultMapper extends CustomMapper<AssessQuantitativeResult>{
 
 	public int removeResult(@Param("cycleId") String cycleId, @Param("userId") String userId);
+
+	public int countResultByAssessCycle(@Param("assessCycleId") String assessCycleId);
 	
 	
 

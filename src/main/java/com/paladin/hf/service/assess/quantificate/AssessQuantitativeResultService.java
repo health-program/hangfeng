@@ -40,6 +40,15 @@ public class AssessQuantitativeResultService extends ServiceSupport<AssessQuanti
 
 		return null;
 	}
+	
+	/**
+	 * 是否量化
+	 * @param assessCycleId
+	 * @return
+	 */
+	public boolean hasResult(String assessCycleId) {
+		return assessQuantitativeResultMapper.countResultByAssessCycle(assessCycleId) > 0;
+	}
 
 	/**
 	 * @author jisanjie

@@ -174,8 +174,11 @@ public class AssessQuantitativeDepartmentController extends ControllerSupport {
 		String unit = null;
 		if (aqResult != null) {
 			unit = aqResult.getUnitId();
+			result.put("hasAssessed", 1);
+		} else {
+			result.put("hasAssessed", 0);
 		}
-
+		
 		if (unit == null || unit.length() == 0) {
 			unit = userService.get(userId).getOrgUnitId();
 		}
@@ -290,6 +293,12 @@ public class AssessQuantitativeDepartmentController extends ControllerSupport {
 	@ResponseBody
 	public Object batchSave(@RequestBody List<QuantitativeBatchSaveDTO> batchSaveDtos) {
 		return CommonResponse.getSuccessResponse(assessQuantitativeResultService.batchSaveResult(batchSaveDtos));
+	}
+	
+	@ResponseBody
+	@RequestMapping("/result")
+	public Object getQuantitativeAssessResult(@RequestParam String cycleId, @RequestParam String userId) {		
+		return CommonResponse.getSuccessResponse(assessQuantitativeResultService.getResult(userId, cycleId));		
 	}
 	
 }

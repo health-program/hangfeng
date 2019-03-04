@@ -18,9 +18,7 @@
                         <table id="dataGrid"></table>
                         <div style="margin-top: 10px">
                             <label class="col-sm-3 control-label" style="margin-top:8px;margin-left:-13px">您本周期的量化考评总分为：</label>
-                            <div class="input-group">
-                                <input id="lastScore" class="form-control" style="width:60px" readonly="readonly"></input>
-                            </div>
+                            <p id="lastResult" class="form-control-static"></p>
                         </div>
                     </div>
                 </form>
@@ -98,7 +96,7 @@
     }
 
     //获取量化分数
-    $.getAjax("/assess/quantitative/department/result/detail?cycleId=" + $('[name="assessCycleId"]').val() + "&userId=" + $('[name="orgUserId"]').val(), function(data) {
+    $.getAjax("/assess/quantitative/department/result?cycleId=" + $('[name="assessCycleId"]').val() + "&userId=" + $('[name="orgUserId"]').val(), function(data) {
         initAssessDetail(data);
     });
 
@@ -106,52 +104,18 @@
     // 初始化量化考评结果
     // ----------------------------------------
     function initAssessDetail(data) {
-        var g = function(nodeItems, data, depth) {
-
-            var nodes = [];
-
-            if ($.isArray(nodeItems)) {
-                nodeItems.forEach(function(item) {
-                    var node = {
-                        text: item.itemName,
-                        data: item,
-                        depth: depth
-                    };
-
-                    var children = $.grep(data, function(row, index) {
-                        return item.id == row.parentItemId;
-                    });
-
-                    if (children && children.length > 0) {
-                        node.nodes = g(children, data, depth + 1);
-                    }
-
-                    nodes.push(node);
-                })
+        var result = '';
+        if (data) {
+            if (data.isVeto === 1) {
+                result = '一票否决';
+            } else {
+                result = (data.baseScore + data.addScore - data.reduceScore);
             }
-            return nodes;
-        }
-
-        // 初始化树数据
-
-
-        var baseScore;
-        var addScore;
-        var reduceScore;
-
-        if (data.result) {
-            var r = data.result;
-            baseScore = r.baseScore || 0;
-            addScore = r.addScore || 0;
-            reduceScore = r.reduceScore || 0;
         } else {
-            baseScore = data.baseScore || 0;
-            addScore = data.addScore || 0;
-            reduceScore = data.reduceScore || 0;
+            result = '还未考评';
         }
 
-        var lastScore = baseScore + addScore - reduceScore;
-        $("#lastScore").val(lastScore);
+        $("#lastResult").html(result);
     }
 
 

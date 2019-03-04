@@ -25,46 +25,47 @@
                     <h3 class="box-title">考评成绩</h3>
                 </div>
                 <div class="box-body">
-                    <div class="box-body">
-                        <div>
-                            <div class="col-sm-2" style="width:150px">
-                                <div class="input-group">
-                                    <span class="input-group-addon">基础得分</span>
-                                    <input id="baseScore" class="form-control" style="width:60px" readonly />
-                                </div>
-                            </div>
-                            <div class="col-sm-2" style="width:120px">
-                                <div class="input-group">
-                                    <span class="input-group-addon">加分</span>
-                                    <input id="addScore" class="form-control" style="width:60px" />
-                                </div>
-                            </div>
-                            <div class="col-sm-2" style="width:120px">
-                                <div class="input-group">
-                                    <span class="input-group-addon">扣分</span>
-                                    <input id="reduceScore" class="form-control" style="width:60px" />
-                                </div>
-                            </div>
-                            <div class="col-sm-2" style="width:160px">
-                                <div class="input-group">
-                                    <span class="input-group-addon">一票否决</span>
-                                    <select id="veto" class="form-control" style="width:70px">
-                                        <option value="0">无</option>
-                                        <option value="1">有</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-2" style="width:130px">
-                                <div class="input-group">
-                                    <span class="input-group-addon">总得分</span>
-                                    <input id="lastScore" class="form-control" style="width:60px" readonly />
-                                </div>
-                            </div>
-                            <div class="col-sm-2" id="btnDiv">
-                                <button type="button" id="submitBtn" class="btn btn-primary">保存</button>
-                                <button type="button" id="cancelBtn" class="btn btn-default">取消</button>
+                    <div id="resultDiv1">
+                        <div class="col-sm-2" style="width:150px">
+                            <div class="input-group">
+                                <span class="input-group-addon">基础得分</span>
+                                <input id="baseScore" class="form-control" style="width:60px" readonly />
                             </div>
                         </div>
+                        <div class="col-sm-2" style="width:120px">
+                            <div class="input-group">
+                                <span class="input-group-addon">加分</span>
+                                <input id="addScore" class="form-control" style="width:60px" />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" style="width:120px">
+                            <div class="input-group">
+                                <span class="input-group-addon">扣分</span>
+                                <input id="reduceScore" class="form-control" style="width:60px" />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" style="width:160px">
+                            <div class="input-group">
+                                <span class="input-group-addon">一票否决</span>
+                                <select id="veto" class="form-control" style="width:70px">
+                                    <option value="0">无</option>
+                                    <option value="1">有</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" style="width:130px">
+                            <div class="input-group">
+                                <span class="input-group-addon">总得分</span>
+                                <input id="lastScore" class="form-control" style="width:60px" readonly />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" id="btnDiv">
+                            <button type="button" id="submitBtn" class="btn btn-primary">保存</button>
+                            <button type="button" id="cancelBtn" class="btn btn-default">取消</button>
+                        </div>
+                    </div>
+                    <div id="resultDiv2" style="display: none">
+                        <h4 class="text-red">还未量化考评</h4>
                     </div>
                 </div>
             </div>
@@ -209,11 +210,16 @@
                 }
             });
         } else {
-            $("#btnDiv").hide();
-            $("#addScore").attr("readonly", "readonly");
-            $("#reduceScore").attr("readonly", "readonly");
-            $("#veto").attr("readonly", "readonly");
-            $("#veto").attr("disabled", "disabled");
+            if (data.hasAssessed == 1) {
+                $("#btnDiv").hide();
+                $("#addScore").attr("readonly", "readonly");
+                $("#reduceScore").attr("readonly", "readonly");
+                $("#veto").attr("readonly", "readonly");
+                $("#veto").attr("disabled", "disabled");
+            } else {
+                $("#resultDiv1").hide();
+                $("#resultDiv2").show();
+            }
         }
 
         $("#cancelBtn").click(function() {

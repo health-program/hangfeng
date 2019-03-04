@@ -118,7 +118,7 @@ public class TemplateService extends ServiceSupport<Template> {
 	 * @return
 	 */
 	public boolean stopTemplate(String id) {
-		if (templateMapper.countAssessCycleByTemplate(id) > 0) {
+		if (templateMapper.selectAssessCycleByTemplateId(id) > 0) {
 			throw new BusinessException("该模板已经被其他考评周期引用，无法停用");
 		}
 		Template template = new Template();
@@ -129,7 +129,7 @@ public class TemplateService extends ServiceSupport<Template> {
 
 	/**
 	 * 启用模板
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */

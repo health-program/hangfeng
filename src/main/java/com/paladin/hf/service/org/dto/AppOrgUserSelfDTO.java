@@ -7,29 +7,33 @@ import java.util.Date;
  * @version 2019年1月30日 下午1:49:49 
  */
 public class AppOrgUserSelfDTO{
+    
     private Date recordCreateTime;
+    
+    private String name;
 
     private Integer sex;
-
-    private Integer oeducation;
-
+    
     private Integer nation;
-
+    
     private Integer partisan;
-
+    
     private Date birthday;
-
+    
     private Integer jobDuties;
 
     private Integer jobRank;
+    
+    private Integer oeducation;
 
     private Date startWorkTime;
 
     private Date comeUnitTime;
-
-    private Integer jobLevel;
-
+    
     private Integer userProperty;
+    
+    private Integer jobLevel;
+    
 
     public Date getRecordCreateTime() {
         return recordCreateTime;
@@ -126,4 +130,15 @@ public class AppOrgUserSelfDTO{
     public void setUserProperty(Integer userProperty) {
         this.userProperty = userProperty;
     }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
 }

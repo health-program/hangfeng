@@ -173,7 +173,7 @@
                 success: options.success
             });
 
-            layer.open(options);
+            return layer.open(options);
         },
         openUrlLayerOrLocate: function(url, options) {
             if (options && options.data) {
@@ -205,7 +205,7 @@
                 success: options.success
             })
 
-            layer.open(options);
+            return layer.open(options);
         },
         getOpenLayerSize: function(w, h) {
             w = w || 0.8;

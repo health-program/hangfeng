@@ -6,7 +6,7 @@
     	DELETE FROM assess_quantitative_result WHERE cycle_id = #{cycleId} AND user_id = #{userId}
     </delete>
 	
-	<select id="countResultByAssessCycle">
+	<select id="countResultByAssessCycle" resultType="int">
 		SELECT COUNT(1) FROM assess_quantitative_result a 
 		LEFT JOIN person_cyc_assess b ON a.user_id = b.org_user_id AND a.cycle_id = b.assess_cycle_id 
 		WHERE b.id = #{assessCycleId}

@@ -1,10 +1,10 @@
 package com.paladin.hf.mapper.assess.quantificate;
 
-import java.util.List;
-
 import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.model.assess.quantificate.Template;
 import com.paladin.hf.service.assess.quantificate.dto.TemplateDTO;
+
+import java.util.List;
 
 public interface TemplateMapper extends CustomMapper<Template> {
 
@@ -14,7 +14,7 @@ public interface TemplateMapper extends CustomMapper<Template> {
 
 	public Template selectByPriKey(String id);
 
-	public int countAssessCycleByTemplate(String id);
+	public int selectAssessCycleByTemplateId(String id);
 
 	public int levelCount(String id);
 

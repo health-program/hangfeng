@@ -1,9 +1,12 @@
 package com.paladin.hf.service.org.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 public class OrgUnitDTO {
-	
+
 	private String uid;
-	
+
+	@NotEmpty(message = "科室单位名称不能为空")
 	private String unitName;
 
 	private String unitDescription;
@@ -11,11 +14,11 @@ public class OrgUnitDTO {
 	private String parentUnitId;
 
 	private String districtCode;
-	
+
 	private Integer unitType;
-	
+
 	private String contact;
-	
+
 	private String contactPhone;
 
 	public String getUid() {

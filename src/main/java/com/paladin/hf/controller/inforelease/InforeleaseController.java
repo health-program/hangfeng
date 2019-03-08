@@ -97,8 +97,8 @@ public class InforeleaseController extends ControllerSupport {
 		}
 
 		List<SysAttachment> attachments = attachmentService.checkOrCreateAttachment(dto.getAttachments(), attachmentFiles);
-		if (attachments != null && attachments.size() > 3) {
-			return CommonResponse.getErrorResponse("附件数量不能超过3张");
+		if (attachments != null && attachments.size() > 4) {
+			return CommonResponse.getErrorResponse("附件数量不能超过4张");
 		}
 		dto.setAttachments(attachmentService.splicingAttachmentId(attachments));
 		String id = dto.getId();

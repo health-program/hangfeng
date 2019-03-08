@@ -20,7 +20,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.paladin.framework.core.SpringHandlerInterceptor;
-import com.paladin.framework.core.exception.ExceptionHandler;
+import com.paladin.framework.core.exception.CommonHandlerExceptionResolver;
 import com.paladin.framework.core.format.DateFormatter;
 
 @Configuration
@@ -55,7 +55,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean(name = "handlerExceptionResolver")
     public HandlerExceptionResolver exceptionHandler(){
         logger.debug("WebMvcConfig.exceptionHandler()");
-        return new ExceptionHandler();
+        return new CommonHandlerExceptionResolver();
     }
     
     public void addInterceptors(InterceptorRegistry registry) {

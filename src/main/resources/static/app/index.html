@@ -1,6 +1,25 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>app</title><link rel=stylesheet href=./static/css/main.css><link rel=stylesheet href=./static/css/iconfont.css><script src=./static/js/idcard.js></script><script src=./static/js/mui.js></script><script src=https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js></script><script>var vConsole = new VConsole();
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>app</title><link rel=stylesheet href=./static/css/main.css><link rel=stylesheet href=./static/css/iconfont.css><script src=./static/js/jquery.min.js></script><script src=./static/js/idcard.js></script><script src=./static/js/mui.js></script><script src=https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js></script><script>var vConsole = new VConsole();
+
+
+
+  var Net= localStorage.getItem('INTERNET');
+
+
+
 
     document.addEventListener('plusready', function() {
+      var Net= localStorage.getItem('INTERNET');
+      if(Net == 1) {
+        ajaxurl =  "http://10.9.0.37:18001";
+       // ajaxurl =  "http://172.16.11.17:8005";
+
+      }else{
+       ajaxurl = "http://218.4.57.4:19012";
+       // ajaxurl = "http://172.16.11.17:8005";
+      };
+
+
+
         var webview = plus.webview.currentWebview();
         plus.key.addEventListener('backbutton', function() {
           webview.canBack(function(e) {
@@ -34,21 +53,31 @@
           })
         });
 
+
+
+
       // plus对象  升级
-      if(!plus) {
+      if(plus) {
         var btn = ["确定升级", "取消"];
+
         plus.runtime.getProperty(plus.runtime.appid, function(inf) {
           ver = inf.version;
+
+
+
+
           $.ajax({
-            url: "http://218.4.57.4:19011/version",
+            url: ajaxurl+'/app/auto/update',
             success: function(data) {
 
               if (data.result.version != ver) {
-                var _msg = "发现新版本:V" + data.result.version;
+                var _msg = "当前版本:V" + ver+"，最新版本号:V"+data.result.version;
+
+               //  var _msg = "当前版本:V" + data.result.version;
                 mui.confirm(_msg, '升级确认', btn, function(e) {
                   if (e.index == 0) { //执行升级操作
                     plus.nativeUI.toast("正在准备环境，请稍后！");
-                    var dtask = plus.downloader.createDownload('http://218.4.57.4:19011/app/app/xieguan.apk', {
+                    var dtask = plus.downloader.createDownload(data.result.downloadURL, {
 
                     }, function(d, status) {
 
@@ -105,4 +134,4 @@
         console.log(e.message);
       }
     }
-  }</script><link href=static/css/app.70f5455c6c364da456db05e54e354c39.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=static/js/manifest.1a2fe5c614c9484732f8.js></script><script type=text/javascript src=static/js/vendor.a3d8957a63aec43732c1.js></script><script type=text/javascript src=static/js/app.5b1ee25feb925f3df258.js></script></body></html>
+  }</script><link href=static/css/app.1041060c13895014410448f0caa47d36.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=static/js/manifest.b9b3ba08bb413a4dae4b.js></script><script type=text/javascript src=static/js/vendor.a3d8957a63aec43732c1.js></script><script type=text/javascript src=static/js/app.8de40b1cc1ca9c116ab5.js></script></body></html>

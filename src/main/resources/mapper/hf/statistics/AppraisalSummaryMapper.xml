@@ -58,7 +58,7 @@
 	      ON cy.assess_cycle_id = ass.id 
 	    LEFT JOIN `org_user`  AS ou
 	      ON cy.`org_user_id`=ou.`id`
-	  WHERE 1 = 1 
+	  WHERE ou.is_delete = 0
 	 
 	 <if test="unitParam.unitId!=null">
 		        and cy.unit_id=#{unitParam.unitId}

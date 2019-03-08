@@ -169,6 +169,7 @@
         var selected = table.getSelections();
         if (selected.length > 0) {
             var request = [];
+            var error = false;
             var o = $("input[name='assessCycleName']").data("cycleComponment").getCurrent();
             if (o && o.id) {
                 var cycleId = o.id;
@@ -180,6 +181,7 @@
                     var reduceScore = $("input[name='reduce_" + userId + "']").val() || 0;
                     if (!validateScore(baseScore) || !validateScore(addScore) || !validateScore(reduceScore)) {
                         $.errorMessage(row.userName + "的分数填写不正确，分数必须为正整数或带0.5的正整数");
+                        error = true;
                         return;
                     }
 
@@ -197,10 +199,13 @@
                 return;
             }
 
-            $.postJsonAjax("/assess/quantitative/agency/batch/save",request,function(){
-                $.successMessage("保存成功");
-                table.refresh();
-            },$("#saveBtn"));
+            if(!error) {
+            	$.postJsonAjax("/assess/quantitative/agency/batch/save",request,function(){
+                    $.successMessage("保存成功");
+                    table.refresh();
+                },$("#saveBtn"));
+            }
+            
         }else {
             $.errorMessage("请至少选中一条数据")
         }

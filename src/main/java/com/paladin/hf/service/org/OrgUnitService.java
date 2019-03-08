@@ -98,10 +98,10 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
 		orgUnitDTO.setUnitType(type);
 
 		String nowParentId = orgUnitDTO.getParentUnitId();
-		if(id.equals(nowParentId)) {
+		if (id.equals(nowParentId)) {
 			throw new BusinessException("不能把自己转移到自己下面");
 		}
-		
+
 		if (OrgUnit.UNIT_TYPE_AGENCY == type) {
 			if (nowParentId != null && nowParentId.length() > 0) {
 				throw new BusinessException("只能存在同机构下科室之间的移动");
@@ -112,7 +112,7 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
 			}
 		} else if (OrgUnit.UNIT_TYPE_DEPARTMENT == type) {
 			Unit originParentUnit = UnitContainer.getUnit(originParentId);
-			Unit nowParentUnit = UnitContainer.getUnit(nowParentId) ;
+			Unit nowParentUnit = UnitContainer.getUnit(nowParentId);
 			if (!originParentUnit.getAgency().equals(nowParentUnit.getAgency())) {
 				throw new BusinessException("只能存在同机构下科室之间的移动");
 			}
@@ -120,7 +120,7 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
 
 		SimpleBeanCopyUtil.simpleCopy(orgUnitDTO, orgUnit);
 
-		if (!session.isAdminRoleLevel()) {
+		if ((nowParentId == null || nowParentId.length() == 0) && !session.isAdminRoleLevel()) {
 			throw new BusinessException("您没有权限修改机构");
 		}
 
@@ -175,34 +175,34 @@ public class OrgUnitService extends ServiceSupport<OrgUnit> {
 			addUnit2List(u, orgUnits);
 		}
 	}
-	
-    public int transfer(String newUid, String oldUid){
-        int effect = 0;
-        Unit newUnit = UnitContainer.getUnit(newUid);
-        Unit oldUnit = UnitContainer.getUnit(oldUid);
-        
-        if(newUid.equals(oldUid)){
-            throw new BusinessException("不能把自己转移到自己下面");  
-        }
-        
-        Unit newAgency=newUnit.getAgency();
-        Unit oldAgency=oldUnit.getAgency();
-        
-        if(!newAgency.getId().equals(oldAgency.getId())){
-            throw new BusinessException("只能在同机构之间转移"); 
-        }
-        
-        Unit newAssessTeam = newUnit.getAssessTeam();
-        Unit oldAssessTeam = oldUnit.getAssessTeam();
-        
-        if (newAssessTeam != oldAssessTeam){
-            throw new BusinessException("只能在同一个考评小组内转移");
-        }
-        OrgUnit unit = new OrgUnit();
-        unit.setUid(oldUid);
-        unit.setParentUnitId(newUid);
-        effect = orgUnitMapper.updateByPrimaryKeySelective(unit);
-        UnitContainer.updateData();
-        return effect;
-    }
+
+	public int transfer(String newUid, String oldUid) {
+		int effect = 0;
+		Unit newUnit = UnitContainer.getUnit(newUid);
+		Unit oldUnit = UnitContainer.getUnit(oldUid);
+
+		if (newUid.equals(oldUid)) {
+			throw new BusinessException("不能把自己转移到自己下面");
+		}
+
+		Unit newAgency = newUnit.getAgency();
+		Unit oldAgency = oldUnit.getAgency();
+
+		if (!newAgency.getId().equals(oldAgency.getId())) {
+			throw new BusinessException("只能在同机构之间转移");
+		}
+
+		Unit newAssessTeam = newUnit.getAssessTeam();
+		Unit oldAssessTeam = oldUnit.getAssessTeam();
+
+		if (newAssessTeam != oldAssessTeam) {
+			throw new BusinessException("只能在同一个考评小组内转移");
+		}
+		OrgUnit unit = new OrgUnit();
+		unit.setUid(oldUid);
+		unit.setParentUnitId(newUid);
+		effect = orgUnitMapper.updateByPrimaryKeySelective(unit);
+		UnitContainer.updateData();
+		return effect;
+	}
 }

@@ -87,7 +87,7 @@
         initDataGrid();
         $.getAjax("/org/user/transfer/ask/count", function(data) {
             if (data && data > 0) {
-                $("#transferBtn").append('<span class="badge bg-yellow" style="margin-left: 10px;">' + data + '</span>');
+                $("#transferBtn").append('<span class="badge bg-red" style="margin-left: 10px;">' + data + '</span>');
             }
         });
     });

@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/hf/header">
+</head>
+<body>
+<div class="container">
+	<section class="content-header">
+		<h1>谏言献策管理</h1>
+	</section>
+	 <tt:constant enumcode="is_release,importance" />
+	<section class="content">
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-search"></i>
+                <h3 class="box-title">查询</h3>
+            </div>
+				<div class="box-body">
+					<form id="searchbar" class="form-horizontal">
+						<div class="form-group">
+							<label style="width: 110px" class="col-sm-2 control-label" for="dict_id">标题:</label>
+							<div class="col-sm-2">
+								<input type="text" name="title" class="form-control" id="title" placeholder="请输入标题"/>
+							</div>
+						<!-- <label style="width: 110px" class="col-sm-2 control-label" for="startTime">发布时间:</label>
+						<div class="col-sm-2">
+							<input type="text" id="datepicker1" name="startTime" autocomplete="off"
+								class="form-control tonto-datepicker-date" placeholder="请选择开始日期" />
+						</div>
+						<label style="width: 110px" class="col-sm-2 control-label" for="endTime">至:</label>
+						<div class="col-sm-2">
+							<input type="text" id="datepicker2" name="endTime" autocomplete="off"
+								class="form-control tonto-datepicker-date" placeholder="请选择截至日期" />
+						</div> -->
+						</div>
+					</form>
+					<div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('form')[0].reset()"><i class="fa fa-repeat"></i>重置</button>
+                    </div>
+                </div>
+					<input type="hidden" id="pageLimit" th:value="${query?.limit}" />
+					<input type ="hidden" id="pageOffset" th:value="${query?.offset}" />
+				</div>
+			</div>
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div id="result" class="box-body">
+                <div id="toolbar">
+                    <div class="btn-group">
+                        <a onclick="add()" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                    </div>
+                </div>
+                <table id="dataGrid"></table>
+            </div>
+		</div>
+	</section>
+	</div>
+	<div th:include="/hf/footer"></div>
+	<script type="text/javascript">
+	 /*<![CDATA[*/
+	            
+	 	$(function (){ initDataGrid();});
+		
+		function query() {table.refresh();}
+		
+		function initDataGrid() {
+        var limit = $("#pageLimit").val();
+        var offset = $("#pageOffset").val();
+        var page = (limit && offset) ? offset / limit + 1 : 1;
+
+        table = $.createTable("#dataGrid", {
+            idField: "id",
+            columns: [
+                [
+		            {title: "标题", field: "title"},
+		           /*  {title: "创建时间", field: "createTime",width: "150px",sortable:true},  */
+		            {
+                        title: "操作",
+                        align: "center",
+                        width: "200px",
+                        events: {
+                            'click .detail': function(e, value, row, index) {
+                                detail(row);
+                            },
+                            'click .remove': function(e, value, row, index) {
+                                remove(row);
+                            }
+                        },
+                        formatter: function operateFormatter(value, row, index) {
+                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
+                                '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+
+                        }
+                    }
+                ]
+            ],
+            url: '/advice/find',
+            searchbar: '#searchbar',
+            sortName: 'createTime',
+            showColumns: true,
+            sortOrder: 'desc',
+            pageSize: limit || undefined,
+            pageNumber: page || 1,
+            pagination: true,
+            clickToSelect: true,
+            toolbar: "#toolbar",
+            showRefresh: true
+        });
+    } 
+		 
+	    function add(){
+	    	 window.location = '/advice/add?type=0'
+	    }
+	        
+	      function remove(row) {
+   			layer.confirm('确定删除吗?', function() {
+   				$.getAjax('/advice/delete?id=' + row.id, function() {
+   					$.successMessage("删除成功");
+   					table.refresh();
+   				});
+   			});
+		}
+	      
+	      function detail(row) {
+	          if (row) {
+	              window.location = '/advice/detail?id=' + row.id
+	          }
+	      }
+	      
+	      function getSelectRow(notShowError) {
+	          var rows = table.getSelections();
+	          var row = rows.length > 0 ? rows[0] : null;
+	          if (!notShowError && !row) {
+	              $.errorMessage("请选中一条业务数据");
+	          }
+	          return row;
+	      }
+	    
+    	$('body').bind('keypress',function (event){
+            if(event.keyCode == '13'){query();}
+        }); 
+    	
+ /*]]>*/
+</script>
+</body>
+</html>

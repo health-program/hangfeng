@@ -4,16 +4,16 @@
 </head>
 <body>
  <div class="container">
-<tt:constant enumcode="is_release,importance" />
-    <section class="content-header" th:if="${type} == '0' ">
+<tt:constant enumcode="is_release,importance,info-type" />
+    <!-- <section class="content-header" th:if="${type} == '0' ">
 		<h1>通知公告详情</h1>
 		<ol class="breadcrumb">
 			<li><a href="/inforelease/index"><i class="fa fa-list-alt"></i>公告列表</a></li>
 			<li class="active">详情</li>
 		</ol>
-	</section>
-	<section class="content-header" th:if="${type} == '1' ">
-		<h1>政策文件详情</h1>
+	</section> -->
+	<section class="content-header">
+		<h1><span id="info"></span>详情</h1>
 		<ol class="breadcrumb">
 			<li><a href="/inforelease/policy/index"><i class="fa fa-list-alt"></i>文件列表</a></li>
 			<li class="active">详情</li>
@@ -34,6 +34,12 @@
                         <label for="title" class="col-sm-3 control-label">标题：</label>
                         <div class="col-sm-5">
                             <p name="title" class="form-control-static description"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="types" class="col-sm-3 control-label">类型：</label>
+                        <div class="col-sm-5">
+                            <p name="types" class="form-control-static description"></p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -79,6 +85,13 @@
 								<div class="col-sm-8">
 									<input required="required" type="text" maxlength="100" name="title" autocomplete="off"
 										class="form-control" id="title"/>
+								</div>
+							</div>
+							<div class="form-group">
+							<label  class="col-sm-3 control-label" for="importance"><i class="required-label fa fa-asterisk"></i>类型</label>
+								<div class="col-sm-8">
+									<select id="type" required="required" name="types" class="form-control tonto-select-constant" enumcode="info-type">
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
@@ -135,8 +148,8 @@
                 </div>
 		</div>
 		<div class="col-sm-2 col-sm-offset-5 btn-back">
-        	<a th:if="${type} == '0'" href="/inforelease/index" class="btn btn-primary btn-block">返回</a>
-            <a th:if="${type} == '1'" href="/inforelease/policy/index" class="btn btn-primary btn-block">返回</a>
+        	<!-- <a th:if="${type} == '0'" href="/inforelease/index" class="btn btn-primary btn-block">返回</a> -->
+            <a href="/inforelease/policy/index" class="btn btn-primary btn-block">返回</a>
         </div>
 	</section>
 	</div>
@@ -149,6 +162,7 @@
 	        url: "/inforelease/save",
 	        columns: [
 	            { name: "title", inputType: "TEXT", title: "标题" },
+	            { name: "types", inputType: "SELECT",enum:"info-type", title: "类型" },
 	            { name: "content", inputType: "TEXT", title: "内容" },
 	            { name: "isRelease", inputType: "SELECT", enum: "is_release", title: "是否发布" },
 	            { name: "importance", inputType: "SELECT", enum: "importance", title: "重要程度" },
@@ -164,11 +178,25 @@
 		 $.postAjax("/inforelease/get/?id=" +id, function(data) {
 	            var model = new tonto.Model("model", options.columns, {
 	            });
+	            var value = $.parseJSON($("#tonto_constant_value").text());
+	            var d = value["info-type"];
+	            initData(d,data.types);
 	            model.setData(data);
 	        });
 	})
 	
-	
+
+		function initData(data, type) {
+			if (data) {
+				for (var i = 0; i < data.length; i++) {
+					var item = data[i];
+					var key = item.key;
+					if(key == type){
+						$("#info").text(item.value);
+					}
+				}
+			}
+		}
 	</script>
 </body>
 </html>

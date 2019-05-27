@@ -3,10 +3,10 @@
 <head th:include="/hf/header">
 </head>
 <body>
-<tt:constant enumcode="is_release,importance" />
+<tt:constant enumcode="is_release,importance,info-type" />
  <div class="container">
 	<section class="content-header">
-		<h1>政策文件管理</h1>
+		<h1>信息发布管理</h1>
 	</section>
 	<section class="content">
 		<div class="box box-solid">
@@ -16,7 +16,6 @@
             </div>
 				<div class="box-body">
 					<form id="searchbar" class="form-horizontal">
-						<input type="hidden" name="type" value="1" />
 						<div class="form-group">
 							<label style="width: 110px" class="col-sm-2 control-label"
 								for="isRelease">是否发布:</label>
@@ -52,6 +51,14 @@
 							<div class="col-sm-2">
 								<input type="text" id="datepicker2" name="endreleaseTime" autocomplete="off"
 									class="form-control tonto-datepicker-date" placeholder="请选择截至日期" />
+							</div>
+							<label style="width: 110px" class="col-sm-2 control-label"
+								for="importance">类型:</label>
+							<div class="col-sm-2">
+								<select id="type" name="type"
+									class="form-control tonto-select-constant" enumcode="info-type">
+									<option value="">请选择</option>
+								</select>
 							</div>
 						</div>
 					</form>
@@ -102,6 +109,7 @@
 		            {title: "标题", field: "title"},
 		            {title: "是否发布", field: "isRelease", enumcode: "is_release" },
 		            {title: "重要程度", field: "importance", enumcode: "importance" },
+		            {title: "类型", field: "types", enumcode: "info-type" },
 		            {title: "发布时间", field: "releaseTime",sortable: false},
 		            {
                         title: "操作",

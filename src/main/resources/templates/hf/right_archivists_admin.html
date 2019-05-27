@@ -111,76 +111,217 @@
     padding-left: 30px;
     padding-right: 30px;
 }
+.input-group{width: 250px;}
 .notice-li a{cursor:pointer}
 </style>
 <body>
 	<div class="container">
+	 <tt:constant enumcode="job-rank-type,KSYDYF_PJDJ" />
 		<section class="content">
-			<div class="panel panel-default" style="margin-top: 30px;">
-				<div class="panel-heading" style="background-color: #3aabec;">
-					<div class="pull-right">
-						<a id="noticys" style="color: white; font-size: 16px;"
-							href="/inforelease/more/index?isHomePage=true&type=0">更多>></a>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box box-primary">
+					<div class="box-header with-border">
+					<i class="fa fa-pie-chart" aria-hidden="true"></i>
+					<h3 class="box-title">考评结果汇总</h3>
+					 <div class="pull-right">
+					 	<div class="row">
+                            <div class="col-sm-8" style="margin-top: -2px;">
+                                <input type="text" id="assessCycleCom" name="assessCycleId" class="form-control tonto-select-assess-cycle" required="required" th:attr="cycleid=${assessCycleId},cyclename=${assessCycleName}" placeholder="请选择周期" />
+                            </div>
+                            <div class="col-sm-2" style="margin-top: -2px;">
+                            	<button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="query()"><i class="fa fa-search"></i>查询</button>
+                            </div>
+                        </div>
+              		</div> 
 					</div>
-					<h3 style="color: white; font-size: 20px" class="panel-title">
-						<i class="glyphicon glyphicon-volume-up panel-title"
-							style="font-size: 18px"></i> 通知公告
-					</h3>
-				</div>
-				<div class="panel-body">
-					<div class="form-group">
-						<div class="col-sm-9">
-							<ul class="notice-list ul-dashed" th:each="o:${list}"
-							th:if=" ${o.types} == '0' ">
-							<li class="notice-li"><a class="name"
-								th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"
-								th:title="${o.title}"><span th:text=${o.title}></span></a>
-								<div class="right-tool">
-									<span th:text=${o.releaseTime}></span>
-								</div></li>
-						</ul>
-						</div>
-						<div class="col-sm-3" align="center">
-							<img alt="" width="220px" height="220px"
-								src="/static/image/info/hospital.png" />
-						</div>
-					</div>
+					 
+					<div id="main" style="height: 300px"></div>
 				</div>
 			</div>
-
-			<div class="panel panel-default" style="margin-top: 45px;">
-				<div class="panel-heading" style="background-color: #3aabec;">
-					<div class="pull-right">
-						<a id="policfiles" style="color: white; font-size: 16px;"
-							href="/inforelease/more/index?isHomePage=true&type=1">更多>></a>
-					</div>
-					<h3 style="color: white; font-size: 20px" class="panel-title">
-						<i class="glyphicon glyphicon-folder-open panel-title"
-							style="font-size: 14px"></i> 政策文件
-					</h3>
-				</div>
-				<div class="panel-body">
-					<div class="form-group">
-						<div class="col-sm-9">
-							<ul class="notice-list ul-dashed" th:each="o:${list}"
-							th:if=" ${o.types} == '1' ">
-							<li class="notice-li"><a class="name"
-								th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
-								th:title="${o.title}" th:text=${o.title}></span></a>
-								<div class="right-tool">
-									<span th:text=${o.releaseTime}></span>
-								</div></li>
-						</ul>
-						</div>
-						<div class="col-sm-3" align="center">
-							<img alt="" width="220px" height="220px"
-								src="/static/image/info/file.png" />
-						</div>
-					</div>
-				</div>
 			</div>
+			<div class="row">
+				<div class="col-md-6" style="padding-right: 10px;">
+					<div class="box box-info">
+						<div class="box-header with-border">
+						<i class="fa fa-bullhorn"></i>
+						<h3 class="box-title">通知公告</h3>
+						<a style="float:right" href="/inforelease/more/index?isHomePage=true&type=0">更多<i class="fa fa-angle-double-right "></i> </a>
+						</div>
+						<div style="height: 216px">
+							<ul class="notice-list ul-dashed" th:each="o:${list}"
+								th:if=" ${o.types} == '0' ">
+								<li class="notice-li"><a class="name"
+									th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
+									th:title="${o.title}" th:text=${o.title}></span></a>
+									<div class="right-tool">
+										<span th:text=${o.releaseTime}></span>
+									</div></li>
+							</ul>
+						</div>
+					</div>
+					</div>
+					<div class="col-md-6" style="padding-left: 10px;">
+					<div class="box box-info">
+						<div class="box-header with-border">
+						<i class="fa fa-folder-open"></i>
+						<h3 class="box-title">政策文件</h3>
+						<a style="float:right" href="/inforelease/more/index?isHomePage=true&type=1">更多<i class="fa fa-angle-double-right "></i></a>
+						</div>
+						<div style="height: 216px">
+							<ul class="notice-list ul-dashed" th:each="o:${list}"
+								th:if=" ${o.types} == '1' ">
+								<li class="notice-li"><a class="name"
+									th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
+									th:title="${o.title}" th:text=${o.title}></span></a>
+									<div class="right-tool">
+										<span th:text=${o.releaseTime}></span>
+									</div></li>
+							</ul>
+						</div>
+					</div>
+					</div>
+				</div>
+				<div class="row">
+				<div class="col-md-6" style="padding-right: 10px;">
+					<div class="box box-success">
+						<div class="box-header with-border">
+						<i class="fa fa-book" aria-hidden="true"></i>
+						<h3 class="box-title">宣传教育</h3>
+						<a style="float:right" href="/inforelease/more/index?isHomePage=true&type=2">更多<i class="fa fa-angle-double-right "></i> </a>
+						</div>
+						<div style="height: 216px">
+							<ul class="notice-list ul-dashed" th:each="o:${list}"
+								th:if=" ${o.types} == '2' ">
+								<li class="notice-li"><a class="name"
+									th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
+									th:title="${o.title}" th:text=${o.title}></span></a>
+									<div class="right-tool">
+										<span th:text=${o.releaseTime}></span>
+									</div></li>
+							</ul>
+						</div>
+					</div>
+					
+					</div>
+					<div class="col-md-6" style="padding-left: 10px;">
+					<div class="box box-warning">
+						<div class="box-header with-border">
+						<i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+						<h3 class="box-title">廉政提醒</h3>
+						<a style="float:right" href="/inforelease/more/index?isHomePage=true&type=3">更多<i class="fa fa-angle-double-right "></i></a>
+						</div>
+						<div style="height: 216px">
+							<ul class="notice-list ul-dashed" th:each="o:${list}"
+								th:if=" ${o.types} == '3' ">
+								<li class="notice-li"><a class="name"
+									th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
+									th:title="${o.title}" th:text=${o.title}></span></a>
+									<div class="right-tool">
+										<span th:text=${o.releaseTime}></span>
+									</div></li>
+							</ul>
+						</div>
+					</div>
+					</div>
+				</div>
 		</section>
 	</div>
 	<div th:replace="/hf/footer"></div>
+	 <script type="text/javascript">
+	//<![CDATA[
+	 $(function() {
+	        tuxing(myChart);
+	    });
+
+	    function query() {
+	        tuxing(myChart);
+	    }
+    
+    //图表自适应大小      
+    window.addEventListener("resize", function() {
+        myChart.resize();
+    });
+    
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var value = $.parseJSON($("#tonto_constant_value").text());
+    var job = value["KSYDYF_PJDJ"];
+    
+    function tuxing(myChart) {
+        var cycleId = $('input[name="assessCycleId"]').val();
+        $.postAjax("/console/appsum/search/eharts?cycleId=" + cycleId,
+            function(result) {
+                var list = result;
+                var chartData = [];
+                var charDatazx = [];
+                var cache = {};
+                list.forEach(function(item) {
+                    if (item.unitAssGrade) {
+                        for (var i = 0; i < job.length; i++) {
+                            if (job[i].key == item.unitAssGrade) {
+                                chartData.push({
+                                    name: job[i].value,
+                                    value: item.kpdc
+                                });
+                                charDatazx.push(job[i].value);
+                                cache[job[i].key] = 1;
+                                break;
+                            }
+                        }
+                    }
+                })
+                 for (var i = 0; i < job.length; i++) {
+                    if (!cache[job[i].key]) {
+                        chartData.push({
+                            name: job[i].value,
+                            value: 0
+                        });
+                        charDatazx.push(job[i].value);
+                    }
+                }
+
+                var option1 = {
+                    title: {
+                        text: '考评结果汇总图',
+                        padding: 10,
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show: true,
+                        padding: [20, 80, 5, 5],
+                        feature: {
+                            magicType: {
+                                show: true,                                
+                                type: ['line', 'bar']
+                            },
+                            saveAsImage: {
+                                pixelRatio: 2
+                            }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        data: charDatazx
+                    }],
+                    yAxis: [{
+                        type: 'value'
+                    }],
+                    series: [{
+                        barWidth: 30,
+                        name: '人数',
+                        type: 'bar',
+                        data: chartData
+                    }]
+                }
+                myChart.setOption(option1);
+            });
+    }
+               
+    //]]>
+    </script>
 </body>
 </html>

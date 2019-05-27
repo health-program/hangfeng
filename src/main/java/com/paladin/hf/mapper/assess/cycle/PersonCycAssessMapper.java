@@ -4,6 +4,7 @@ import com.paladin.framework.mybatis.CustomMapper;
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
 import com.paladin.hf.service.assess.cycle.dto.*;
+import com.paladin.hf.service.assess.cycle.vo.AssessCycleStatisticsVO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
 import com.paladin.hf.service.assess.cycle.vo.UnassessedUserVO;
@@ -49,5 +50,7 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 	public int updateAgencyOpinion(AgencyCycleAssessBatchDTO dto);
 
 	public int updateDepartmentOpinion(DepartmentCycleAssessBatchDTO dto);
+	
+	public AssessCycleStatisticsVO CycAssessStatistics(@Param("orgUserId")String orgUserId);
 
 }

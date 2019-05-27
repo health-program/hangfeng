@@ -378,4 +378,14 @@
     	WHERE org_user_id = #{userId} AND assess_cycle_id = #{cycleId} AND operate_state = 1
     </update>
     
+    <select id="CycAssessStatistics" resultType="com.paladin.hf.service.assess.cycle.vo.AssessCycleStatisticsVO">
+     	 SELECT
+    	 SUM(p.`unit_ass_grade` = '1') AS yx,
+		 SUM(p.`unit_ass_grade` = '2') AS lh,
+		 SUM(p.`unit_ass_grade` = '3') AS hg,
+		 SUM(p.`unit_ass_grade` = '4') AS bhg,
+		 SUM(p.`unit_ass_grade` = '5') AS bddc
+		 FROM `person_cyc_assess` AS p WHERE p.`org_user_id`=#{orgUserId};
+    </select>
+    
 </mapper>

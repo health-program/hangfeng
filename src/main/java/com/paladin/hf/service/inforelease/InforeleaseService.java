@@ -56,7 +56,7 @@ public class InforeleaseService extends ServiceSupport<Inforelease> {
 			while(unit != null) {
 				unitIds.add(unit.getId());
 				unit = unit.getParent();
-			}				
+			}
 			return inforeleaseMapper.noticyandpolicyfile(unitIds);
 		}
 	}

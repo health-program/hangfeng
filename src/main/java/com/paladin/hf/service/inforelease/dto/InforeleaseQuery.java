@@ -18,7 +18,7 @@ public class InforeleaseQuery extends OffsetPage{
     
     private String endreleaseTime;
     
-    private Integer type;//0:通知公告，1：政策文件
+    private String type;//0:通知公告 1:政策文件 2:宣传教育 3:廉政提醒
 
     public String getIsRelease()
     {
@@ -70,12 +70,12 @@ public class InforeleaseQuery extends OffsetPage{
         this.endreleaseTime = endreleaseTime;
     }
 
-    public Integer getType()
+    public String getType()
     {
         return type;
     }
 
-    public void setType(Integer type)
+    public void setType(String type)
     {
         this.type = type;
     }

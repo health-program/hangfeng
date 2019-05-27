@@ -22,7 +22,10 @@ import com.paladin.framework.core.ControllerSupport;
 import com.paladin.framework.web.response.CommonResponse;
 import com.paladin.hf.core.DataPermissionUtil;
 import com.paladin.hf.core.HfUserSession;
+import com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper;
+import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.inforelease.Inforelease;
+import com.paladin.hf.service.assess.cycle.AssessCycleService;
 import com.paladin.hf.service.inforelease.InforeleaseService;
 import com.paladin.hf.service.inforelease.dto.InforeleaseDTO;
 import com.paladin.hf.service.inforelease.dto.InforeleaseQuery;
@@ -40,6 +43,12 @@ public class InforeleaseController extends ControllerSupport {
 	@Autowired
 	private SysAttachmentService attachmentService;
 
+	@Autowired
+	private PersonCycAssessMapper personCycAssessMapper;
+	
+	@Autowired
+	private AssessCycleService assessCycleService;
+	
 	// 通知公告页面跳转
 	@RequestMapping(value = "/index", method = { RequestMethod.GET })
 	public String index(Model model) {
@@ -63,7 +72,6 @@ public class InforeleaseController extends ControllerSupport {
 	@RequestMapping("/detail")
 	public String getNoticeDetail(@RequestParam(required = true) String id, @RequestParam(required = true) String type, Model model) {
 		model.addAttribute("info", inforeleaseService.get(id));
-		model.addAttribute("type", type);
 		return "/hf/inforelease/detail";
 	}
 
@@ -141,8 +149,8 @@ public class InforeleaseController extends ControllerSupport {
 	// 信息发布页面数据加载
 	@RequestMapping(value = "/info/index", method = { RequestMethod.GET })
 	public String infoindex(Model model) {
-		model.addAttribute("info", inforeleaseService.noticyandpolicyfileAll());
-		return "/hf/inforelease/inforelease_index";
+	    model.addAttribute("info", inforeleaseService.noticyandpolicyfileAll());
+	    return "/hf/inforelease/inforelease_index";
 	}
 
 	@RequestMapping("/app/info/index")
@@ -160,12 +168,23 @@ public class InforeleaseController extends ControllerSupport {
 		return "/hf/inforelease/inforelease_detail";
 	}
 
-	@RequestMapping(value = "/info", method = { RequestMethod.GET })
-	public String info(Model model) {
-		HfUserSession userSession = HfUserSession.getCurrentUserSession();
-		model.addAttribute("list", inforeleaseService.noticyandpolicyfileAll());
-		return userSession.isOrgUser() ? "/hf/right_archivists_org" : "/hf/right_archivists_admin";
-	}
+        @RequestMapping(value = "/info", method = { RequestMethod.GET })
+        public String info(Model model) {
+    	HfUserSession userSession = HfUserSession.getCurrentUserSession();
+    	if (userSession.isOrgUser()) {
+    	    model.addAttribute("cyc", personCycAssessMapper.CycAssessStatistics(userSession.getUserId()));
+    	}else{
+	    AssessCycle assessCycle = assessCycleService.getOwnedFirstAssessCycle();
+	    if (assessCycle != null) {
+		model.addAttribute("assessCycleId", assessCycle.getId());
+		model.addAttribute("assessCycleName",
+			assessCycle.getCycleName());
+	    } 
+    	}
+    	
+    	model.addAttribute("list", inforeleaseService.noticyandpolicyfileAll());
+    	return userSession.isOrgUser() ? "/hf/right_archivists_org": "/hf/right_archivists_admin";
+        }
 
 	// 更多页跳转
 	@RequestMapping(value = "/more/index", method = { RequestMethod.GET })

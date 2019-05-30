@@ -127,7 +127,7 @@ public class ServiceSupportConatiner implements SpringContainer {
 
 	@Override
 	public int order() {
-		return 0;
+		return -9999;
 	}
 
 }

@@ -1,5 +1,6 @@
-package com.paladin.configuration;
+package com.paladin.configuration.shiro;
 
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.pam.AuthenticationStrategy;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
@@ -18,23 +19,38 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.pac4j.cas.client.CasClient;
+import org.pac4j.cas.config.CasConfiguration;
+import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.core.client.Clients;
+import org.pac4j.core.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 
-import com.paladin.framework.shiro.AjaxFormAuthenticationFilter;
+import com.paladin.configuration.MyWebSessionManager;
+import com.paladin.configuration.ShiroRedisSessionDAO;
+import com.paladin.hf.core.SysUserCasRealm;
 import com.paladin.hf.core.SysUserRealm;
 
+import io.buji.pac4j.context.ShiroSessionStore;
+import io.buji.pac4j.filter.CallbackFilter;
+import io.buji.pac4j.subject.Pac4jSubjectFactory;
+import io.buji.pac4j.token.Pac4jToken;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -55,10 +71,11 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2018年3月21日
  */
 @Configuration
-@ConditionalOnProperty(prefix = "paladin", value = "shiro-enabled", havingValue = "true", matchIfMissing = true)
-public class ShiroConfiguration {
+@ConditionalOnProperty(prefix = "paladin", value = "cas-enabled", havingValue = "true", matchIfMissing = false)
+@EnableConfigurationProperties(ShiroCasProperties.class)
+public class ShiroCasConfiguration {
 
-	private static Logger logger = LoggerFactory.getLogger(ShiroConfiguration.class);
+	private static Logger logger = LoggerFactory.getLogger(ShiroCasConfiguration.class);
 
 	@Bean(name = "redisSessionDAO")
 	public ShiroRedisSessionDAO getRedisSessionDAO() {
@@ -78,6 +95,16 @@ public class ShiroConfiguration {
 		hashedCredentialsMatcher.setHashIterations(1);// 散列的次数，当于 m比如散列两次，相d5("");
 
 		realm.setCredentialsMatcher(hashedCredentialsMatcher);
+		realm.setAuthenticationTokenClass(UsernamePasswordToken.class);
+		return realm;
+	}
+	
+	@Bean
+	public Realm getUserCasRealm() {
+		logger.debug("ShiroConfiguration.getUserCasRealm()");
+
+		SysUserCasRealm realm = new SysUserCasRealm();
+		realm.setAuthenticationTokenClass(Pac4jToken.class);
 
 		return realm;
 	}
@@ -167,9 +194,13 @@ public class ShiroConfiguration {
 	public DefaultWebSecurityManager getDefaultWebSecurityManage(DefaultWebSessionManager defaultWebSessionManager) {
 		logger.debug("ShiroConfiguration.getDefaultWebSecurityManage()");
 
+		List<Realm> realms = new ArrayList<>();
+		realms.add(getUserRealm());
+		realms.add(getUserCasRealm());
+		
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-		securityManager.setRealm(getUserRealm());
-
+		securityManager.setRealms(realms);
+		securityManager.setSubjectFactory(new Pac4jSubjectFactory()); // cas
 		// 注入缓存管理器;
 		// securityManager.setCacheManager(redisCacheManager());
 		securityManager.setSessionManager(defaultWebSessionManager);
@@ -182,7 +213,7 @@ public class ShiroConfiguration {
 	 * 1、一个URL可以配置多个Filter，使用逗号分隔 2、当设置多个过滤器时，全部验证通过，才视为通过 3、部分过滤器可指定参数，如perms，roles
 	 */
 	@Bean(name = "shiroFilter")
-	public ShiroFilterFactoryBean shirFilter(DefaultWebSecurityManager securityManager) {
+	public ShiroFilterFactoryBean shirFilter(DefaultWebSecurityManager securityManager,ShiroCasProperties shiroCasProperties) {
 		logger.debug("ShiroConfiguration.shirFilter()");
 
 		// ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -259,7 +290,19 @@ public class ShiroConfiguration {
 
 		// 增加自定义过滤
 		Map<String, Filter> filters = new HashMap<>();
-		filters.put("authc", new AjaxFormAuthenticationFilter());
+		Config config = getConfig(shiroCasProperties);
+
+		CallbackFilter callbackFilter = new CallbackFilter();
+		callbackFilter.setConfig(config);
+		callbackFilter.setDefaultUrl(shiroCasProperties.getSuccessUrl());
+		callbackFilter.setHttpActionAdapter(new CallbackHttpActionAdapter(shiroCasProperties));
+		filters.put("callback", callbackFilter);
+
+		PaladinCasLogoutFilter logoutFilter = new PaladinCasLogoutFilter(shiroCasProperties, config);
+		filters.put("logout", logoutFilter);
+
+		PaladinCasAuthenticationFilter authenticationFilter = new PaladinCasAuthenticationFilter(shiroCasProperties, config);
+		filters.put("authc", authenticationFilter);
 
 		shiroFilterFactoryBean.setFilters(filters);
 		// 拦截器.
@@ -288,7 +331,7 @@ public class ShiroConfiguration {
 		filterChainDefinitionMap.put("/file/**", "anon");
 		filterChainDefinitionMap.put("/app/**", "anon");
 		// filterChainDefinitionMap.put("/favicon.ico", "anon");
-
+		filterChainDefinitionMap.put(shiroCasProperties.getCasFilterUrlPattern(), "callback");
 		filterChainDefinitionMap.put("/hf/logout", "logout");
 		// 配置记住我或认证通过可以访问的地址
 		filterChainDefinitionMap.put("/**", "authc");
@@ -312,6 +355,20 @@ public class ShiroConfiguration {
 	// return filterRegistration;
 	// }
 
+	private Config getConfig(ShiroCasProperties cas) {
+		CasConfiguration casConfiguration = new CasConfiguration(cas.getCasServerLoginUrl(), cas.getCasServerUrl() + "/");
+		casConfiguration.setAcceptAnyProxy(true);
+		casConfiguration.setProtocol(CasProtocol.CAS30);
+
+		CasClient casClient = new CasClient(casConfiguration);
+		casClient.setCallbackUrl(cas.getClientServerUrl() + cas.getCasFilterUrlPattern() + "?client_name=CasClient");
+
+		Clients clients = new Clients(cas.getClientServerUrl() + cas.getCasFilterUrlPattern() + "?client_name=CasClient", casClient);
+		Config config = new Config(clients);
+		config.setSessionStore(new ShiroSessionStore());
+		return config;
+	}
+	
 	/**
 	 * Shiro默认提供了三种 AuthenticationStrategy 实现： AtLeastOneSuccessfulStrategy
 	 * ：其中一个通过则成功。 FirstSuccessfulStrategy ：其中一个通过则成功，但只返回第一个通过的Realm提供的验证信息。
@@ -360,5 +417,6 @@ public class ShiroConfiguration {
 		daap.setProxyTargetClass(true);
 		return daap;
 	}
+	
 
 }

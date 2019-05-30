@@ -2,7 +2,9 @@ package com.paladin.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
@@ -23,36 +25,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 2018年3月15日
  */
 @Configuration
+@EnableConfigurationProperties(RedisProperties.class)
 public class RedisConfiguration extends CachingConfigurerSupport {
 
 	private Logger logger = LoggerFactory.getLogger(RedisConfiguration.class);
 
-	@Value("${spring.redis.host}")
-	private String host;
-
-	@Value("${spring.redis.port}")
-	private int port;
-
-	@Value("${spring.redis.timeout}")
-	private int timeout;
-
-	@Value("${spring.redis.jedis.pool.max-idle}")
-	private int maxIdle;
-
-	@Value("${spring.redis.jedis.pool.max-wait}")
-	private long maxWaitMillis;
-
-	@Value("${spring.redis.password}")
-	private String password;
-	
-	
 	@Bean
-	public JedisConnectionFactory getJedisConnectionFactory() {
+	public JedisConnectionFactory getJedisConnectionFactory(RedisProperties redisProperties) {
 		logger.info("创建JedisConnectionFactory");
 
-		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(host, port);
+		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
 		configuration.setDatabase(0);
-		configuration.setPassword(RedisPassword.of(password));
+		configuration.setPassword(RedisPassword.of(redisProperties.getPassword()));
 
 		JedisConnectionFactory factory = new JedisConnectionFactory(configuration);
 
@@ -69,7 +53,7 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 	@Bean("jdkRedisTemplate")
 	public RedisTemplate<String, Object> getJdkRedisTemplate(JedisConnectionFactory jedisConnectionFactory) {
 		logger.debug("getJdkRedisTemplate()");
-		
+
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(jedisConnectionFactory);
 		return redisTemplate;
@@ -77,8 +61,8 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 
 	@Bean("jsonRedisTemplate")
 	public RedisTemplate<String, Object> getJsonRedisTemplate(JedisConnectionFactory jedisConnectionFactory) {
-		logger.debug("getJsonRedisTemplate()");	
-		
+		logger.debug("getJsonRedisTemplate()");
+
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
 		redisTemplate.setKeySerializer(redisTemplate.getStringSerializer());
@@ -93,17 +77,8 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
 		redisTemplate.setConnectionFactory(jedisConnectionFactory);
-		
+
 		return redisTemplate;
 	}
 
-	@Bean("stringRedisTemplate")
-	public RedisTemplate<String, String> getStringRedisTemplate(JedisConnectionFactory jedisConnectionFactory) {
-		logger.debug("getStringRedisTemplate()");
-		return new StringRedisTemplate(jedisConnectionFactory);
-	}
-
-	
-	
-	
 }

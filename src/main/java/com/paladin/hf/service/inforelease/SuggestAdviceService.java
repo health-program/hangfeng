@@ -18,7 +18,8 @@ import com.paladin.hf.service.inforelease.vo.SuggestAdviceVO;
 @Service
 public class SuggestAdviceService extends ServiceSupport<SuggestAdvice> {
 
-    @Autowired
+    @SuppressWarnings("unused")
+	@Autowired
     private SuggestAdviceMapper suggestAdviceMapper;
 
     public PageResult<SuggestAdviceVO> findSuggestAdvice(SuggestAdviceQuery query) {

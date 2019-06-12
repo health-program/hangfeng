@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>paladin</groupId>
-	<artifactId>paladin-framework</artifactId>
+	<artifactId>paladin-hangfeng</artifactId>
 	<version>1.0</version>
-	<name>paladin-framework</name>
+	<name>hangfeng</name>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -227,4 +227,5 @@
 		<url>https://repo.spring.io/snapshot</url> </pluginRepository> <pluginRepository> 
 		<id>spring-milestones</id> <url>https://repo.spring.io/milestone</url> </pluginRepository> 
 		</pluginRepositories> -->
+	<packaging>war</packaging>
 </project>

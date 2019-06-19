@@ -24,6 +24,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.J2EContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -42,6 +43,7 @@ import com.paladin.hf.core.SysUserCasRealm;
 import com.paladin.hf.core.SysUserRealm;
 
 import io.buji.pac4j.context.ShiroSessionStore;
+import io.buji.pac4j.engine.ShiroCallbackLogic;
 import io.buji.pac4j.filter.CallbackFilter;
 import io.buji.pac4j.subject.Pac4jSubjectFactory;
 import io.buji.pac4j.token.Pac4jToken;
@@ -294,8 +296,9 @@ public class ShiroCasConfiguration {
 
 		CallbackFilter callbackFilter = new CallbackFilter();
 		callbackFilter.setConfig(config);
-		callbackFilter.setDefaultUrl(shiroCasProperties.getSuccessUrl());
-		callbackFilter.setHttpActionAdapter(new CallbackHttpActionAdapter(shiroCasProperties));
+		callbackFilter.setDefaultUrl(shiroCasProperties.getSuccessUrl());	
+		ShiroCallbackLogic<Object, J2EContext> callbackLogic=  new PaladinShiroCallbackLogic<>(shiroCasProperties);
+		callbackFilter.setCallbackLogic(callbackLogic);
 		filters.put("callback", callbackFilter);
 
 		PaladinCasLogoutFilter logoutFilter = new PaladinCasLogoutFilter(shiroCasProperties, config);
@@ -358,7 +361,7 @@ public class ShiroCasConfiguration {
 	private Config getConfig(ShiroCasProperties cas) {
 		CasConfiguration casConfiguration = new CasConfiguration(cas.getCasServerLoginUrl(), cas.getCasServerUrl() + "/");
 		casConfiguration.setAcceptAnyProxy(true);
-		casConfiguration.setProtocol(CasProtocol.CAS30);
+		casConfiguration.setProtocol(CasProtocol.valueOf(cas.getCasProtocol()));
 
 		CasClient casClient = new CasClient(casConfiguration);
 		casClient.setCallbackUrl(cas.getClientServerUrl() + cas.getCasFilterUrlPattern() + "?client_name=CasClient");

@@ -13,15 +13,23 @@
         td.check-info{padding-top:20px;}  
         a{color:#328ce5; text-decoration:none;}  
         a:hover{text-decoration:underline;}  
+        li{color:#aaa;font-size: 14px;}
     </style>
 </head>
 
-<body>
+<body onload="init()">
     <div class="wrap">
         <table>
             <tr>
                 <td rowspan="5" style=""><img src="/static/image/warn.png" alt="单点登录失败"></td>
-                <td class="header">很抱歉！该系统内找不到对应单点登录用户，可联系相关负责人确认信息或创建用户账号。</td>
+                <td class="header" id="message">
+                    <p>单点登录本系统失败！可能原因：</p>
+                    <ul>
+                        <li>本系统中找不到对应单点登录的用户账号</li>
+                        <li>账号被锁或被置为不可用</li>
+                        <li>系统异常或其他</li>
+                    </ul>
+                </td>
             </tr>
             <tr>
                 <td><a href="/" target="_top">返回首页</a><a href="javascript:toCas()" style="margin-left: 100px" target="_top">返回单点登录</a></td>
@@ -29,6 +37,7 @@
         </table>
     </div>
     <script type="text/javascript">
+
     function getQueryVariable(variable) {
         var query = window.location.search.substring(1);
         var vars = query.split("&");
@@ -37,6 +46,12 @@
             if (pair[0] == variable) { return pair[1]; }
         }
         return (false);
+    }
+
+    function init(){
+        //
+        //var message = getQueryVariable("message");
+        //document.getElementById("message").innerText = decodeURI(message);
     }
 
     function toCas() {

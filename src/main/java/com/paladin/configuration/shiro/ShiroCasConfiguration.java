@@ -102,10 +102,10 @@ public class ShiroCasConfiguration {
 	}
 	
 	@Bean
-	public Realm getUserCasRealm() {
+	public Realm getUserCasRealm(ShiroCasProperties casProperties) {
 		logger.debug("ShiroConfiguration.getUserCasRealm()");
 
-		SysUserCasRealm realm = new SysUserCasRealm();
+		SysUserCasRealm realm = new SysUserCasRealm(casProperties);
 		realm.setAuthenticationTokenClass(Pac4jToken.class);
 
 		return realm;
@@ -193,12 +193,12 @@ public class ShiroCasConfiguration {
 	 * @return
 	 */
 	@Bean(name = "securityManager")
-	public DefaultWebSecurityManager getDefaultWebSecurityManage(DefaultWebSessionManager defaultWebSessionManager) {
+	public DefaultWebSecurityManager getDefaultWebSecurityManage(DefaultWebSessionManager defaultWebSessionManager, ShiroCasProperties casProperties) {
 		logger.debug("ShiroConfiguration.getDefaultWebSecurityManage()");
 
 		List<Realm> realms = new ArrayList<>();
 		realms.add(getUserRealm());
-		realms.add(getUserCasRealm());
+		realms.add(getUserCasRealm(casProperties));
 		
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 		securityManager.setRealms(realms);

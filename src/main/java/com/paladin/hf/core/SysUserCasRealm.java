@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.paladin.configuration.shiro.ShiroCasProperties;
 import com.paladin.hf.model.org.OrgUser;
 import com.paladin.hf.model.syst.SysUser;
 import com.paladin.hf.service.org.OrgUserService;
@@ -42,6 +43,12 @@ public class SysUserCasRealm extends Pac4jRealm {
 
 	@Autowired
 	private LoginLogService loginLogService;
+	
+	private String idCardField;
+	
+	public SysUserCasRealm(ShiroCasProperties casProperties) {
+		idCardField = casProperties.getCasIdCardField();
+	}
 
 	/**
 	 * 认证信息.(身份验证) : Authentication 是用来验证用户身份
@@ -58,12 +65,16 @@ public class SysUserCasRealm extends Pac4jRealm {
 		final Pac4jToken token = (Pac4jToken) authenticationToken;
         final List<CommonProfile> profiles = token.getProfiles();
         final Pac4jPrincipal principal = new Pac4jPrincipal(profiles, getPrincipalNameAttribute());
-		
+		 
 		SysUser sysUser = null;
 		// 获取用户的输入的账号或身份证号.
-		String username = principal.getName();
+		String idCard = (String) principal.getProfile().getAttribute(idCardField);
+		if(idCard == null || idCard.length() == 0) {
+			throw new UnknownAccountException();
+		}
+		
 		// 身份证号登录
-		List<OrgUser> orgUsers = orgUserService.findUserByIdentification(username);
+		List<OrgUser> orgUsers = orgUserService.findUserByIdentification(idCard);
 
 		if (orgUsers != null && orgUsers.size() > 0) {
 			if (orgUsers.size() > 1) {
@@ -72,11 +83,6 @@ public class SysUserCasRealm extends Pac4jRealm {
 
 			String account = orgUsers.get(0).getAccount();
 			sysUser = sysUserService.getUser(account);
-		}
-
-		// 实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-		if (sysUser == null) {
-			sysUser = sysUserService.getUser(username);
 		}
 
 		if (sysUser == null) {

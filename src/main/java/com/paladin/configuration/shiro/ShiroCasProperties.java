@@ -36,6 +36,8 @@ public class ShiroCasProperties extends ShiroProperties {
 	private String casProtocol = "CAS30";
 	
 	private String casErrorUrl = "/static/html/error_cas_500.html";
+	
+	private String casIdCardField;
 
 	public String getCasServerUrl() {
 		return casServerUrl;
@@ -91,6 +93,14 @@ public class ShiroCasProperties extends ShiroProperties {
 
 	public void setCasProtocol(String casProtocol) {
 		this.casProtocol = casProtocol;
+	}
+
+	public String getCasIdCardField() {
+		return casIdCardField;
+	}
+
+	public void setCasIdCardField(String casIdCardField) {
+		this.casIdCardField = casIdCardField;
 	}
 
 }

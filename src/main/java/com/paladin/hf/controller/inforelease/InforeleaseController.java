@@ -26,6 +26,7 @@ import com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper;
 import com.paladin.hf.model.assess.cycle.AssessCycle;
 import com.paladin.hf.model.inforelease.Inforelease;
 import com.paladin.hf.service.assess.cycle.AssessCycleService;
+import com.paladin.hf.service.assess.cycle.vo.AssessCycleStatisticsVO;
 import com.paladin.hf.service.inforelease.InforeleaseService;
 import com.paladin.hf.service.inforelease.dto.InforeleaseDTO;
 import com.paladin.hf.service.inforelease.dto.InforeleaseQuery;
@@ -172,7 +173,11 @@ public class InforeleaseController extends ControllerSupport {
         public String info(Model model) {
     	HfUserSession userSession = HfUserSession.getCurrentUserSession();
     	if (userSession.isOrgUser()) {
-    	    model.addAttribute("cyc", personCycAssessMapper.CycAssessStatistics(userSession.getUserId()));
+    	AssessCycleStatisticsVO vo =  personCycAssessMapper.CycAssessStatistics(userSession.getUserId());
+    	if(vo == null){
+    	    vo = new AssessCycleStatisticsVO();
+    	}
+    	    model.addAttribute("cyc", vo);
     	}else{
 	    AssessCycle assessCycle = assessCycleService.getOwnedFirstAssessCycle();
 	    if (assessCycle != null) {

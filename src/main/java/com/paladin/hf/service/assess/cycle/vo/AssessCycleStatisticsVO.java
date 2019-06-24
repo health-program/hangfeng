@@ -5,15 +5,15 @@ package com.paladin.hf.service.assess.cycle.vo;
  */
 public class AssessCycleStatisticsVO {
     
-    private String yx;//优秀
+    private String yx = "0";//优秀
     
-    private String lh;//良好
+    private String lh = "0";//良好
     
-    private String hg;//合格
+    private String hg = "0";//合格
     
-    private String bhg;//不合格
+    private String bhg = "0";//不合格
     
-    private String bddc;//不定等次
+    private String bddc = "0";//不定等次
     
     public String getYx() {
         return yx;

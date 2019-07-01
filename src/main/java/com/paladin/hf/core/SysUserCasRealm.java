@@ -84,6 +84,10 @@ public class SysUserCasRealm extends Pac4jRealm {
 			String account = orgUsers.get(0).getAccount();
 			sysUser = sysUserService.getUser(account);
 		}
+		
+		if (sysUser == null) {
+			sysUser = sysUserService.getUser(idCard);
+		}
 
 		if (sysUser == null) {
 			throw new UnknownAccountException();

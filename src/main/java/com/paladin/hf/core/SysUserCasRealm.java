@@ -73,22 +73,24 @@ public class SysUserCasRealm extends Pac4jRealm {
 			throw new UnknownAccountException();
 		}
 		
-		// 身份证号登录
-		List<OrgUser> orgUsers = orgUserService.findUserByIdentification(idCard);
-
-		if (orgUsers != null && orgUsers.size() > 0) {
-			if (orgUsers.size() > 1) {
-				throw new UnknownAccountException("存在多个相同身份证号码用户");
-			}
-
-			String account = orgUsers.get(0).getAccount();
-			sysUser = sysUserService.getUser(account);
-		}
-		
 		if (sysUser == null) {
 			sysUser = sysUserService.getUser(idCard);
 		}
-
+		
+		if (sysUser == null) {
+			// 身份证号登录
+			List<OrgUser> orgUsers = orgUserService.findUserByIdentification(idCard);
+	
+			if (orgUsers != null && orgUsers.size() > 0) {
+				if (orgUsers.size() > 1) {
+					throw new UnknownAccountException("存在多个相同身份证号码用户");
+				}
+	
+				String account = orgUsers.get(0).getAccount();
+				sysUser = sysUserService.getUser(account);
+			}
+		}
+		
 		if (sysUser == null) {
 			throw new UnknownAccountException();
 		}

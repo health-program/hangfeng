@@ -9,6 +9,8 @@ public class AgencyCycleAssessBatchDTO {
 	private String opinion;
 	
 	private Integer grade;
+	
+	private String unitAssessorSign;
 
 	public String getOpinion() {
 		return opinion;
@@ -40,6 +42,14 @@ public class AgencyCycleAssessBatchDTO {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getUnitAssessorSign() {
+	    return unitAssessorSign;
+	}
+
+	public void setUnitAssessorSign(String unitAssessorSign) {
+	    this.unitAssessorSign = unitAssessorSign;
 	}
 	
 }

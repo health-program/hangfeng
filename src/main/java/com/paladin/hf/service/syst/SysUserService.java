@@ -91,6 +91,7 @@ public class SysUserService extends ServiceSupport<SysUser> {
 		user.setPassword(password);
 		user.setSalt(salt);
 		user.setUserId(userId);
+		user.setIsFirstLogin(1);
 		user.setState(SysUser.STATE_ENABLED);
 		user.setType(type);
 
@@ -243,7 +244,7 @@ public class SysUserService extends ServiceSupport<SysUser> {
 		SysUser sysUser = getUser(account);
 		SysUser user = new SysUser();
 		user.setId(sysUser.getId());
-		user.setIsFirstLogin(0);
+		//user.setIsFirstLogin(0);
 		user.setLastLoginTime(new Date());
 		sysUserMapper.updateByPrimaryKeySelective(user);
 	}

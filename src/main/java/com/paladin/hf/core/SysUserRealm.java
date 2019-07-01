@@ -108,7 +108,7 @@ public class SysUserRealm extends AuthorizingRealm {
 
 		// 登录日志与更新最近登录时间
 		loginLogService.addLoginLog(userSession.getUserName(), userSession.getUserId(), sysUser.getType(), "", "");
-		//sysUserService.UpdatesysUserLastTime(userSession.getAccount());
+		sysUserService.UpdatesysUserLastTime(userSession.getAccount());
 
 		return authenticationInfo;
 	}

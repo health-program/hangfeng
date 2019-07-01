@@ -400,6 +400,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	public int agencyBatchSaveResult(List<AgencyCycleAssessBatchDTO> batchSaveDtos) {
 		int effect = 0;
 		for (AgencyCycleAssessBatchDTO dto : batchSaveDtos) {
+		    	dto.setUnitAssessorSign(HfUserSession.getCurrentUserSession().getUserName());
 			effect += perCycAssMapper.updateAgencyOpinion(dto);
 		}
 		return effect;
@@ -408,6 +409,7 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 	public int departmentBatchSaveResult(List<DepartmentCycleAssessBatchDTO> batchSaveDtos) {
 		int effect = 0;
 		for (DepartmentCycleAssessBatchDTO dto : batchSaveDtos) {
+		    	dto.setDepAssessorSign(HfUserSession.getCurrentUserSession().getUserName());
 			effect += perCycAssMapper.updateDepartmentOpinion(dto);
 		}
 		return effect;

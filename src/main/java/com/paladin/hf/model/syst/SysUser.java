@@ -52,7 +52,7 @@ public class SysUser extends UnDeleteBaseModel implements Serializable {
 	private Integer state;
 	private Integer type;
 	private Date lastLoginTime;
-	private Integer isFirstLogin = 1;
+	private Integer isFirstLogin;
 
 	public Integer getIsFirstLogin() {
 		return isFirstLogin;

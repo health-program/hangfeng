@@ -388,4 +388,11 @@
 		 FROM `person_cyc_assess` AS p WHERE p.`org_user_id`=#{orgUserId};
     </select>
     
+    <update id="updateAutoConfirm">
+        UPDATE person_cyc_assess
+		SET confirmed_result=1, confirmed_time = now(), assessed_confirm_sign = '自动确认', operate_state = 6
+		WHERE operate_state = 5 AND unit_ass_time <![CDATA[ < ]]> #{lastTime};
+    </update>
+
+    
 </mapper>

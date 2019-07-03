@@ -11,6 +11,7 @@ import com.paladin.hf.service.assess.cycle.vo.UnassessedUserVO;
 
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
@@ -52,5 +53,7 @@ public interface PersonCycAssessMapper extends CustomMapper<PersonCycAssess> {
 	public int updateDepartmentOpinion(DepartmentCycleAssessBatchDTO dto);
 	
 	public AssessCycleStatisticsVO CycAssessStatistics(@Param("orgUserId")String orgUserId);
+	
+	public int updateAutoConfirm(@Param("lastTime") Date lastTime);
 
 }

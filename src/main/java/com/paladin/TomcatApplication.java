@@ -4,12 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc//启动MVC
 @EnableTransactionManagement // 启注解事务管理
 @SpringBootApplication//SpringBoot启动核心
+@EnableScheduling
 public class TomcatApplication extends SpringBootServletInitializer  {
 
     /**

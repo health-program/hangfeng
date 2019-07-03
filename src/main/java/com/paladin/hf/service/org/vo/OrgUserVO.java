@@ -15,6 +15,8 @@ public class OrgUserVO {
 	private String orgAssessTeamId;
 
 	private String name;
+	
+	private String cellphone;
 
 	private String account;
 
@@ -71,6 +73,14 @@ public class OrgUserVO {
 	private String transferAgencyId;
 
 	private Integer transferStatus;
+
+	public String getCellphone() {
+	    return cellphone;
+	}
+
+	public void setCellphone(String cellphone) {
+	    this.cellphone = cellphone;
+	}
 
 	public String getId() {
 		return id;

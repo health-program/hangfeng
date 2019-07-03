@@ -214,14 +214,16 @@
 
     //修改密码弹框
     function see() {
+    	var title ='修改密码';
         var closeBtn = 1;
         var isFirst = $("#isFirst").val();
         if(isFirst == '1'){
             closeBtn = 0;
+            title='第一次登录请修改密码(密码不安全)';
         }
         layer.open({
             type: 1,
-            title: '修改密码',
+            title: title,
             shadeClose:false,
             closeBtn:closeBtn,
             shade:0.3,

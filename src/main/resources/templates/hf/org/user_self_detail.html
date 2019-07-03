@@ -65,9 +65,9 @@
                             <div class="col-sm-3">
                                 <p name="birthday" class="form-control-static description"></p>
                             </div>
-                            <label for="recordCreateTime" class="col-sm-2 control-label">建档日期：</label>
+                            <label for="cellphone" class="col-sm-2 control-label">手机号码：</label>
                             <div class="col-sm-3">
-                                <p name="recordCreateTime" class="form-control-static description"></p>
+                                <p name="cellphone" class="form-control-static description"></p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -111,6 +111,12 @@
                             </div>
                         </div>
                         <div class="form-group">
+                         <label for="recordCreateTime" class="col-sm-3 control-label">建档日期：</label>
+                            <div class="col-sm-3">
+                                <p name="recordCreateTime" class="form-control-static description"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="resume" class="col-sm-3 control-label">个人简历：</label>
                             <div class="col-sm-8">
                                 <pre name="resume" style="min-height:150px" class="form-control-static description"></pre>
@@ -150,9 +156,9 @@
                             <div class="col-sm-3">
                                 <input name="birthday" autocomplete="off" placeholder="请输入出生日期" type="text" class="form-control tonto-datepicker-date" />
                             </div>
-                            <label for="recordCreateTime" class="col-sm-2 control-label">建档日期：</label>
+                            <label for="cellphone" class="col-sm-2 control-label">手机号码：</label>
                             <div class="col-sm-3">
-                                <input name="recordCreateTime" autocomplete="off" placeholder="请输入建档日期" type="text" class="form-control tonto-datepicker-date" />
+                                <input name="cellphone"  placeholder="请输入手机号码" type="text" class="form-control" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -205,6 +211,12 @@
                             <label for="comeUnitTime" class="col-sm-2 control-label">进单位时间：</label>
                             <div class="col-sm-3">
                                 <input name="comeUnitTime" autocomplete="off" placeholder="请输入进单位时间" type="text" class="form-control tonto-datepicker-date" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                        <label for="recordCreateTime" class="col-sm-3 control-label">建档日期：</label>
+                            <div class="col-sm-3">
+                                <input name="recordCreateTime" autocomplete="off" placeholder="请输入建档日期" type="text" class="form-control tonto-datepicker-date" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -270,6 +282,7 @@
             { title: "考评科室", name: "assessUnitId", inputType: "UNIT", viewName: "assessUnitName", unitType: "tonto-select-unit", dependency: ["isAssessor", "1"] },
 
             { title: "出生日期", name: "birthday", inputType: "DATE" },
+            { title: "手机号码", name: "cellphone", inputType: "TEXT" },
             { title: "建档日期", name: "recordCreateTime", inputType: "DATE" },
 
             { title: "民族", name: "nation", inputType: "SELECT", enum: "nation-type" },

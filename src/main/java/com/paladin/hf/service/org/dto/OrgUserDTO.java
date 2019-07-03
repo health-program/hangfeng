@@ -15,6 +15,8 @@ public class OrgUserDTO {
 	
 	@NotEmpty(message = "姓名不能为空")
 	private String name;
+	
+	private String cellphone;
 
 	private Date recordCreateTime;
 
@@ -56,6 +58,14 @@ public class OrgUserDTO {
 
 	@NotNull(message = "身份证类型不能为空")
 	private Integer identificationType;
+
+	public String getCellphone() {
+	    return cellphone;
+	}
+
+	public void setCellphone(String cellphone) {
+	    this.cellphone = cellphone;
+	}
 
 	public String getId() {
 		return id;

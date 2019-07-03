@@ -33,6 +33,8 @@ public class OrgUserSelfDTO {
 	private Integer jobLevel;
 
 	private Integer userProperty;
+	
+	private String cellphone;
 
 	public Date getRecordCreateTime() {
 		return recordCreateTime;
@@ -152,6 +154,14 @@ public class OrgUserSelfDTO {
 
 	public void setUserProperty(Integer userProperty) {
 		this.userProperty = userProperty;
+	}
+
+	public String getCellphone() {
+	    return cellphone;
+	}
+
+	public void setCellphone(String cellphone) {
+	    this.cellphone = cellphone;
 	}
 
 	

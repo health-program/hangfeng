@@ -12,12 +12,18 @@ import com.paladin.hf.core.HfUserSession;
 import com.paladin.hf.core.UnitContainer.Unit;
 import com.paladin.hf.mapper.assess.cycle.PersonCycAssessMapper;
 import com.paladin.hf.model.assess.cycle.PersonCycAssess;
+import com.paladin.hf.model.org.OrgUser;
+import com.paladin.hf.model.sms.SmsSendResponse;
 import com.paladin.hf.service.assess.cycle.dto.*;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessDetailVO;
 import com.paladin.hf.service.assess.cycle.vo.CycleAssessSimpleVO;
 import com.paladin.hf.service.assess.cycle.vo.UnassessedUserVO;
 import com.paladin.hf.service.assess.quantificate.AssessQuantitativeResultService;
+import com.paladin.hf.service.org.OrgUserService;
+import com.paladin.hf.service.sms.SendMsgWebService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -31,7 +37,13 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 
 	@Autowired
 	private AssessQuantitativeResultService assessQuantitativeResultService;
-
+	
+	@Autowired
+	private SendMsgWebService sendMsgWebService;
+	
+	@Autowired 
+	private OrgUserService orgUserService;
+	
 	/**
 	 * 获取人员某一周期考核详情
 	 * 
@@ -292,6 +304,33 @@ public class PersonCycAssessService extends ServiceSupport<PersonCycAssess> {
 		cycleAssess.setUnitAssTime(new Date());
 		cycleAssess.setOperateState(statusAssessedTemporary);
 		update(cycleAssess);
+		
+		OrgUser user = orgUserService.get(cycleAssess.getOrgUserId());
+		int sendStatus = PersonCycAssess.SEND_STATUS_DEFAULT;
+		String sendError = null;
+		String cellphone = user.getCellphone();
+		if (cellphone != null && cellphone.length() > 0) {
+		    try {
+			SmsSendResponse resp = sendMsgWebService.sendSms(cellphone, "您好，您今年的行风考评已完成，系统将在一周后自动确认。如您对本次考评结果有异议，请尽快登录平台处理，谢谢！");
+			if (resp != null) {
+				String result = resp.getResult();
+				if (SmsSendResponse.RESULT_SUCCESS.equals(result)) {
+					sendStatus = PersonCycAssess.SEND_STATUS_SUCCESS;
+				} else {
+					sendStatus = PersonCycAssess.SEND_STATUS_FAIL;
+					sendError = resp.getDesc();
+				}
+			} else {
+				sendStatus = PersonCycAssess.SEND_STATUS_FAIL;
+				sendError = "连接异常";
+			}
+
+		} catch (Exception e) {
+			sendStatus = PersonCycAssess.SEND_STATUS_FAIL;
+			sendError = e.getMessage();
+		}
+		}
+		
 		return true;
 	}
 

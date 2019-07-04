@@ -35,7 +35,9 @@ public class PersonCycAssess extends BaseModel {
 	/** 被考评人已确认 */
 	public static final int STATUS_ASSESSSED_CONFIRMED = 6;
 
-	
+	public final static int SEND_STATUS_SUCCESS = 1;
+	public final static int SEND_STATUS_FAIL = 2;
+	public final static int SEND_STATUS_DEFAULT = -1;
 
 	@Id
 	@Column(name = "id")

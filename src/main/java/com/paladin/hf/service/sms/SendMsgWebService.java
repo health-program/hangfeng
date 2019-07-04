@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.paladin.framework.utils.MessageConvert;
-import com.paladin.hf.model.sms.SmsSendResponse;
-
 
 
 @Service
@@ -44,7 +41,10 @@ public class SendMsgWebService {
 
 	// 发送短信方法
 	public SmsSendResponse sendSms(String phone, String content) {
-
+		if(account == null || account.length() == 0) {
+			return null;
+		}
+		
 		try {
 			// //create a default service endpoint
 			// getSmsService()

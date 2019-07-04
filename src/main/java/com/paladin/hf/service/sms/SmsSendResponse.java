@@ -1,4 +1,4 @@
-package com.paladin.hf.model.sms;
+package com.paladin.hf.service.sms;
 
 import java.io.Serializable;
 

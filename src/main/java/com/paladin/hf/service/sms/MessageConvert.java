@@ -1,4 +1,4 @@
-package com.paladin.framework.utils;
+package com.paladin.hf.service.sms;
 
 import java.io.StringReader;
 import java.io.StringWriter;

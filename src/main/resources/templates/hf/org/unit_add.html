@@ -4,7 +4,7 @@
 <head th:include="/hf/header" />
 
 <body>
-    <tt:constant enumcode="unit-type,district-type" />
+    <tt:constant enumcode="unit-type,district-type,agency-type" />
     <div class="container">
     <section class="content-header">
         <h1>单位科室维护管理</h1>
@@ -54,9 +54,17 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="unitType" class="col-sm-3 control-label">单位类型：</label>
+                        <label for="unitType" class="col-sm-3 control-label">单位级别：</label>
                         <div class="col-sm-8">
                             <div name="unitType" class="tonto-radio-constant" enumcode="unit-type"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="agencyType" class="col-sm-3 control-label">单位类型：</label>
+                        <div class="col-sm-3">
+                            <select name="agencyType" class="form-control tonto-select-constant" enumcode="agency-type">
+                                <option value="">请选择</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -89,8 +97,9 @@
         columns: [
             { title: "上级科室", name: "parentUnitId", inputType: "UNIT", unitType: "tonto-select-unit", viewName: "parentUnitName", colspan: 2 },
             { title: "单位名称", name: "unitName", inputType: "TEXT", colspan: 2 },
-            { title: "单位类型", name: "unitType", inputType: "RADIO", enum: "unit-type", colspan: 2 },
-            { title: "行政区域代码", name: "districtCode", inputType: "SELECT", enum: "district-type" },
+            { title: "单位级别", name: "unitType", inputType: "RADIO", enum: "unit-type", colspan: 2 },
+            { title: "单位类型", name: "agencyType", inputType: "SELECT", enum: "agency-type",dependency: ["unitType", "1"]},
+            { title: "行政区域代码", name: "districtCode", inputType: "SELECT", enum: "district-type"},
             { title: "联系人", name: "contact", inputType: "TEXT" },
             { title: "联系电话", name: "contactPhone", inputType: "TEXT" },
             { title: "单位描述", name: "unitDescription", inputType: "TEXTAREA" }

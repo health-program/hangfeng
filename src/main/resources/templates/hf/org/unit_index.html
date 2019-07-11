@@ -9,7 +9,7 @@
 
 <body>
     <div class="container">
-        <tt:constant enumcode="unit-type" />
+        <tt:constant enumcode="unit-type,agency-type" />
         <section class="content-header">
             <h1>单位科室维护管理</h1>
         </section>
@@ -40,8 +40,8 @@
             idField: "uid",
             columns: [
                 [
-                    { title: "单位名称", align: "left", field: "unitName", sortable: true },
-                    { title: "单位类型", field: "unitType", sortable: true, enumcode: "unit-type" },
+                    { title: "单位名称", align: "left", field: "unitName"},
+                    { title: "单位类型", field: "agencyType",  enumcode: "agency-type" },
                     { title: "联系人", field: "contact" },
                     { title: "联系电话", field: "contactPhone" },
                     {

@@ -13,6 +13,8 @@ public class OrgUnitVO {
 	private String parentUnitId;
 
 	private Integer unitType;
+	
+	private Integer agencyType;
 
 	private String districtCode;
 
@@ -93,4 +95,13 @@ public class OrgUnitVO {
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
+
+	public Integer getAgencyType() {
+	    return agencyType;
+	}
+
+	public void setAgencyType(Integer agencyType) {
+	    this.agencyType = agencyType;
+	}
+	
 }

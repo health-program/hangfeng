@@ -16,6 +16,8 @@ public class OrgUnitDTO {
 	private String districtCode;
 
 	private Integer unitType;
+	
+	private Integer agencyType;
 
 	private String contact;
 
@@ -84,4 +86,13 @@ public class OrgUnitDTO {
 	public void setUnitType(Integer unitType) {
 		this.unitType = unitType;
 	}
+
+	public Integer getAgencyType() {
+	    return agencyType;
+	}
+
+	public void setAgencyType(Integer agencyType) {
+	    this.agencyType = agencyType;
+	}
+	
 }

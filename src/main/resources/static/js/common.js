@@ -1770,7 +1770,7 @@ function _initTable() {
                 if ($.isArray(data)) {
                     var idArr = [];
                     data.forEach(function(item) {
-                        item.parentId = item[options.treeParentField];
+                        item.parentId = item[options.treeParentField] || null;
                         // 如果支持搜索，则会有部分父节点没搜索出来（当然你可以只查询过滤叶节点），
                         // 在这里会把没有父节点的节点parentId = null，因而造成数据可能会不完整，使用时候注意
                         if (options.treeParentFilter && item.parentId) {

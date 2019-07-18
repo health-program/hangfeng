@@ -2,6 +2,7 @@ package com.paladin.hf.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,17 @@ public class UnitContainer implements VersionContainer {
 			}
 		}
 
+		roots.sort(new Comparator<Unit>() {
+			@Override
+			public int compare(Unit o1, Unit o2) {
+				Integer i1 = o1.getOrder();
+				Integer i2 = o2.getOrder();
+				if(i1 == null) return 1;
+				if(i2 == null) return -1;				
+				return i1.intValue() > i2.intValue() ? 1: -1;
+			}			
+		});
+		
 		UnitContainer.unitMap = Collections.unmodifiableMap(unitMap);
 		UnitContainer.roots = Collections.unmodifiableList(roots);
 
@@ -66,7 +78,8 @@ public class UnitContainer implements VersionContainer {
 		private String name;
 		private String parentId;
 		private Integer unitType;
-
+		private Integer order;
+		
 		@JsonIgnore
 		private Unit parent;
 		private List<Unit> children;
@@ -76,6 +89,7 @@ public class UnitContainer implements VersionContainer {
 			this.name = orgUnit.getUnitName();
 			this.parentId = orgUnit.getParentUnitId();
 			this.unitType = orgUnit.getUnitType();
+			this.order = orgUnit.getSort();
 			this.orgUnit = orgUnit;
 			children = new ArrayList<>();
 		}
@@ -94,6 +108,10 @@ public class UnitContainer implements VersionContainer {
 
 		public Unit getParent() {
 			return parent;
+		}
+		
+		public Integer getOrder() {
+			return order;
 		}
 
 		public List<Unit> getChildren() {

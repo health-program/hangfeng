@@ -18,6 +18,8 @@ public class OrgUnitDTO {
 	private Integer unitType;
 	
 	private Integer agencyType;
+	
+	private Integer sort;
 
 	private String contact;
 
@@ -93,6 +95,14 @@ public class OrgUnitDTO {
 
 	public void setAgencyType(Integer agencyType) {
 	    this.agencyType = agencyType;
+	}
+
+	public Integer getSort() {
+	    return sort;
+	}
+
+	public void setSort(Integer sort) {
+	    this.sort = sort;
 	}
 	
 }

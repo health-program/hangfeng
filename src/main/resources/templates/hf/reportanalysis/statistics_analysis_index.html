@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/hf/header">
+</head>
+
+<body>
+<script type="text/javascript" src="/static/js/echarts/echarts-all.js"></script>
+<div class="container">
+    <section class="content-header">
+        <h1>统计分析</h1>
+    </section>
+    <tt:constant enumcode="KSYDYF_PJDJ" />
+	<section class="content">
+	<div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-search"></i>
+                    <h3 class="box-title">查询</h3>
+                </div>
+                <div class="box-body">
+                    <form id="searchbar" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">日期</label>
+                            <div class="col-sm-3">
+                               <input type="text" id="selfAssTime" name="selfAssTime" autocomplete="off" class="form-control col-sm-2 tonto-datepicker-year" placeholder="请选择" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="query()"><i class="fa fa-search"></i>查询</button>
+                                    <button type="button" style="width:100px" class="btn btn-default" onclick="clearInput()"><i class="fa fa-repeat"></i>重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+		<div class="box box-solid">
+			<div class="box-header with-border">
+                <i class="fa fa-list-alt"></i>
+                <h3 class="box-title">结果</h3>
+            </div>
+            <div class="box-body">
+			<div class="form-group">
+				<div class="col-sm-12">
+				 <div id="main" style="height: 500px"></div>
+				</div>
+			</div>
+            </div>
+		</div>
+	</section>
+</div>
+	<div th:include="/hf/footer"></div>
+    <script type="text/javascript">
+  //<![CDATA[
+             
+       //图表自适应大小      
+       window.addEventListener("resize", function () {
+          myChart.resize();
+        });    
+       
+       function query() {
+           tuxing(myChart);
+       }
+       
+       $(function() {
+    	   $("#selfAssTime").val(new Date().getFullYear());
+           tuxing(myChart);
+       });
+      
+       var myChart = echarts.init(document.getElementById('main'));
+       
+      
+       var value = $.parseJSON($("#tonto_constant_value").text());
+       var job = value["KSYDYF_PJDJ"];
+       
+       
+       function tuxing(myChart) {
+    	   myChart.showLoading({
+               text: '数据正在努力加载...',
+               textStyle: { fontSize : 30 , color: '#444' },
+               effectOption: {backgroundColor: 'rgba(0, 0, 0, 0)'}
+           }); 
+    	   /*  
+    	   $.postAjax("/org/unit/own/agency", function(data) {
+            	   data.forEach(function(){})
+           });  */
+    	   
+    	   var selfAssTime = $("#selfAssTime").val();
+    	   $.postAjax("/statistics/analysis/find/echarts?selfAssTime="+selfAssTime,function(result){
+    		   debugger;
+    		   var datadc=[];
+        	   var dataValue=[];
+        	   var dataResult=[];
+        	   var yx=[],lh=[],hg=[],bhg=[],bddc=[];
+        	   var res =result.vo;
+        	   res.forEach(function(res){
+        		  
+        		    if(res.unitAssGrade){
+        		    	 dataValue.push(res.unitName);
+        		   } 
+        		   for (var i = 0; i < job.length; i++) {
+        			   datadc=job.value;
+        	    	   if(res.unitAssGrade){
+        	    		   var count=parseInt(res.yx)+parseInt(res.lh)+parseInt(res.hg)+parseInt(res.bhg)+parseInt(res.bddc);
+        	    		   if(res.unitAssGrade == job[i].key){
+        	    			  var yx1= (res.yx / count) * 100 ;
+            	    		   yx.push({
+            	    			   name: res.unitName,
+                                   value:yx1.toFixed(2)
+            	    		   })
+            	    	   }
+            	    	   if(res.unitAssGrade == job[i].key){
+            	    		   var lh1= (res.lh / count) * 100 ;
+            	    		   lh.push({
+            	    			   name: res.unitName,
+                                   value: lh1.toFixed(2)
+            	    		   })
+            	    	   }
+            	    	   if(res.unitAssGrade == job[i].key){
+            	    		   var hg1= (res.hg / count) * 100 ;
+            	    		   hg.push({
+            	    			   name: res.unitName,
+                                   value: hg1.toFixed(2)
+            	    		   })
+            	    	   }
+            	    	   if(res.unitAssGrade == job[i].key){
+            	    		   var bhg1= (res.bhg / count) * 100 ;
+            	    		   bhg.push({
+            	    			   name: res.unitName,
+                                   value: bhg1.toFixed(2)
+            	    		   })
+            	    	   }
+            	    	   if(res.unitAssGrade == job[i].key){
+            	    		   var bddc1= (res.bddc / count) * 100 ;
+            	    		   bddc.push({
+            	    			   name: res.unitName,
+                                   value: bddc1.toFixed(2)
+            	    		   })
+            	    	   } 
+        	    	   }
+        	       }
+        	   })
+        	    myChart.hideLoading();
+    		   var option = {
+    	    		    title : {
+    	    		        text: '',
+    	    		    },
+    	    		    tooltip : {
+    	    		        trigger: 'axis',
+    	    		        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+    	    		            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+    	    		        },
+    	    				formatter:function(params){
+    	    					var reslut=params[0].name+'<br/> ';
+    	    					for(var i=0;i<params.length;i++){
+    	    						reslut+=params[i].seriesName+ '：'+ params[i].data.value + '%<br/>'
+    	    					}
+    	    					return reslut;
+    	    				}
+    	    		    },
+    	    		    legend: {
+    	    		        data:datadc
+    	    		    },
+    	    		    toolbox: {
+    	    		        show : true,
+    	    		        feature : {
+    	    		            dataView : {show: true, readOnly: false},
+    	    		            magicType : {show: true, type: ['line', 'bar']},
+    	    		            restore : {show: true},
+    	    		            saveAsImage : {show: true}
+    	    		        }
+    	    		    },
+    	    		    calculable : true,
+    	    		    xAxis : [
+    	    		        {
+    	    		            type : 'category',
+    	    		            data : dataValue,
+    	    		            axisTick: {
+    	    		                alignWithLabel: true
+    	    		            },
+    	    		            axisLabel: {
+    	    		                  interval:0,
+    	    		                 rotate:25//角度顺时针计算的
+    	    		              	/*  formatter: function (value) {
+    	        	        			//x轴的文字改为竖版显示
+    	        	        			var str = value.split("");
+    	        	        			return str.join("\n");
+    	        	        		}  */
+    	    		                } 
+    	    		        }
+    	    		    ],
+    	    		    yAxis : [
+    	    		        {
+    	    		            type : 'value'
+    	    		        }
+    	    		    ],
+    	    		    dataZoom: [
+    	    	            {
+    	    	                show: true,
+    	    	                start: 0,
+    	    	                end: 35
+    	    	            },
+    	    	            {
+    	    	                type: 'inside',
+    	    	                start: 0,
+    	    	                end: 20
+    	    	            },
+    	    	            {
+    	    	                show: true,
+    	    	                yAxisIndex: 0,
+    	    	                filterMode: 'empty',
+    	    	                width: 0,
+    	    	                height: '80%',
+    	    	                showDataShadow: false,
+    	    	                left: '93%',
+    	    	                top:100
+    	    	            },
+    	    	            
+    	    	        ],
+    	    	        grid: {
+    	    	              bottom: '140px',
+    	    	          },
+    	    		    series : [
+    	    		        {
+    	    		            name:'优秀',
+    	    		            type:'bar',
+    	    		            data:yx,
+    	    		            barWidth: 10,
+    	    		            itemStyle:{
+    	                            normal:{
+    	                                color:'#00a65a'
+    	                            }
+    	                        }
+    	    		        },
+    	    		        {
+    	    		            name:'良好',
+    	    		            type:'bar',
+    	    		            data:lh,
+    	    		            barWidth: 10,
+    	    		            itemStyle:{
+    	                            normal:{
+    	                                color:'#00c0ef'
+    	                            }
+    	                        }
+    	    		        },
+    	    		        {
+    	    		            name:'合格',
+    	    		            type:'bar',
+    	    		            data:hg,
+    	    		            barWidth: 10,
+    	    		            itemStyle:{
+    	                            normal:{
+    	                                color:'#FFC107'
+    	                            }
+    	                        }
+    	    		        },
+    	    		        {
+    	    		            name:'不合格',
+    	    		            type:'bar',
+    	    		            data:bhg,
+    	    		            barWidth: 10,
+    	    		            itemStyle:{
+    	                            normal:{
+    	                                color:'#E91E63'
+    	                            }
+    	                        }
+    	    		        },
+    	    		        {
+    	    		            name:'不定等次',
+    	    		            type:'bar',
+    	    		            data:bddc,
+    	    		            barWidth: 10,
+    	    		            itemStyle:{
+    	                            normal:{
+    	                                color:'#204d74'
+    	                            }
+    	                        }
+    	    		        }
+    	    		    ]
+    	    		};
+    	       
+    	       myChart.setOption(option);
+    	   })
+    	   
+       }
+
+	// 关键词搜索框添加绑定回车函数
+	$('body').bind('keypress', function(event) {
+		if (event.keyCode == "13") {
+			query();
+		}
+	});
+	//]]>
+    </script>
+</body>
+
+</html>

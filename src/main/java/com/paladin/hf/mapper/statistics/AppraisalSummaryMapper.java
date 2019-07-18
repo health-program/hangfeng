@@ -6,7 +6,10 @@ import org.apache.ibatis.annotations.Param;
 
 import com.paladin.hf.core.DataPermissionUtil.UnitQuery;
 import com.paladin.hf.service.statistics.dto.AppraisalSummaryQueryDTO;
+import com.paladin.hf.service.statistics.dto.StatisticsAnalysisQueryDTO;
 import com.paladin.hf.service.statistics.vo.AppraisalSummaryVO;
+import com.paladin.hf.service.statistics.vo.OrgUnitPeopleTotalVO;
+import com.paladin.hf.service.statistics.vo.StatisticsAnalysisVO;
 
 
 /**   
@@ -16,4 +19,8 @@ import com.paladin.hf.service.statistics.vo.AppraisalSummaryVO;
 public interface AppraisalSummaryMapper
 {
     List<AppraisalSummaryVO> AppraisalSummaryAll(@Param("param") AppraisalSummaryQueryDTO appraisalQuery, @Param("unitParam")UnitQuery unitQuery);
+    
+    List<StatisticsAnalysisVO> findEcahtes(@Param("query")StatisticsAnalysisQueryDTO query);
+    
+    List<OrgUnitPeopleTotalVO> peopleTotal();
 }

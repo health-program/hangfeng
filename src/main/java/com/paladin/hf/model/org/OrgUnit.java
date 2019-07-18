@@ -26,6 +26,8 @@ public class OrgUnit extends UnDeleteBaseModel {
 	private Integer unitType;
 	
 	private Integer agencyType;
+	
+	private Integer sort;
 
 	private String districtCode;
 
@@ -103,6 +105,14 @@ public class OrgUnit extends UnDeleteBaseModel {
 
 	public void setAgencyType(Integer agencyType) {
 	    this.agencyType = agencyType;
+	}
+
+	public Integer getSort() {
+	    return sort;
+	}
+
+	public void setSort(Integer sort) {
+	    this.sort = sort;
 	}
 
 }

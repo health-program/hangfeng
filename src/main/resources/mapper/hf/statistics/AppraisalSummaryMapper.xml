@@ -95,4 +95,48 @@
 	 ) AS a  GROUP BY a.unit_ass_grade
 	
   </select>
+  
+  <select id="peopleTotal" resultType="com.paladin.hf.service.statistics.vo.OrgUnitPeopleTotalVO">
+	  SELECT 
+	  unit.`unit_name` AS unitName,
+	  b.`org_agency_id` AS orgAgencyId,
+	  IFNULL(b.aa, 0) AS total
+	FROM
+	  org_unit AS unit 
+	  LEFT JOIN 
+	    (SELECT 
+	      u.`id`,
+	      u.`org_agency_id`,
+	      COUNT(u.`org_agency_id`) AS aa ,
+	      u.`is_delete` 
+	    FROM
+	      org_user AS u 
+	      WHERE u.`is_delete`=0
+	    GROUP BY u.`org_agency_id`) b 
+	    ON unit.`uid` = b.org_agency_id 
+	WHERE (
+	    unit.parent_unit_id IS NULL 
+	    OR unit.parent_unit_id = ''
+	  ) 
+	  AND unit.is_delete = 0 
+	GROUP BY unit.`unit_name` 
+  
+  </select>
+  
+  <select id="findEcahtes" resultType="com.paladin.hf.service.statistics.vo.StatisticsAnalysisVO">
+	SELECT p.`agency_id` AS agencyId, 
+	u.`unit_name` AS unitName,
+	p.`unit_ass_grade` AS unitAssGrade,
+	SUM(p.`unit_ass_grade` ='1') AS yx,
+	SUM(p.`unit_ass_grade` ='2') AS lh,
+	SUM(p.`unit_ass_grade` ='3') AS hg,
+	SUM(p.`unit_ass_grade` ='4') AS bhg,
+	SUM(p.`unit_ass_grade` ='5') AS bddc
+	FROM person_cyc_assess AS p LEFT JOIN org_unit AS u ON p.agency_id=u.uid where p.`unit_ass_grade` IS NOT NULL  
+	<if test="query.selfAssTime !=null and query.selfAssTime !='' ">
+	and (p.`self_ass_time`  <![CDATA[ >=#{query.startTime} ]]> and p.`self_ass_time`  <![CDATA[ <=#{query.endTime} ]]>)
+	</if>
+	GROUP BY p.`agency_id`
+  </select>
+  
 </mapper>

@@ -29,6 +29,8 @@ public class InforeleaseVO{
     
     private Integer types;
     
+    private Integer typeClassify;
+    
     private String orgAgencyId;
     
     private String orgAssessTeamId;
@@ -175,6 +177,14 @@ public class InforeleaseVO{
     public void setAttachments(String attachments)
     {
         this.attachments = attachments;
+    }
+
+    public Integer getTypeClassify() {
+        return typeClassify;
+    }
+
+    public void setTypeClassify(Integer typeClassify) {
+        this.typeClassify = typeClassify;
     }
 
     public String getUnitName() {

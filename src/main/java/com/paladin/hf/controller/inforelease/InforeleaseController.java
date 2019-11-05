@@ -142,6 +142,8 @@ public class InforeleaseController extends ControllerSupport {
 		if (StringUtils.isEmpty(id)) {
 			return CommonResponse.getResponse(inforeleaseService.save(model));
 		} else {
+		    	Inforelease i=  inforeleaseService.get(id);
+		    	model.setTypes(i.getTypes());
 			inforeleaseService.update(model);
 			return CommonResponse.getSuccessResponse(inforeleaseService.detail(dto.getId()));
 		}

@@ -6,6 +6,7 @@
         SELECT
 		`id` AS id,
 		`title` AS title,
+		type_classify as typeClassify,
 		`content` AS content,
 		`is_release` AS isRelease,
 		`importance` AS importance,
@@ -40,6 +41,7 @@
         SELECT
 		`id` AS id,
 		`title` AS title,
+		type_classify as typeClassify,
 		`content` AS content,
 		`is_release` AS isRelease,
 		`importance` AS importance,
@@ -75,7 +77,7 @@
     </select>
 
 	<select id="noticyandpolicyfile" resultType="com.paladin.hf.service.inforelease.vo.InforeleaseVO">
-		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease 
+		(SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease 
 		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '1'
 		 AND (org_unit_id ='' OR org_unit_id IS NULL  
 	   		<if test="unitIds != null">
@@ -84,7 +86,7 @@
 	    )
 		ORDER BY release_time DESC LIMIT 0,5) 
 		UNION 
-		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
+		(SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease
 		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '0'
 		 AND ( org_unit_id ='' OR org_unit_id IS NULL 
 	      	<if test="unitIds != null">
@@ -93,8 +95,8 @@
 	      )
 		 ORDER BY release_time DESC LIMIT 0,5)
 		 UNION 
-		 (SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
-		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '2'
+		 (SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease
+		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND type_classify = '2'
 		 AND ( org_unit_id ='' OR org_unit_id IS NULL 
 	      	<if test="unitIds != null">
 	   		OR org_unit_id IN <foreach collection="unitIds" index="index" item="unitId" open="(" separator="," close=")">#{unitId}</foreach>
@@ -102,8 +104,8 @@
 	      )
 		 ORDER BY release_time DESC LIMIT 0,5)
 		 UNION 
-		 (SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
-		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '3'
+		 (SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease
+		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND type_classify = '3'
 		 AND ( org_unit_id ='' OR org_unit_id IS NULL 
 	      	<if test="unitIds != null">
 	   		OR org_unit_id IN <foreach collection="unitIds" index="index" item="unitId" open="(" separator="," close=")">#{unitId}</foreach>
@@ -113,19 +115,19 @@
 	</select>
 	
 	<select id="noticyandpolicyfileAll" resultType="com.paladin.hf.service.inforelease.vo.InforeleaseVO">
-		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease 
+		(SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease 
 		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '1'
 		ORDER BY release_time DESC LIMIT 0,5) 
 		UNION 
-		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
+		(SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease
 		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '0'
 		 ORDER BY release_time DESC LIMIT 0,5)
 		UNION 
-		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
+		(SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease
 		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '2'
 		 ORDER BY release_time DESC LIMIT 0,5)
 		UNION 
-		(SELECT `id`,`title`,`release_time` as releaseTime,types FROM inforelease
+		(SELECT `id`,`title`,`release_time` as releaseTime,types,type_classify as typeClassify FROM inforelease
 		WHERE release_time <![CDATA[<=]]> now() AND is_release = '0' AND TYPES = '3'
 		 ORDER BY release_time DESC LIMIT 0,5)
 	</select>
@@ -135,6 +137,7 @@
 			`id` AS id,
 			`title` AS title,
 			`content` AS content,
+			type_classify as typeClassify,
 			`is_release` AS isRelease,
 			`importance` AS importance,
 			`release_time` AS releaseTime,
@@ -154,6 +157,7 @@
 				`id` AS id,
 				`title` AS title,
 				`content` AS content,
+				type_classify as typeClassify,
 				`is_release` AS isRelease,
 				`importance` AS importance,
 				`release_time` AS releaseTime,

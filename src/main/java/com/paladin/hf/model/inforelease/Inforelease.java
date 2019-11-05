@@ -26,6 +26,8 @@ public class Inforelease extends BaseModel {
 	private String accessory;
 
 	private Integer types;
+	
+	private Integer typeClassify;
 
 	private String remarks;
 
@@ -129,6 +131,14 @@ public class Inforelease extends BaseModel {
 
 	public void setOwnAgency(String ownAgency) {
 		this.ownAgency = ownAgency;
+	}
+
+	public Integer getTypeClassify() {
+	    return typeClassify;
+	}
+
+	public void setTypeClassify(Integer typeClassify) {
+	    this.typeClassify = typeClassify;
 	}
 
 }

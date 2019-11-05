@@ -309,7 +309,7 @@
 					</div>
 					<div style="height: 216px">
 					<ul class="notice-list ul-dashed" th:each="o:${list}"
-						th:if=" ${o.types} == '2' ">
+						th:if=" ${o.typeClassify} == '2' ">
 						<li class="notice-li"><a class="name"
 							th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"
 							th:title="${o.title}"><span th:text=${o.title}></span></a>
@@ -331,7 +331,7 @@
 					</div>
 					<div style="height: 216px">
 					<ul class="notice-list ul-dashed" th:each="o:${list}"
-						th:if=" ${o.types} == '3' ">
+						th:if=" ${o.typeClassify} == '3' ">
 						<li class="notice-li"><a class="name"
 							th:href="@{/inforelease/info/detail?isHomePage=true(id=${o.id})}"><span
 							th:title="${o.title}" th:text=${o.title}></span></a>

@@ -39,7 +39,7 @@
                     <div class="form-group">
                         <label for="types" class="col-sm-3 control-label">类型：</label>
                         <div class="col-sm-5">
-                            <p name="types" class="form-control-static description"></p>
+                            <p name="typeClassify" class="form-control-static description"></p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -78,7 +78,6 @@
             </div>
             <div id="model_edit" class="box-body" style="display: none">
                 <form id="model_form" class="form-horizontal edit-body" action="/inforelease/save"  enctype="multipart/form-data" method="post">
-                <input type="hidden" name="types" th:value="${type}"/>
                 <input type="hidden" id="id" name="id" th:value="${info.id}"/>
 							<div class="form-group">
 								<label class="col-sm-3 control-label"><i class="required-label fa fa-asterisk"></i>标题</label>
@@ -90,7 +89,7 @@
 							<div class="form-group">
 							<label  class="col-sm-3 control-label" for="importance"><i class="required-label fa fa-asterisk"></i>类型</label>
 								<div class="col-sm-8">
-									<select id="type" required="required" name="types" class="form-control tonto-select-constant" enumcode="info-type">
+									<select id="type" required="required" name="typeClassify" class="form-control tonto-select-constant" enumcode="info-type">
 									</select>
 								</div>
 							</div>
@@ -149,20 +148,20 @@
 		</div>
 		<div class="col-sm-2 col-sm-offset-5 btn-back">
         	<!-- <a th:if="${type} == '0'" href="/inforelease/index" class="btn btn-primary btn-block">返回</a> -->
-            <a href="/inforelease/policy/index" class="btn btn-primary btn-block">返回</a>
+            <a href="javascript:void(0)" onclick="black()" class="btn btn-primary btn-block">返回</a>
         </div>
 	</section>
 	</div>
 	<div th:include="/hf/footer"></div>
 	<script type="text/javascript">
-	
+	debugger;
 	var options = {
 	        id: "model",
 	        name: "详情",
-	        url: "/inforelease/save",
+	        url: "/inforelease/save?type="+type,
 	        columns: [
 	            { name: "title", inputType: "TEXT", title: "标题" },
-	            { name: "types", inputType: "SELECT",enum:"info-type", title: "类型" },
+	            { name: "typeClassify", inputType: "SELECT",enum:"info-type", title: "类型" },
 	            { name: "content", inputType: "TEXT", title: "内容" },
 	            { name: "isRelease", inputType: "SELECT", enum: "is_release", title: "是否发布" },
 	            { name: "importance", inputType: "SELECT", enum: "importance", title: "重要程度" },
@@ -178,6 +177,7 @@
 		 $.postAjax("/inforelease/get/?id=" +id, function(data) {
 	            var model = new tonto.Model("model", options.columns, {
 	            });
+	            type = data.types;
 	            var value = $.parseJSON($("#tonto_constant_value").text());
 	            var d = value["info-type"];
 	            initData(d,data.types);
@@ -197,6 +197,14 @@
 				}
 			}
 		}
+	var type;
+	function black(){
+		if(type == 0){
+      	  window.location = "/inforelease/index";
+      	}else{
+      	  window.location = "/inforelease/policy/index";	
+      	}         
+	}
 	</script>
 </body>
 </html>

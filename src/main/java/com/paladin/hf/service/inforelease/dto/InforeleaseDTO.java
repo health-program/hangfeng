@@ -27,6 +27,8 @@ public class InforeleaseDTO {
 	private String accessory;
 
 	private Integer types;
+	
+	private Integer typeClassify;
 
 	private String remarks;
 
@@ -120,6 +122,14 @@ public class InforeleaseDTO {
 
 	public void setAttachments(String attachments) {
 		this.attachments = attachments;
+	}
+
+	public Integer getTypeClassify() {
+	    return typeClassify;
+	}
+
+	public void setTypeClassify(Integer typeClassify) {
+	    this.typeClassify = typeClassify;
 	}
 
 }

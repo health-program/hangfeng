@@ -1,5 +1,9 @@
 package com.paladin.hf.service.ordinary;
 
+import com.paladin.hf.core.DataPermissionUtil;
+import com.paladin.hf.service.ordinary.vo.PrizepunishUserVO;
+import com.paladin.hf.service.org.dto.OrgUserQuery;
+import com.paladin.hf.service.org.vo.OrgUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,8 @@ import com.paladin.hf.model.ordinary.Prizepunish;
 import com.paladin.hf.service.ordinary.dto.PrizepunishDTO;
 import com.paladin.hf.service.ordinary.dto.PrizepunishQuery;
 import com.paladin.hf.service.ordinary.vo.PrizepunishVO;
+
+import java.util.List;
 
 /**
  * @author 黄伟华
@@ -47,6 +53,19 @@ public class PrizepunishService extends ServiceSupport<Prizepunish> {
 			return vo;
 		}
 		return null;
+	}
+
+
+	public PageResult<PrizepunishUserVO> orgUserFind(OrgUserQuery query) {
+		Page<PrizepunishUserVO> page = PageHelper.offsetPage(query.getOffset(), query.getLimit());
+		DataPermissionUtil.UnitQuery unitQuery = DataPermissionUtil.getUnitQueryDouble(query.getOrgUnitId());
+		query.setAgencyId(unitQuery.getAgencyId());
+		query.setAgencyIds(unitQuery.getAgencyIds());
+		query.setUnitId(unitQuery.getUnitId());
+		query.setUnitIds(unitQuery.getUnitIds());
+		query.setAssessTeamId(unitQuery.getAssessTeamId());
+		prizepunishMapper.orgUserFind(query);
+		return new PageResult<>(page);
 	}
 
 	/* 科室查询某个人的奖惩记录 */

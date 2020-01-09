@@ -20,7 +20,7 @@
                     <form id="searchbar" class="form-horizontal">
                         <div class="form-group">
                             <input type="hidden" name="id" id="id" value="1" />
-                            <label for="unitId" class="col-xs-2 control-label">被考评科室</label>
+                            <label for="orgUnitId" class="col-xs-2 control-label">被考评科室</label>
                             <div class="col-xs-3">
                                 <input type="text" class="form-control tonto-select-unit" name="orgUnitId" th:attr="unitid=${query?.orgUnitId}" placeholder="请选择科室"></input>
                             </div>
@@ -101,20 +101,24 @@
                     { title: "职称", field: "jobRank", enumcode: "job-rank-type" },
                     {
                         title: "操作",
-                        align: "center",
-                        width: "150px",
+                        align: "left",
+                        width: "130px",
                         events: {
                             'click .event': function(e, value, row, index) {
                                 eventPeacet(row);
                             }
                         },
                         formatter: function operateFormatter(value, row, index) {
-                            return '<button class="event btn btn-xs btn-success"><i class="glyphicon glyphicon-cog"></i>奖惩维护</button>';
+                            if(row.num === 0){
+                                return '<button class="event btn btn-xs btn-success"><i class="glyphicon glyphicon-cog"></i>奖惩维护</button>';
+                            }else{
+                                return '<button class="event btn btn-xs btn-success"><i class="glyphicon glyphicon-cog"></i>奖惩维护</button><span class="badge bg-red" style="margin-left: 5px;">'+row.num+'</span>';
+                            }
                         }
                     }
                 ]
             ],
-            url: '/org/user/find',
+            url: '/prizepunish/dept/user/find',
             searchbar: '#searchbar',
             sortName: 'recordCreateTime',
             sortOrder: 'desc',

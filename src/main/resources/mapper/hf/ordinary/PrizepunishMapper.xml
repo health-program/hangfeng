@@ -112,4 +112,58 @@
     	SELECT count(1) FROM prizepunish WHERE org_user_id = #{userId} AND examine_state = -1
     </select>
 
+	<!--平时考评科室人员查询-->
+	<select id="orgUserFind" resultType="com.paladin.hf.service.ordinary.vo.PrizepunishUserVO">
+	SELECT u.id,
+		u.org_agency_id AS orgAgencyId,
+		u.org_unit_id AS orgUnitId,
+		u.is_assessor AS isAssessor,
+		u.`name`,
+		u.sex,
+		u.job_rank AS jobRank,
+		(SELECT count(1) FROM prizepunish WHERE org_user_id = u.id and operation_state  in(3,1)  AND happen_time >='2019') AS num
+	FROM org_user as u WHERE  u.is_delete=0
+
+	<if test="agencyId !=null and agencyId !='' ">
+		and u.org_agency_id =#{agencyId}
+	</if>
+
+	<if test="agencyIds !=null and agencyIds.size()>0 ">
+		and u.org_agency_id in
+		<foreach collection="agencyIds" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</if>
+
+	<if test="orgUnitId !=null and orgUnitId !='' ">
+		and u.org_unit_id =#{orgUnitId}
+	</if>
+
+	<if test="unitIds !=null and unitIds.size()>0  ">
+		and u.org_unit_id in
+		<foreach collection="unitIds" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</if>
+
+
+	<if test="userProperty !=null and userProperty !='' ">
+		and u.user_property =#{userProperty}
+	</if>
+
+	<if test="name !=null and name !='' ">
+		and u.name =#{name}
+	</if>
+
+	<if test="jobRank !=null and jobRank !='' ">
+		and u.job_rank =#{jobRank}
+	</if>
+
+	<if test="isAssessor !=null and isAssessor !='' ">
+		and u.is_assessor =#{isAssessor}
+	</if>
+	ORDER BY num DESC
+
+	</select>
+
 </mapper>

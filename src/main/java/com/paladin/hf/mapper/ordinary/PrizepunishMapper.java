@@ -2,6 +2,8 @@ package com.paladin.hf.mapper.ordinary;
 
 import java.util.List;
 
+import com.paladin.hf.service.ordinary.vo.PrizepunishUserVO;
+import com.paladin.hf.service.org.dto.OrgUserQuery;
 import org.apache.ibatis.annotations.Param;
 
 import com.paladin.framework.mybatis.CustomMapper;
@@ -23,4 +25,6 @@ public interface PrizepunishMapper extends CustomMapper<Prizepunish>{
     
     /*查看是否有被驳回的奖惩事件 */
     public int countRejectedPrizePunishByUser(@Param("userId") String userId);
+
+    List<PrizepunishUserVO> orgUserFind(OrgUserQuery query);
 }

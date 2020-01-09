@@ -12,6 +12,7 @@ import com.paladin.hf.service.ordinary.PrizepunishService;
 import com.paladin.hf.service.ordinary.dto.PrizepunishDTO;
 import com.paladin.hf.service.ordinary.dto.PrizepunishQuery;
 import com.paladin.hf.service.org.dto.OrgUserQuery;
+import com.paladin.hf.service.org.vo.OrgUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,6 +62,13 @@ public class PrizePunishDeptController extends ControllerSupport {
 		model.addAttribute("orgUserId", orgUserId);
 		model.addAttribute("userName", userName);
 		return "/hf/prizepunish/department/prizepunish_dept_detail_index";
+	}
+
+	@RequestMapping("/user/find")
+	@ResponseBody
+	@QueryOutputMethod(queryClass = OrgUserQuery.class, paramIndex = 0)
+	public Object orgUserFind(OrgUserQuery query) {
+		return CommonResponse.getSuccessResponse(prizepunishService.orgUserFind(query));
 	}
 
 	/* 科室查询某个人的奖惩记录 */
